@@ -2,16 +2,19 @@
 
 ## Grupo
 ### Integrantes
-* legajo - Apellido(s), Nombre(s)
+* 53276 - Tarrio Gennero, Nicolás
+* 53600 - Re, Joaquin Eduardo
+* 52301 - Maseda, Valentino
+* 52059 - Sarmiento, Alfonso
+* 52657- Catalina, Fe
 
 ### Repositorios
-* [frontend app](http://hyperlinkToGihubOrGitlab)
-* [backend app](http://hyperlinkToGihubOrGitlab)
-*Nota*: si utiliza un monorepo indicar un solo link con fullstack app.
+* [fullstack app]()
+
 
 ## Tema
 ### Descripción
-*2 a 6 líneas describiendo el negocio (menos es más)*
+Tienda online oficial de un club social y deportivo, orientada a la venta de productos de merchandising exclusivos. A través de la plataforma, los usuarios podrán registrarse como clientes, explorar el catálogo de productos, realizar compras de forma segura y dejar reseñas visibles para otros compradores.
 
 ### Modelo
 ![imagen del modelo]()
@@ -22,13 +25,12 @@
 
 ### Alcance Mínimo
 
-*Nota*: el siguiente es un ejemplo para un grupo de 3 integrantes para un sistema de hotel. El 
 
 Regularidad:
 |Req|Detalle|
 |:-|:-|
-|CRUD simple|1. CRUD Tipo Habitacion<br>2. CRUD Servicio<br>3. CRUD Localidad|
-|CRUD dependiente|1. CRUD Habitación {depende de} CRUD Tipo Habitacion<br>2. CRUD Cliente {depende de} CRUD Localidad|
+|CRUD simple|1. CRUD Usuario<br>2. CRUD Artículos<br>3. CRUD Categoría<br>4. CRUD Descuentos<br>5. CRUD Metodos Pago|
+|CRUD dependiente|1. CRUD Precio {depende de} CRUD Artículos<br>2. CRUD Comentario {depende de} CRUD Artículos<br>3. CRUD Pedido {depende de} CRUD Usuario<br>4. CRUD Devoluciones {depende de} CRUD Pedido<br>5. CRUD Reseña Pedido {depende de} CRUD Pedido<br>6. CRUD Estado Pedido {depende de} CRUD Pedido|
 |Listado<br>+<br>detalle| 1. Listado de habitaciones filtrado por tipo de habitación, muestra nro y tipo de habitación => detalle CRUD Habitacion<br> 2. Listado de reservas filtrado por rango de fecha, muestra nro de habitación, fecha inicio y fin estadía, estado y nombre del cliente => detalle muestra datos completos de la reserva y del cliente|
 |CUU/Epic|1. Reservar una habitación para la estadía<br>2. Realizar el check-in de una reserva|
 
