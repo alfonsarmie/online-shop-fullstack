@@ -6,7 +6,7 @@
 * 53600 - Re, Joaquin Eduardo
 * 52301 - Maseda, Valentino
 * 52059 - Sarmiento, Alfonso
-* 52657- Catalina, Fe
+* 52657- Fe, Catalina
 
 ### Repositorios
 * [fullstack app]()
