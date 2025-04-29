@@ -14,7 +14,7 @@
 
 ## Tema
 ### Descripción
-Tienda online oficial de un club social y deportivo, orientada a la venta de productos de merchandising exclusivos. A través de la plataforma, los usuarios podrán registrarse como clientes, explorar el catálogo de productos, realizar compras de forma segura y dejar reseñas visibles para otros compradores.
+La tienda online oficial del club social y deportivo ofrece merchandising exclusivo a través de una plataforma donde los usuarios pueden registrarse, crear perfiles y disfrutar de un sistema de roles que distingue entre clientes regulares, socios, administradores y recepcionistas. El catálogo organiza los productos en categorías definidas, con detalles completos sobre cada artículo, mientras que el proceso de compra incluye un carrito y diversas opciones de pago seguras. La gestión de pedidos mantiene un historial de compras accesible para cada usuario. Los clientes pueden publicar reseñas y calificaciones sobre artículos y pedidos para orientar a otros compradores, y acceder a promociones especiales en fechas significativas para el club. La plataforma también incorpora herramientas analíticas para optimizar inventario, ventas y experiencia del usuario, funcionando no solo como canal comercial sino como extensión digital de los productos del club. 
 
 ### Modelo
 ![imagen del modelo]()
