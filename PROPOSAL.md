@@ -19,7 +19,6 @@ La tienda online oficial del club social y deportivo ofrece merchandising exclus
 ### Modelo
 ![Modelo E-R](img/Proposal_DSW.drawio.png)
 
-*Nota*: incluir un link con la imagen de un modelo, puede ser modelo de dominio, diagrama de clases, DER. Si lo prefieren pueden utilizar diagramas con [Mermaid](https://mermaid.js.org) en lugar de imágenes.
 
 ## Alcance Funcional 
 
@@ -44,10 +43,8 @@ Adicionales para Aprobación
 
 ### Alcance Adicional Voluntario
 
-*Nota*: El Alcance Adicional Voluntario es opcional, pero ayuda a que la funcionalidad del sistema esté completa y será considerado en la nota en función de su complejidad y esfuerzo.
-
 |Req|Detalle|
 |:-|:-|
-|Listados |1. Estadía del día filtrado por fecha muestra, cliente, habitaciones y estado <br>2. Reservas filtradas por cliente muestra datos del cliente y de cada reserve fechas, estado cantidad de habitaciones y huespedes|
-|CUU/Epic|1. Consumir servicios<br>2. Cancelación de reserva|
+|Listados |1. Listado de reseña de pedidos filtrado por valor, muestra comentario, fecha de reseña y valor => detalle CRUD reseña.<br>2. Listado pedidos filtrado por cliente, muestra nombre y apellido del cliente, fecha de pedido, fecha de entrega => detalle CRUD pedido y nombre y apellido del cliente.|
+|CUU/Epic|1. Generar Reseña sobre pedido<br>2. Responder Reseñas sobre pedido<br>3. Gestionar Pedidos|
 |Otros|1. Envío de recordatorio por mail cuando el pedido está listo para retirar<br>2. Envío de notificación por mail cuando el pedido haya concluido para generar reseña<br>3. Implementar pagos vía billetera virtual|
