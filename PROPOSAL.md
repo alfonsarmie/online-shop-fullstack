@@ -29,17 +29,17 @@ La tienda online oficial del club social y deportivo ofrece merchandising exclus
 Regularidad:
 |Req|Detalle|
 |:-|:-|
-|CRUD simple|1. CRUD Usuario<br>2. CRUD Artículos<br>3. CRUD Categoría<br>4. CRUD Descuentos<br>5. CRUD Metodos Pago<br>6. CRUD Descuentos<br>7. CRUD Pedidos<br>|
-|CRUD dependiente|1. CRUD Precio {depende de} CRUD Artículos<br>2. CRUD Comentario {depende de} CRUD Artículos<br>3.CRUD Reseña Pedido {depende de} CRUD Pedido<br>4.CRUD Reseña Pedido {depende de} CRUD Articulo<br>5.CRUD Estado Pedido {depende de} CRUD Pedido<br>6. CRUD imagen {depende de} CRUD Articulo|
-|Listado<br>+<br>detalle| 1. Listado de habitaciones filtrado por tipo de habitación, muestra nro y tipo de habitación => detalle CRUD Habitacion<br> 2. Listado de reservas filtrado por rango de fecha, muestra nro de habitación, fecha inicio y fin estadía, estado y nombre del cliente => detalle muestra datos completos de la reserva y del cliente|
-|CUU/Epic|1. Reservar una habitación para la estadía<br>2. Realizar el check-in de una reserva|
+|CRUD simple|1. CRUD Usuario<br>2. CRUD Artículos<br>3. CRUD Categoría<br>4. CRUD Descuentos<br>5. CRUD Pedidos<br>|
+|CRUD dependiente|1. CRUD Precio {depende de} CRUD Artículos<br>2. CRUD Comentario {depende de} CRUD Artículos<br>3.CRUD Reseña Pedido {depende de} CRUD Pedido<br>|
+|Listado<br>+<br>detalle| 1. Listado de artículos filtrados por categoría, ordenados de menor a mayor antigüedad, muestra detalle de nombre, descripción, precio e imagen => detalle muestra datos parciales del artículo, imágenes y precio.<br> 2. Listado de pedidos filtrados por estado ‘a retirar’, muestra el idPedido, nombre y apellido del cliente => detalle CRUD pedidos y nombre y apellido del cliente.|
+|CUU/Epic|1. Realizar pedido<br>2. Cargar artículo<br>3. Crear usuario<br>4. Modificar usuario|
 
 
 Adicionales para Aprobación
 |Req|Detalle|
 |:-|:-|
-|CRUD |1. CRUD Tipo Habitacion<br>2. CRUD Servicio<br>3. CRUD Localidad<br>4. CRUD Provincia<br>5. CRUD Habitación<br>6. CRUD Empleado<br>7. CRUD Cliente|
-|CUU/Epic|1. Reservar una habitación para la estadía<br>2. Realizar el check-in de una reserva<br>3. Realizar el check-out y facturación de estadía y servicios|
+|CRUD |1. CRUD Usuario<br>2. CRUD Artículos<br>3. CRUD Categoría<br>4. CRUD Descuentos<br>5. CRUD Pedidos<br>6. CRUD método de pago<br>7. CRUD Precio {depende de} CRUD Artículos<br>8. CRUD Comentario {depende de} CRUD Artículos<br>9. CRUD Reseña Pedido {depende de} CRUD Pedidos<br>10. Estados de pedidos {depende de} CRUD Pedidos<br>11. CRUD Imágenes {depende de} CRUD artículos|
+|CUU/Epic|1. Generar comentario sobre artículo<br>2. Responder comentario sobre artículo<br>3. Gestionar pedidos|
 
 
 ### Alcance Adicional Voluntario
