@@ -50,4 +50,4 @@ Adicionales para Aprobación
 |:-|:-|
 |Listados |1. Estadía del día filtrado por fecha muestra, cliente, habitaciones y estado <br>2. Reservas filtradas por cliente muestra datos del cliente y de cada reserve fechas, estado cantidad de habitaciones y huespedes|
 |CUU/Epic|1. Consumir servicios<br>2. Cancelación de reserva|
-|Otros|1. Envío de recordatorio de reserva por email|
+|Otros|1. Envío de recordatorio por mail cuando el pedido está listo para retirar<br>2. Envío de notificación por mail cuando el pedido haya concluido para generar reseña<br>3. Implementar pagos vía billetera virtual|
