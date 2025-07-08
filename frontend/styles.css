@@ -111,7 +111,7 @@ h2 {
 }
 
 .cajaProducto {
-    width: 200px;
+    width: 300px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -122,12 +122,15 @@ h2 {
     font-size: 20px;
     margin: 20px;
     flex-wrap: wrap;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 }
 
 .cajaProducto img {
-    width: 180px;
+    width: 280px;
     padding: 10px;
     border-radius: 15px;
+    transition: all .3s ease;
+    margin: 10px;
 }
 
 .cajaProducto a {
@@ -138,8 +141,15 @@ h2 {
 }
 
 .cajaProducto:hover {
-    background-color: #81b18e;
+  text-decoration: underline;
+}
+
+.cajaProducto img:hover {
     transform: scale(1.1);
+}
+
+.precio {
+  margin: 10px;
 }
 
 /*  BOTON WSP  */
