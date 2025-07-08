@@ -152,29 +152,6 @@ h2 {
   margin: 10px;
 }
 
-/*  BOTON WSP  */
-
-.btnWsp {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    box-shadow: 0 0 10px 0 black;
-    transition: all .3s ease;
-}
-
-.btnWsp:hover {
-    transform: scale(1.1);
-}
-
-.btnWsp img {
-    width: 50px;
-    height: auto;
-    object-fit: cover;
-}
-
 /*  RESPONSIVE  */
 
 
