@@ -1,0 +1,465 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Anton";   
+    overflow-x: hidden;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/*  NAV  */
+
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 80px;
+    width: 100%;
+    background-color: #1D1D1D;
+    color: #1E7335;
+    align-items: center;
+    font-size: 18px;
+    padding: 10px;
+    position: fixed;
+    z-index: 200;
+}
+
+nav img {
+    width: 70px;
+    height: auto;
+    transition: all .3s ease;
+    margin-left: 40px;
+}
+
+nav img:hover {
+    transform: scale(1.2);
+}
+
+nav ul {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    margin: 0;
+    font-size: 20px;
+}
+
+nav li {
+    margin: 0 10px 0 10px;
+}
+
+nav li a {
+    text-decoration: none;
+    color: #1E7335;
+    padding: 10px 15px 10px 15px;
+    border-radius: 25px;
+    transition: all .3s ease;
+}
+
+nav li a:hover {
+    background-color: #0c3f19;
+    color: #36a854;
+}
+
+.btnLogIn {
+    padding: 12px;
+    font-family: 'Anton';
+    background-color: #1D1D1D;
+    color: #1E7335;
+    border-radius: 30px;
+    border: 3px solid #1E7335;
+    cursor: pointer;
+    transition: all .3s ease;
+    font-size: 15px;
+    margin-right: 40px;
+}
+
+.btnLogIn:hover {
+    background-color: #323232;
+}
+
+/*  CONTEINER PRINCIPAL  */
+
+.contenedorPrincipal {
+    display: flex;
+    justify-content: space-between;
+    font-family: "Raleway";
+    font-weight: bolder;
+}
+
+.imagenes img {
+    width: 500px;
+    margin-top: 100px;
+    margin-left: 50px;
+    border-radius: 20px;
+}
+
+.info {
+    margin-top: 70px;
+    padding: 50px;
+    font-weight: lighter;
+}
+
+.info h1 {
+  color: #0c3f19;
+  font-family: "Anton";
+  font-weight: lighter;
+  font-size: 35px;
+}
+
+.desc {
+  color: #5f5f5f;
+}
+
+.stock {
+  color: #5f5f5f;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.precio {
+  font-family: "Anton";
+  font-size: 20px;
+  color: #0c3f19;
+}
+
+.talle p {
+  font-family: "Anton";
+  font-size: 25px;
+  color: #0c3f19;
+  margin: 0;
+}
+
+.botonesTalle button {
+  padding: 10px;
+  border: 2px solid #0c3f19;
+  background-color: transparent;
+  color: #0c3f19;
+  font-family: "Raleway";
+  font-weight: 900;
+  margin: 10px 4px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.botonesTalle button:hover {
+  background-color: rgb(200, 200, 200);
+}
+
+.botonesTalle button:focus {
+  background-color: rgb(200, 200, 200);
+  transform: scale(1.1);
+}
+
+.info > button {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 30px;
+  border: none;
+  background-color: #0c3f19;
+  font-family: "Raleway";
+  font-weight: 700;
+  font-size: 20px;
+  color: white;
+  width: 300px;
+  cursor: pointer;
+  transition: all .1s ease;
+}
+
+.info > button:hover {
+  background-color: #072e11;
+}
+
+.info > button:active {
+  transform: scale(.98);
+}
+
+/*  FOOTER  */
+
+footer {
+    background-color: #222;
+    color: white;
+    padding: 30px 0;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 15px;
+}
+  
+.footerContainer {
+    margin: 0 auto;
+    padding: 0 20px;
+}
+  
+.footerLogo img {
+    width: 100px;
+    margin-bottom: 15px;
+  }
+  
+.footerLinks {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+  
+.footerLinks a {
+    color: #aaa;
+    text-decoration: none;
+}
+  
+.footerLinks a:hover {
+    color: white;
+}
+  
+.footerSocial {
+    margin: 20px 0;
+}
+  
+.footerSocial a {
+    color: #aaa;
+    margin: 0 10px;
+    font-size: 20px;
+    transition: color 0.3s;
+}
+  
+.footerSocial a:hover {
+    color: white;
+}
+
+/*  BOTON WSP  */
+
+.btnWsp {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 0 10px 0 black;
+    transition: all .3s ease;
+}
+
+.btnWsp:hover {
+    transform: scale(1.1);
+}
+
+.btnWsp img {
+    width: 50px;
+    height: auto;
+    object-fit: cover;
+}
+
+/*  RESPONSIVE  */
+
+
+@media (max-width: 1024px) {
+  .contenedorProd {
+    justify-content: center;
+  }
+
+  .preProductos {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    padding: 10px 0;
+    font-size: 16px;
+  }
+
+  nav img {
+    margin: 0;
+    width: 60px;
+  }
+
+  nav ul {
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin: 10px 0;
+  }
+
+  nav li {
+    margin: 5px 0;
+  }
+
+  nav li a {
+    padding: 8px 12px;
+    font-size: 16px;
+  }
+
+  .btnLogIn {
+    margin: 10px 0;
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+
+  .contenedorInicio {
+    height: 70vh;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+
+  h2 {
+    font-size: 42px;
+  }
+
+  .filtro {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    margin-left: 10px;
+  }
+
+  .contenedorProd {
+    justify-content: center;
+    margin: 10px;
+  }
+
+  .cajaProducto {
+    margin: 10px;
+  }
+
+  .btnWsp {
+    bottom: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+  }
+
+  .btnWsp img {
+    width: 45px;
+  }
+
+  footer {
+    font-size: 13px;
+  }
+
+  .footerSocial {
+    font-size: 18px;
+  }
+}
+
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 28px;
+  }
+
+  h2 {
+    font-size: 35px;
+  }
+
+  .cajaProducto {
+    width: 150px;
+    font-size: 16px;
+  }
+
+  .cajaProducto img {
+    width: 130px;
+  }
+
+  .preProductos i {
+    font-size: 30px;
+  }
+
+  .preProductos p {
+    font-size: 16px;
+  }
+
+  .filtro {
+    font-size: 16px;
+  }
+
+  .footerLinks {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footerSocial a {
+    font-size: 18px;
+  }
+}
+
+/* Estilos base para menú hamburguesa */
+.nav-toggle {
+  display: none;
+  font-size: 26px;
+  color: #1E7335;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  nav {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 70px;
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background-color: #1D1D1D;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    padding: 20px 0;
+    z-index: 100;
+    border-top: 1px solid #333;
+  }
+
+  .nav-links ul {
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-links li {
+    margin: 10px 0;
+  }
+
+  .btnLogIn {
+    margin-top: 10px;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+}

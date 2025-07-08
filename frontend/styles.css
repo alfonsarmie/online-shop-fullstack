@@ -1,0 +1,494 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Anton";   
+    overflow-x: hidden;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/*  NAV  */
+
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 80px;
+    width: 100%;
+    background-color: #1D1D1D;
+    color: #1E7335;
+    align-items: center;
+    font-size: 18px;
+    padding: 10px;
+    position: fixed;
+    z-index: 200;
+}
+
+nav img {
+    width: 70px;
+    height: auto;
+    transition: all .3s ease;
+    margin-left: 40px;
+}
+
+nav img:hover {
+    transform: scale(1.2);
+}
+
+nav ul {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    margin: 0;
+    font-size: 20px;
+}
+
+nav li {
+    margin: 0 10px 0 10px;
+}
+
+nav li a {
+    text-decoration: none;
+    color: #1E7335;
+    padding: 10px 15px 10px 15px;
+    border-radius: 25px;
+    transition: all .3s ease;
+}
+
+nav li a:hover {
+    background-color: #0c3f19;
+    color: #36a854;
+}
+
+.btnLogIn {
+    padding: 12px;
+    font-family: 'Anton';
+    background-color: #1D1D1D;
+    color: #1E7335;
+    border-radius: 30px;
+    border: 3px solid #1E7335;
+    cursor: pointer;
+    transition: all .3s ease;
+    font-size: 15px;
+    margin-right: 40px;
+}
+
+.btnLogIn:hover {
+    background-color: #323232;
+}
+
+/*  INICIO  */
+
+.contenedorInicio {
+    background-image: url(img/fotoInicio.jpg);
+    width: 100vw;
+    height: 90vh;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    margin: 0;
+    font-family: 'Afacad';
+    font-size: 50px;
+}
+
+h2 {
+    font-size: 70px;
+    margin: 0;
+}
+
+.textosInicio {
+    color: white;
+    z-index: 100;
+    text-align: center;
+}
+
+.opaco {
+    position: absolute;
+    height: 90vh;
+    width: 100vw;
+    background: linear-gradient(transparent, #1E7335);
+    margin: 0;
+}
+
+/*  PRODUCTOS  */
+
+.preProductos {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    color: #979696;
+    font-size: 25px;
+    margin: 20px;
+}
+
+.texto2 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.preProductos p {
+    margin-left: 20px;
+}
+
+.preProductos i {
+    font-size: 40px;
+}
+
+.filtro {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 20px;
+    color: #323232;
+    margin-left: 20px;
+}
+
+.btnFlechaAbajo {
+    padding: 0;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 25px;
+    color: #323232;
+}
+
+.filtro i {
+    margin: 10px;
+}
+
+.contenedorProd {
+    display: flex;
+    flex-direction: row;
+    margin: 30px;
+    flex-wrap: wrap;
+}
+
+.cajaProducto {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #323232;
+    border-radius: 15px;
+    transition: all .3s ease;
+    font-size: 20px;
+    margin: 20px;
+    flex-wrap: wrap;
+}
+
+.cajaProducto img {
+    width: 180px;
+    padding: 10px;
+    border-radius: 15px;
+}
+
+.cajaProducto a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.cajaProducto:hover {
+    background-color: #81b18e;
+    transform: scale(1.1);
+}
+
+
+/*  FOOTER  */
+
+footer {
+    background-color: #222;
+    color: white;
+    padding: 30px 0;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 15px;
+}
+  
+.footerContainer {
+    margin: 0 auto;
+    padding: 0 20px;
+}
+  
+.footerLogo img {
+    width: 100px;
+    margin-bottom: 15px;
+  }
+  
+.footerLinks {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+  
+.footerLinks a {
+    color: #aaa;
+    text-decoration: none;
+}
+  
+.footerLinks a:hover {
+    color: white;
+}
+  
+.footerSocial {
+    margin: 20px 0;
+}
+  
+.footerSocial a {
+    color: #aaa;
+    margin: 0 10px;
+    font-size: 20px;
+    transition: color 0.3s;
+}
+  
+.footerSocial a:hover {
+    color: white;
+}
+
+/*  BOTON WSP  */
+
+.btnWsp {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 0 10px 0 black;
+    transition: all .3s ease;
+}
+
+.btnWsp:hover {
+    transform: scale(1.1);
+}
+
+.btnWsp img {
+    width: 50px;
+    height: auto;
+    object-fit: cover;
+}
+
+/*  RESPONSIVE  */
+
+
+@media (max-width: 1024px) {
+  .contenedorProd {
+    justify-content: center;
+  }
+
+  .preProductos {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    padding: 10px 0;
+    font-size: 16px;
+  }
+
+  nav img {
+    margin: 0;
+    width: 60px;
+  }
+
+  nav ul {
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin: 10px 0;
+  }
+
+  nav li {
+    margin: 5px 0;
+  }
+
+  nav li a {
+    padding: 8px 12px;
+    font-size: 16px;
+  }
+
+  .btnLogIn {
+    margin: 10px 0;
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+
+  .contenedorInicio {
+    height: 70vh;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+
+  h2 {
+    font-size: 42px;
+  }
+
+  .filtro {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    margin-left: 10px;
+  }
+
+  .contenedorProd {
+    justify-content: center;
+    margin: 10px;
+  }
+
+  .cajaProducto {
+    margin: 10px;
+  }
+
+  .btnWsp {
+    bottom: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+  }
+
+  .btnWsp img {
+    width: 45px;
+  }
+
+  footer {
+    font-size: 13px;
+  }
+
+  .footerSocial {
+    font-size: 18px;
+  }
+}
+
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 28px;
+  }
+
+  h2 {
+    font-size: 35px;
+  }
+
+  .cajaProducto {
+    width: 150px;
+    font-size: 16px;
+  }
+
+  .cajaProducto img {
+    width: 130px;
+  }
+
+  .preProductos i {
+    font-size: 30px;
+  }
+
+  .preProductos p {
+    font-size: 16px;
+  }
+
+  .filtro {
+    font-size: 16px;
+  }
+
+  .footerLinks {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footerSocial a {
+    font-size: 18px;
+  }
+}
+
+/* Estilos base para menú hamburguesa */
+.nav-toggle {
+  display: none;
+  font-size: 26px;
+  color: #1E7335;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  nav {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 70px;
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background-color: #1D1D1D;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    padding: 20px 0;
+    z-index: 100;
+    border-top: 1px solid #333;
+  }
+
+  .nav-links ul {
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-links li {
+    margin: 10px 0;
+  }
+
+  .btnLogIn {
+    margin-top: 10px;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+}
