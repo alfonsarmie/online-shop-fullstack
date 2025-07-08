@@ -1,0 +1,70 @@
+body{
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: "Anton";
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 600px;
+    margin: auto;
+    margin-top: 100px;
+    margin-bottom: 50px;
+    align-items: center;
+}
+
+.container img{
+    width: 100px;
+}
+
+.container label{
+    font-family: "Raleway";
+
+}
+
+.container input{
+    font-family: "Raleway";
+    padding: 10px;
+    height: 30px;
+    width: 400px;
+    border: none;
+    background-color: #1e733551;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.container button{
+    margin: 10px;
+    font-family: "Raleway";
+    font-size: larger;
+    font-weight: bolder;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 420px;
+    border-radius: 10px;
+    background-color: #1E7335;
+    cursor: pointer;
+    transition: all .1s ease;
+}
+
+.container button:hover{
+    background-color: #072e11;
+}
+
+.container button:active{
+    transform: scale(0.98);
+}
+
+.msjreg{
+    font-family: "Raleway";
+    color: black;
+}
+
+.formlgin{
+    display: flex;
+    flex-direction: column;
+}
