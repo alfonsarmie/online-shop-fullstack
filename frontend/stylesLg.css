@@ -16,6 +16,14 @@ body{
     align-items: center;
 }
 
+nav {
+    height: 60px;
+}
+
+.nav-links {
+    margin-right: 30px;
+}
+
 .container img{
     width: 100px;
 }

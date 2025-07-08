@@ -62,11 +62,26 @@ nav li a:hover {
     cursor: pointer;
     transition: all .3s ease;
     font-size: 15px;
-    margin-right: 40px;
+    margin-right: 20px;
 }
 
 .btnLogIn:hover {
     background-color: #323232;
+}
+
+.cart {
+  font-size: 25px;
+  margin-right: 15px;
+  padding: 10px;
+  border-radius: 100%;
+}
+
+.cart i:hover {
+  transition: all .1s ease;
+}
+
+.cart i:hover {
+  transform: scale(1.12);
 }
 
 /*  FOOTER  */
