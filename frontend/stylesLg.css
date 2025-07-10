@@ -33,21 +33,68 @@ nav {
     font-size: 30px;
 }
 
-.container label{
-    font-family: "Afacad";
-    margin-left: 10px;
+.form__group {
+  position: relative;
+  padding: 20px 0 0;
+  width: 100%;
+  max-width: 420px;
 }
 
-.container input{
-    font-family: "Afacad";
-    padding: 10px;
-    height: 30px;
-    width: 400px;
-    border: none;
-    background-color: #1e733551;
-    border-radius: 10px;
-    margin: 10px;
+.form__field {
+  font-family: inherit;
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid #9b9b9b;
+  outline: 0;
+  font-size: 17px;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
 }
+
+.form__field::placeholder {
+  color: transparent;
+}
+
+.form__field:placeholder-shown ~ .form__label {
+  font-size: 17px;
+  cursor: text;
+  top: 20px;
+}
+
+.form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 17px;
+  color: #9b9b9b;
+  pointer-events: none;
+}
+
+.form__field:focus {
+  padding-bottom: 6px;
+  font-weight: 700;
+  border-width: 3px;
+  border-image: linear-gradient(to right, #1E7335, #5bc477);
+  border-image-slice: 1;
+}
+
+.form__field:focus ~ .form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 17px;
+  color: #1E7335;
+  font-weight: 700;
+}
+
+/* reset input */
+.form__field:required, .form__field:invalid {
+  box-shadow: none;
+}
+
 
 .container button{
     margin: 10px;
@@ -62,6 +109,7 @@ nav {
     background-color: #1E7335;
     cursor: pointer;
     transition: all .1s ease;
+    margin-top: 40px;
 }
 
 .container button:hover{

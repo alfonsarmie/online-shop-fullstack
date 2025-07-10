@@ -41,12 +41,17 @@
     <div class="container">
         <img src="img/logo.png" alt="Logo del sitio">
         <h1>Introduce tus datos para iniciar sesión</h1>
-        <div class="formlgin">
-            <label>Correo Electrónico</label>
-            <input type="email" placeholder="Escribe tu Correo">
-            <label>Contraseña</label>
-            <input type="password" placeholder="Escribe tu Contraseña">
+
+        <div class="form__group field">
+            <input type="email" class="form__field" placeholder="Correo electrónico" required="">
+            <label for="email" class="form__label">Correo electrónico</label>
         </div>
+
+        <div class="form__group field">
+            <input type="password" class="form__field" placeholder="Contraseña" required="">
+            <label for="password" class="form__label">Contraseña</label>
+        </div>
+
         <button>Iniciar sesión</button>
         <p class="msjreg">¿Todavía no estás registrado? <a class="msjreg" href="#">Registrate</a></p>
     </div>

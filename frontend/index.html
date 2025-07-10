@@ -26,14 +26,14 @@
 
         <div class="nav-links" id="navLinks">
             <ul>
-            <li><a href="index.html">Inicio</a></li>
-            <li><a href="#productos">Productos</a></li>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="#productos">Productos</a></li>
             </ul>
             
         </div>
 
         <div class="btnsRight">  
-            <a href="login.html"><button class="btnLogIn">Iniciar sesión</button></a>
+            <a href="login.html" class="btnLogIn"><i class="fa-solid fa-user"></i></a>
             <a href="" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
         </div>
     </nav>
@@ -70,7 +70,19 @@
 
     <section id="productos">
 
-        <div class="filtro"><i class="fa-solid fa-filter"></i><p>Filtrar por</p><button class="btnFlechaAbajo"><i class="fa-solid fa-caret-down"></i></div></button>
+    <div class="filtro">
+        <div class="filtro-dropdown">
+            <button class="btnFlechaAbajo">
+                <i class="fa-solid fa-filter"></i> Filtrar por <i class="fa-solid fa-caret-down"></i>
+            </button>
+            <ul class="filters">
+                <li><a href="#">Precio: menor a mayor</a></li>
+                <li><a href="#">Precio: mayor a menor</a></li>
+                <li><a href="#">A - Z</a></li>
+            </ul>
+        </div>
+    </div>
+
         <div class="contenedorProd">          
             <div class="cajaProducto reveal">
                 <a href="producto.html"><img src="img/camTitular.png" class="imgProd">Camiseta titular</a>
@@ -114,10 +126,9 @@
           </ul>
     
           <div class="footerSocial">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.facebook.com/rosariorowingcluboficial?locale=es_LA"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/rosariorowingclub/"><i class="fab fa-instagram"></i></a>
+            <a href="https://x.com/rowing_rrc"><i class="fab fa-twitter"></i></a>
           </div>
     
           <p>&copy; 2025 Mi Sitio Web. Todos los derechos reservados.</p>
