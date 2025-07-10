@@ -14,6 +14,7 @@ nav {
     padding: 10px;
     position: fixed;
     z-index: 200;
+    top: 0;
 }
 
 nav img {
@@ -53,39 +54,33 @@ nav li a:hover {
 }
 
 .btnLogIn {
-    padding: 12px;
-    font-family: 'Anton';
-    background-color: #1D1D1D;
-    color: #1E7335;
-    border-radius: 30px;
-    border: 3px solid #1E7335;
-    cursor: pointer;
-    transition: all .3s ease;
-    font-size: 15px;
-    margin-right: 20px;
+  font-size: 25px;
+  transition: all .2s ease;
+  margin-right: 25px;
 }
 
-.btnLogIn:hover {
-  background-color: #323232;
+.btnLogIn i:hover {
+  margin-bottom: 10px;
 }
 
 .btnsRight {
   display: flex;
   align-items: center;
+  padding: 10px;
 }
 
 .cart {
-  font-size: 25px;
+  font-size: 30px;
   margin-right: 15px;
   border-radius: 100%;
 }
 
-.cart i {
+.cart i, .btnLogIn i {
   transition: all .2s ease;
 }
 
 .cart i:hover {
-  transform: scale(1.12);
+  margin-bottom: 10px;
 }
 
 /*  FOOTER  */
