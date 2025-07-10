@@ -32,7 +32,7 @@
             
         </div>
 
-        <div>  
+        <div class="btnsRight">  
             <a href="login.html"><button class="btnLogIn">Iniciar sesión</button></a>
             <a href="" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
         </div>
@@ -54,12 +54,12 @@
     </div>
 
     <div class="img-dinamicas-container">
-        <div>
+        <div class="reveal">
             <h3>Explotá tu pasión</h3>
             <h3>por Rowing</h3>
         </div>
 
-        <section class="img-dinamicas">
+        <section class="img-dinamicas reveal">
             <img src="img/camTitular.png" alt="">
             <img src="img/pantalonTitular.png" alt="">
             <img src="img/mediaTitular.png" alt="">
@@ -72,45 +72,31 @@
 
         <div class="filtro"><i class="fa-solid fa-filter"></i><p>Filtrar por</p><button class="btnFlechaAbajo"><i class="fa-solid fa-caret-down"></i></div></button>
         <div class="contenedorProd">          
-            <div class="cajaProducto">
+            <div class="cajaProducto reveal">
                 <a href="producto.html"><img src="img/camTitular.png" class="imgProd">Camiseta titular</a>
                 <p class="precio">$22.000 ARS</p>
             </div>
 
-            <div class="cajaProducto">
+            <div class="cajaProducto reveal">
                 <a href="producto.html"><img src="img/pantalonTitular.png" class="imgProd">Pantalón titular</a>
                 <p class="precio">$15.000 ARS</p>
             </div>
 
-            <div class="cajaProducto">
+            <div class="cajaProducto reveal">
                 <a href="producto.html"><img src="img/mediaTitular.png" class="imgProd">Medias titulares</a>
                 <p class="precio">$15.000 ARS</p>
             </div>
 
-            <div class="cajaProducto">
+            <div class="cajaProducto reveal">
                 <a href="producto.html"><img src="img/gorra.png" class="imgProd">Gorra</a>
                 <p class="precio">$12.000 ARS</p>
             </div>
 
-            <div class="cajaProducto">
+            <div class="cajaProducto reveal">
                 <a href="producto.html"><img src="img/camSuplente.png" class="imgProd">Camiseta suplente</a>
                 <p class="precio">$22.000 ARS</p>
             </div>
 
-            <div class="cajaProducto">
-                <a href="producto.html"><img src="img/camTitular.png" class="imgProd">Camiseta titular</a>
-                <p class="precio">$22.000 ARS</p>
-            </div>
-
-            <div class="cajaProducto">
-                <a href="producto.html"><img src="img/camTitular.png" class="imgProd">Camiseta titular</a>
-                <p class="precio">$22.000 ARS</p>
-            </div>
-
-            <div class="cajaProducto">
-                <a href="producto.html"><img src="img/camTitular.png" class="imgProd">Camiseta titular</a>
-                <p class="precio">$22.000 ARS</p>
-            </div>
         </div>
     </section>
 
@@ -137,5 +123,19 @@
           <p>&copy; 2025 Mi Sitio Web. Todos los derechos reservados.</p>
         </div>
       </footer>
+
+    <script>
+        const reveals = document.querySelectorAll('.reveal');
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+            });
+        });
+
+        reveals.forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>
