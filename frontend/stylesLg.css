@@ -2,7 +2,7 @@ body{
     margin: 0;
     display: flex;
     flex-direction: column;
-    font-family: "Anton";
+    font-family: "Afacad";
 }
 
 .container{
@@ -28,13 +28,18 @@ nav {
     width: 100px;
 }
 
-.container label{
-    font-family: "Raleway";
+.container h1{
+    padding: 10px;
+    font-size: 30px;
+}
 
+.container label{
+    font-family: "Afacad";
+    margin-left: 10px;
 }
 
 .container input{
-    font-family: "Raleway";
+    font-family: "Afacad";
     padding: 10px;
     height: 30px;
     width: 400px;
