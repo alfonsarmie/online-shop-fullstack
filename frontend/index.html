@@ -136,6 +136,31 @@
       </footer>
 
     <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const footerLogo = document.querySelector('.footerLogo img');
+
+        if (footerLogo) {
+        // Ocultamos el logo inicialmente
+        footerLogo.style.opacity = '0';
+        footerLogo.style.transform = 'scale(0.3)';
+
+        const logoObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                footerLogo.classList.add('bounce-in');
+                logoObserver.unobserve(footerLogo);
+            }
+            });
+        }, {
+            threshold: 0.3
+        });
+
+        logoObserver.observe(footerLogo);
+        }
+    });
+    </script>
+
+    <script>
         const reveals = document.querySelectorAll('.reveal');
 
         const observer = new IntersectionObserver(entries => {

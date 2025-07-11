@@ -83,60 +83,147 @@ nav li a:hover {
   margin-bottom: 10px;
 }
 
-/*  FOOTER  */
+/* FOOTER */
 
 footer {
-    background-color: #222;
-    color: white;
-    padding: 30px 0;
-    text-align: center;
-    font-family: sans-serif;
-    font-size: 15px;
+  background-color: #1c1c1e;
+  color: #e5e5e5;
+  padding: 40px 0;
+  font-family: 'Afacad';
+  font-size: 17px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .footerContainer {
-    margin: 0 auto;
-    padding: 0 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+  animation: fadeInUp 1s ease forwards;
+  opacity: 0;
 }
 
 .footerLogo img {
-    width: 100px;
-    margin-bottom: 15px;
+  width: 120px;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 2px #000);
+  opacity: 0;
+  transform: scale(0.3);
+  transition: all 0.3s ease-in-out;
+}
+
+.footerLogo img.bounce-in {
+  animation: bounceIn 1s ease forwards;
 }
 
 .footerLinks {
-    list-style: none;
-    padding: 0;
-    margin: 20px 0;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  animation: fadeInUp 1.2s ease forwards;
+  opacity: 0;
 }
 
 .footerLinks a {
-    color: #aaa;
-    text-decoration: none;
+  color: #bbb;
+  text-decoration: none;
+  font-size: 17px;
+  transition: color 0.3s, transform 0.3s;
+  position: relative;
+}
+
+.footerLinks a::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: white;
+  transition: width 0.3s;
 }
 
 .footerLinks a:hover {
-    color: white;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.footerLinks a:hover::after {
+  width: 100%;
 }
 
 .footerSocial {
-    margin: 20px 0;
+  margin: 25px 0;
+  animation: fadeInUp 1.4s ease forwards;
+  opacity: 0;
 }
 
 .footerSocial a {
-    color: #aaa;
-    margin: 0 10px;
-    font-size: 20px;
-    transition: color 0.3s;
+  color: #bbb;
+  margin: 0 15px;
+  font-size: 32px;
+  transition: color 0.3s, transform 0.4s ease;
+  display: inline-block;
 }
 
 .footerSocial a:hover {
-    color: white;
+  color: #fff;
+  transform: scale(1.3) rotate(5deg);
 }
+
+.footerCopyright {
+  font-size: 14px;
+  color: #888;
+  margin-top: 30px;
+  animation: fadeIn 2s ease forwards;
+  opacity: 0;
+}
+
+/* Animations */
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 
 /*  BOTON WSP  */
 
@@ -251,16 +338,23 @@ footer {
   .btnWsp img {
     width: 45px;
   }
-
-  footer {
-    font-size: 13px;
-  }
-
-  .footerSocial {
-    font-size: 18px;
-  }
 }
 
+@media (max-width: 600px) {
+  .footerLinks {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footerSocial a {
+    margin: 0 10px;
+    font-size: 28px;
+  }
+
+  .footerLogo img {
+    width: 100px;
+  }
+}
 
 @media (max-width: 480px) {
   h1 {
@@ -290,15 +384,6 @@ footer {
 
   .filtro {
     font-size: 16px;
-  }
-
-  .footerLinks {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .footerSocial a {
-    font-size: 18px;
   }
 }
 
