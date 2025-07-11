@@ -129,16 +129,24 @@ h2 {
 }
 
 .img-dinamicas-container div {
-  margin: 60px;
-  margin-top: 100px;
   display: flex;
   flex-direction: column;
+  width: 600px;
+}
+
+.img-dinamicas-container div img {
+  width: 140%;
+  object-fit: cover;
+  height: 430px;
+  position: absolute;
+  opacity: 0.6;
+  left: -30%;
 }
 
 .img-dinamicas-container h3 {
-  padding: 0px;
-  margin: 0;
   font-size: 70px;
+  padding-top: 50px;
+  z-index: 1;
 }
 
 .img-dinamicas {
