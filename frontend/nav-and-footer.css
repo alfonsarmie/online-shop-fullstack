@@ -236,6 +236,7 @@ footer {
     height: 50px;
     box-shadow: 0 0 10px 0 black;
     transition: all .3s ease;
+    z-index: 1000;
 }
 
 .btnWsp:hover {
