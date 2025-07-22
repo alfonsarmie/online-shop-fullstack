@@ -78,7 +78,7 @@ h2 {
     flex-shrink: 0;
     min-width: 100%;
     gap: 6rem;
-    animation: scroll 30s linear infinite;
+    animation: scroll 40s linear infinite;
 }
 
 @keyframes scroll {
@@ -246,7 +246,7 @@ h2 {
 }
 
 .cajaProducto {
-    width: 300px;
+    width: 280px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -261,7 +261,7 @@ h2 {
 }
 
 .cajaProducto img {
-    width: 280px;
+    width: 250px;
     padding: 10px;
     border-radius: 15px;
     transition: all .3s ease;
@@ -291,201 +291,48 @@ h2 {
 /*  RESPONSIVE  */
 
 
-@media (max-width: 1024px) {
-  .contenedorProd {
-    justify-content: center;
-  }
-
+@media (max-width: 480px) { 
   .preProductos {
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    text-align: center;
-  }
-}
-
-@media (max-width: 768px) {
-  nav {
-    flex-direction: column;
-    align-items: center;
-    height: auto;
-    padding: 10px 0;
-    font-size: 16px;
+    display: none;
   }
 
-  nav img {
-    margin: 0;
-    width: 60px;
+  .img-dinamicas-container {
+    display: none;
   }
 
-  nav ul {
-    flex-direction: column;
-    align-items: center;
-    padding: 0;
-    margin: 10px 0;
-  }
-
-  nav li {
-    margin: 5px 0;
-  }
-
-  nav li a {
-    padding: 8px 12px;
-    font-size: 16px;
-  }
-
-  .btnLogIn {
-    margin: 10px 0;
-    font-size: 14px;
-    padding: 10px 20px;
-  }
-
-  .contenedorInicio {
-    height: 70vh;
-  }
-
-  h1 {
-    font-size: 32px;
-  }
-
-  h2 {
-    font-size: 42px;
-  }
-
-  .filtro {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
-    margin-left: 10px;
+  .cajaProducto {
+    width: 270px;
+    height: 340px;
   }
 
   .contenedorProd {
     justify-content: center;
-    margin: 10px;
-  }
-
-  .cajaProducto {
-    margin: 10px;
-  }
-
-  .btnWsp {
-    bottom: 20px;
-    right: 20px;
-    width: 45px;
-    height: 45px;
-  }
-
-  .btnWsp img {
-    width: 45px;
-  }
-
-  footer {
-    font-size: 13px;
-  }
-
-  .footerSocial {
-    font-size: 18px;
-  }
-}
-
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 28px;
-  }
-
-  h2 {
-    font-size: 35px;
-  }
-
-  .cajaProducto {
-    width: 150px;
-    font-size: 16px;
   }
 
   .cajaProducto img {
-    width: 130px;
-  }
-
-  .preProductos i {
-    font-size: 30px;
-  }
-
-  .preProductos p {
-    font-size: 16px;
-  }
-
-  .filtro {
-    font-size: 16px;
-  }
-
-  .footerLinks {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .footerSocial a {
-    font-size: 18px;
+    width: 240px;
   }
 }
 
-/* Estilos base para menú hamburguesa */
-.nav-toggle {
-  display: none;
-  font-size: 26px;
-  color: #1E7335;
-  cursor: pointer;
-  margin-right: 20px;
-}
-
-.nav-links {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 20px;
-}
-
-@media (max-width: 768px) {
-  nav {
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0 20px;
-    height: 70px;
-  }
-
-  .nav-toggle {
-    display: block;
-  }
-
-  .nav-links {
+@media (min-width: 481px) and (max-width: 768px) { 
+    .preProductos {
     display: none;
-    flex-direction: column;
-    background-color: #1D1D1D;
-    position: absolute;
-    top: 70px;
-    left: 0;
-    width: 100%;
-    padding: 20px 0;
-    z-index: 100;
-    border-top: 1px solid #333;
   }
 
-  .nav-links ul {
-    flex-direction: column;
-    align-items: center;
-    padding: 0;
-    margin: 0;
+  .img-dinamicas-container {
+    display: none;
   }
 
-  .nav-links li {
-    margin: 10px 0;
+  .cajaProducto {
+    width: 270px;
+    height: 340px;
   }
 
-  .btnLogIn {
-    margin-top: 10px;
+  .contenedorProd {
+    justify-content: center;
   }
 
-  .nav-links.active {
-    display: flex;
+  .cajaProducto img {
+    width: 240px;
   }
 }
