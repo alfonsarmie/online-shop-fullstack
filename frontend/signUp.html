@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log In</title>
     <link rel="stylesheet" href="nav-and-footer.css">
-    <link rel="stylesheet" href="stylesLg.css">
+    <link rel="stylesheet" href="stylesSu.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="icon" href="img/logo.png" type="image/png">
@@ -39,7 +39,18 @@
 
     <form class="container">
         <img src="img/logo.png" alt="Logo del sitio">
-        <h1>Introduce tus datos para iniciar sesión</h1>
+        <h1>Introduce tus datos para registrarte</h1>
+
+
+        <div class="form__group field">
+            <input type="text" class="form__field" placeholder="Nombre completo" required="">
+            <label for="text" class="form__label">Nombre completo</label>
+        </div>
+
+        <div class="form__group field">
+            <input type="text" class="form__field" placeholder="Apellido" required="">
+            <label for="text" class="form__label">Apellido</label>
+        </div>
 
         <div class="form__group field">
             <input type="email" class="form__field" placeholder="Correo electrónico" required="">
@@ -51,8 +62,20 @@
             <label for="password" class="form__label">Contraseña</label>
         </div>
 
-        <button>Iniciar sesión</button>
-        <p class="msjreg">¿Todavía no estás registrado? <a class="msjreg" href="singUp.html">Registrate</a></p>
+        <div class="form__group field">
+            <input type="password" class="form__field" placeholder="Confirmar Contraseña" required="">
+            <label for="password" class="form__label">Confirmar Contraseña</label>
+        </div>
+
+
+        <div class="form__group field">
+            <input type="file" id="file-upload" class="form__field img_field" placeholder="Imagen de perfil">
+            <label for="file-upload" class="form__label">Imagen de perfil</label>
+            <label for="file-upload" class="upload_label">Seleccionar archivo</label>
+        </div>
+
+        <button>Crear cuenta</button>
+        <p class="msjreg">¿Ya tenés cuenta? <a class="msjreg" href="login.html">Inicia sesión</a></p>
     </form>
 
     <a class="btnWsp" href="https://wa.me/542478471801"><img src="img/whatsapp.png"></a>
