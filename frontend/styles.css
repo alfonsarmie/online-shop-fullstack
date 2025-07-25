@@ -32,13 +32,13 @@ a {
     margin-top: 80px;
 }
 
-h1 {
+.contenedorInicio h1 {
     margin: 0;
     font-family: 'Afacad';
     font-size: 50px;
 }
 
-h2 {
+.contenedorInicio h2 {
     font-size: 70px;
     margin: 0;
 }
@@ -287,6 +287,101 @@ h2 {
   margin: 10px;
   font-size: 15px;
 }
+
+/* CART */
+
+.cart {
+  position: fixed;
+  top: 0;
+  right: -400px; /* Oculto inicialmente */
+  width: 350px;
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+  transition: right 0.3s;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  z-index: 1000;
+  font-family: "Afacad";
+}
+
+.cart.open {
+  right: 0;
+  border-radius: 20px 0 0 20px;
+  font-family: "Afacad";
+  z-index: 2000;
+}
+
+.cart-header button {
+  background-color: transparent;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  color: #323232;
+}
+
+.cart-header button:hover {
+  color: #1E7335;
+
+}
+
+.cart-footer button {
+  background-color: #1E7335;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  font-family: "Afacad";
+  font-size: 25px;
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.btnCompletarPedido {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.cart-footer button:hover {
+  background-color: #0c3f19;
+}
+
+.cart-footer-item {
+  border-bottom: 1px solid #c1c1c1;
+}
+
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 1rem;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.cart-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* oscuro semitransparente */
+  backdrop-filter: blur(5px); /* desenfoque */
+  z-index: 998;
+  display: none;
+}
+
+.cart-overlay.active {
+  display: block;
+}
+
 
 /*  RESPONSIVE  */
 

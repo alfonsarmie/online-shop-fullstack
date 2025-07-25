@@ -73,17 +73,17 @@ nav li a:hover {
   padding: 10px;
 }
 
-.cart {
+.cart-icon {
   font-size: 30px;
   margin-right: 15px;
   border-radius: 100%;
 }
 
-.cart i, .btnLogIn i {
+.cart-icon i, .btnLogIn i {
   transition: all .2s ease;
 }
 
-.cart i:hover {
+.cart-icon i:hover {
   margin-bottom: 10px;
 }
 
@@ -270,12 +270,12 @@ footer {
     display: none;
   }
 
-  .cart {
+  .cart-icon {
     display: none;
   }
 
   .btnLogIn {
-    margin-right: 0;
+    margin-right: 5px;
   }
 }
 
@@ -294,7 +294,7 @@ footer {
     display: none;
   }
 
-  .cart {
+  .cart-icon {
     display: none;
   }
 
