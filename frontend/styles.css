@@ -294,7 +294,7 @@ a {
   position: fixed;
   top: 0;
   right: -400px; /* Oculto inicialmente */
-  width: 350px;
+  width: 400px;
   height: 100%;
   background-color: white;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
@@ -313,12 +313,21 @@ a {
   z-index: 2000;
 }
 
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  border-bottom: 1px solid #c1c1c1;
+}
+
 .cart-header button {
   background-color: transparent;
   border: none;
   font-size: 30px;
   cursor: pointer;
   color: #323232;
+  transition: color 0.3s ease;
 }
 
 .cart-header button:hover {
@@ -345,6 +354,10 @@ a {
   justify-content: center;
   align-items: center;
   margin-top: 20px;
+}
+
+.btnCompletarPedido a{
+  width: 100%;
 }
 
 .cart-footer button:hover {
