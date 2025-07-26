@@ -34,10 +34,24 @@
 
         <div class="btnsRight">  
             <a href="login.html" class="btnLogIn"><i class="fa-solid fa-user"></i></a>
-            <a href="" class="cart"><i class="fa-solid fa-cart-shopping"></i></a>
+            <a href="javascript:void(0);" id="openCart" class="cart-icon"><i class="fa-solid fa-cart-shopping"></i></a>
         </div>
     </nav>
 
+    <div id="cartOverlay" class="cart-overlay"></div>
+
+    <div id="cart" class="cart">
+        <div class="cart-header">
+            <h2>Tu carrito | <span id="itemCount">0</span> Artículos</h2>
+            <button id="closeCart">✖</button>
+        </div>
+        <div id="cartItems" class="cart-items"></div>
+        <div class="cart-footer">
+            <p class="cart-footer-item">Subtotal: $<span id="subtotal">0</span></p>
+            <p class="cart-footer-item">Total: $<span id="total">0</span></p>
+            <div class="btnCompletarPedido"><a href="pay.html"><button>COMPLETAR PEDIDO</button></a></div>
+        </div>
+    </div>
 
     <div class="contenedorInicio">
         <div class="opaco"></div>
@@ -181,5 +195,30 @@
 
         reveals.forEach(el => observer.observe(el));
     </script>
+
+    <script>
+        const openCartBtn = document.getElementById("openCart");
+        const closeCartBtn = document.getElementById("closeCart");
+        const cart = document.getElementById("cart");
+        const overlay = document.getElementById("cartOverlay");
+
+        openCartBtn.addEventListener("click", () => {
+            cart.classList.add("open");
+            overlay.classList.add("active");
+        });
+
+        closeCartBtn.addEventListener("click", () => {
+            cart.classList.remove("open");
+            overlay.classList.remove("active");
+        });
+
+        // Cerrar si se hace clic fuera del carrito
+        overlay.addEventListener("click", () => {
+            cart.classList.remove("open");
+            overlay.classList.remove("active");
+        });
+    </script>
+
+
 </body>
 </html>
