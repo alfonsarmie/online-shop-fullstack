@@ -42,17 +42,18 @@
         <h1>Introduce tus datos para iniciar sesión</h1>
 
         <div class="form__group field">
-            <input type="email" class="form__field" placeholder="Correo electrónico" required="">
+            <input id="email" type="email" class="form__field" placeholder="Correo electrónico" required="">
             <label for="email" class="form__label">Correo electrónico</label>
         </div>
 
         <div class="form__group field">
-            <input type="password" class="form__field" placeholder="Contraseña" required="">
+            <input id="password" type="password" class="form__field" placeholder="Contraseña" required="">
             <label for="password" class="form__label">Contraseña</label>
         </div>
 
-        <button>INICIAR SESIÓN</button>
-        <p class="msjreg">¿Todavía no estás registrado? <a class="msjreg" href="#">Registrate</a></p>
+        <button id="login-btn" disabled class="disabled">INICIAR SESIÓN</button>
+
+        <p class="msjreg">¿Todavía no estás registrado? <a class="msjreg" href="signUp.html">Registrate</a></p>
     </form>
 
     <a class="btnWsp" href="https://wa.me/542478471801"><img src="img/whatsapp.png"></a>
@@ -102,6 +103,31 @@
         }
     });
     </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('login-btn');
+
+        function validateLoginForm() {
+            const emailFilled = emailInput.value.trim() !== '';
+            const passwordFilled = passwordInput.value.trim() !== '';
+
+            if (emailFilled && passwordFilled) {
+                loginBtn.disabled = false;
+                loginBtn.className = 'allow';
+            } else {
+                loginBtn.disabled = true;
+                loginBtn.className = 'disabled';
+            }
+        }
+
+        emailInput.addEventListener('input', validateLoginForm);
+        passwordInput.addEventListener('input', validateLoginForm);
+    });
+    </script>
+
 
 </body>
 </html>

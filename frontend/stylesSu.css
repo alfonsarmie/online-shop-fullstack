@@ -38,6 +38,7 @@ nav {
   padding: 20px 0 0;
   width: 100%;
   max-width: 420px;
+  margin-top: 15px;
 }
 
 .form__field {
@@ -95,28 +96,78 @@ nav {
   box-shadow: none;
 }
 
+.strength-bar {
+  height: 10px;
+  width: 300px;
+  background-color: #ddd;
+  margin-top: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+}
 
-.container button{
+.strength-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s;
+}
+
+.weak {
+  background-color: red;
+}
+
+.medium {
+  background-color: orange;
+}
+
+.strong {
+  background-color: green;
+}
+.very-strong {
+  background-color: darkgreen;
+}
+
+#strength-text {
+  margin-top: 8px;
+  font-weight: bold;
+}
+
+.disabled {
     margin: 10px;
-    font-family: "Raleway";
-    font-size: larger;
-    font-weight: bolder;
+    font-family: "Afacad";
+    font-size: 20px;
+    font-weight: 700;
     color: white;
     border: none;
     padding: 10px;
     width: 420px;
-    border-radius: 10px;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    margin-top: 40px;
+    background-color: gray;
+    cursor: not-allowed;
+}
+
+.allow {
+    margin: 10px;
+    font-family: "Afacad";
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 420px;
+    border-radius: 30px;
     background-color: #1E7335;
     cursor: pointer;
     transition: all .1s ease;
     margin-top: 40px;
 }
 
-.container button:hover{
+.allow:hover{
     background-color: #072e11;
 }
 
-.container button:active{
+.allow:active{
     transform: scale(0.98);
 }
 
