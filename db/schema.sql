@@ -52,14 +52,14 @@ CREATE TABLE `payment_method` (
 	`idPaymentMethod` int unsigned NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
     `fees` int NOT NULL,
-    primary key (`idPaymentMethod`)
+    PRIMARY KEY(`idPaymentMethod`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category`(
 	`idCategory` int unsigned NOT NULL auto_increment,
     `name` VARCHAR(255) NOT NULL,
-    primary key(`idCategory`)
+    PRIMARY KEY(`idCategory`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `size`;
@@ -67,7 +67,7 @@ CREATE TABLE `size`(
 	`idSize` int unsigned NOT NULL auto_increment,
     `sizeDesc` VARCHAR(255) NOT NULL,
     `gender` VARCHAR(255) NOT NULL,
-    primary key(`idSize`)
+    PRIMARY KEY(`idSize`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `discount`;
@@ -75,5 +75,30 @@ CREATE TABLE `discount`(
 	`idDiscount` int unsigned NOT NULL auto_increment,
     `description` VARCHAR(255) NOT NULL,
     `value` int NOT NULL,
-    primary key(`idDiscount`)
+    PRIMARY KEY(`idDiscount`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `product`;
+CREATE TABLE `product`(
+	  `idProduct` int unsigned NOT NULL auto_increment,
+    `description` VARCHAR(255) NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `stock` int unsigned,
+    `idCategory` int unsigned not null,
+    PRIMARY KEY(`idProduct`),
+    FOREIGN KEY(`idCategory`) REFERENCES `category` (`idCategory`) ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+DROP TABLE IF EXISTS `price`;
+CREATE TABLE `price`(
+	`idProduct` int unsigned NOT NULL auto_increment,
+    `updateDate` datetime NOT NULL,
+    `value` int unsigned NOT NULL,
+    PRIMARY KEY(`idProduct`, `updateDate`),
+    CONSTRAINT `fk_price_product` FOREIGN KEY(`idProduct`) REFERENCES `product` (`product`) ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/*int(value) is now deprecated. Before was only for visualization, but nowadays it might generate errors*/
