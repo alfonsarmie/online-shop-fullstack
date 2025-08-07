@@ -94,7 +94,7 @@ CREATE TABLE `product`(
 
 DROP TABLE IF EXISTS `price`;
 CREATE TABLE `price`(
-	`idProduct` int unsigned NOT NULL auto_increment,
+	`idProduct` int unsigned NOT NULL,
     `updateDate` datetime NOT NULL,
     `value` int unsigned NOT NULL,
     PRIMARY KEY(`idProduct`, `updateDate`),
@@ -102,3 +102,26 @@ CREATE TABLE `price`(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*int(value) is now deprecated. Before was only for visualization, but nowadays it might generate errors*/
+
+
+DROP TABLE IF EXISTS `images`;
+CREATE TABLE `images`(
+	  `idProduct` int unsigned NOT NULL,
+    `url` varchar(255) NOT NULL,
+    `description` varchar(255) NOT NULL,
+    PRIMARY KEY(`idProduct`, `url`),
+    FOREIGN KEY(`idProduct`) REFERENCES `product` (`idProduct`) ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+DROP TABLE IF EXISTS `product_size`;
+CREATE TABLE `product_size`(
+	  `idProduct` int unsigned NOT NULL,
+    `idSize` int unsigned NOT NULL,
+    PRIMARY KEY(`idProduct`, `idSize`),
+    FOREIGN KEY(`idProduct`) REFERENCES `product` (`idProduct`) ON UPDATE CASCADE,
+    FOREIGN KEY(`idSize`) REFERENCES `size` (`idSize`) ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
