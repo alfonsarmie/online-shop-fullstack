@@ -114,7 +114,6 @@ CREATE TABLE `images`(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-
 DROP TABLE IF EXISTS `product_size`;
 CREATE TABLE `product_size`(
 	  `idProduct` int unsigned NOT NULL,
@@ -124,4 +123,50 @@ CREATE TABLE `product_size`(
     FOREIGN KEY(`idSize`) REFERENCES `size` (`idSize`) ON UPDATE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+
+DROP TABLE IF EXISTS `client_discount`;
+CREATE TABLE `client_discount`(
+	  `idDiscount` int unsigned NOT NULL,
+    `idClient` int unsigned NOT NULL,
+    PRIMARY KEY(`idDiscount`, `idClient`),
+    FOREIGN KEY(`idDiscount`) REFERENCES `discount` (`idDiscount`) ON UPDATE CASCADE,
+    FOREIGN KEY(`idClient`) REFERENCES `client` (`idClient`) ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `order`;
+CREATE TABLE `order`(
+	  `idOrder` int unsigned NOT NULL auto_increment,
+    `orderDate` datetime NOT NULL,
+    `expectedPickupDate` datetime NULL,
+    `actualPickupDate` datetime NULL,
+    `idClient` int unsigned NOT NULL,
+    `idPaymentMethod` int unsigned NOT NULL,
+
+
+    PRIMARY KEY(`idOrder`),
+    FOREIGN KEY(`idClient`) REFERENCES `client` (`idClient`) ON UPDATE CASCADE,
+    FOREIGN KEY(`idPaymentMethod`) REFERENCES `payment_method` (`idPaymentMethod`) ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `status`;
+CREATE TABLE `status`(
+	  `idOrder` int unsigned NOT NULL,
+    `statusDate` datetime NOT NULL,
+    `description` varchar(255) NOT NULL,
+    PRIMARY KEY(`idOrder`, `statusDate`),
+    FOREIGN KEY(`idOrder`) REFERENCES `order` (`idOrder`) ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `order_line`;
+CREATE TABLE `order_line`(
+	  `idOrder` int unsigned NOT NULL,
+    `idProduct` int unsigned NOT NULL,
+    `quantity` int unsigned NOT NULL,
+    PRIMARY KEY(`idOrder`, `idProduct`),
+    FOREIGN KEY(`idOrder`) REFERENCES `order` (`idOrder`) ON UPDATE CASCADE,
+    FOREIGN KEY(`idProduct`) REFERENCES `product` (`idProduct`) ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
