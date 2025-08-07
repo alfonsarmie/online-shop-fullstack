@@ -1,0 +1,46 @@
+.preProductos {
+    font-family: 'Anton', sans-serif;
+    display: flex;
+    gap: 2rem;
+    color: #979696;
+    font-size: 25px;
+    padding-block: 10px;
+    border-block: 1px;
+    overflow: hidden;
+    user-select: none;
+    padding: 30px;
+}
+
+.preProductos ul{
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    min-width: 100%;
+    gap: 6rem;
+    animation: scroll 40s linear infinite;
+}
+
+@keyframes scroll {
+    to {
+        transform: translateX(calc(-100% - 2rem));
+    }
+}
+
+.texto2 {
+    gap: 2rem;
+    transition: all .3s ease;
+}
+
+.texto2 li {
+  transition: all .3s ease;
+}
+
+.texto2 li span {
+  margin-right: 10px;
+}
+
+.texto2 li:hover {
+    color: #1E7335;
+}

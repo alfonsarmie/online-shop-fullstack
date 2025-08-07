@@ -1,0 +1,37 @@
+.contenedorInicio {
+    background-image: url(../assets/img/fotoInicio.jpg);
+    width: 100vw;
+    height: 90vh;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 80px;
+}
+
+.contenedorInicio h1 {
+    margin: 0;
+    font-family: 'Afacad';
+    font-size: 50px;
+}
+
+.contenedorInicio h2 {
+    font-size: 70px;
+    margin: 0;
+    font-family: 'Anton';
+}
+
+.textosInicio {
+    color: white;
+    z-index: 100;
+    text-align: center;
+}
+
+.opaco {
+    position: absolute;
+    height: 90vh;
+    width: 100vw;
+    background: linear-gradient(transparent, #1E7335);
+    margin: 0;
+}

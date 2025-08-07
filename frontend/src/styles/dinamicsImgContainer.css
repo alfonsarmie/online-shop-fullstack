@@ -1,0 +1,63 @@
+.img-dinamicas-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  background-color: #1D1D1D;
+  color: white;
+  font-family: "Afacad";
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: all 1s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.img-dinamicas-container div {
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  align-items: center;
+}
+
+.img-dinamicas-container div img {
+  width: 140%;
+  object-fit: cover;
+  height: 430px;
+  position: absolute;
+  opacity: 0.4;
+  left: -30%;
+}
+
+.img-dinamicas-container h3 {
+  font-size: 70px;
+  padding-top: 90px;
+  z-index: 1;
+}
+
+.img-dinamicas {
+  display: flex;
+  width: 600px;
+  height: 430px;
+  padding: 30px;
+}
+
+.img-dinamicas img {
+  width: 0;
+  flex-grow: 1;
+  object-fit: cover;
+  opacity: .8;
+  transition: .5s ease;
+}
+
+.img-dinamicas img:hover {
+  cursor: crosshair;
+  width: 300px;
+  opacity: 1;
+  filter: contrast(120%);
+}

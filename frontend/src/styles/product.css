@@ -1,0 +1,48 @@
+.cajaProducto {
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #323232;
+    border-radius: 15px;
+    transition: all .3s ease;
+    font-size: 20px;
+    margin: 20px;
+    flex-wrap: wrap;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+}
+
+.cajaProducto img {
+    width: 250px;
+    padding: 10px;
+    border-radius: 15px;
+    transition: all .3s ease;
+    margin: 10px;
+}
+
+.cajaProducto p {
+    font-family: 'Afacad';
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+}
+
+.cajaProducto a {
+    text-decoration: none;
+    color: inherit; /* para que no se ponga azul */
+}
+
+
+.cajaProducto:hover {
+  text-decoration: underline;
+}
+
+.cajaProducto img:hover {
+    transform: scale(1.1);
+}
+
+.precio {
+  margin: 10px;
+  font-size: 15px;
+}

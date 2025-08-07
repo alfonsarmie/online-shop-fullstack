@@ -1,0 +1,71 @@
+.filtro {
+  position: relative;
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  color: #323232;
+  margin-left: 20px;
+}
+
+.filtro-dropdown {
+  position: relative;
+}
+
+.btnFlechaAbajo {
+  padding: 0;
+  margin: 10px;
+  display: flex;
+  font-family: "Afacad";
+  align-items: center;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 25px;
+  color: #323232;
+  transition: all 0.1s ease;
+  border-radius: 40px;
+}
+
+.btnFlechaAbajo:hover {
+  color: #1E7335;
+}
+
+.btnFlechaAbajo {
+  margin: 10px;
+}
+
+.filters {
+  display: none;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: max-content;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: "Afacad";
+}
+
+.filtro-dropdown:hover .filters {
+  display: block;
+}
+
+.filters li {
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.filters li:hover {
+  background-color: #f0f0f0;
+}
+
+.contenedorProd {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+
+}
