@@ -134,8 +134,10 @@ p {
     transform: scale(0.98);
 }
 
-.msjreg{
-    color: black;
+.link_signUp {
+  text-decoration: none;
+  color: #1E7335;
+  font-weight: 700;
 }
 
 .formlgin{

@@ -1,10 +1,3 @@
-body{
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    font-family: "Afacad";
-}
-
 .container{
     display: flex;
     flex-direction: column;
@@ -14,14 +7,6 @@ body{
     margin-top: 100px;
     margin-bottom: 50px;
     align-items: center;
-}
-
-nav {
-    height: 60px;
-}
-
-.nav-links {
-    margin-right: 30px;
 }
 
 .container img{
@@ -172,9 +157,14 @@ nav {
 }
 
 .msjreg{
-
     font-family: "Afacad";
     color: black;
+}
+
+.login_link {
+  text-decoration: none;
+  color: #1E7335;
+  font-weight: 700;
 }
 
 .formlgin{
@@ -198,6 +188,11 @@ nav {
     display: none;
 }
 
+.img_label {
+  color: rgb(61, 61, 61);
+  font-weight: bold;
+}
+
 .upload_label {
     display: inline-block;
     padding: 6px 16px;
@@ -211,6 +206,8 @@ nav {
     font-weight: 600;
     transition: all 0.3s ease;
     margin-top: 10px;
+    font-family: 'Afacad';
+    font-size: 15px;
 }
 
 .upload_label:hover {

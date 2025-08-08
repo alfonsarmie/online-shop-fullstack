@@ -56,7 +56,7 @@ export default function LoginForm() {
 
       <p className="msjreg">
         ¿Todavía no estás registrado?{" "}
-        <a className="msjreg" href="/SignUp">
+        <a className=" link_signUp" href="/SignUp">
           Registrate
         </a>
       </p>

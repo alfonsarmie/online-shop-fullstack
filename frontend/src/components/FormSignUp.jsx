@@ -132,14 +132,14 @@ const handleChange = (e) => {
 
         <div className="form__group field">
           <input type="file" id="file-upload" className="form__field img_field" onChange={handleChange} />
-          <label htmlFor="file-upload" className="form__label">Imagen de perfil</label>
+          <label htmlFor="file-upload" className="form__label img_label">Imagen de perfil</label>
           <label htmlFor="file-upload" className="upload_label">Seleccionar archivo</label>
           {formData.file && <span style={{ fontSize: '0.9em', color: '#666' }}>Archivo seleccionado: {formData.file.name}</span>}
         </div>
 
         <button id="submit-btn" disabled={!isFormValid} className={isFormValid ? 'allow' : 'disabled'}>CREAR CUENTA</button>
 
-        <p className="msjreg">¿Ya tenés cuenta? <a className="msjreg" href="/login">Inicia sesión</a></p>
+        <p className="msjreg">¿Ya tenés cuenta? <a className="msjreg login_link" href="/login">Inicia sesión</a></p>
       </form>
 
     </div>
