@@ -8,6 +8,7 @@ import Footer from './components/Footer.jsx';
 import Cart from './components/Cart.jsx';
 import Products from './components/Products.jsx';
 import { CartProvider } from './components/CartContext';
+import SignUp from './pages/SignUp.jsx';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<Index />} />
           <Route path="/products" element={<Products />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/SignUp" element={<SignUp />} />
         </Routes>
         <Footer />
         <Cart />
