@@ -2,17 +2,17 @@ import { Link } from 'react-router-dom';
 import '../index.css';
 import '../styles/styles.css';
 import '../styles/product.css';
-import camTitular from '../assets/img/camTitular.png';
 
-function Product() {
+function Product({nombre, precio, img}) {
   return (
     <>
         <div className="cajaProducto reveal">
-          <Link to="producto.html">
-            <img src={camTitular} className="imgProd" alt="Camiseta titular"/>
-            <p>Camiseta titular</p>
-            <p className="precio">$22.000 ARS</p>
+          <Link to="">
+            <img src={img} className="imgProd" alt={nombre}/>
+            <p>{nombre}</p>
+            <p className="precio">${precio} ARS</p>
           </Link>
+          <button className='btnAddToCart'>Añadir al carrito</button>
         </div>
     </>
   );

@@ -33,9 +33,9 @@
     color: inherit; /* para que no se ponga azul */
 }
 
-
 .cajaProducto:hover {
-  text-decoration: underline;
+    transform: scale(1.05);
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 10px 36px 0px, rgba(0, 0, 0, 0.1) 0px 0px 0px 1px;
 }
 
 .cajaProducto img:hover {
@@ -45,4 +45,23 @@
 .precio {
   margin: 10px;
   font-size: 15px;
+}
+
+.btnAddToCart {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: 'Afacad';
+  margin-bottom: 10px;
+  font-size: 16px;
+  width: 90%;
+}
+
+.btnAddToCart:hover {
+  background-color: #45a049;
+  text-decoration: none;
 }
