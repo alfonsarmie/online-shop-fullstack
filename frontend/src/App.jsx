@@ -4,6 +4,7 @@ import Index from './pages/Index.jsx';
 import Navbar from './components/Navbar.jsx';
 import Login from './pages/Login.jsx';
 import Footer from './components/Footer.jsx';
+import SignUp from './pages/SignUp.jsx';
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/SignUp" element={<SignUp />} />
       </Routes>
       <Footer />
     </div>
