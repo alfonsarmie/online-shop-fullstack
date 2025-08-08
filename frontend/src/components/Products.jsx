@@ -5,6 +5,11 @@ import '../styles/products.css';
 import Product from './Product.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faFilter } from '@fortawesome/free-solid-svg-icons';
+import camTitular from '../assets/img/camTitular.png';
+import camAlternativa from '../assets/img/camSuplente.png';
+import panEntrenamiento from '../assets/img/pantalonTitular.png';
+import gorra from '../assets/img/gorra.png';
+import medias from '../assets/img/mediaTitular.png';
 
 function Products() {
   return (
@@ -24,11 +29,11 @@ function Products() {
         </div>
       </div>
     <div className="contenedorProd">
-      <Product />
-      <Product />
-      <Product />
-      <Product />
-      <Product />
+      <Product nombre="Camiseta titular" precio={22000} img={camTitular} />
+      <Product nombre="Camiseta alternativa" precio={24000} img={camAlternativa} />
+      <Product nombre="Pantalón de entrenamiento" precio={30000} img={panEntrenamiento} />
+      <Product nombre="Gorra" precio={15000} img={gorra} />
+      <Product nombre="Medias" precio={35000} img={medias} />
 
     </div>
     </>
