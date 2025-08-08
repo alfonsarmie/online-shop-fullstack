@@ -1,0 +1,144 @@
+body{
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: "Afacad";
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 600px;
+    margin: auto;
+    margin-top: 130px;
+    margin-bottom: 50px;
+    align-items: center;
+}
+
+.nav-links {
+    margin-right: 30px;
+}
+
+.container img{
+    width: 100px;
+}
+
+.container h1{
+    padding: 10px;
+    font-size: 30px;
+}
+
+.form__group {
+  position: relative;
+  padding: 20px 0 0;
+  width: 100%;
+  max-width: 420px;
+}
+
+.form__field {
+  font-family: inherit;
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid #9b9b9b;
+  outline: 0;
+  font-size: 17px;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+
+.form__field::placeholder {
+  color: transparent;
+}
+
+.form__field:placeholder-shown ~ .form__label {
+  font-size: 17px;
+  cursor: text;
+  top: 20px;
+}
+
+.form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 17px;
+  color: #9b9b9b;
+  pointer-events: none;
+}
+
+.form__field:focus {
+  padding-bottom: 6px;
+  font-weight: 700;
+  border-width: 3px;
+  border-image: linear-gradient(to right, #1E7335, #5bc477);
+  border-image-slice: 1;
+}
+
+.form__field:focus ~ .form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 17px;
+  color: #1E7335;
+  font-weight: 700;
+}
+
+p {
+    font-family: "Afacad";
+}
+
+/* reset input */
+.form__field:required, .form__field:invalid {
+  box-shadow: none;
+}
+
+.disabled {
+    margin: 10px;
+    font-family: "Afacad";
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 420px;
+    border-radius: 30px;
+    background-color: gray;
+    cursor: not-allowed;
+    margin-top: 40px;
+}
+
+.allow {
+    margin: 10px;
+    font-family: "Afacad";
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 420px;
+    border-radius: 30px;
+    background-color: #1E7335;
+    cursor: pointer;
+    transition: all .1s ease;
+    margin-top: 40px;
+}
+
+.allow:hover{
+    background-color: #072e11;
+}
+
+.allow:active{
+    transform: scale(0.98);
+}
+
+.msjreg{
+    color: black;
+}
+
+.formlgin{
+    display: flex;
+    flex-direction: column;
+}
