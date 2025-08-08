@@ -3,20 +3,25 @@ import '../index.css';
 import '../styles/styles.css';
 import '../styles/product.css';
 
-function Product({nombre, precio, img}) {
-  return (
-    <>
-        <div className="cajaProducto reveal">
-          <Link to="">
-            <img src={img} className="imgProd" alt={nombre}/>
-            <p>{nombre}</p>
-            <p className="precio">${precio} ARS</p>
-          </Link>
-          <button className='btnAddToCart'>Añadir al carrito</button>
-        </div>
-    </>
-  );
+function Product({ name, price, img, onAddToCart }) {
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onAddToCart();
+  };
 
+  return (
+    <div className="cajaProducto reveal">
+      <div>
+        <img src={img} className="imgProd" alt={name}/>
+        <p className='nombre'>{name}</p>
+        <p className="precio">${price} ARS</p>
+      </div>
+      <button className='btnAddToCart' onClick={handleAddToCart}>
+        Añadir al carrito
+      </button>
+    </div>
+  );
 }
 
 export default Product;

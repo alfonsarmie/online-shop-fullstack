@@ -4,35 +4,40 @@ import '../index.css';
 import logo from '../assets/img/logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faCartShopping, faBars } from '@fortawesome/free-solid-svg-icons';
+import { useCart } from './CartContext';
 
 function Navbar() {
+
+  const { openCart, cartCount } = useCart();
+
   return (
     <nav>       
-        <div className="nav-toggle" id="navToggle">
-            <FontAwesomeIcon icon={faBars} />
-        </div>
+      <div className="nav-toggle" id="navToggle">
+        <FontAwesomeIcon icon={faBars} />
+      </div>
 
-        <div className="nav-left">
-            <Link to="/">
-                <img src={logo} alt="logo" />
-            </Link>
-        </div>
+      <div className="nav-left">
+        <Link to="/">
+          <img src={logo} alt="logo" />
+        </Link>
+      </div>
 
-        <div className="nav-links" id="navLinks">
-            <ul>
-                <li><Link to="/">Inicio</Link></li>
-                <li><Link to="#productos">Productos</Link></li>
-            </ul>
-        </div>
+      <div className="nav-links" id="navLinks">
+        <ul>
+          <li><Link to="/">Inicio</Link></li>
+          <li><Link to="/products">Productos</Link></li>
+        </ul>
+      </div>
 
-        <div className="btnsRight">  
-            <Link to="/login" className="btnLogIn">
-              <FontAwesomeIcon icon={faUser} />
-            </Link>
-            <Link to="#" id="openCart" className="cart-icon">
-              <FontAwesomeIcon icon={faCartShopping} />
-            </Link>
-        </div>
+      <div className="btnsRight">  
+        <Link to="/login" className="btnLogIn">
+          <FontAwesomeIcon icon={faUser} />
+        </Link>
+      <button onClick={openCart} className="cart-icon cart-btn">
+        <FontAwesomeIcon icon={faCartShopping} />
+        {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+      </button>
+      </div>
     </nav>
   );
 }
