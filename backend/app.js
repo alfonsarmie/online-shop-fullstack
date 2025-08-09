@@ -3,16 +3,31 @@
 //NOTE: Dont forget to install the dependencies with `npm install`!!!
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const cors = require('cors');
 require('dotenv').config();
+
+
+const PORT = process.env.PORT || 3000;
+
+
+const userRoutes = require('./routes/userRoutes');
+
+
+
 
 // Middleware to parse JSON
 app.use(express.json());
 
-// Test route
-app.get('/', (req, res) => {
-  res.send('¡Bienvenido a la tienda online!');
-});
+// Middleware to enable cors
+app.use(cors());
+
+
+// Routes
+app.use("/api/users", userRoutes);
+
+
+
+
 
 // Initialize the server
 app.listen(PORT, () => {
