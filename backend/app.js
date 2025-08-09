@@ -12,11 +12,10 @@ const userRoutes = require('./routes/userRoutes');
 const { connectDB } = require('./db/connection');
 
 
-// Middleware to parse JSON
-app.use(express.json());
+// Middlewares
+app.use(express.json()); //To parse JSON data 
+app.use(cors()); //To enable CORS
 
-// Middleware to enable cors
-app.use(cors());
 
 
 // Connect to the database
