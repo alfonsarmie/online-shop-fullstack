@@ -1,6 +1,6 @@
 const { request, response } = require("express");
 const bcrypt = require('bcryptjs');
-const client = require("../models/client");
+const client = require("../models/user");
 
 
 //TODO: VALIDATE THE FIELDS
@@ -10,7 +10,7 @@ const createUser = async(req = request, res = response) => {
   try {
     
     const { 
-      userName, 
+      dni, 
       email, 
       name, 
       surname, 
@@ -27,7 +27,7 @@ const createUser = async(req = request, res = response) => {
   
       //Create a new user
       const newUser = {
-        userName,
+        dni, 
         email,
         name,
         surname,
