@@ -6,32 +6,29 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faBagShopping, faCreditCard } from '@fortawesome/free-solid-svg-icons';
 
 function PreProducts() {
+  const features = [
+    { icon: faLock, text: 'Sitio seguro' },
+    { icon: faBagShopping, text: 'Retiros en el club' },
+    { icon: faCreditCard, text: 'Hasta 3 cuotas sin interés' }
+  ];
+
+  // Duplicamos el array para crear un efecto de desplazamiento continuo
+  const duplicatedFeatures = [...features, ...features, ...features];
+
   return (
     <div className="preProductos">
-        <ul className="texto2">
-            <li> <FontAwesomeIcon icon={faLock} /><span> Sitio seguro</span></li>
-            <li> <FontAwesomeIcon icon={faBagShopping} /><span> Retiros en el club</span></li>
-            <li> <FontAwesomeIcon icon={faCreditCard} /><span> Hasta 3 cuotas sin interés</span></li>
-            <li> <FontAwesomeIcon icon={faLock} /><span> Sitio seguro</span></li>
-            <li> <FontAwesomeIcon icon={faBagShopping} /><span> Retiros en el club</span></li>
-            <li> <FontAwesomeIcon icon={faCreditCard} /><span> Hasta 3 cuotas sin interés</span></li>
+      <div className="scrolling-container">
+        <ul className="features-list">
+          {duplicatedFeatures.map((item, index) => (
+            <li key={index}>
+              <FontAwesomeIcon icon={item.icon} />
+              <span>{item.text}</span>
+            </li>
+          ))}
         </ul>
-        <ul className="texto2">
-            <li> <FontAwesomeIcon icon={faLock} /><span> Sitio seguro</span></li>
-            <li> <FontAwesomeIcon icon={faBagShopping} /><span> Retiros en el club</span></li>
-            <li> <FontAwesomeIcon icon={faCreditCard} /><span> Hasta 3 cuotas sin interés</span></li>
-            <li> <FontAwesomeIcon icon={faLock} /><span> Sitio seguro</span></li>
-            <li> <FontAwesomeIcon icon={faBagShopping} /><span> Retiros en el club</span></li>
-            <li> <FontAwesomeIcon icon={faCreditCard} /><span> Hasta 3 cuotas sin interés</span></li>
-        </ul>
+      </div>
     </div>
   );
 }
 
 export default PreProducts;
-
-
-
-
-
-

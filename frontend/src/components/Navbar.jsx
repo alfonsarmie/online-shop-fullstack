@@ -25,10 +25,9 @@ function Navbar() {
       <div className="nav-links" id="navLinks">
         <ul>
           <li><Link to="/">Inicio</Link></li>
-          <li><Link to="/products">Remeras</Link></li>
-          <li><Link to="/products">Pantalones</Link></li>
-          <li><Link to="/products">Camperas</Link></li>
-          <li><Link to="/products">Accesorios</Link></li>
+          <li><Link to="/">Productos</Link></li>
+          <li><Link to="/">Acerca de nosotros</Link></li>
+          <li><Link to="/">Formas de entrega</Link></li>
         </ul>
       </div>
 

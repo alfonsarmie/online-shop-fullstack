@@ -1,46 +1,50 @@
 .preProductos {
     font-family: 'Anton', sans-serif;
-    display: flex;
-    gap: 2rem;
     color: #979696;
     font-size: 25px;
-    padding-block: 10px;
+    padding: 30px;
     border-block: 1px;
     overflow: hidden;
     user-select: none;
-    padding: 30px;
+    width: 100%;
 }
 
-.preProductos ul{
+.scrolling-container {
+    width: 100%;
+    overflow: hidden;
+}
+
+.features-list {
     list-style: none;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-shrink: 0;
-    min-width: 100%;
-    gap: 6rem;
-    animation: scroll 40s linear infinite;
+    margin: 0;
+    padding: 0;
+    animation: scroll 30s linear infinite;
+    width: max-content;
+}
+
+.features-list li {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    margin: 0 3rem;
+    transition: all 0.3s ease;
+}
+
+.features-list li span {
+    margin-left: 10px;
+}
+
+.features-list li:hover {
+    color: #1E7335;
 }
 
 @keyframes scroll {
-    to {
-        transform: translateX(calc(-100% - 2rem));
+    0% {
+        transform: translateX(0);
     }
-}
-
-.texto2 {
-    gap: 2rem;
-    transition: all .3s ease;
-}
-
-.texto2 li {
-  transition: all .3s ease;
-}
-
-.texto2 li span {
-  margin-right: 10px;
-}
-
-.texto2 li:hover {
-    color: #1E7335;
+    100% {
+        transform: translateX(calc(-50%));
+    }
 }

@@ -39,13 +39,13 @@ nav ul {
 }
 
 nav li {
-    margin: 0 15px 0 15px;
+    margin: 0 25px 0 25px;
 }
 
 .nav-links ul li a {
   text-decoration: none;
   color: #1E7335;
-  padding: 7px 15px;
+  padding: 7px 0;
   position: relative;
 }
 
@@ -55,7 +55,7 @@ nav li {
   left: 0;
   bottom: 0;
   width: 0;
-  height: 2px;
+  height: 2.5px;
   background-color: #0f6823;
   transition: width 0.3s ease;
 }
