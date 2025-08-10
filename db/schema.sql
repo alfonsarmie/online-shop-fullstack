@@ -1,50 +1,22 @@
 CREATE DATABASE online_shop_fullstack_rowing;
 USE online_shop_fullstack_rowing;
 
-DROP TABLE IF EXISTS `client`;
-CREATE TABLE `client` (
-  `idClient` int unsigned NOT NULL auto_increment,
-  `userName` varchar(255) NOT NULL,
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user` (
+  `idUser` int unsigned NOT NULL auto_increment,
+  `dni` int unsigned NULL,
   `email` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `surname` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `imgProfile` varchar(255),
+  `imgProfile` varchar(255) NULL,
   `role` varchar(50),
   `isMember` BOOLEAN NOT NULL,
   `registrationDate` datetime NOT NULL,
-  PRIMARY KEY(`idClient`)
+  PRIMARY KEY(`idUser`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*El collate ai_ci nos indica que es indiferente las mayusculas de minusculas*/
 
-DROP TABLE IF EXISTS `recepcionist`;
-CREATE TABLE `recepcionist` (
-  `idRecepcionist` int unsigned NOT NULL auto_increment,
-  `userName` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `surname` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `imgProfile` varchar(255),
-  `role` varchar(50),
-  `registrationDate` datetime NOT NULL,
-  PRIMARY KEY(`idRecepcionist`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
-DROP TABLE IF EXISTS `admin`;
-CREATE TABLE `admin` (
-  `idAdmin` int unsigned NOT NULL auto_increment,
-  `userName` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `surname` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `imgProfile` varchar(255),
-  `role` varchar(50),
-  `registrationDate` datetime NOT NULL,
-  PRIMARY KEY(`idAdmin`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 DROP TABLE IF EXISTS `payment_method`;
@@ -69,6 +41,7 @@ CREATE TABLE `size`(
     `gender` VARCHAR(255) NOT NULL,
     PRIMARY KEY(`idSize`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 DROP TABLE IF EXISTS `discount`;
 CREATE TABLE `discount`(
@@ -98,7 +71,7 @@ CREATE TABLE `price`(
     `updateDate` datetime NOT NULL,
     `value` int unsigned NOT NULL,
     PRIMARY KEY(`idProduct`, `updateDate`),
-    CONSTRAINT `fk_price_product` FOREIGN KEY(`idProduct`) REFERENCES `product` (`product`) ON UPDATE CASCADE
+    FOREIGN KEY(`idProduct`) REFERENCES `product` (`idProduct`) ON UPDATE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*int(value) is now deprecated. Before was only for visualization, but nowadays it might generate errors*/
@@ -126,26 +99,26 @@ CREATE TABLE `product_size`(
 
 DROP TABLE IF EXISTS `client_discount`;
 CREATE TABLE `client_discount`(
-	  `idDiscount` int unsigned NOT NULL,
-    `idClient` int unsigned NOT NULL,
-    PRIMARY KEY(`idDiscount`, `idClient`),
+	`idDiscount` int unsigned NOT NULL,
+    `idUser` int unsigned NOT NULL,
+    PRIMARY KEY(`idDiscount`, `idUser`),
     FOREIGN KEY(`idDiscount`) REFERENCES `discount` (`idDiscount`) ON UPDATE CASCADE,
-    FOREIGN KEY(`idClient`) REFERENCES `client` (`idClient`) ON UPDATE CASCADE
+    FOREIGN KEY(`idUser`) REFERENCES `user` (`idUser`) ON UPDATE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 DROP TABLE IF EXISTS `order`;
 CREATE TABLE `order`(
-	  `idOrder` int unsigned NOT NULL auto_increment,
+	`idOrder` int unsigned NOT NULL auto_increment,
     `orderDate` datetime NOT NULL,
     `expectedPickupDate` datetime NULL,
     `actualPickupDate` datetime NULL,
-    `idClient` int unsigned NOT NULL,
+    `idUser` int unsigned NOT NULL,
     `idPaymentMethod` int unsigned NOT NULL,
 
 
     PRIMARY KEY(`idOrder`),
-    FOREIGN KEY(`idClient`) REFERENCES `client` (`idClient`) ON UPDATE CASCADE,
+    FOREIGN KEY(`idUser`) REFERENCES `user` (`idUser`) ON UPDATE CASCADE,
     FOREIGN KEY(`idPaymentMethod`) REFERENCES `payment_method` (`idPaymentMethod`) ON UPDATE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

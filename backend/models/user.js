@@ -1,21 +1,21 @@
-//Create client model sequelize
+//Create user model sequelize
 const { DataTypes } = require('sequelize');
 
 const { db } = require('../db/connection');
 
 
 
-// Define the client model
-const client = db.define('client', {
-    idClient: {
+// Define the user model
+const user = db.define('user', {
+    idUser: {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false
     },
-    userName: {
-        type: DataTypes.STRING(255),
-        allowNull: false
+    dni: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: true
     },
     email: {
         type: DataTypes.STRING(255),
@@ -50,10 +50,10 @@ const client = db.define('client', {
         allowNull: false
     }
 }, {
-    tableName: 'client',
+    tableName: 'user',
     timestamps: false // Disable createdAt and updatedAt fields
 });
 
-module.exports = client;
+module.exports = user;
 
 
