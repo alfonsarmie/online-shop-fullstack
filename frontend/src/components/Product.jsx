@@ -1,9 +1,7 @@
 import { Link } from 'react-router-dom';
-import '../index.css';
-import '../styles/styles.css';
 import '../styles/product.css';
 
-function Product({ name, price, img, onAddToCart }) {
+function Product({ id, name, price, img, onAddToCart }) {
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -12,11 +10,11 @@ function Product({ name, price, img, onAddToCart }) {
 
   return (
     <div className="cajaProducto reveal">
-      <div>
+      <Link to={`/product/${id}`} className="product-link">
         <img src={img} className="imgProd" alt={name}/>
         <p className='nombre'>{name}</p>
         <p className="precio">${price} ARS</p>
-      </div>
+      </Link>
       <button className='btnAddToCart' onClick={handleAddToCart}>
         Añadir al carrito
       </button>

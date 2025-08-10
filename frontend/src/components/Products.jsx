@@ -4,8 +4,6 @@ import '../index.css';
 import '../styles/styles.css';
 import '../styles/products.css';
 import Product from './Product.jsx';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown, faFilter } from '@fortawesome/free-solid-svg-icons';
 import camTitular from '../assets/img/camTitular.png';
 import camAlternativa from '../assets/img/camSuplente.png';
 import panEntrenamiento from '../assets/img/pantalonTitular.png';

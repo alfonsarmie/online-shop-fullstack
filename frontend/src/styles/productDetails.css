@@ -1,0 +1,308 @@
+/*  CONTEINER PRINCIPAL  */
+
+.product-details-container {
+    display: flex;
+    justify-content: space-around;
+    font-family: "Raleway";
+    font-weight: bolder;
+}
+
+.product-gallery img {
+    width: 500px;
+    margin-top: 100px;
+    margin-left: 50px;
+    border-radius: 20px;
+}
+
+.product-info {
+    margin-top: 70px;
+    padding: 50px;
+    font-weight: lighter;
+}
+
+.product-info h1 {
+  color: #0c3f19;
+  font-family: "Anton";
+  font-weight: lighter;
+  font-size: 35px;
+}
+
+.description {
+  color: #5f5f5f;
+}
+
+.stock {
+  color: #5f5f5f;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.price {
+  font-family: "Anton";
+  font-size: 20px;
+  color: #0c3f19;
+}
+
+.size-selector h3 {
+  font-family: "Afacad";
+  font-size: 25px;
+  color: #0c3f19;
+  margin: 0;
+}
+
+.size-options button {
+  padding: 10px;
+  border: 2px solid #0c3f19;
+  background-color: transparent;
+  color: #0c3f19;
+  font-family: "Afacad";
+  font-weight: 900;
+  margin: 10px 6px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.size-options button:hover {
+  background-color: rgb(200, 200, 200);
+}
+
+.size-options button:focus {
+  background-color: rgb(200, 200, 200);
+  transform: scale(1.1);
+}
+
+.product-info > button {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 30px;
+  border: none;
+  background-color: #1E7335;
+  font-family: "Afacad";
+  font-weight: 700;
+  font-size: 20px;
+  color: white;
+  width: 300px;
+  cursor: pointer;
+  transition: all .1s ease;
+}
+
+.product-info > button:hover {
+  background-color: #072e11;
+}
+
+.product-info > button:active {
+  transform: scale(.98);
+}
+
+.add-to-cart-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.add-to-cart-btn a{
+  width: 100%;
+}
+
+/*  RESPONSIVE  */
+
+
+@media (max-width: 1024px) {
+  .contenedorProd {
+    justify-content: center;
+  }
+
+  .preProductos {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    padding: 10px 0;
+    font-size: 16px;
+  }
+
+  nav img {
+    margin: 0;
+    width: 60px;
+  }
+
+  nav ul {
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin: 10px 0;
+  }
+
+  nav li {
+    margin: 5px 0;
+  }
+
+  nav li a {
+    padding: 8px 12px;
+    font-size: 16px;
+  }
+
+  .btnLogIn {
+    margin: 10px 0;
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+
+  .contenedorInicio {
+    height: 70vh;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+
+  h2 {
+    font-size: 42px;
+  }
+
+  .filtro {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    margin-left: 10px;
+  }
+
+  .contenedorProd {
+    justify-content: center;
+    margin: 10px;
+  }
+
+  .cajaProducto {
+    margin: 10px;
+  }
+
+  .btnWsp {
+    bottom: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+  }
+
+  .btnWsp img {
+    width: 45px;
+  }
+
+  footer {
+    font-size: 13px;
+  }
+
+  .footerSocial {
+    font-size: 18px;
+  }
+}
+
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 28px;
+  }
+
+  h2 {
+    font-size: 35px;
+  }
+
+  .cajaProducto {
+    width: 150px;
+    font-size: 16px;
+  }
+
+  .cajaProducto img {
+    width: 130px;
+  }
+
+  .preProductos i {
+    font-size: 30px;
+  }
+
+  .preProductos p {
+    font-size: 16px;
+  }
+
+  .filtro {
+    font-size: 16px;
+  }
+
+  .footerLinks {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footerSocial a {
+    font-size: 18px;
+  }
+}
+
+/* Estilos base para menú hamburguesa */
+.nav-toggle {
+  display: none;
+  font-size: 26px;
+  color: #1E7335;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  nav {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 70px;
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background-color: #1D1D1D;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    padding: 20px 0;
+    z-index: 100;
+    border-top: 1px solid #333;
+  }
+
+  .nav-links ul {
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-links li {
+    margin: 10px 0;
+  }
+
+  .btnLogIn {
+    margin-top: 10px;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+}

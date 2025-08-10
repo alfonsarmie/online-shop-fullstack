@@ -9,6 +9,7 @@ import Cart from './components/Cart.jsx';
 import Products from './components/Products.jsx';
 import { CartProvider } from './components/CartContext';
 import SignUp from './pages/SignUp.jsx';
+import ProductDetails from './pages/ProductDetails.jsx';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/login" element={<Login />} />
           <Route path="/SignUp" element={<SignUp />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
         </Routes>
         <Footer />
         <Cart />
