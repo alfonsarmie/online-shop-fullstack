@@ -1,11 +1,14 @@
 const { request, response } = require("express");
 const bcrypt = require('bcryptjs');
-const client = require("../models/user");
+
+
+const user = require("../models/user");
 
 
 //TODO: VALIDATE THE FIELDS
 const createUser = async(req = request, res = response) => {
   
+
 
   try {
     
@@ -17,7 +20,24 @@ const createUser = async(req = request, res = response) => {
       password,
       imgProfile } = req.body;
     
-      // Validate required fields
+      // Validate uniqueness of email
+      const existingUser = await user.findOne({ where: { email } });
+      if (existingUser) {
+        return res.status(400).json({
+          message: 'Email already exists'
+        });
+      }
+
+
+      // Validate uniqueness of DNI
+      if (dni) {
+        const existingDniUser = await user.findOne({ where: { dni } }); 
+        if (existingDniUser) {
+          return res.status(400).json({
+            message: 'DNI already exists'
+          });
+        }
+      }
   
       // Encrypt the password
       const salt = bcrypt.genSaltSync(10);
@@ -38,11 +58,11 @@ const createUser = async(req = request, res = response) => {
         registrationDate: new Date() // Current date as registration date
       };
     
-      const user = await client.create(newUser);
+      const userCreated = await user.create(newUser);
     
       return res.status(201).json({
         message: 'User created successfully',
-        user
+        userCreated
       });
   
     } catch (error) {
@@ -53,9 +73,6 @@ const createUser = async(req = request, res = response) => {
       });
     
   }
-
-
-
 
 
 

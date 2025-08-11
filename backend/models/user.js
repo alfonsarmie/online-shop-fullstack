@@ -6,7 +6,7 @@ const { db } = require('../db/connection');
 
 
 // Define the user model
-const user = db.define('user', {
+const User = db.define('user', {
     idUser: {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
@@ -54,6 +54,13 @@ const user = db.define('user', {
     timestamps: false // Disable createdAt and updatedAt fields
 });
 
-module.exports = user;
+User.prototype.toJSON = function() {
+    const values = Object.assign({}, this.get());
+    delete values.password;
+    return values;
+};
+
+
+module.exports = User;
 
 
