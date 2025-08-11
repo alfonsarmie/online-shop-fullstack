@@ -38,7 +38,7 @@ const products = [
         price: 24000,
         img: gorra,
         description: "Gorra oficial con diseño exclusivo y ajuste perfecto, fabricada en materiales ligeros y transpirables que aseguran comodidad durante todo el día. Su visera protege del sol y el logo bordado resalta la identidad del equipo. Es el accesorio ideal para completar tu look deportivo o casual.",
-        sizes: ["XS", "S", "M", "L", "XL"],
+        sizes: ["TALLE ÚNICO"],
         stock: 8
     },
     {
