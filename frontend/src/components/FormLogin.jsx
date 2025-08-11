@@ -4,6 +4,7 @@ import '../styles/styles.css';
 import '../styles/login.css';
 import logo from '../assets/img/logo.png';
 import { useState } from "react";
+import Input from './input.jsx';
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -17,33 +18,25 @@ export default function LoginForm() {
       <h1>Introduce tus datos para iniciar sesión</h1>
 
       <div className="form__group field">
-        <input
+        <Input
           id="email"
           type="email"
-          className="form__field"
           placeholder="Correo electrónico"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <label htmlFor="email" className="form__label">
-          Correo electrónico
-        </label>
       </div>
 
       <div className="form__group field">
-        <input
+        <Input
           id="password"
           type="password"
-          className="form__field"
           placeholder="Contraseña"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <label htmlFor="password" className="form__label">
-          Contraseña
-        </label>
       </div>
 
       <button

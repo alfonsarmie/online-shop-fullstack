@@ -20,11 +20,11 @@ const ProductFilter = ({ activeFilter, onFilterChange }) => {
           className={`btnFlechaAbajo ${activeFilter ? 'active' : ''}`}
           onClick={() => setShowFilters(!showFilters)}
         >
-          <FontAwesomeIcon icon={faFilter} /> 
+          <FontAwesomeIcon icon={faFilter} className='icon-filter'/> 
           {activeFilter === 'price_asc' ? 'Precio: menor a mayor' :
            activeFilter === 'price_desc' ? 'Precio: mayor a menor' :
            activeFilter === 'name_asc' ? 'A - Z' : 'Filtrar por'}
-          <FontAwesomeIcon icon={faCaretDown} />
+          <FontAwesomeIcon icon={faCaretDown} className='icon-filter' />
         </button>
         
         {showFilters && (
