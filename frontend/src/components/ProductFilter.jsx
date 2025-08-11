@@ -29,33 +29,37 @@ const ProductFilter = ({ activeFilter, onFilterChange }) => {
         
         {showFilters && (
           <ul className="filters">
-            <li>
+            
               <Link 
                 to="#" 
                 onClick={() => handleFilterClick('price_asc')}
                 className={activeFilter === 'price_asc' ? 'active' : ''}
               >
-                Precio: menor a mayor
+                <li>
+                  Precio: menor a mayor
+                </li>
               </Link>
-            </li>
-            <li>
-              <Link 
+              
+            <Link 
                 to="#" 
                 onClick={() => handleFilterClick('price_desc')}
                 className={activeFilter === 'price_desc' ? 'active' : ''}
               >
-                Precio: mayor a menor
+                <li>
+                  Precio: mayor a menor
+                </li>
               </Link>
-            </li>
-            <li>
-              <Link 
+  
+            <Link 
                 to="#" 
                 onClick={() => handleFilterClick('name_asc')}
                 className={activeFilter === 'name_asc' ? 'active' : ''}
               >
-                A - Z
+                <li>
+                  A - Z
+                </li>
               </Link>
-            </li>
+            
           </ul>
         )}
       </div>
