@@ -13,9 +13,17 @@ CREATE TABLE `user` (
   `role` varchar(50),
   `isMember` BOOLEAN NOT NULL,
   `registrationDate` datetime NOT NULL,
+    `status` varchar(150) NOT NULL,
   PRIMARY KEY(`idUser`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*El collate ai_ci nos indica que es indiferente las mayusculas de minusculas*/
+
+/*
+In case you missed a status column to the user table, you can uncomment the following lines:
+
+ALTER TABLE `user`
+ADD COLUMN `status` VARCHAR(50) NOT NULL;
+*/
 
 
 

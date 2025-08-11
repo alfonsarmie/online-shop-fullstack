@@ -55,7 +55,8 @@ const createUser = async(req = request, res = response) => {
         imgProfile,
         role: 'client', // Default role
         isMember: false, // Default membership status
-        registrationDate: new Date() // Current date as registration date
+        registrationDate: new Date(), // Current date as registration date,
+        status: 'pending' // Default status (email confirmation should be implemented later)
       };
     
       const userCreated = await user.create(newUser);
