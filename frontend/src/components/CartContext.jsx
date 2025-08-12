@@ -8,11 +8,14 @@ export function CartProvider({ children }) {
 
   const addToCart = useCallback((product) => {
     setCartItems(prevItems => {
-      const existingItem = prevItems.find(item => item.name === product.name);
+      const existingItem = prevItems.find(item => 
+        item.name === product.name && item.size === product.size
+      );
+      
       if (existingItem) {
         return prevItems.map(item =>
-          item.name === product.name 
-            ? { ...item, quantity: item.quantity + 1 } 
+          item.name === product.name && item.size === product.size
+            ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       }
@@ -21,8 +24,12 @@ export function CartProvider({ children }) {
     setIsCartOpen(true);
   }, []);
 
-  const removeFromCart = useCallback((productName) => {
-    setCartItems(prevItems => prevItems.filter(item => item.name !== productName));
+  const removeFromCart = useCallback((productName, productSize) => {
+    setCartItems(prevItems => 
+      prevItems.filter(item => 
+        !(item.name === productName && item.size === productSize)
+      )
+    );
   }, []);
 
   return (

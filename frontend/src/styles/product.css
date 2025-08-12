@@ -16,10 +16,8 @@
 
 .cajaProducto img {
     max-width: 250px;
-    max-height: 250px;
     padding: 10px;
     border-radius: 15px;
-    transition: all .3s ease;
     margin: 10px;
 }
 
@@ -40,9 +38,6 @@
     box-shadow: rgba(0, 0, 0, 0.2) 0px 10px 36px 0px, rgba(0, 0, 0, 0.1) 0px 0px 0px 1px;
 }
 
-.cajaProducto img:hover {
-    transform: scale(1.1);
-}
 
 .precio {
   margin: 10px;
