@@ -5,8 +5,15 @@ import logo from '../assets/img/logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faCartShopping, faBars } from '@fortawesome/free-solid-svg-icons';
 import { useCart } from './CartContext';
+import { useNavigate } from 'react-router-dom';
 
 function Navbar() {
+  const navigate = useNavigate();
+
+  const handleHomeClick = () => {
+    navigate('/');
+    window.scrollTo(0, 0); // Scroll al top
+  };
 
   const { openCart, cartCount } = useCart();
 
@@ -16,7 +23,7 @@ function Navbar() {
         <FontAwesomeIcon icon={faBars} />
       </div>
 
-      <div className="nav-left">
+      <div className="nav-left" onClick={handleHomeClick}>
         <Link to="/">
           <img src={logo} alt="logo" />
         </Link>
@@ -24,7 +31,7 @@ function Navbar() {
 
       <div className="nav-links" id="navLinks">
         <ul>
-          <li><Link to="/">INICIO</Link></li>
+          <li onClick={handleHomeClick}><Link to="/">INICIO</Link></li>
           <li><Link to="/">PRODUCTOS</Link></li>
           <li><Link to="/">ACERCA DE NOSOTROS</Link></li>
           <li><Link to="/">FORMAS DE ENTREGA</Link></li>
