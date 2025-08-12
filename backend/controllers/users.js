@@ -5,10 +5,9 @@ const bcrypt = require('bcryptjs');
 const user = require("../models/user");
 
 
-//TODO: VALIDATE THE FIELDS
+
 const createUser = async(req = request, res = response) => {
   
-
 
   try {
     
