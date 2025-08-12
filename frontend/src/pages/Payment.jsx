@@ -5,6 +5,7 @@ import '../styles/payment.css'; // Crearemos este archivo después
 import mpLogo from '../assets/img/mercado-pago-logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCreditCard, faMoneyBillTransfer } from '@fortawesome/free-solid-svg-icons';   
+import ProgressContainer from '../components/ProgressContainer';
 
 const Payment = () => {
   const { cartItems, clearCart } = useCart();
@@ -21,7 +22,10 @@ const Payment = () => {
 
   return (
     <div className="payment-container">
-      <div className="payment-summary">
+    
+      <div className='form-left'>
+        <ProgressContainer  className='progress-container'/>
+        <div className="payment-summary">
         <h2>Resumen de tu compra</h2>
         <div className="order-items">
           {cartItems.map((item) => (
@@ -37,6 +41,7 @@ const Payment = () => {
         </div>
         <div className="order-total">
           <h3>Total: ${total.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</h3>
+        </div>
         </div>
       </div>
 

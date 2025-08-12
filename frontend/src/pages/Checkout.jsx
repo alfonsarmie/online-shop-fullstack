@@ -3,6 +3,7 @@ import '../styles/styles.css';
 import '../styles/checkout.css';
 import { useCart } from '../components/CartContext';
 import { useNavigate } from 'react-router-dom';
+import ProgressContainer from '../components/ProgressContainer';
 
 const Checkout = () => {
   const { cartItems } = useCart();
@@ -44,11 +45,7 @@ const Checkout = () => {
 return (
     <main>
         <div className="data-container">
-            <div className="progress-container">
-                <div className="step active">Your details</div>
-                <div className="progress-line"></div>
-                <div className="step">Payment</div>
-            </div>
+            <ProgressContainer />
 
             <div className="form-container">
                 <form onSubmit={handleSubmit}>
