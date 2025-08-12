@@ -1,36 +1,32 @@
-body{
-    margin: 0;
+/* Contenedor general del formulario de login */
+.container {
     display: flex;
     flex-direction: column;
-    font-family: "Afacad"; 
-}
-
-.container{
-    display: flex;
-    flex-direction: column;
+    align-items: center;
     box-sizing: border-box;
     width: 600px;
-    margin: auto;
-    margin-top: 130px;
-    align-items: center;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    margin: 120px auto 50px auto;
+    padding: 20px;
     border-radius: 10px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    background-color: white;
 }
 
-.container img{
+.container img {
     width: 100px;
 }
 
-.container h1{
+.container h1 {
     padding: 10px;
     font-size: 30px;
+    text-align: center;
+    font-family: "Afacad";
 }
 
-
-
-.disabled {
-    margin: 10px;
-    font-family: "Afacad";
+/* Botones de login */
+#login-btn {
+    margin: 40px 10px 10px 10px;
+    font-family: "Afacad", sans-serif !important;
     font-size: 20px;
     font-weight: 700;
     color: white;
@@ -38,43 +34,59 @@ body{
     padding: 10px;
     width: 420px;
     border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.1s ease, transform 0.1s ease;
+    background-color: #1E7335;
+}
+
+#login-btn:disabled {
     background-color: gray;
     cursor: not-allowed;
-    margin-top: 40px;
 }
 
-.allow {
-    margin: 10px;
-    font-family: "Afacad";
-    font-size: 20px;
-    font-weight: 700;
-    color: white;
-    border: none;
-    padding: 10px;
-    width: 420px;
-    border-radius: 30px;
-    background-color: #1E7335;
-    cursor: pointer;
-    transition: all .1s ease;
-    margin-top: 40px;
-}
-
-.allow:hover{
+#login-btn:hover:enabled {
     background-color: #072e11;
 }
 
-.allow:active{
+#login-btn:active:enabled {
     transform: scale(0.98);
 }
 
-.link_signUp {
-  text-decoration: none;
-  color: #1E7335;
-  font-weight: 700;
+/* Texto de registro */
+.msjreg {
+    font-family: "Afacad", sans-serif;
+    color: black;
+    margin-top: 15px;
 }
 
-.msjreg {
-  font-family: "Afacad";
-  margin-top: 20px;
-  margin-bottom: 20px;
+/* Link para registro */
+.link_signUp {
+    text-decoration: none;
+    color: #1E7335;
+    font-weight: 700;
+}
+
+/* Estilo de los inputs */
+.form__group.field {
+    width: 100%;
+    max-width: 420px;
+    margin-top: 15px;
+}
+
+.form__field {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 16px;
+    border: none;
+    border-bottom: 2px solid #9b9b9b;
+    outline: none;
+    background: transparent;
+    font-family: 'Afacad', sans-serif;
+}
+
+/* Etiqueta flotante */
+.form__label {
+    font-family: 'Afacad', sans-serif;
+    font-weight: 600;
+    color: #3d3d3d;
 }
