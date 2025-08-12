@@ -3,6 +3,7 @@ const { check } = require('express-validator');
 
 const { createUser } = require('../controllers/users');
 const validateFields = require('../middlewares/validate-fields');
+const { existsEmail, existsDni } = require('../helpers/db-validators');
 
 
 
@@ -15,6 +16,7 @@ router.post("/create", [
     check('email', 'Email must be valid').isEmail(),
     check('email', 'Email is required').notEmpty(),
     check('email', 'Email must be at most 200 characters').isLength({ max: 200 }),
+    check('email').custom( existsEmail ), // Custom validator to check if email exists
     check('name', 'Name is required').notEmpty(),
     check('name', 'Name must be at most 200 characters').isLength({ max: 200 }),
     check('surname', 'Surname is required').notEmpty(),
@@ -25,12 +27,18 @@ router.post("/create", [
         .matches(/^(?=.*[A-Z])(?=.*\d).+$/),
     check('dni', 'DNI must be a number').optional().isNumeric(),
     check('dni', 'DNI must be at most 200 characters').optional().isLength({ max: 200 }),
+    check('dni').custom( existsDni ), // Custom validator to check if DNI exists
     check('imgProfile', 'Image profile URL must be a valid one').optional().isURL(),
     check('imgProfile', 'Image profile URL must be at most 200 characters').optional().isLength({ max: 200 }),
     validateFields
 
 ], createUser);
 
+
+router.delete("/delete/:id", [
+    check('id', 'ID must be a number').isNumeric(),
+    validateFields
+],)
 
 
 

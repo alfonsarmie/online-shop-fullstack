@@ -19,24 +19,6 @@ const createUser = async(req = request, res = response) => {
       password,
       imgProfile } = req.body;
     
-      // Validate uniqueness of email
-      const existingUser = await user.findOne({ where: { email } });
-      if (existingUser) {
-        return res.status(400).json({
-          message: 'Email already exists'
-        });
-      }
-
-
-      // Validate uniqueness of DNI
-      if (dni) {
-        const existingDniUser = await user.findOne({ where: { dni } }); 
-        if (existingDniUser) {
-          return res.status(400).json({
-            message: 'DNI already exists'
-          });
-        }
-      }
   
       // Encrypt the password
       const salt = bcrypt.genSaltSync(10);
@@ -73,10 +55,33 @@ const createUser = async(req = request, res = response) => {
       });
     
   }
+};
 
+/*
+const deleteUser = async(req = request, res = response) => {
+  const { id } = req.params;
+  try {
+    const userToDelete = await user.findByPk(id);
 
+    if (!userToDelete) {
+      return res.status(404).json({
+        message: 'User not found'
+      });
+    }
 
-}
+    //await userToDelete.destroy();
+
+    return res.status(200).json({
+      message: 'User deleted successfully'
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Error deleting user',
+      error: error.message
+    });
+  }
+};
+*/
 
 
 
