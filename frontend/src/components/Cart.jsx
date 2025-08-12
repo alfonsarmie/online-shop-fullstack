@@ -57,7 +57,7 @@ function Cart() {
           </div>
           {cartItems.length > 0 && (
             <div className="btnCompletarPedido">
-              <Link to="/pay"><button>COMPLETAR PEDIDO</button></Link>
+              <Link to="/checkout"><button onClick={closeCart}>COMPLETAR PEDIDO</button></Link>
             </div>
           )}
         </div>

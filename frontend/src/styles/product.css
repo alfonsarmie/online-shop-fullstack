@@ -15,7 +15,8 @@
 }
 
 .cajaProducto img {
-    width: 250px;
+    max-width: 250px;
+    max-height: 250px;
     padding: 10px;
     border-radius: 15px;
     transition: all .3s ease;
