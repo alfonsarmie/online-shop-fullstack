@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useCart } from '../components/CartContext';
 import products from '../data/products';
 import '../styles/productDetails.css';
+import ProductGallery from '../components/ProductGallery';
 
 function ProductDetails() {
   const { id } = useParams();
@@ -41,7 +42,7 @@ function ProductDetails() {
   return (
     <div className="product-details-container">
       <div className="product-gallery">
-        <img src={product.img} alt={product.name} className="main-image" />
+        <ProductGallery img1={product.img} img2={product.img2} />
       </div>
 
       <div className="product-info">

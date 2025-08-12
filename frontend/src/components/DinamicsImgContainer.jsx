@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 import '../styles/dinamicsImgContainer.css';
-import camTitModelo from '../assets/img/camTitModelo.png';
+import buzoHalo from '../assets/img/buzo-halo-model.jpg';
 import hinchadaImg from '../assets/img/hinchada.png';
 import camSupModelo from '../assets/img/camSupModelo.png';
 import pantModelo from '../assets/img/pantModelo.png';
 import mediasModelo from '../assets/img/mediasModelo.png'; 
 import gorraModelo from '../assets/img/gorraModelo.png';
 
-function DinamicsImgContainer({id}) {
+function DinamicsImgContainer() {
   return (
     <div className="img-dinamicas-container">
       <div className="banner-section reveal">
@@ -18,7 +18,7 @@ function DinamicsImgContainer({id}) {
       <section className="gallery-section reveal">
         <div className="gallery-container">
           <Link to="/product/1" className="gallery-item">
-            <img src={camTitModelo} alt="Camiseta titular modelo" />
+            <img src={buzoHalo} alt="Buzo halo" />
             <div className="hover-overlay">
               <button className="buy-button">COMPRAR AHORA</button>
             </div>
