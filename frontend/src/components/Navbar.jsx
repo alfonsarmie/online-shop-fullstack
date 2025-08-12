@@ -24,10 +24,10 @@ function Navbar() {
 
       <div className="nav-links" id="navLinks">
         <ul>
-          <li><Link to="/">Inicio</Link></li>
-          <li><Link to="/">Productos</Link></li>
-          <li><Link to="/">Acerca de nosotros</Link></li>
-          <li><Link to="/">Formas de entrega</Link></li>
+          <li><Link to="/">INICIO</Link></li>
+          <li><Link to="/">PRODUCTOS</Link></li>
+          <li><Link to="/">ACERCA DE NOSOTROS</Link></li>
+          <li><Link to="/">FORMAS DE ENTREGA</Link></li>
         </ul>
       </div>
 
