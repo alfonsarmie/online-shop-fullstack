@@ -7,8 +7,12 @@ const cors = require('cors');
 require('dotenv').config();
 
 
-
+// Import routes
 const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
+
+
+
 const { connectDB } = require('./db/connection');
 
 
@@ -23,7 +27,7 @@ connectDB().catch(error => console.error('Database connection failed:', error));
 
 // Routes
 app.use("/api/users", userRoutes);
-
+app.use("/api/auth", authRoutes);
 
 
 
