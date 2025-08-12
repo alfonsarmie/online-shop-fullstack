@@ -22,7 +22,7 @@ function DropdownMenu() {
 
   return (
     <div className="dropdown">
-      <span>Productos</span>
+      <span>PRODUCTOS</span>
       <ul className="dropdown-menu">
         {categories.map(cat => (
           <li className="dropdown-item" key={cat.title}>
