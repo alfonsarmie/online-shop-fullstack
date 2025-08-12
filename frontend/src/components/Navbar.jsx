@@ -5,13 +5,13 @@ import logo from '../assets/img/logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faCartShopping, faBars } from '@fortawesome/free-solid-svg-icons';
 import { useCart } from './CartContext';
+import DropdownMenu from './DropdownMenu';
 
 function Navbar() {
-
   const { openCart, cartCount } = useCart();
 
   return (
-    <nav>       
+    <nav>
       <div className="nav-toggle" id="navToggle">
         <FontAwesomeIcon icon={faBars} />
       </div>
@@ -25,20 +25,20 @@ function Navbar() {
       <div className="nav-links" id="navLinks">
         <ul>
           <li><Link to="/">Inicio</Link></li>
-          <li><Link to="/">Productos</Link></li>
+          <li><DropdownMenu /></li>
           <li><Link to="/">Acerca de nosotros</Link></li>
           <li><Link to="/">Formas de entrega</Link></li>
         </ul>
       </div>
 
-      <div className="btnsRight">  
+      <div className="btnsRight">
         <Link to="/login" className="btnLogIn">
           <FontAwesomeIcon icon={faUser} />
         </Link>
-      <button onClick={openCart} className="cart-icon cart-btn">
-        <FontAwesomeIcon icon={faCartShopping} />
-        {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-      </button>
+        <button onClick={openCart} className="cart-icon cart-btn">
+          <FontAwesomeIcon icon={faCartShopping} />
+          {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+        </button>
       </div>
     </nav>
   );
