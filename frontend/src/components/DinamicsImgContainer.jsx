@@ -26,8 +26,8 @@ function DinamicsImgContainer() {
               <button className="buy-button">COMPRAR AHORA</button>
             </div>
           </Link>
-          <Link to="/product/5" className="gallery-item">
-            <img src={products[4].img} alt={products[4].name} />
+          <Link to="/product/14" className="gallery-item">
+            <img src={products[13].img} alt={products[13].name} />
             <div className="hover-overlay">
               <button className="buy-button">COMPRAR AHORA</button>
             </div>

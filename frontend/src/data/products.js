@@ -116,7 +116,7 @@ const products = [
         stock: 8
     },
     {
-        id: 10,
+        id: 9,
         name: "Pantalón lumber",
         price: 10000,
         img: pantLumber,
@@ -126,7 +126,7 @@ const products = [
         stock: 8
     },
     {
-        id: 11,
+        id: 10,
         name: "Remera city",
         price: 22000,
         img: remeraCity,
@@ -136,7 +136,7 @@ const products = [
         stock: 8
     },
     {
-        id: 12,
+        id: 11,
         name: "Remera dinamo",
         price: 24000,
         img: remeraDinamo,
@@ -146,7 +146,7 @@ const products = [
         stock: 8
     },
     {
-        id: 13,
+        id: 12,
         name: "Short dinamo",
         price: 30000,
         img: shortDinamo,
@@ -156,7 +156,7 @@ const products = [
         stock: 8
     },
     {
-        id: 14,
+        id: 13,
         name: "Musculosa soccer",
         price: 22000,
         img: musculosaSoccer,
@@ -166,7 +166,7 @@ const products = [
         stock: 8
     },
     {
-        id: 15,
+        id: 14,
         name: "Top glow",
         price: 24000,
         img: topGlow,
@@ -176,7 +176,7 @@ const products = [
         stock: 8
     },
     {
-        id: 16,
+        id: 15,
         name: "Calza corta spike",
         price: 30000,
         img: calzaSpike,
