@@ -43,7 +43,7 @@ function Products() {
       <div className="contenedorProd">
         {sortedProducts.map(product => (
         <Product 
-          key={products[product.id - 1].id}
+          key={product.id}
           {...product}
           onAddToCart={(productWithSize) => addToCart(productWithSize)}
         />
