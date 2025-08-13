@@ -49,45 +49,46 @@ const createUser = async(req = request, res = response) => {
   
     } catch (error) {
 
-      return res.status(500).json({
-        message: 'Error creating user',
-        error: error.message
-      });
+        return res.status(500).json({
+          message: 'Error creating user',
+          error: error.message
+        });
     
   }
-};
+}
 
-/*
+
 const deleteUser = async(req = request, res = response) => {
   const { id } = req.params;
   try {
+
+    //Logic to delete user (soft delete by changing status to 'deleted')
     const userToDelete = await user.findByPk(id);
-
-    if (!userToDelete) {
-      return res.status(404).json({
-        message: 'User not found'
-      });
-    }
-
-    //await userToDelete.destroy();
+    userToDelete.status = 'deleted';
+    await userToDelete.save();
+    
 
     return res.status(200).json({
       message: 'User deleted successfully'
     });
+  
   } catch (error) {
-    return res.status(500).json({
-      message: 'Error deleting user',
-      error: error.message
-    });
+    
+      return res.status(500).json({
+        message: 'Error deleting user',
+        error: error.message
+      });
+  
   }
-};
-*/
+}
+
 
 
 
 
 
 module.exports = {  
-    createUser
+    createUser,
+    deleteUser
 };
 
