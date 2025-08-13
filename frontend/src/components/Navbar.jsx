@@ -32,7 +32,11 @@ function Navbar() {
       <div className="nav-links" id="navLinks">
         <ul>
           <li onClick={handleHomeClick}><Link to="/">INICIO</Link></li>
-          <li><DropdownMenu /><Link to="/"></Link></li>
+          <li>
+            <Link>
+              <DropdownMenu />
+            </Link>
+          </li>
           <li><Link to="/">ACERCA DE NOSOTROS</Link></li>
           <li><Link to="/">FORMAS DE ENTREGA</Link></li>
         </ul>
