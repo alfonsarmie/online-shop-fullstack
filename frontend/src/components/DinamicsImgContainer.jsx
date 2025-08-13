@@ -1,11 +1,8 @@
 import { Link } from 'react-router-dom';
 import '../styles/dinamicsImgContainer.css';
-import buzoHalo from '../assets/img/buzo-halo-model.jpg';
+import products from '../data/products.js';
 import hinchadaImg from '../assets/img/hinchada.png';
-import camSupModelo from '../assets/img/camSupModelo.png';
-import pantModelo from '../assets/img/pantModelo.png';
-import mediasModelo from '../assets/img/mediasModelo.png'; 
-import gorraModelo from '../assets/img/gorraModelo.png';
+
 
 function DinamicsImgContainer() {
   return (
@@ -18,31 +15,31 @@ function DinamicsImgContainer() {
       <section className="gallery-section reveal">
         <div className="gallery-container">
           <Link to="/product/1" className="gallery-item">
-            <img src={buzoHalo} alt="Buzo halo" />
+            <img src={products[0].img} alt={products[0].name} />
             <div className="hover-overlay">
               <button className="buy-button">COMPRAR AHORA</button>
             </div>
           </Link>
           <Link to="/product/3" className="gallery-item">
-            <img src={pantModelo} alt="Pantalón modelo" />
+            <img src={products[2].img} alt={products[2].name} />
             <div className="hover-overlay">
               <button className="buy-button">COMPRAR AHORA</button>
             </div>
           </Link>
-          <Link to="/product/5" className="gallery-item">
-            <img src={mediasModelo} alt="Medias modelo" />
+          <Link to="/product/14" className="gallery-item">
+            <img src={products[13].img} alt={products[13].name} />
             <div className="hover-overlay">
               <button className="buy-button">COMPRAR AHORA</button>
             </div>
           </Link>
           <Link to="/product/4" className="gallery-item">
-            <img src={gorraModelo} alt="Gorra modelo" />
+            <img src={products[3].img} alt={products[3].name} />
             <div className="hover-overlay">
               <button className="buy-button">COMPRAR AHORA</button>
             </div>
           </Link>
           <Link to="/product/2" className="gallery-item">
-            <img src={camSupModelo} alt="Camiseta suplente modelo" />
+            <img src={products[1].img} alt={products[1].name} />
             <div className="hover-overlay">
               <button className="buy-button">COMPRAR AHORA</button>
             </div>

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Index from './pages/Index.jsx';
@@ -10,6 +9,8 @@ import Products from './components/Products.jsx';
 import { CartProvider } from './components/CartContext';
 import SignUp from './pages/SignUp.jsx';
 import ProductDetails from './pages/ProductDetails.jsx';
+import Checkout from './pages/Checkout.jsx';
+import Payment from './pages/Payment';
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/payment" element={<Payment />} />
         </Routes>
         <Footer />
         <Cart />

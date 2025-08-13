@@ -3,7 +3,6 @@ import '../styles/cart.css';
 import { useCart } from './CartContext';
 
 function Cart() {
-  // Obtenemos todo del contexto, no necesitamos props
   const { 
     isCartOpen, 
     closeCart, 
@@ -11,7 +10,6 @@ function Cart() {
     removeFromCart 
   } = useCart();
 
-  // Calculamos los totales
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const total = subtotal;
 
@@ -30,17 +28,19 @@ function Cart() {
             <p>Tu carrito está vacío</p>
           ) : (
             cartItems.map((item) => (
-              <div key={item.name} className="cart-item">
+              <div key={`${item.name}-${item.size}`} className="cart-item">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <img src={item.img} alt={item.name} width="60" style={{ borderRadius: '8px' }} />
                   <div>
                     <h3 style={{ margin: 0 }}>{item.name}</h3>
                     <p style={{ margin: '5px 0' }}>${item.price} ARS × {item.quantity}</p>
+                    {item.size && <p style={{ margin: 0 }}>Talle: {item.size}</p>}
                   </div>
                 </div>
                 <button 
-                  onClick={() => removeFromCart(item.name)} 
-                className='remove-btn'>
+                  onClick={() => removeFromCart(item.name, item.size)} 
+                  className='remove-btn'
+                >
                   ✖
                 </button>
               </div>
@@ -57,7 +57,7 @@ function Cart() {
           </div>
           {cartItems.length > 0 && (
             <div className="btnCompletarPedido">
-              <Link to="/pay"><button>COMPLETAR PEDIDO</button></Link>
+              <Link to="/checkout"><button onClick={closeCart}>COMPLETAR PEDIDO</button></Link>
             </div>
           )}
         </div>
