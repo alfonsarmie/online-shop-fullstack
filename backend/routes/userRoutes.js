@@ -1,9 +1,9 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { createUser } = require('../controllers/users');
+const { createUser, deleteUser } = require('../controllers/users');
 const validateFields = require('../middlewares/validate-fields');
-const { existsEmail, existsDni } = require('../helpers/db-validators');
+const { existsEmail, existsDni, existsUserById } = require('../helpers/db-validators');
 
 
 
@@ -37,8 +37,9 @@ router.post("/create", [
 
 router.delete("/delete/:id", [
     check('id', 'ID must be a number').isNumeric(),
+    check('id').custom( existsUserById ), // Custom validator to check if user exists by ID
     validateFields
-],)
+], deleteUser)
 
 
 
