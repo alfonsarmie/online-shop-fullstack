@@ -26,7 +26,9 @@ function DropdownMenu() {
       <ul className="dropdown-menu">
         {categories.map(cat => (
           <li className="dropdown-item" key={cat.title}>
-            <span>{cat.title}</span>
+            <Link to={`/productos/${cat.basePath}`}>
+              <span>{cat.title}</span>
+            </Link>
             <ul className="submenu">
               {cat.items.map(subcat => (
                 <li key={subcat}>

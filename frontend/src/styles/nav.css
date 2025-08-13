@@ -137,7 +137,7 @@ nav li {
 /* Menú principal horizontal */
 .dropdown-menu {
   list-style: none;
-  padding: 0;
+  padding: 20px 0;
   margin: 0;
   display: none; /* oculto al inicio */
   background-color: #f9f9f9;
@@ -148,27 +148,45 @@ nav li {
   left: 0;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   z-index: 300;
+  flex-direction: row; /* Cambia a fila */
+  min-width: 450px;
+  align-items: flex-start; /* Alinea las columnas arriba */
+  justify-content: center; 
 }
 
 /* Mostrar menú principal al hover */
 .dropdown:hover > .dropdown-menu {
   display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  left: 0;
 }
 
 /* Items del menú principal */
 .dropdown-item {
   position: relative;
-  padding: 10px 20px;
+  padding: 0px 30px;
   cursor: pointer;
   display: flex;
   flex-direction: column; /* para que el título y subcategorías estén uno debajo del otro */
+  align-items: center;
+  min-width: 150px; /* Cada columna tiene un ancho mínimo */
+  border-right: 1px solid #eee;
+  background: transparent;
 }
 
 .dropdown-item > span {
   color: #1E7335;
   font-weight: 600;
   font-family: "Afacad", sans-serif;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+  width: 100%;
+}
+
+.dropdown-item:last-child {
+  border-right: none; /* Quita el borde a la última columna */
 }
 
 /* Submenu SIEMPRE visible */
@@ -176,15 +194,22 @@ nav li {
   list-style: none;
   margin: 0;
   background-color: #ffffff;
-  display: block; /* SIEMPRE visible */
-  min-width: 150px;
+  display: block;
+  width: 100%;         /* Ocupa todo el ancho de la columna */
+  min-width: unset;    /* Quita el min-width fijo */
   border-radius: 6px;
   left: 0;
+  position: static;    /* Asegura que esté debajo del título */
+  box-shadow: none;
+  padding: 0;
+  margin-top: 0;
 }
+
 
 .submenu li {
   padding: 5px 0;
-  left: 0;
+  text-align: center;
+  width: 100%;
 }
 
 .submenu li a {
@@ -197,5 +222,4 @@ nav li {
 
 .submenu li a:hover {
   color: #0f6823;
-  text-decoration: underline;
 }
