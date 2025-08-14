@@ -74,6 +74,7 @@ nav li {
   margin-right: 25px;
   color: #1E7335;
   transition: all .2s ease;
+  margin-bottom: 3px;
 }
 
 .btnLogIn:hover {
@@ -101,7 +102,6 @@ nav li {
 
 .cart-icon:hover {
   margin-bottom: 10px;
-  color: #0f6823;
 }
 
 .cart-icon svg {
@@ -139,8 +139,6 @@ nav li {
 /* Menú principal horizontal */
 .dropdown-menu {
   list-style: none;
-  padding: 20px 0;
-  margin: 0;
   display: none; /* oculto al inicio */
   background-color: #fff;
   border: 1px solid #ccc;
