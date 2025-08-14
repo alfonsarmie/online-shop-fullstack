@@ -37,7 +37,7 @@ function Navbar() {
               <DropdownMenu />
             </Link>
           </li>
-          <li><Link to="/">ACERCA DE NOSOTROS</Link></li>
+          <li><Link to="/about-us">ACERCA DE NOSOTROS</Link></li>
           <li><Link to="/">FORMAS DE ENTREGA</Link></li>
         </ul>
       </div>

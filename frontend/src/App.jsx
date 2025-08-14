@@ -11,6 +11,7 @@ import SignUp from './pages/SignUp.jsx';
 import ProductDetails from './pages/ProductDetails.jsx';
 import Checkout from './pages/Checkout.jsx';
 import Payment from './pages/Payment';
+import AboutUs from './pages/AboutUs.jsx'; // Importing the AboutUs page
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/payment" element={<Payment />} />
+          <Route path="/about-us" element={<AboutUs />} />
         </Routes>
         <Footer />
         <Cart />
