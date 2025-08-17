@@ -83,12 +83,57 @@ const deleteUser = async(req = request, res = response) => {
 }
 
 
+const updateUser = async(req = request, res = response) => {
+  const { id } = req.params;
+  const { name, surname, email, imgProfile } = req.body;
+  try {
 
+    //Logic to update user
+    const userToUpdate = await user.findByPk(id);
+    if (!userToUpdate) {
+      return res.status(404).json({
+        message: 'User not found'
+      });
+    }
+
+
+    if (name !== null) {
+      userToUpdate.name = name;
+    }
+
+    if (surname !== null) {
+      userToUpdate.surname = surname;
+    }
+
+    if (email !== null) {
+      userToUpdate.email = email;
+    }
+
+    if (imgProfile !== null) {
+      userToUpdate.imgProfile = imgProfile;
+    }
+
+    // Save the updated user
+    await userToUpdate.save();
+    return res.status(200).json({
+      message: 'User updated successfully',
+      userToUpdate
+    });
+
+    
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Error updating user',
+      error: error.message
+    });
+  }
+};
 
 
 
 module.exports = {  
     createUser,
-    deleteUser
+    deleteUser,
+    updateUser
 };
 
