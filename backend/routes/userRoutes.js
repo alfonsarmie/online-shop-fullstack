@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { createUser, deleteUser } = require('../controllers/users');
+const { createUser, deleteUser, updateUser } = require('../controllers/users');
 const { existsEmail, existsDni, existsUserById } = require('../helpers/db-validators');
 const validateFields = require('../middlewares/validate-fields');
 const { validateJWT } = require('../middlewares/validate-jwt');
@@ -43,6 +43,20 @@ router.delete("/delete/:id", [
     validateFields
 ], deleteUser)
 
+
+
+
+
+router.put("/update/:id", [
+    validateJWT,
+    check('id', 'ID must be a number').isNumeric(),
+    check('id').custom( existsUserById )], 
+    
+    
+    updateUser)
+    
+    
+    // Custom validator to check if user exists by ID
 
 
 
