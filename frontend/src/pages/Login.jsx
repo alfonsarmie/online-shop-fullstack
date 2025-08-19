@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import logo from '../assets/img/logo.png';
 import FormContainer from '../components/FormContainer.jsx';
-import Input from '../components/input.jsx';
+import Input from '../components/Input.jsx';
 import '../styles/input.css';
 import '../styles/login.css';
 

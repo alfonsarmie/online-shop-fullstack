@@ -81,12 +81,12 @@
     border-bottom: 2px solid #9b9b9b;
     outline: none;
     background: transparent;
-    font-family: 'Afacad', sans-serif;
+    font-family: 'Afacad';
 }
 
 /* Etiqueta flotante */
 .form__label {
-    font-family: 'Afacad', sans-serif;
+    font-family: 'Afacad';
     font-weight: 600;
     color: #3d3d3d;
 }
