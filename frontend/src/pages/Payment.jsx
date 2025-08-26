@@ -3,8 +3,7 @@ import { useCart } from '../components/CartContext';
 import { useNavigate } from 'react-router-dom';
 import '../styles/payment.css'; // Crearemos este archivo después
 import mpLogo from '../assets/img/mercado-pago-logo.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCreditCard, faMoneyBillTransfer } from '@fortawesome/free-solid-svg-icons';   
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; 
 import ProgressContainer from '../components/ProgressContainer';
 
 const Payment = () => {
@@ -53,22 +52,6 @@ const Payment = () => {
           <label htmlFor="mercado-pago">
             <img src={mpLogo} alt="Mercado Pago" />
             <span>Mercado Pago</span>
-          </label>
-        </div>
-
-        <div className="payment-option">
-          <input type="radio" id="credit-card" name="payment" />
-          <label htmlFor="credit-card">
-            <FontAwesomeIcon icon={faCreditCard} className='payment-icon'/>
-            <span>Tarjeta de crédito</span>
-          </label>
-        </div>
-
-        <div className="payment-option">
-          <input type="radio" id="bank-transfer" name="payment" />
-          <label htmlFor="bank-transfer">
-            <FontAwesomeIcon icon={faMoneyBillTransfer} className='payment-icon'/>
-            <span>Transferencia bancaria</span>
           </label>
         </div>
 
