@@ -1,0 +1,50 @@
+.preProductos {
+    font-family: 'Anton', sans-serif;
+    color: #979696;
+    font-size: 25px;
+    padding: 30px;
+    border-block: 1px;
+    overflow: hidden;
+    user-select: none;
+    width: 100%;
+}
+
+.scrolling-container {
+    width: 100%;
+    overflow: hidden;
+}
+
+.features-list {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    animation: scroll 30s linear infinite;
+    width: max-content;
+}
+
+.features-list li {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    margin: 0 3rem;
+    transition: all 0.3s ease;
+}
+
+.features-list li span {
+    margin-left: 10px;
+}
+
+.features-list li:hover {
+    color: #1E7335;
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(-50%));
+    }
+}

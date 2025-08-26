@@ -1,0 +1,162 @@
+.cart {
+  position: fixed;
+  top: 0;
+  right: -450px; /* Oculto inicialmente */
+  width: 450px;
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+  transition: right 0.3s;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  z-index: 1000;
+  font-family: "Afacad";
+}
+
+.cart.open {
+  right: 0;
+  border-radius: 20px 0 0 20px;
+  font-family: "Afacad";
+  z-index: 2000;
+}
+
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  border-bottom: 1px solid #c1c1c1;
+}
+
+.cart-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #323232;
+}
+
+.cart-header button {
+  background-color: transparent;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  color: #323232;
+  transition: color 0.3s ease;
+}
+
+.cart-header button:hover {
+  color: #1E7335;
+}
+
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 1rem;
+  padding: 10px;
+  height: 30%;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.cart-item img {
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.cart-footer {
+  padding: 1rem 0;
+}
+
+.cart-footer-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #c1c1c1;
+}
+
+.cart-footer-item p {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.cart-footer button {
+  background-color: #1E7335;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  font-family: "Afacad";
+  font-weight: 700;
+  font-size: 20px;
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.btnCompletarPedido {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.btnCompletarPedido a {
+  width: 100%;
+  text-decoration: none;
+}
+
+.cart-footer button:hover {
+  background-color: #0c3f19;
+}
+
+.cart-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+  z-index: 998;
+  display: none;
+}
+
+.cart-overlay.active {
+  display: block;
+}
+
+/* Estilos para el scroll */
+.cart-items::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cart-items::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.cart-items::-webkit-scrollbar-thumb {
+  background: #1E7335;
+  border-radius: 10px;
+}
+
+.cart-items::-webkit-scrollbar-thumb:hover {
+  background: #0c3f19;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ff4d4d;
+  font-size: 20px;
+  transition: color 0.3s ease;
+}

@@ -1,0 +1,40 @@
+.contenedorInicio {
+    background-image: url(../assets/img/fotoInicio.jpg);
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    height: 90vh;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 80px;
+}
+
+.contenedorInicio h1 {
+    margin: 0;
+    font-family: 'Afacad';
+    font-size: 50px;
+}
+
+.contenedorInicio h2 {
+    font-size: 70px;
+    margin: 0;
+    font-family: 'Anton';
+}
+
+.textosInicio {
+    color: white;
+    z-index: 100;
+    text-align: center;
+}
+
+.opaco {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    height: 90vh;
+    background: linear-gradient(transparent, #1E7335);
+}

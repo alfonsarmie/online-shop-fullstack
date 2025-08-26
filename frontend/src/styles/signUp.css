@@ -1,0 +1,166 @@
+/* Contenedor general del formulario */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    width: 600px;
+    margin: 120px auto 50px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    background-color: white;
+}
+
+.container img {
+    width: 100px;
+}
+
+.container h1 {
+    padding: 10px;
+    font-size: 30px;
+    text-align: center;
+    font-family: "Afacad";
+}
+
+/* Barra de fuerza de contraseña */
+.strength-bar {
+    height: 10px;
+    width: 420px;
+    background-color: #ddd;
+    margin-top: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.strength-fill {
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s;
+}
+
+.weak {
+    background-color: red;
+}
+
+.medium {
+    background-color: orange;
+}
+
+.strong {
+    background-color: green;
+}
+
+.very-strong {
+    background-color: darkgreen;
+}
+
+#strength-text {
+    margin-top: 8px;
+    font-weight: bold;
+}
+
+/* Botones */
+.disabled {
+    margin: 40px 10px 10px 10px;
+    font-family: "Afacad", sans-serif !important;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 420px;
+    border-radius: 30px;
+    background-color: gray;
+    cursor: not-allowed;
+    transition: all 0.3s ease;
+}
+
+.allow {
+    margin: 40px 10px 10px 10px;
+    font-family: "Afacad", sans-serif !important;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 420px;
+    border-radius: 30px;
+    background-color: #1E7335;
+    cursor: pointer;
+    transition: background-color 0.1s ease, transform 0.1s ease;
+}
+
+.allow:hover {
+    background-color: #072e11;
+}
+
+.allow:active {
+    transform: scale(0.98);
+}
+
+/* Texto de registro/login */
+.msjreg {
+    font-family: "Afacad", sans-serif;
+    color: black;
+}
+
+.login_link,
+.link_signUp {
+    text-decoration: none;
+    color: #1E7335;
+    font-weight: 700;
+}
+
+/* Imagen de perfil */
+.img_group {
+    margin-top: 15px;
+}
+
+.img_field {
+    padding: 6px 12px;
+    width: 100%;
+    max-width: 420px;
+    border: none;
+    border-bottom: 2px solid #9b9b9b;
+    outline: 0;
+    font-size: 14px;
+    background: transparent;
+}
+
+.img_field[type="file"] {
+    display: none;
+}
+
+.img_label {
+    color: rgb(61, 61, 61);
+    font-weight: bold;
+}
+
+.upload_label {
+    display: inline-block;
+    padding: 6px 16px;
+    background-color: white;
+    color: #1E7335;
+    border: 2px solid #1E7335;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Afacad', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.upload_label:hover {
+    background-color: #e6f4ec;
+    color: #072e11;
+    border-color: #072e11;
+}
+
+/* Ocultar flechas en input de tipo number */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

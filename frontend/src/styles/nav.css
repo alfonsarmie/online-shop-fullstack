@@ -1,0 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=Afacad&display=swap');
+
+nav {
+    font-family: "Anton";
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 80px;
+    width: 100%;
+    background-color: #1D1D1D;
+    color: #1E7335;
+    align-items: center;
+    font-size: 18px;
+    padding: 10px 40px;
+    position: fixed;
+    z-index: 200;
+    top: 0;
+}
+
+.nav-toggle {
+  display: none;
+}
+
+nav img {
+    width: 70px;
+    height: auto;
+    transition: all .3s ease;
+}
+
+nav img:hover {
+    transform: scale(1.2);
+}
+
+nav ul {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+}
+
+nav li {
+    margin: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.nav-links ul li a{
+  text-decoration: none;
+  padding: 7px 0;
+  position: relative;
+  margin: 0 30px;
+}
+
+.nav-links ul li a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2.5px;
+  background-color: #0f6823;
+  transition: width 0.3s ease;
+}
+
+.nav-links ul li a:hover::after {
+  width: 100%;
+}
+
+.btnLogIn {
+  font-size: 25px;
+  margin-right: 25px;
+  color: #1E7335;
+  transition: all .2s ease;
+  margin-bottom: 3px;
+}
+
+.btnLogIn:hover {
+  margin-bottom: 10px;
+}
+
+.btnsRight {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.cart-icon {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 25px;
+  margin-right: 15px;
+  border-radius: 100%;
+  position: relative;
+  color: #1E7335;
+  transition: all .2s ease;
+}
+
+.cart-icon:hover {
+  margin-bottom: 10px;
+}
+
+.cart-icon svg {
+  display: block;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: red;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+}
+
+/* Dropdown */
+.dropdown {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.dropdown > span {
+  color: #1E7335;
+  padding: 10px 15px;
+  font-family: "Anton", sans-serif;
+}
+
+/* Menú principal horizontal */
+.dropdown-menu {
+  list-style: none;
+  display: none; /* oculto al inicio */
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 300;
+  flex-direction: row; /* Cambia a fila */
+  min-width: 450px;
+  align-items: flex-start; /* Alinea las columnas arriba */
+  justify-content: center; 
+}
+
+/* Mostrar menú principal al hover */
+.dropdown:hover > .dropdown-menu {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  left: 0;
+}
+
+/* Items del menú principal */
+.dropdown-item {
+  position: relative;
+  padding: 30px 150px 30px 30px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column; /* para que el título y subcategorías estén uno debajo del otro */
+  align-items: start;
+  min-width: 150px; /* Cada columna tiene un ancho mínimo */
+  border-right: 1px solid #eee;
+  background: transparent;
+  color: #1D1D1D;
+}
+
+.dropdown-item span {
+  color: #1E7335;
+  font-weight: 1000;
+  font-family: "Afacad", sans-serif;
+  margin-bottom: 10px;
+  text-align: start;
+  width: 100%;
+  font-size: 28px;
+}
+
+.dropdown-item:last-child {
+  border-right: none; /* Quita el borde a la última columna */
+}
+
+/* Submenu SIEMPRE visible */
+.submenu {
+  list-style: none;
+  margin: 0;
+  background-color: #ffffff;
+  display: block;
+  width: 100%;         /* Ocupa todo el ancho de la columna */
+  min-width: unset;    /* Quita el min-width fijo */
+  border-radius: 6px;
+  left: 0;
+  position: static;    /* Asegura que esté debajo del título */
+  box-shadow: none;
+  padding: 0;
+  margin-top: 0;
+}
+
+
+.submenu li {
+  padding: 5px 0;
+  text-align: start;
+  width: 100%;
+}
+
+.submenu li a {
+  color: #333;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-family: "Afacad", sans-serif;
+  font-size: 15px;;
+}
+
+.submenu li a:hover {
+  color: #0f6823;
+}

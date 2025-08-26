@@ -1,0 +1,78 @@
+
+
+.aboutUs-bg {
+    background: linear-gradient(180deg, #ffffff, #9b9b9b);
+    padding-top: 100px;
+    padding-bottom: 50px;
+}
+
+.aboutUs-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+    font-family: "Afacad", sans-serif;
+    color: #323232;
+    line-height: 1.8;
+    display: block; /* Forzar bloque normal */
+}
+
+/* Subrayado animado */
+.aboutUs-title::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    transform-origin: center;
+    width: 60%;
+    height: 3px;
+    background: linear-gradient(90deg, #1E7335, #4CAF50);
+    transition: transform 0.4s ease;
+}
+
+
+.aboutUs-title:hover::after {
+    transform: translateX(-50%) scaleX(1);
+}
+
+.aboutUs-title {
+    display: block;
+    font-size: 50px;
+    color: #1E7335;
+    text-align: center;
+    margin-bottom: 40px;
+    font-family: "Anton", sans-serif;
+    text-shadow: 0px 2px 5px rgba(0,0,0,0.6);
+    line-height: 1.2;
+    position: relative;
+    transition: transform 0.4s ease;
+}
+
+.aboutUs-text {
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: justify;
+    word-spacing: 2px;
+    column-count: 1 !important; /* Forzar a una sola columna */
+    display: block !important; /* Forzar párrafo en bloque */
+}
+
+.aboutUs-text:first-letter {
+    font-size: 26px;
+    
+}
+
+/* Animación */
+.aboutUs-container {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
