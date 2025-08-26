@@ -1,0 +1,78 @@
+.cajaProducto {
+    width: 280px;
+    display: flex;  
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #323232;
+    border-radius: 15px;
+    transition: all .3s ease;
+    font-size: 20px;
+    margin: 20px;
+    flex-wrap: wrap;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    cursor: pointer;
+}
+
+.cajaProducto img {
+    max-width: 100%;
+    border-radius: 15px 15px 0 0;
+}
+
+.cajaProducto p {
+    font-family: 'Afacad';
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+}
+
+.cajaProducto a {
+    text-decoration: none;
+    color: inherit; /* para que no se ponga azul */
+}
+
+.cajaProducto:hover {
+    transform: scale(1.05);
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 10px 36px 0px, rgba(0, 0, 0, 0.1) 0px 0px 0px 1px;
+}
+
+
+.precio {
+  margin: 10px;
+  font-size: 20px;
+  color: #1E7335;
+  font-weight: bold;
+}
+
+.nombre {
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px;
+}
+
+.btnAddToCart {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: 'Afacad';
+  margin-bottom: 10px;
+  font-size: 16px;
+  width: 90%;
+}
+
+.btnAddToCart:hover {
+  background-color: #45a049;
+  text-decoration: none;
+}
+
+.btnCancel {
+  font-family: 'Afacad';
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 14px;  
+}
