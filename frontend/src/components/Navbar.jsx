@@ -18,40 +18,40 @@ function Navbar() {
   const { openCart, cartCount } = useCart();
 
   return (
-    <nav>
-      <div className="nav-toggle" id="navToggle">
-        <FontAwesomeIcon icon={faBars} />
-      </div>
+    <div>
+      <nav>
+        <div className="nav-toggle" id="navToggle">
+          <FontAwesomeIcon icon={faBars} />
+        </div>
 
-      <div className="nav-left" onClick={handleHomeClick}>
-        <Link to="/">
-          <img src={logo} alt="logo" />
-        </Link>
-      </div>
+        <div className="nav-left" onClick={handleHomeClick}>
+          <Link to="/">
+            <img src={logo} alt="logo" />
+          </Link>
+        </div>
 
-      <div className="nav-links" id="navLinks">
-        <ul>
-          <li onClick={handleHomeClick}><Link to="/">INICIO</Link></li>
-          <li>
-            <Link>
-              <DropdownMenu />
-            </Link>
-          </li>
-          <li><Link to="/about-us">ACERCA DE NOSOTROS</Link></li>
-          <li><Link to="/">FORMAS DE ENTREGA</Link></li>
-        </ul>
-      </div>
+        <div className="nav-links" id="navLinks">
+          <ul>
+            <li onClick={handleHomeClick}><Link to="/">INICIO</Link></li>
+            <li>
+              <DropdownMenu />  {/* ← Directamente sin Link wrapper */}
+            </li>
+            <li><Link to="/about-us">ACERCA DE NOSOTROS</Link></li>
+            <li><Link to="/">FORMAS DE ENTREGA</Link></li>
+          </ul>
+        </div>
 
-      <div className="btnsRight">
-        <Link to="/login" className="btnLogIn">
-          <FontAwesomeIcon icon={faUser} />
-        </Link>
-        <button onClick={openCart} className="cart-icon cart-btn">
-          <FontAwesomeIcon icon={faCartShopping} />
-          {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-        </button>
-      </div>
-    </nav>
+        <div className="btnsRight">
+          <Link to="/login" className="btnLogIn">
+            <FontAwesomeIcon icon={faUser} />
+          </Link>
+          <button onClick={openCart} className="cart-icon cart-btn">
+            <FontAwesomeIcon icon={faCartShopping} />
+            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+          </button>
+        </div>
+      </nav>
+    </div>
   );
 }
 

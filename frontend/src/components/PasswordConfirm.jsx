@@ -13,7 +13,7 @@ export default function PasswordConfirm({ value, onChange, match, color }) {
             <label htmlFor="confirmPassword" className="form__label">
                 Confirmar Contraseña
             </label>
-            <div style={{ marginTop: 5, fontWeight: 'bold', color }}>
+            <div style={{ marginTop: 5, fontWeight: 'bold', color, fontFamily: 'Afacad' }}>
                 {match}
             </div>
         </div>
