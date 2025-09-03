@@ -30,8 +30,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 
 
-
-
 // Initialize the server
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Servidor escuchando en http://localhost:${process.env.PORT || 3000}`);

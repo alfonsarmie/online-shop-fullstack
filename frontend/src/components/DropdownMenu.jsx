@@ -24,20 +24,24 @@ function DropdownMenu() {
       <span>PRODUCTOS</span>
       <ul className="dropdown-menu">
         {categories.map(cat => (
-          <li className="dropdown-item" key={cat.title}>
-            <Link to={`/productos/${cat.basePath}`}>
-              <span>{cat.title}</span>  
-            </Link>
-            <ul className="submenu">
-              {cat.items.map(subcat => (
-                <li key={subcat}>
-                  <Link to={`/productos/${cat.basePath}/${subcat.toLowerCase()}`}>
-                    {subcat}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
+        <li className="dropdown-item" key={cat.title}>
+          <span className="category-title">{cat.title}</span>  {/* Sin Link */}
+          <ul className="submenu">
+            {cat.items.map(subcat => (
+              <li key={subcat}>
+                <Link to={`/productos/${cat.basePath}/${subcat.toLowerCase()}`}>
+                  {subcat}
+                </Link>
+              </li>
+            ))}
+            {/* Opcional: agregar un enlace "Ver todo" */}
+            <li>
+              <Link to={`/productos/${cat.basePath}`} className="view-all">
+                Ver todos
+              </Link>
+            </li>
+          </ul>
+        </li>
         ))}
       </ul>
     </div>

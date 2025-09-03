@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import logo from '../assets/img/logo.png';
 import FormContainer from '../components/FormContainer.jsx';
-import Input from '../components/input.jsx';
+import Input from '../components/Input.jsx';
 import PasswordInput from '../components/PasswordInput.jsx';
 import PasswordConfirm from '../components/PasswordConfirm.jsx';
 import ImageUpload from '../components/ImageUpload.jsx';
 import '../styles/input.css';
 import '../styles/signUp.css';
+import axios from 'axios';
 
 export default function SignUp() {
     const [formData, setFormData] = useState({
@@ -70,8 +71,26 @@ export default function SignUp() {
         setIsFormValid(valid);
     }, [formData]);
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('http://localhost:3000/api/users/create', {
+                fullName: formData.fullName,
+                lastName: formData.lastName,
+                dni: formData.dni,
+                email: formData.email,
+                password: formData.password,
+                confirmPassword: formData.confirmPassword,
+                file: formData.file
+            });
+            console.log('Registro exitoso:', response.data);
+        } catch (error) {
+            console.error('Error en el registro:', error);
+        }
+    };
+
     return (
-        <FormContainer logo={logo} title="Introduce tus datos para registrarte">
+        <FormContainer logo={logo} title="Introduce tus datos para registrarte" onSubmit={handleSubmit}>
             <Input id="fullName" type="text" placeholder="Nombre" value={formData.fullName} onChange={handleChange} required />
             <Input id="lastName" type="text" placeholder="Apellido" value={formData.lastName} onChange={handleChange} required />
             <Input id="email" type="email" placeholder="Correo electrónico" value={formData.email} onChange={handleChange} required />
