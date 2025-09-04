@@ -1,11 +1,13 @@
 import Input from './input.jsx';
 
-export default function PasswordInput({ value, onChange, strength }) {
+export default function PasswordInput({ value, onChange, strength, placeholder }) {
+    const safeStrength = strength || { width: '0%', color: '#ccc', label: '' };
+
     return (
         <Input
             type="password"
             id="password"
-            placeholder="Contraseña"
+            placeholder={placeholder || "Contraseña"}
             value={value}
             onChange={onChange}
             required
@@ -13,11 +15,14 @@ export default function PasswordInput({ value, onChange, strength }) {
             <div className="strength-bar">
                 <div
                     className="strength-fill"
-                    style={{ width: strength.width, backgroundColor: strength.color }}
+                    style={{
+                        width: safeStrength.width,
+                        backgroundColor: safeStrength.color
+                    }}
                 ></div>
             </div>
-            <div id="strength-text" style={{ color: strength.color }}>
-                {strength.label}
+            <div id="strength-text" style={{ color: safeStrength.color }}>
+                {safeStrength.label}
             </div>
         </Input>
     );
