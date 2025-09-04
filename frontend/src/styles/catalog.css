@@ -1,0 +1,163 @@
+/* Estilos generales */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f9f9f9;
+  color: #333;
+  margin-top: 80px;
+}
+
+.catalogo-productos {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Afacad';
+}
+
+/* Encabezado de categoría */
+.categoria-header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #1E7335;
+}
+
+.breadcrumb {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.breadcrumb .active {
+  color: #1E7335;
+  font-weight: bold;
+}
+
+.categoria-header h1 {
+  color: #1E7335;
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+}
+
+.categoria-header p {
+  color: #666;
+  font-size: 1rem;
+}
+
+/* Filtros y ordenamiento */
+.filtros-ordenamiento {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding: 15px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+#ordenar {
+  font-family: 'Afacad';
+  font-size: 1rem;
+}
+
+.resultados-count {
+  font-weight: bold;
+  color: #1E7335;
+}
+
+.ordenamiento {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ordenamiento label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.ordenamiento select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+}
+
+.ordenamiento select:focus {
+  outline: none;
+  border-color: #1E7335;
+}
+
+/* Caja de productos */
+.products-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: center;
+}
+
+/* Paginación */
+.paginacion {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 30px;
+}
+
+.paginacion button {
+  padding: 8px 15px;
+  border: 1px solid #ddd;
+  background-color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.paginacion button:hover {
+  border-color: #1E7335;
+  color: #1E7335;
+}
+
+.paginacion .pagina-actual {
+  background-color: #1E7335;
+  color: white;
+  border-color: #1E7335;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .productos-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  
+  .filtros-ordenamiento {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .categoria-header h1 {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .catalogo-productos {
+    padding: 15px;
+  }
+  
+  .productos-grid {
+    grid-template-columns: 1fr;
+  }
+  
+    .producto-imagen {
+      height: 240px;
+    }
+  }

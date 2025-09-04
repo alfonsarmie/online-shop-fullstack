@@ -9,8 +9,8 @@ import remeraUrban from '../assets/img/REMERA-URBAN-BLANCA-FRENTE.png'
 import remeraUrban2 from '../assets/img/REMERA-URBAN-BLANCA-ESP.png'
 import remeraRiley from '../assets/img/REMERA-RILEY-FRENTE-NEGRO-VERDE.png'
 import remeraRiley2 from '../assets/img/REMERA-RILEY-ESP-NEGRO-VERDE.png'
-//import remeraRiley3 from '../assets/img/REMERA-RILEY-FRENTE-VERDE-BLANCO.png'
-//import remeraRiley4 from '../assets/img/REMERA-RILEY-ESP-VERDE-BLANCO.png'
+import remeraRiley3 from '../assets/img/REMERA-RILEY-FRENTE-VERDE-BLANCO.png'
+import remeraRiley4 from '../assets/img/REMERA-RILEY-ESP-VERDE-BLANCO.png'
 import shortNeo from '../assets/img/SHORT-NEO-FTE.png'
 import shortNeo2 from '../assets/img/SHORT-NEO-LAT.png'
 import campCardif from '../assets/img/CAMPERA-CARDIF-FRENTE.png'
@@ -77,7 +77,7 @@ const products = [
     },
     {
         id: 5,
-        name: "Remera riley",
+        name: "Remera riley - negro",
         price: 24000,
         img: remeraRiley,
         img2: remeraRiley2,
@@ -184,7 +184,18 @@ const products = [
         description: "Calza corta de compresión, diseñada para mejorar el rendimiento deportivo. Su tela elástica y transpirable brinda soporte y comodidad.",
         sizes: ["XS", "S", "M", "L", "XL"],
         stock: 8
+    },
+    {
+        id: 16,
+        name: "Remera riley - verde",
+        price: 24000,
+        img: remeraRiley3,
+        img2: remeraRiley4,
+        description: "Remera oficial de poliéster, pensada para máxima comodidad y rendimiento. Su diseño clásico y transpirable la convierte en la opción ideal para cualquier ocasión.",
+        sizes: ["XS", "S", "M", "L", "XL"],
+        stock: 8
     }
+    
 ];
 
 export default products;

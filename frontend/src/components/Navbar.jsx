@@ -34,7 +34,7 @@ function Navbar() {
           <ul>
             <li onClick={handleHomeClick}><Link to="/">INICIO</Link></li>
             <li>
-              <DropdownMenu />  {/* ← Directamente sin Link wrapper */}
+              <DropdownMenu />
             </li>
             <li><Link to="/about-us">ACERCA DE NOSOTROS</Link></li>
             <li><Link to="/">FORMAS DE ENTREGA</Link></li>

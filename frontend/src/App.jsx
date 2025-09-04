@@ -11,7 +11,8 @@ import SignUp from './pages/SignUp.jsx';
 import ProductDetails from './pages/ProductDetails.jsx';
 import Checkout from './pages/Checkout.jsx';
 import Payment from './pages/Payment';
-import AboutUs from './pages/AboutUs.jsx'; // Importing the AboutUs page
+import AboutUs from './pages/AboutUs.jsx';
+import Catalog from './pages/Catalog.jsx';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/catalog" element={<Catalog />} />
         </Routes>
         <Footer />
         <Cart />
