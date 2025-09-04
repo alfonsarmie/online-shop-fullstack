@@ -10,6 +10,7 @@ const createUser = async(req = request, res = response) => {
   
 
   try {
+    console.log(req.body);
     
     const { 
       dni, 
@@ -19,7 +20,8 @@ const createUser = async(req = request, res = response) => {
       password,
       imgProfile } = req.body;
     
-  
+    
+
       // Encrypt the password
       const salt = bcrypt.genSaltSync(10);
       const hashedPassword = bcrypt.hashSync(password, salt);
