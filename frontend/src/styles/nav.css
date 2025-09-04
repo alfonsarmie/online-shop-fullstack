@@ -81,6 +81,25 @@ nav li {
   margin-bottom: 10px;
 }
 
+.userOptions {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #1E7335;
+  transition: all .2s ease;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  font-family: 'Anton';
+  font-size: 18px;
+  padding: 5px 10px;
+  border-radius: 30px;
+}
+
+.userOptions:hover {
+  background-color: #343434;
+}
+
 .btnsRight {
   display: flex;
   align-items: center;
