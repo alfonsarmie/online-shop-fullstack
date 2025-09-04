@@ -13,6 +13,8 @@ import Checkout from './pages/Checkout.jsx';
 import Payment from './pages/Payment';
 import AboutUs from './pages/AboutUs.jsx';
 import Catalog from './pages/Catalog.jsx';
+import ProfileEdit from './pages/ProfileEdit';
+
 
 function App() {
   return (
@@ -23,12 +25,13 @@ function App() {
           <Route path="/" element={<Index />} />
           <Route path="/products" element={<Products />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/SignUp" element={<SignUp />} />
+          <Route path="/signUp" element={<SignUp />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/catalog" element={<Catalog />} />
+          <Route path="/profile" element={<ProfileEdit />} />
         </Routes>
         <Footer />
         <Cart />
