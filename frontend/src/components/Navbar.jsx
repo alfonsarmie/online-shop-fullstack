@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/nav.css';
 import '../index.css';
 import logo from '../assets/img/logo.png';
@@ -6,16 +6,31 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faCartShopping, faBars } from '@fortawesome/free-solid-svg-icons';
 import { useCart } from './CartContext';
 import DropdownMenu from './DropdownMenu';
-import { useNavigate } from 'react-router-dom';
 
-function Navbar() {
+function Navbar({ user, setUser }) {
   const navigate = useNavigate();
+  const { openCart, cartCount } = useCart();
 
+  // Navigate to home and scroll to top
   const handleHomeClick = () => {
     navigate('/');
-    window.scrollTo(0, 0); // Scroll al top
+    window.scrollTo(0, 0);
   };
-  const { openCart, cartCount } = useCart();
+
+  // Logout function (commented out for now)
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    navigate('/'); // Redirige al home al cerrar sesión
+  };
+
+  // Toggle options menu
+  const openOptions = () => {
+    const optionsMenu = document.getElementById('optionsMenu');
+    if (optionsMenu) {
+      optionsMenu.classList.toggle('show');
+    }
+  };
 
   return (
     <div>
@@ -33,18 +48,31 @@ function Navbar() {
         <div className="nav-links" id="navLinks">
           <ul>
             <li onClick={handleHomeClick}><Link to="/">INICIO</Link></li>
-            <li>
-              <DropdownMenu />
-            </li>
+            <li><DropdownMenu /></li>
             <li><Link to="/about-us">ACERCA DE NOSOTROS</Link></li>
             <li><Link to="/">FORMAS DE ENTREGA</Link></li>
           </ul>
         </div>
 
         <div className="btnsRight">
-          <Link to="/login" className="btnLogIn">
-            <FontAwesomeIcon icon={faUser} />
-          </Link>
+
+          {/* conditional rendering */}
+          {user ? (
+            <>
+              <button onClick={openOptions} className="userOptions"><span className="user-name">Hola, {user.name}!</span></button>
+              {user.role === 'admin' && (
+                <Link to="/admin" className="admin-link">Panel Admin</Link>
+              )}
+
+              <button onClick={handleLogout} className="userOptions">Cerrar Sesión</button>
+
+            </>
+          ) : (
+            <Link to="/login" className="btnLogIn">
+              <FontAwesomeIcon icon={faUser} />
+            </Link>
+          )}
+
           <button onClick={openCart} className="cart-icon cart-btn">
             <FontAwesomeIcon icon={faCartShopping} />
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
