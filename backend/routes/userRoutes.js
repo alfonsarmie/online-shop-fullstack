@@ -29,8 +29,6 @@ router.post("/create", [
     check('dni', 'DNI must be a number').optional().isNumeric(),
     check('dni', 'DNI must be at most 200 characters').optional().isLength({ max: 200 }),
     check('dni').custom( existsDni ), // Custom validator to check if DNI exists
-    check('imgProfile', 'Image profile URL must be a valid one').optional().isURL(),
-    check('imgProfile', 'Image profile URL must be at most 200 characters').optional().isLength({ max: 200 }),
     validateFields
 
 ], createUser);
