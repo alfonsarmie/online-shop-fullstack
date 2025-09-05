@@ -15,6 +15,7 @@ import Payment from './pages/Payment';
 import AboutUs from './pages/AboutUs.jsx';
 import Catalog from './pages/Catalog.jsx';
 import Admin from './pages/Admin.jsx';
+import ProfileEdit from './pages/profileEdit.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -39,6 +40,7 @@ function App() {
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/profile-edit" element={<ProfileEdit user={user} setUser={setUser} />} />
         </Routes>
         <Footer />
         <Cart />
