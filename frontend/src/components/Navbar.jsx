@@ -21,7 +21,7 @@ function Navbar({ user, setUser }) {
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUser(null);
-    navigate('/'); // Redirige al home al cerrar sesión
+    navigate('/'); // Redirect to home after logout
   };
 
   // Toggle options menu
