@@ -1,5 +1,4 @@
 import '../index.css';
-import '../styles/styles.css';
 import '../styles/containerHome.css';
 import { useEffect } from 'react';
 

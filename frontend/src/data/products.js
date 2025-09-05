@@ -32,7 +32,7 @@ import topGlow2 from '../assets/img/TOP-GLOW-ESP.png';
 import calzaSpike from '../assets/img/CALZA-SPIKE-FRENTE.png';
 import calzaSpike2 from '../assets/img/CALZA-SPIKE-ESP.png';
 
-
+// Array of product objects with details
 const products = [
     {
         id: 1,

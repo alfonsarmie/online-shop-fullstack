@@ -7,36 +7,38 @@ import '../styles/profileEdit.css';
 
 const ProfileEdit = () => {
     const [profile, setProfile] = useState({
-    nombre: '',
+    name: '',
     email: '',
-    telefono: '',
-    imagen: null,
+    phone: '',
   });
 
-  const [preview, setPreview] = useState(null);
+  // State for password fields
   const [passwords, setPasswords] = useState({
     actual: '',
-    nueva: '',
-    confirmar: '',
+    new: '',
+    confirm: '',
   });
 
+  // Handlers for input changes
   const handleProfileChange = e => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
-
+  // Handlers for password changes
   const handlePasswordChange = e => {
     setPasswords({ ...passwords, [e.target.name]: e.target.value });
   };
 
+  // Handlers for form submissions
   const handleProfileSubmit = e => {
     e.preventDefault();
     alert('Perfil actualizado');
   };
 
+  // Handler for password form submission
   const handlePasswordSubmit = e => {
     e.preventDefault();
-    if (passwords.nueva !== passwords.confirmar) {
+    if (passwords.new !== passwords.confirm) {
       alert('Las contraseñas no coinciden');
       return;
     }
@@ -51,7 +53,7 @@ const ProfileEdit = () => {
         <Input
           label="Nombre"
           name="nombre"
-          value={profile.nombre}
+          value={profile.new}
           onChange={handleProfileChange}
           placeholder={'Ingresa tu nombre'}
         />
@@ -65,7 +67,7 @@ const ProfileEdit = () => {
         <Input
           label="Teléfono"
           name="telefono"
-          value={profile.telefono}
+          value={profile.phone}
           placeholder={'Ingresa tu teléfono'}
           onChange={handleProfileChange}
         />
@@ -84,14 +86,14 @@ const ProfileEdit = () => {
         <PasswordInput
           label="Nueva contraseña"
           name="nueva"
-          value={passwords.nueva}
+          value={passwords.new}
           onChange={handlePasswordChange}
           placeholder={'Ingresa tu nueva contraseña'}
         />
         <PasswordConfirm
           label="Confirmar nueva contraseña"
           name="confirmar"
-          value={passwords.confirmar}
+          value={passwords.confirm}
           onChange={handlePasswordChange}
           placeholder={'Confirma tu nueva contraseña'}
         />

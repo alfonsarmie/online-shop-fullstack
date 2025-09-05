@@ -5,11 +5,12 @@ import Product from '../components/Product';
 import { useCart } from '../components/CartContext.jsx';
 import ProductFilter from '../components/ProductFilter.jsx';
 
-
+// Page for displaying product catalog with filtering and sorting
 const Catalog = () => {
 
     const { addToCart } = useCart();
 
+    // useEffect to handle reveal animations on scroll
     useEffect(() => {
     const reveals = document.querySelectorAll('.reveal');
 
@@ -24,12 +25,14 @@ const Catalog = () => {
 
     reveals.forEach(el => observer.observe(el));
 
-    // Cleanup: desconectar observer al desmontar el componente
+    // Cleanup: disconnect observer on component unmount
     return () => observer.disconnect();
   }, []);
 
+  // State for active filter
   const [activeFilter, setActiveFilter] = useState(null);
 
+  // Function to get sorted products based on active filter
   const getSortedProducts = () => {
     if (!activeFilter) return products;
     
@@ -53,16 +56,16 @@ const Catalog = () => {
 
   return (
     <div className="catalogo-productos">
-      {/* Encabezado de la categoría */}
+      {/* Category Header */}
       <div className="categoria-header">
         <div className="breadcrumb">
-          <span>Inicio</span> / <span>Hombre</span> / <span className="active">Remeras</span> {/* reemplazar por el link real */}
+          <span>Inicio</span> / <span>Hombre</span> / <span className="active">Remeras</span> {/* Replace with real link */}
         </div>
         <h1>Remeras de Hombre</h1>
         <p>Explorá nuestra indumentaria</p>
       </div>
 
-      {/* Filtros y ordenamiento */}
+      {/* Filters and Sorting */}
       <div className="filtros-ordenamiento">
         <div className="resultados-count">
           <span>{products.length} products</span>
@@ -75,7 +78,7 @@ const Catalog = () => {
 
       </div>
 
-    {/* Grid de products */}
+    {/* Product Grid */}
         <div className="products-grid">
           {sortedProducts.map(product => (
             <Product 
@@ -86,9 +89,9 @@ const Catalog = () => {
           ))}
         </div>
 
-        {/* Paginación */}
-      <div className="paginacion">
-        <button className="pagina-actual">1</button>
+        {/* Pagination */}
+      <div className="pagination">
+        <button className="current-page">1</button>
         <button>2</button>
         <button>3</button>
         <button>Siguiente →</button>

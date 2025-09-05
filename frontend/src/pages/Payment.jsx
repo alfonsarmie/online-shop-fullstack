@@ -10,23 +10,27 @@ const Payment = () => {
   const { cartItems, clearCart } = useCart();
   const navigate = useNavigate();
 
-  // Calcula el total
+  // Calculate total amount
   const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   const handlePaymentSuccess = () => {
-    // Lógica cuando el pago es exitoso
+    // Logic when payment is successful
     clearCart();
-    navigate('/payment-success'); // Puedes crear esta página después
+    navigate('/payment-success'); // Create this route/page
   };
 
   return (
     <div className="payment-container">
     
       <div className='form-left'>
+
         <ProgressContainer  className='progress-container'/>
         <div className="payment-summary">
         <h2>Resumen de tu compra</h2>
+
         <div className="order-items">
+
+          {/* Map through cart items */}
           {cartItems.map((item) => (
             <div key={`${item.id}-${item.size}`} className="order-item">
               <img src={item.img} alt={item.name} />

@@ -5,25 +5,29 @@ import products from '../data/products';
 import '../styles/productDetails.css';
 import ProductGallery from '../components/ProductGallery';
 
+// Page for displaying detailed product information
 function ProductDetails() {
-  const { id } = useParams();
+  const { id } = useParams(); 
   const { addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState(null);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Fetch product details based on ID
   useEffect(() => {
     const foundProduct = products.find(p => p.id === parseInt(id));
     setProduct(foundProduct);
     setLoading(false);
   }, [id]);
 
+  // Handler for adding product to cart
   const handleAddToCart = () => {
     if (!selectedSize) {
       alert("Por favor selecciona un talle");
       return;
     }
 
+    // Add product with selected size to cart
     addToCart({
       ...product,
       size: selectedSize,
@@ -31,11 +35,12 @@ function ProductDetails() {
     });
   };
 
+  // Loading and error states
   if (loading) return <div className="loading">Cargando producto...</div>;
   if (!product) return (
     <div className="not-found">
       <h2>Producto no encontrado</h2>
-      <Link to="/products" className="btn-back">Volver a productos</Link>
+      <Link to="/" className="btn-back">Volver a inicio</Link>
     </div>
   );
 
