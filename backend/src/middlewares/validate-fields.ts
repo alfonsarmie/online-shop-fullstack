@@ -3,6 +3,8 @@ import { Request, Response, NextFunction } from "express";
 
 export const validateFields = (req: Request, res: Response, next: NextFunction): void => {
   const errors = validationResult(req);
+  
+  // If there are validation errors, respond with 400 and the errors
   if (!errors.isEmpty()) {
     res.status(400).json({ errors: errors.array() });
     return;

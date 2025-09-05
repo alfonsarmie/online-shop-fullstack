@@ -4,6 +4,7 @@ exports.validateFields = void 0;
 const express_validator_1 = require("express-validator");
 const validateFields = (req, res, next) => {
     const errors = (0, express_validator_1.validationResult)(req);
+    // If there are validation errors, respond with 400 and the errors
     if (!errors.isEmpty()) {
         res.status(400).json({ errors: errors.array() });
         return;

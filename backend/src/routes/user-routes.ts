@@ -23,8 +23,7 @@ router.post("/create", [
   check('dni', 'DNI must be a number').optional().isNumeric(),
   check('dni', 'DNI must be at most 200 characters').optional().isLength({ max: 200 }),
   check('dni').custom(existsDni),
-  check('imgProfile', 'Image profile URL must be a valid one').optional().isURL(),
-  check('imgProfile', 'Image profile URL must be at most 200 characters').optional().isLength({ max: 200 }),
+  //NOTE: Img validations were removed since user wont have profile img
   validateFields
 ], createUser);
 
@@ -32,6 +31,7 @@ router.delete("/delete/:id", [
   validateJWT,
   check('id', 'ID must be a number').isNumeric(),
   check('id').custom(existsUserById),
+
   validateFields
 ], deleteUser);
 

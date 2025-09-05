@@ -23,8 +23,7 @@ router.post("/create", [
     (0, express_validator_1.check)('dni', 'DNI must be a number').optional().isNumeric(),
     (0, express_validator_1.check)('dni', 'DNI must be at most 200 characters').optional().isLength({ max: 200 }),
     (0, express_validator_1.check)('dni').custom(db_validator_helper_1.existsDni),
-    (0, express_validator_1.check)('imgProfile', 'Image profile URL must be a valid one').optional().isURL(),
-    (0, express_validator_1.check)('imgProfile', 'Image profile URL must be at most 200 characters').optional().isLength({ max: 200 }),
+    //NOTE: Img validations were removed since user wont have profile img
     validate_fields_1.validateFields
 ], user_controller_1.createUser);
 router.delete("/delete/:id", [
