@@ -1,13 +1,18 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { CartItem, CartContextType } from '../types/cart'; // Importar tipos
 
-const CartContext = createContext(); // Create context
+const CartContext = createContext<CartContextType | undefined>(undefined); // Create context con tipo
 
-function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState([]); // State to hold cart items
+interface CartProviderProps {
+  children: ReactNode;
+}
+
+function CartProvider({ children }: CartProviderProps) {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]); // State to hold cart items con tipo
   const [isCartOpen, setIsCartOpen] = useState(false); // State to manage cart visibility
 
   // Add item to cart or increase quantity if it already exists
-  const addToCart = useCallback((product) => {
+  const addToCart = useCallback((product: CartItem) => {
 
     // Check if product with same name and size exists
     setCartItems(prevItems => {
@@ -31,7 +36,7 @@ function CartProvider({ children }) {
   }, []);
 
   // Remove item from cart based on name and size
-  const removeFromCart = useCallback((productName, productSize) => {
+  const removeFromCart = useCallback((productName: string, productSize?: string) => {
     setCartItems(prevItems => 
       prevItems.filter(item => 
         !(item.name === productName && item.size === productSize)
@@ -57,7 +62,7 @@ function CartProvider({ children }) {
 
 // Custom hook to use cart context
 // MOVER A OTRO ARCHIVO PARA QUE NO SALGA EL ERROR
-export function useCart() {
+export function useCart(): CartContextType {
   const context = useContext(CartContext);
 
   // Ensure hook is used within CartProvider

@@ -5,12 +5,21 @@ import { faCaretDown, faFilter } from '@fortawesome/free-solid-svg-icons';
 import '../styles/products.css';
 import '../styles/productFilters.css';
 
-const ProductFilter = ({ activeFilter, onFilterChange }) => {
+// Define filter types
+type FilterType = 'price_asc' | 'price_desc' | 'name_asc' | '';
+
+// Props interface for ProductFilter component
+interface ProductFilterProps {
+  activeFilter: FilterType;
+  onFilterChange: (filterType: FilterType) => void;
+}
+
+const ProductFilter = ({ activeFilter, onFilterChange }: ProductFilterProps) => {
     // State for filter dropdown visibility
   const [showFilters, setShowFilters] = useState(false);
 
   // Handle filter selection and close dropdown
-  const handleFilterClick = (filterType) => {
+  const handleFilterClick = (filterType: FilterType) => {
     onFilterChange(filterType);
     setShowFilters(false);
   };

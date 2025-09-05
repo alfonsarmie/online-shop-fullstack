@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import '../styles/cart.css';
 import { useCart } from './CartContext'; // custom hook to use cart context
+import { CartItem } from '../types/cart'; // Import CartItem type
 
 function Cart() {
 
@@ -33,7 +34,7 @@ function Cart() {
           {cartItems.length === 0 ? (
             <p>Tu carrito está vacío</p>
           ) : (
-            cartItems.map((item) => (
+            cartItems.map((item: CartItem) => (
               <div key={`${item.name}-${item.size}`} className="cart-item">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <img src={item.img} alt={item.name} width="60" style={{ borderRadius: '8px' }} />

@@ -1,24 +1,34 @@
 import { Link } from 'react-router-dom';
 import '../styles/product.css';
 import { useState } from 'react';
+import { ProductWithSize } from '../types/product';
 
-function Product({ id, name, price, img, onAddToCart }) {
+// Props interface for Product component
+interface ProductProps {
+  id: number;
+  name: string;
+  price: number;
+  img: string;
+  onAddToCart: (product: ProductWithSize) => void;
+}
+
+function Product({ id, name, price, img, onAddToCart }: ProductProps) {
   // State for selected size and size selector visibility
-  const [selectedSize, setSelectedSize] = useState(null); 
+  const [selectedSize, setSelectedSize] = useState<string | null>(null); 
   const [showSizeSelector, setShowSizeSelector] = useState(false); 
   const sizes = ['XS', 'S', 'M', 'L', 'XL']; 
 
   // Show size selector when add to cart is clicked
-  const handleAddToCartClick = (e) => {
+  const handleAddToCartClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setShowSizeSelector(true);
   };
 
   // Handle size selection and add product to cart
-  const handleSizeSelection = (size) => {
+  const handleSizeSelection = (size: string) => {
     setSelectedSize(size);
     onAddToCart({ 
-      id, 
+      id: id.toString(), // Convertir number a string
       name, 
       price, 
       img, 

@@ -1,7 +1,6 @@
 import wspBtn from '../assets/img/whatsapp.png';
 import '../styles/whatsappButton.css';
 
-
 // Floating WhatsApp button for instant customer contact
 function WhatsAppButton() {
     return (

@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import "../styles/productGallery.css";
 
-const ProductGallery = ({ img1, img2 }) => {
+// Props interface for ProductGallery component
+interface ProductGalleryProps {
+  img1: string;
+  img2: string;
+}
+
+const ProductGallery = ({ img1, img2 }: ProductGalleryProps) => {
   const images = [
     img1,
     img2,

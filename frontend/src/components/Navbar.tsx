@@ -7,7 +7,19 @@ import { faUser, faCartShopping, faBars } from '@fortawesome/free-solid-svg-icon
 import { useCart } from './CartContext';
 import DropdownMenu from './DropdownMenu';
 
-function Navbar({ user, setUser }) {
+// User interface
+interface User {
+  name: string;
+  role: string;
+}
+
+// Navbar props interface
+interface NavbarProps {
+  user: User | null;
+  setUser: (user: User | null) => void;
+}
+
+function Navbar({ user, setUser }: NavbarProps) {
   const navigate = useNavigate();
   const { openCart, cartCount } = useCart();
 

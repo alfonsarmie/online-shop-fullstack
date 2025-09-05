@@ -1,7 +1,23 @@
-import Input from './input.jsx';
+import Input from './Input';
+import { ChangeEvent } from 'react';
+
+// Interface for strength object
+interface Strength {
+  width: string;
+  color: string;
+  label: string;
+}
+
+// Props interface for PasswordInput component
+interface PasswordInputProps {
+  value: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  strength?: Strength;
+  placeholder?: string;
+}
 
 // Password input component with strength indicator
-export default function PasswordInput({ value, onChange, strength, placeholder }) {
+export default function PasswordInput({ value, onChange, strength, placeholder }: PasswordInputProps) {
     // Default strength values to prevent errors
     const safeStrength = strength || { width: '0%', color: '#ccc', label: '' };
 

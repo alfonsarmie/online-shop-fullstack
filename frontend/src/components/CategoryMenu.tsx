@@ -1,7 +1,14 @@
 import { Link } from 'react-router-dom';
 
+// Props interface for CategoryMenu component
+interface CategoryMenuProps {
+  title: string;
+  items: string[];
+  basePath: string;
+}
+
 // Component to display a category menu with links
-function CategoryMenu({ title, items, basePath }) {
+function CategoryMenu({ title, items, basePath }: CategoryMenuProps) {
   return (
     <div className="dropdown-category">
       <h4>{title}</h4>
