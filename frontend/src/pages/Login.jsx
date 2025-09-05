@@ -12,6 +12,7 @@ export default function LoginForm({ setUser }) {
     const [password, setPassword] = useState('');
     const isFormValid = email.trim() !== '' && password.trim() !== '';
     const navigate = useNavigate();
+    const [message, setMessage] = useState('');
 
     const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,14 +27,20 @@ export default function LoginForm({ setUser }) {
         localStorage.setItem('token', token);
         setUser(userData);
 
+        setMessage('Login exitoso!');
+
         // Redirigir según rol
-        if (userData.role === 'admin') {
-        navigate('/admin'); // Página del panel admin
-        } else {
-        navigate('/'); // Página normal para cliente
-        }
+        setTimeout(() => {
+            if (userData.role === 'admin') {
+            navigate('/admin');
+            } else {
+            navigate('/');
+            }
+        }, 1500);
+
     } catch (error) {
         console.error('Login failed:', error.response?.data || error.message);
+        setMessage('Error al iniciar sesión');
     }
     };
 
@@ -52,8 +59,12 @@ export default function LoginForm({ setUser }) {
             placeholder="Contraseña" 
             value={password} 
             onChange={(e) => setPassword(e.target.value)} required />
+
+            {message && <p className='success-message' style={{ marginTop: "10px", color: message.includes('Error') ? 'red' : 'green' }}>{message}</p>}
+
             <button id="login-btn" disabled={!isFormValid} className={isFormValid ? "allow" : "disabled"}>INICIAR SESIÓN</button>
             <p className="msjreg">¿Todavía no estás registrado? <a className="link_signUp" href="/SignUp">Registrate</a></p>
+
         </FormContainer>
     );
 }
