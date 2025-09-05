@@ -1,13 +1,19 @@
-import { useState } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/img/logo.png';
-import FormContainer from '../components/FormContainer.jsx';
-import Input from '../components/Input.jsx';
+import FormContainer from '../components/FormContainer';
+import Input from '../components/Input';
 import '../styles/input.css';
 import '../styles/login.css';
 import axios from 'axios';
+import { User } from '../types/user';
 
-export default function LoginForm({ setUser }) {
+// Props interface for LoginForm component
+interface LoginFormProps {
+  setUser: (user: User | null) => void;
+}
+
+export default function LoginForm({ setUser }: LoginFormProps) {
 
     // useState to handle form data
     const [email, setEmail] = useState('');
@@ -17,7 +23,7 @@ export default function LoginForm({ setUser }) {
     const [message, setMessage] = useState('');
 
     // Handle form submission
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
@@ -43,7 +49,7 @@ export default function LoginForm({ setUser }) {
             }
         }, 1500);
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Login failed:', error.response?.data || error.message);
         setMessage('Error al iniciar sesión');
     }
@@ -56,14 +62,14 @@ export default function LoginForm({ setUser }) {
             type="email" 
             placeholder="Correo electrónico" 
             value={email} 
-            onChange={(e) => setEmail(e.target.value)} required />
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} required />
 
             <Input 
             id="password" 
             type="password" 
             placeholder="Contraseña" 
             value={password} 
-            onChange={(e) => setPassword(e.target.value)} required />
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} required />
 
             {/* Display success or error message */}
             {message && <p className='success-message' style={{ marginTop: "10px", color: message.includes('Error') ? 'red' : 'green' }}>{message}</p>}

@@ -1,12 +1,17 @@
+import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import '../styles/aboutUs.css';
 import '../styles/nav.css';
+import { User } from '../types/user';
 
 // About Us page component
 const AboutUs = () => {
+  // State for user authentication
+  const [user, setUser] = useState<User | null>(null);
+
   return (
     <>
-      <Navbar />
+      <Navbar user={user} setUser={setUser} />
 
       <div className="aboutUs-bg">
         
@@ -14,7 +19,7 @@ const AboutUs = () => {
           <h1 className="aboutUs-title">¿Quiénes Somos?</h1>
 
           <p className="aboutUs-text">
-            Fundado el 30 de junio de 1887 en el entonces “Pueblo de Alberdi” —anexado a la ciudad de Rosario en 1919—, el
+            Fundado el 30 de junio de 1887 en el entonces "Pueblo de Alberdi" —anexado a la ciudad de Rosario en 1919—, el
             Rosario Rowing Club nació estrechamente ligado a la historia del ferrocarril y la influencia británica. Desde
             entonces, ha sido más que una institución deportiva: es un símbolo de tradición, amistad y amor por el deporte.
           </p>
@@ -35,7 +40,7 @@ const AboutUs = () => {
           <p className="aboutUs-text">
             Esta tienda oficial nace para extender ese sentimiento fuera de las instalaciones del club. Vestir nuestros colores
             no es solo llevar una prenda: es mostrar con orgullo el espíritu y la historia del Rosario Rowing Club. Cada remera,
-            buzo o accesorio es una forma de decir “Soy parte de esto”. Porque aquí, compartir los mismos colores es compartir
+            buzo o accesorio es una forma de decir "Soy parte de esto". Porque aquí, compartir los mismos colores es compartir
             una misma pasión.
           </p>
         </main>

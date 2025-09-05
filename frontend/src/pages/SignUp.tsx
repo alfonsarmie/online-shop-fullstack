@@ -1,17 +1,35 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import logo from '../assets/img/logo.png';
-import FormContainer from '../components/FormContainer.jsx';
-import Input from '../components/Input.jsx';
-import PasswordInput from '../components/PasswordInput.jsx';
-import PasswordConfirm from '../components/PasswordConfirm.jsx';
+import FormContainer from '../components/FormContainer';
+import Input from '../components/Input';
+import PasswordInput from '../components/PasswordInput';
+import PasswordConfirm from '../components/PasswordConfirm';
 import '../styles/input.css';
 import '../styles/signUp.css';
 import axios from 'axios';
 
+// Interface for form data
+interface FormData {
+  name: string;
+  surname: string;
+  dni: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+// Interface for password strength
+interface PasswordStrength {
+  strength: number;
+  label: string;
+  color: string;
+  width: string;
+}
+
 export default function SignUp() {
 
   // useState to handle form data
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     surname: '',
     dni: '',
@@ -21,12 +39,12 @@ export default function SignUp() {
   });
 
   // State for password strength, match message, and form validity
-  const [passwordStrength, setPasswordStrength] = useState({ strength: 0, label: '', color: '', width: '0%' });
+  const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>({ strength: 0, label: '', color: '', width: '0%' });
   const [matchMessage, setMatchMessage] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
 
   // Handle input changes
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData(prev => ({ ...prev, [id]: value }));
   };
@@ -61,13 +79,22 @@ export default function SignUp() {
       setMatchMessage('Las contraseñas no coinciden');
     }
 
-    // Form validity logic
-    const valid = name && surname && email && dni && password && confirmPassword && password === confirmPassword;
-    setIsFormValid(valid);
+// Form validity logic
+const valid = Boolean(
+  name && 
+  surname && 
+  email && 
+  dni && 
+  password && 
+  confirmPassword && 
+  password === confirmPassword
+);
+
+setIsFormValid(valid);
   }, [formData]);
 
   // Handle form submission
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
@@ -80,7 +107,7 @@ export default function SignUp() {
       });
 
       console.log("Registro exitoso:", response.data);
-    } catch (error) {
+    } catch (error: any) {
       if (error.response) {
         console.error("Error en la respuesta:", error.response.data);
       } else {

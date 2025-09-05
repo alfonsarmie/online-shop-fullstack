@@ -6,12 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faCartShopping, faBars } from '@fortawesome/free-solid-svg-icons';
 import { useCart } from './CartContext';
 import DropdownMenu from './DropdownMenu';
-
-// User interface
-interface User {
-  name: string;
-  role: string;
-}
+import { User } from '../types/user';
 
 // Navbar props interface
 interface NavbarProps {

@@ -31,9 +31,10 @@ import topGlow from '../assets/img/TOP-GLOW-FRENTE.png';
 import topGlow2 from '../assets/img/TOP-GLOW-ESP.png';
 import calzaSpike from '../assets/img/CALZA-SPIKE-FRENTE.png';
 import calzaSpike2 from '../assets/img/CALZA-SPIKE-ESP.png';
+import { Product } from '../types/product';
 
 // Array of product objects with details
-const products = [
+const products: Product[] = [ // ← Añade el tipo Product[]
     {
         id: 1,
         name: "Buzo halo",
