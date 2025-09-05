@@ -4,6 +4,7 @@ export const generateJWT = (userId: string | number): Promise<string> => {
   return new Promise((resolve, reject) => {
     const payload = { userId };
     
+    // Sign the JWT
     jwt.sign(
       payload, 
       process.env.JWT_SECRET || 'default_secret', 
