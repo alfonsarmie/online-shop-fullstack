@@ -1,10 +1,10 @@
 import React from 'react';
 import { useCart } from '../components/CartContext';
 import { useNavigate } from 'react-router-dom';
-import '../styles/payment.css'; // Crearemos este archivo después
+import '../styles/payment.css';
 import mpLogo from '../assets/img/mercado-pago-logo.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; 
 import ProgressContainer from '../components/ProgressContainer';
+import { CartItem } from '../types/cart';
 
 const Payment = () => {
   const { cartItems, clearCart } = useCart();
@@ -24,14 +24,14 @@ const Payment = () => {
     
       <div className='form-left'>
 
-        <ProgressContainer  className='progress-container'/>
+        <ProgressContainer className='progress-container'/>
         <div className="payment-summary">
         <h2>Resumen de tu compra</h2>
 
         <div className="order-items">
 
           {/* Map through cart items */}
-          {cartItems.map((item) => (
+          {cartItems.map((item: CartItem) => (
             <div key={`${item.id}-${item.size}`} className="order-item">
               <img src={item.img} alt={item.name} />
               <div>

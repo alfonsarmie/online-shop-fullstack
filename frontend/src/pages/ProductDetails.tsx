@@ -4,19 +4,21 @@ import { useCart } from '../components/CartContext';
 import products from '../data/products';
 import '../styles/productDetails.css';
 import ProductGallery from '../components/ProductGallery';
+import { Product } from '../types/product';
+import { ProductWithSize } from '../types/product';
 
 // Page for displaying detailed product information
 function ProductDetails() {
-  const { id } = useParams(); 
+  const { id } = useParams<{ id: string }>(); 
   const { addToCart } = useCart();
-  const [selectedSize, setSelectedSize] = useState(null);
-  const [product, setProduct] = useState(null);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Fetch product details based on ID
   useEffect(() => {
-    const foundProduct = products.find(p => p.id === parseInt(id));
-    setProduct(foundProduct);
+    const foundProduct = products.find(p => p.id === parseInt(id!));
+    setProduct(foundProduct || null);
     setLoading(false);
   }, [id]);
 
@@ -27,12 +29,15 @@ function ProductDetails() {
       return;
     }
 
+    if (!product) return;
+
     // Add product with selected size to cart
     addToCart({
       ...product,
+      id: product.id.toString(), // Convertir number a string
       size: selectedSize,
       quantity: 1
-    });
+    } as ProductWithSize);
   };
 
   // Loading and error states

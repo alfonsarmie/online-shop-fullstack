@@ -1,8 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import '../styles/checkout.css';
 import { useCart } from '../components/CartContext';
 import { useNavigate } from 'react-router-dom';
 import ProgressContainer from '../components/ProgressContainer';
+import { CartItem } from '../types/cart';
+
+// Form data interface
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+}
 
 // Page for handling checkout process
 const Checkout = () => {
@@ -23,27 +31,27 @@ const Checkout = () => {
     const total = subtotal;
 
     // Form states
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormData>({
         name: '',
         email: '',
         phone: '',
     });
 
     // Handle input changes
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
     // Handle form submission
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log('Datos enviados:', formData);
         navigate('/payment');
     };
 
     // Function to format prices
-    const formatPrice = (price) => {
+    const formatPrice = (price: number) => {
         return price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
@@ -108,7 +116,7 @@ return (
                 {cartItems.length === 0 ? (
                     <p>No hay artículos en el carrito</p>
                 ) : (
-                    cartItems.map((item) => (
+                    cartItems.map((item: CartItem) => (
                         <div key={`${item.name}-${item.size || ''}`} className="cart-item">
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <img 

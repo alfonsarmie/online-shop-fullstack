@@ -44,12 +44,17 @@ function CartProvider({ children }: CartProviderProps) {
     );
   }, []);
 
+  const clearCart = useCallback(() => {
+    setCartItems([]);
+  }, []);
+
   return (
     // Provide cart context values and functions to children components
     <CartContext.Provider value={{
       cartItems, // current items in cart
       addToCart, // function to add items
       removeFromCart, // function to remove items
+      clearCart, // function to clear cart
       isCartOpen, // cart visibility state
       openCart: () => setIsCartOpen(true), // function to open cart
       closeCart: () => setIsCartOpen(false), // function to close cart

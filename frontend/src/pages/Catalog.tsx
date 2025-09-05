@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/catalog.css';
-import products from '../data/products.js';
+import products from '../data/products';
 import Product from '../components/Product';
-import { useCart } from '../components/CartContext.jsx';
-import ProductFilter from '../components/ProductFilter.jsx';
+import { useCart } from '../components/CartContext';
+import ProductFilter from '../components/ProductFilter';
+import { ProductWithSize } from '../types/product';
+
+// Define filter types
+type FilterType = 'price_asc' | 'price_desc' | 'name_asc' | '';
 
 // Page for displaying product catalog with filtering and sorting
 const Catalog = () => {
@@ -30,7 +34,7 @@ const Catalog = () => {
   }, []);
 
   // State for active filter
-  const [activeFilter, setActiveFilter] = useState(null);
+  const [activeFilter, setActiveFilter] = useState<FilterType>('');
 
   // Function to get sorted products based on active filter
   const getSortedProducts = () => {
@@ -84,7 +88,7 @@ const Catalog = () => {
             <Product 
             key={product.id}
             {...product}
-            onAddToCart={(productWithSize) => addToCart(productWithSize)}
+            onAddToCart={(productWithSize: ProductWithSize) => addToCart(productWithSize)}
             />
           ))}
         </div>

@@ -1,5 +1,5 @@
 export interface CartItem {
-  id: string; // Cambiado a string para consistencia
+  id: string;
   name: string;
   price: number;
   quantity: number;
@@ -11,6 +11,7 @@ export interface CartContextType {
   cartItems: CartItem[];
   addToCart: (product: CartItem) => void;
   removeFromCart: (productName: string, productSize?: string) => void;
+  clearCart: () => void;
   isCartOpen: boolean;
   openCart: () => void;
   closeCart: () => void;

@@ -9,14 +9,17 @@ interface ProductProps {
   name: string;
   price: number;
   img: string;
+  img2: string;
+  description: string;
+  sizes: string[];
+  stock: number;
   onAddToCart: (product: ProductWithSize) => void;
 }
 
-function Product({ id, name, price, img, onAddToCart }: ProductProps) {
+function Product({ id, name, price, img, img2, description, sizes, stock, onAddToCart }: ProductProps) {
   // State for selected size and size selector visibility
   const [selectedSize, setSelectedSize] = useState<string | null>(null); 
   const [showSizeSelector, setShowSizeSelector] = useState(false); 
-  const sizes = ['XS', 'S', 'M', 'L', 'XL']; 
 
   // Show size selector when add to cart is clicked
   const handleAddToCartClick = (e: React.MouseEvent) => {
@@ -31,7 +34,11 @@ function Product({ id, name, price, img, onAddToCart }: ProductProps) {
       id: id.toString(), // Convertir number a string
       name, 
       price, 
-      img, 
+      img,
+      img2, // ← Añadir img2
+      description, // ← Añadir description
+      sizes, // ← Añadir sizes
+      stock, // ← Añadir stock
       size, // send selected size
       quantity: 1 
     });
