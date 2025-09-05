@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../index.css';
-import '../styles/styles.css';
 import '../styles/products.css';
 import Product from './Product.jsx';
 import { useCart } from './CartContext.jsx';

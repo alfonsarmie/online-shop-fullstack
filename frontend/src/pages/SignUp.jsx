@@ -9,6 +9,8 @@ import '../styles/signUp.css';
 import axios from 'axios';
 
 export default function SignUp() {
+
+  // useState to handle form data
   const [formData, setFormData] = useState({
     name: '',
     surname: '',
@@ -18,20 +20,22 @@ export default function SignUp() {
     confirmPassword: ''
   });
 
+  // State for password strength, match message, and form validity
   const [passwordStrength, setPasswordStrength] = useState({ strength: 0, label: '', color: '', width: '0%' });
   const [matchMessage, setMatchMessage] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
 
-  // Maneja cambios en los inputs
+  // Handle input changes
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData(prev => ({ ...prev, [id]: value }));
   };
 
-  // Valida fuerza de contraseña, coincidencia y formulario completo
+  // Validate form data on changes
   useEffect(() => {
     const { password, confirmPassword, name, surname, email, dni } = formData;
 
+    // Password strength logic
     let strength = 0;
     if (password.length >= 6) strength++;
     if (/[A-Z]/.test(password)) strength++;
@@ -48,6 +52,7 @@ export default function SignUp() {
 
     setPasswordStrength({ strength, ...strengthMap[strength] });
 
+    // Password match logic
     if (!confirmPassword) {
       setMatchMessage('');
     } else if (password === confirmPassword) {
@@ -56,11 +61,12 @@ export default function SignUp() {
       setMatchMessage('Las contraseñas no coinciden');
     }
 
+    // Form validity logic
     const valid = name && surname && email && dni && password && confirmPassword && password === confirmPassword;
     setIsFormValid(valid);
   }, [formData]);
 
-  // Maneja envío del formulario
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 

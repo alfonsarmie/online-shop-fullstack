@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import '../index.css';
-import '../styles/styles.css';
 import '../styles/preProducts.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faBagShopping, faCreditCard } from '@fortawesome/free-solid-svg-icons';

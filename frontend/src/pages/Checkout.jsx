@@ -1,46 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/styles.css';
 import '../styles/checkout.css';
 import { useCart } from '../components/CartContext';
 import { useNavigate } from 'react-router-dom';
 import ProgressContainer from '../components/ProgressContainer';
 
+// Page for handling checkout process
 const Checkout = () => {
-  const { cartItems } = useCart();
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (cartItems.length === 0) {
-      navigate('/products');
-    }
-  }, [cartItems, navigate]);
+    // Access cart items and navigation
+    const { cartItems } = useCart();
+    const navigate = useNavigate();
 
-  // Calcula subtotal y total
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const total = subtotal;
+    // Redirect to products if cart is empty
+    useEffect(() => {
+        if (cartItems.length === 0) {
+        navigate('/');
+        }
+    }, [cartItems, navigate]);
 
-  // Estados para el formulario
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-  });
+    // Calculate subtotal and total
+    const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const total = subtotal;
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+    // Form states
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+    });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Datos enviados:', formData);
-    // Lógica para procesar el pago
-  };
+    // Handle input changes
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
 
-  // Función para formatear precios
-  const formatPrice = (price) => {
-    return price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
+    // Handle form submission
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log('Datos enviados:', formData);
+        navigate('/payment');
+    };
+
+    // Function to format prices
+    const formatPrice = (price) => {
+        return price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
 
 return (
     <main>

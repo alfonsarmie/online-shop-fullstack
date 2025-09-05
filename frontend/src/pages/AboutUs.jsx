@@ -1,10 +1,8 @@
-import React from 'react';
 import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 import '../styles/aboutUs.css';
 import '../styles/nav.css';
 
-
+// About Us page component
 const AboutUs = () => {
   return (
     <>

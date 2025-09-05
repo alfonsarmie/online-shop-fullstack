@@ -102,29 +102,30 @@ body {
   justify-content: center;
 }
 
-/* Paginación */
-.paginacion {
+/* Pagination */
+.pagination {
   display: flex;
   justify-content: center;
   gap: 8px;
   margin-top: 30px;
 }
 
-.paginacion button {
+.pagination button {
   padding: 8px 15px;
   border: 1px solid #ddd;
   background-color: white;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-family: 'Afacad';
 }
 
-.paginacion button:hover {
+.pagination button:hover {
   border-color: #1E7335;
   color: #1E7335;
 }
 
-.paginacion .pagina-actual {
+.pagination .current-page  {
   background-color: #1E7335;
   color: white;
   border-color: #1E7335;

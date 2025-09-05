@@ -18,21 +18,23 @@ import Admin from './pages/Admin.jsx';
 import ProfileEdit from './pages/profileEdit.jsx';
 
 function App() {
+  // State to manage user authentication
   const [user, setUser] = useState(null);
 
+  // Check for user in localStorage on component mount
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) setUser(JSON.parse(savedUser));
   }, []);
 
   return (
-    <CartProvider>
+    <CartProvider> {/* Cart provider to use cart context */}
       <div>
-        <Navbar user={user} setUser={setUser} /> {/* Pasamos user al Navbar */}
+        <Navbar user={user} setUser={setUser} /> {/* Navbar with user and setUser props */}
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/products" element={<Products />} />
-          <Route path="/login" element={<Login setUser={setUser} />} /> {/* Pasamos setUser */}
+          <Route path="/login" element={<Login setUser={setUser} />} /> {/* <Login /> component with setUser prop */}
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/checkout" element={<Checkout />} />
@@ -40,7 +42,7 @@ function App() {
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/profile-edit" element={<ProfileEdit user={user} setUser={setUser} />} />
+          <Route path="/profile-edit" element={<ProfileEdit user={user} setUser={setUser} />} /> {/* <ProfileEdit /> with user and setUser props */}
         </Routes>
         <Footer />
         <Cart />
