@@ -2,14 +2,11 @@ import React, { useState } from 'react';
 import Input from '../components/Input';
 import PasswordInput from '../components/PasswordInput';
 import PasswordConfirm from '../components/PasswordConfirm';
-import ImageUpload from '../components/ImageUpload';
 import '../styles/profileEdit.css';
 
 
 const ProfileEdit = () => {
-  
-  const [imagePreview, setImagePreview] = useState('');
-  const [profile, setProfile] = useState({
+    const [profile, setProfile] = useState({
     nombre: '',
     email: '',
     telefono: '',
@@ -28,17 +25,6 @@ const ProfileEdit = () => {
   };
 
 
-const handleImageChange = (e) => {
-  const file = e.target.files[0];
-  setProfile(prev => ({ ...prev, imagen: file }));
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => setImagePreview(e.target.result);
-    reader.readAsDataURL(file);
-  } else {
-    setImagePreview('');
-  }
-};
   const handlePasswordChange = e => {
     setPasswords({ ...passwords, [e.target.name]: e.target.value });
   };
@@ -61,19 +47,7 @@ const handleImageChange = (e) => {
     <div className="profile-edit-container">
       <h2>Editar Perfil</h2>
       <form onSubmit={handleProfileSubmit}>
-      <ImageUpload
-        file={profile.imagen}
-        onChange={handleImageChange}
-      />
-      {imagePreview && (
-        <div className="profile-image-preview">
-          <img
-            src={imagePreview}
-            alt="Previsualización"
 
-          />
-        </div>
-      )}
         <Input
           label="Nombre"
           name="nombre"
