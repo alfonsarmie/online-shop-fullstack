@@ -1,7 +1,19 @@
 import '../styles/input.css';
+import { ChangeEvent, ReactNode } from 'react';
+
+// Props interface for Input component
+interface InputProps {
+  type: string;
+  id: string;
+  placeholder: string;
+  value: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  required?: boolean;
+  children?: ReactNode;
+}
 
 // Reusable input component with floating label design
-function Input({ type, id, placeholder, value, onChange, required, children }) {
+function Input({ type, id, placeholder, value, onChange, required, children }: InputProps) {
     return (
         <div className="form__group field">
             {/* Main input field */}

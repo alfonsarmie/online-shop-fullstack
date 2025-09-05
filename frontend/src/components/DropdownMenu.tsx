@@ -1,9 +1,15 @@
 import { Link } from 'react-router-dom';
 
+// Interface for category items
+interface Category {
+  title: string;
+  items: string[];
+  basePath: string;
+}
 
 // Component to display a dropdown menu with product categories and subcategories
 function DropdownMenu() {
-  const categories = [
+  const categories: Category[] = [
     {
       title: 'Hombre',
       items: ['Remeras', 'Pantalones', 'Shorts', 'Buzos', 'Accesorios'],

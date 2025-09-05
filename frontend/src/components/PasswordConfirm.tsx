@@ -1,6 +1,15 @@
+import { ChangeEvent } from 'react';
+
+// Props interface for PasswordConfirm component
+interface PasswordConfirmProps {
+  value: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  match: string;
+  color: string;
+}
 
 // Password confirmation input with match validation
-export default function PasswordConfirm({ value, onChange, match, color }) {
+export default function PasswordConfirm({ value, onChange, match, color }: PasswordConfirmProps) {
     return (
         <div className="form__group field">
             {/* Password confirmation input field */}

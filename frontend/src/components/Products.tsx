@@ -1,17 +1,20 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import '../index.css';
 import '../styles/products.css';
-import Product from './Product.jsx';
-import { useCart } from './CartContext.jsx';
-import ProductFilter from './ProductFilter.jsx';
+import Product from './Product';
+import { useCart } from './CartContext';
+import ProductFilter from './ProductFilter';
 import products from '../data/products.js';
+import { ProductWithSize } from '../types/product';
+
+// Define filter types
+type FilterType = 'price_asc' | 'price_desc' | 'name_asc' | '';
 
 function Products() {
   // Access cart context for adding products
   const { addToCart } = useCart();
   // State for active filter
-  const [activeFilter, setActiveFilter] = useState(null);
+  const [activeFilter, setActiveFilter] = useState<FilterType>('');
 
   // Function to get sorted products based on active filter
   const getSortedProducts = () => {
@@ -48,7 +51,7 @@ function Products() {
         <Product 
           key={product.id}
           {...product}
-          onAddToCart={(productWithSize) => addToCart(productWithSize)}
+          onAddToCart={(productWithSize: ProductWithSize) => addToCart(productWithSize)}
         />
         ))}
       </div>

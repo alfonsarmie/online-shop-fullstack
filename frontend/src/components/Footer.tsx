@@ -6,9 +6,8 @@ import { useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
-
 const Footer = () => {
-  const footerLogoRef = useRef(null);
+  const footerLogoRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const footerLogo = footerLogoRef.current;
@@ -68,5 +67,3 @@ const Footer = () => {
 };
 
 export default Footer;
-
-
