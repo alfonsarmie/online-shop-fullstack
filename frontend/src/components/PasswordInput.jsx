@@ -1,6 +1,8 @@
 import Input from './input.jsx';
 
+// Password input component with strength indicator
 export default function PasswordInput({ value, onChange, strength, placeholder }) {
+    // Default strength values to prevent errors
     const safeStrength = strength || { width: '0%', color: '#ccc', label: '' };
 
     return (
@@ -12,6 +14,7 @@ export default function PasswordInput({ value, onChange, strength, placeholder }
             onChange={onChange}
             required
         >
+            {/* Password strength visual indicator bar */}
             <div className="strength-bar">
                 <div
                     className="strength-fill"
@@ -21,6 +24,7 @@ export default function PasswordInput({ value, onChange, strength, placeholder }
                     }}
                 ></div>
             </div>
+            {/* Password strength text */}
             <div id="strength-text" style={{ color: safeStrength.color }}>
                 {safeStrength.label}
             </div>
