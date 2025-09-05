@@ -3,7 +3,7 @@ import '../styles/dinamicsImgContainer.css';
 import products from '../data/products.js';
 import hinchadaImg from '../assets/img/hinchada.png';
 
-
+// Component to display dynamic image container with banner and product gallery
 function DinamicsImgContainer() {
   return (
     <div className="img-dinamicas-container">
@@ -13,6 +13,7 @@ function DinamicsImgContainer() {
       </div>
 
       <section className="gallery-section reveal">
+        
         <div className="gallery-container">
           <Link to="/product/1" className="gallery-item">
             <img src={products[0].img} alt={products[0].name} />

@@ -4,6 +4,8 @@ import '../styles/containerHome.css';
 import { useEffect } from 'react';
 
 function ContainerHome() {
+
+  // useEffect to handle reveal animations on scroll
     useEffect(() => {
     const reveals = document.querySelectorAll('.reveal');
 
@@ -17,7 +19,7 @@ function ContainerHome() {
 
     reveals.forEach(el => observer.observe(el));
 
-    // Cleanup: desconectar observer al desmontar el componente
+    // Cleanup: disconnect observer on component unmount
     return () => observer.disconnect();
   }, []);
   

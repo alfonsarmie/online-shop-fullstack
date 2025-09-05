@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 
+
+// Component to display a dropdown menu with product categories and subcategories
 function DropdownMenu() {
   const categories = [
     {
@@ -23,10 +25,14 @@ function DropdownMenu() {
     <div className="dropdown">
       <span>PRODUCTOS</span>
       <ul className="dropdown-menu">
+
+        {/* Render category items */}
         {categories.map(cat => (
         <li className="dropdown-item" key={cat.title}>
           <span className="category-title">{cat.title}</span> 
           <ul className="submenu">
+
+            {/* Render subcategory items */}
             {cat.items.map(subcat => (
               <li key={subcat}>
                 <Link to={`/catalog`}>
@@ -35,6 +41,7 @@ function DropdownMenu() {
               </li>
             ))} 
             <li>
+              {/* Link to view all products in the category */}
               <Link to={`/catalog/${cat.basePath}`} className="view-all">
                 Ver todos
               </Link>
