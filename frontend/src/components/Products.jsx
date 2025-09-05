@@ -9,9 +9,12 @@ import ProductFilter from './ProductFilter.jsx';
 import products from '../data/products.js';
 
 function Products() {
+  // Access cart context for adding products
   const { addToCart } = useCart();
+  // State for active filter
   const [activeFilter, setActiveFilter] = useState(null);
 
+  // Function to get sorted products based on active filter
   const getSortedProducts = () => {
     if (!activeFilter) return products;
     
@@ -35,11 +38,12 @@ function Products() {
 
   return (
     <>
+      {/* Product filter component */}   
       <ProductFilter 
         activeFilter={activeFilter}
         onFilterChange={setActiveFilter}
       />
-
+      {/* Products grid container */}
       <div className="contenedorProd">
         {sortedProducts.map(product => (
         <Product 
