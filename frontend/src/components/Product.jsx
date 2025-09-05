@@ -3,15 +3,18 @@ import '../styles/product.css';
 import { useState } from 'react';
 
 function Product({ id, name, price, img, onAddToCart }) {
-  const [selectedSize, setSelectedSize] = useState(null);
-  const [showSizeSelector, setShowSizeSelector] = useState(false);
-  const sizes = ['XS', 'S', 'M', 'L', 'XL'];
+  // State for selected size and size selector visibility
+  const [selectedSize, setSelectedSize] = useState(null); 
+  const [showSizeSelector, setShowSizeSelector] = useState(false); 
+  const sizes = ['XS', 'S', 'M', 'L', 'XL']; 
 
+  // Show size selector when add to cart is clicked
   const handleAddToCartClick = (e) => {
     e.preventDefault();
     setShowSizeSelector(true);
   };
 
+  // Handle size selection and add product to cart
   const handleSizeSelection = (size) => {
     setSelectedSize(size);
     onAddToCart({ 
@@ -19,20 +22,22 @@ function Product({ id, name, price, img, onAddToCart }) {
       name, 
       price, 
       img, 
-      size, // Asegúrate de enviar el talle
+      size, // send selected size
       quantity: 1 
     });
-    setTimeout(() => setShowSizeSelector(false), 300);
+    setTimeout(() => setShowSizeSelector(false), 300); // close popup after selection
   };
 
   return (
     <div className="cajaProducto reveal">
+      {/* Product link to details page */}
       <Link to={`/product/${id}`} className="product-link">
         <img src={img} className="imgProd" alt={name} />
         <p className='nombre'>{name}</p>
         <p className="precio">${price} ARS</p>
       </Link>
       
+      {/* Add to cart button */}
       <button 
         className='btnAddToCart' 
         onClick={handleAddToCartClick}
@@ -40,6 +45,7 @@ function Product({ id, name, price, img, onAddToCart }) {
         Añadir al carrito
       </button>
 
+      {/* Size selector popup */}
       <div className={`size-selector-popup ${showSizeSelector ? 'visible' : ''}`}>
         <p>Selecciona un talle:</p>
         <div className="size-options">
@@ -63,5 +69,4 @@ function Product({ id, name, price, img, onAddToCart }) {
     </div>
   );
 }
-
 export default Product;

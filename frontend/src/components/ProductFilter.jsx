@@ -6,8 +6,10 @@ import '../styles/products.css';
 import '../styles/productFilters.css';
 
 const ProductFilter = ({ activeFilter, onFilterChange }) => {
+    // State for filter dropdown visibility
   const [showFilters, setShowFilters] = useState(false);
 
+  // Handle filter selection and close dropdown
   const handleFilterClick = (filterType) => {
     onFilterChange(filterType);
     setShowFilters(false);
@@ -16,6 +18,7 @@ const ProductFilter = ({ activeFilter, onFilterChange }) => {
   return (
     <div className="filtro">
       <div className="filtro-dropdown">
+      {/* Filter dropdown toggle button */}
         <button 
           className={`btnFlechaAbajo ${activeFilter ? 'active' : ''}`}
           onClick={() => setShowFilters(!showFilters)}
@@ -27,6 +30,7 @@ const ProductFilter = ({ activeFilter, onFilterChange }) => {
           <FontAwesomeIcon icon={faCaretDown} className='icon-filter' />
         </button>
         
+        {/* Filter options dropdown */}
         {showFilters && (
           <ul className="filters">
             
