@@ -14,10 +14,12 @@ const Footer = () => {
     const footerLogo = footerLogoRef.current;
 
     if (footerLogo) {
-      // Ocultamos el logo inicialmente
+
+      // Initial styles
       footerLogo.style.opacity = '0';
       footerLogo.style.transform = 'scale(0.3)';
 
+      // Intersection Observer to trigger animation
       const logoObserver = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
