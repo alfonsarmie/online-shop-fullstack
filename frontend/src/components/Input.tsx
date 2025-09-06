@@ -24,7 +24,7 @@ function Input({ type, id, name, placeholder, value, onChange, required, childre
                 type={type}
                 className="form__field"
                 id={inputId}
-                name={name}
+                name={name || id} // Asegurar que name tenga valor
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}

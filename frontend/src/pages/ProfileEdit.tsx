@@ -90,7 +90,6 @@ const ProfileEdit = () => {
           required
         />
 
-        <button type="submit">Guardar cambios</button>
       </form>
 
       <h2>Cambiar Contraseña</h2>

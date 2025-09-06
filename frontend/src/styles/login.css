@@ -1,4 +1,9 @@
 /* Contenedor general del formulario de login */
+
+.login-container {
+    margin-top: 140px;
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -51,6 +56,17 @@
 #login-btn:active:enabled {
     transform: scale(0.98);
 }
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+  border-left: 4px solid #c62828;
+  font-family: 'Afacad', sans-serif;
+}
+
 
 /* Texto de registro */
 .msjreg {
