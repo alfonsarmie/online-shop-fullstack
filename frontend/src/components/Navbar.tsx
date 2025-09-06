@@ -7,6 +7,8 @@ import { faUser, faCartShopping, faBars } from '@fortawesome/free-solid-svg-icon
 import { useCart } from './CartContext';
 import DropdownMenu from './DropdownMenu';
 import { User } from '../types/user';
+import { useState } from 'react'; 
+import UserSidebar from './UserSideBar'; 
 
 // Navbar props interface
 interface NavbarProps {
@@ -17,6 +19,7 @@ interface NavbarProps {
 function Navbar({ user, setUser }: NavbarProps) {
   const navigate = useNavigate();
   const { openCart, cartCount } = useCart();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar state
 
   // Navigate to home and scroll to top
   const handleHomeClick = () => {
@@ -24,7 +27,7 @@ function Navbar({ user, setUser }: NavbarProps) {
     window.scrollTo(0, 0);
   };
 
-  // Logout function (commented out for now)
+  // Logout function
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUser(null);
@@ -37,6 +40,16 @@ function Navbar({ user, setUser }: NavbarProps) {
     if (optionsMenu) {
       optionsMenu.classList.toggle('show');
     }
+  };
+
+  // Open user sidebar
+  const openUserSidebar = () => {
+    setIsSidebarOpen(true);
+  };
+
+  // Close user sidebar
+  const closeUserSidebar = () => {
+    setIsSidebarOpen(false);
   };
 
   return (
@@ -66,13 +79,22 @@ function Navbar({ user, setUser }: NavbarProps) {
           {/* conditional rendering */}
           {user ? (
             <>
-              <button onClick={openOptions} className="userOptions"><span className="user-name">Hola, {user.name}!</span></button>
+              {/* Button to open user sidebar */}
+              <button onClick={openUserSidebar} className="userOptions">
+                <span className="user-name">Hola, {user.name}!</span>
+              </button>
+              
               {user.role === 'admin' && (
                 <Link to="/admin" className="admin-link">Panel Admin</Link>
               )}
 
-              <button onClick={handleLogout} className="userOptions">Cerrar Sesión</button>
-
+{/* User Sidebar is only displayed if user exists */}
+              <UserSidebar 
+                isOpen={isSidebarOpen}
+                onClose={closeUserSidebar}
+                user={user}
+                setUser={setUser}
+              />
             </>
           ) : (
             <Link to="/login" className="btnLogIn">

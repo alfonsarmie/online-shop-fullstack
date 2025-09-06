@@ -31,14 +31,14 @@ function Product({ id, name, price, img, img2, description, sizes, stock, onAddT
   const handleSizeSelection = (size: string) => {
     setSelectedSize(size);
     onAddToCart({ 
-      id: id.toString(), // Convertir number a string
+      id: id.toString(), // Convert number to string
       name, 
       price, 
       img,
-      img2, // ← Añadir img2
-      description, // ← Añadir description
-      sizes, // ← Añadir sizes
-      stock, // ← Añadir stock
+      img2, // ← add img2
+      description, // ← add description
+      sizes, // ← add sizes
+      stock, // ← add stock
       size, // send selected size
       quantity: 1 
     });
