@@ -61,7 +61,7 @@ return (
             <ProgressContainer />
 
             <div className="form-container">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className='checkout-form'>
                     <h3>Tus detalles</h3>
                     <div className="form__group field">
                         <input 

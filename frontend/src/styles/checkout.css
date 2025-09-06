@@ -23,7 +23,7 @@ main {
     width: 70%;
 }
 
-form {
+.checkout-form {
     display: flex;
     flex-direction: column;
     width: 100%;
