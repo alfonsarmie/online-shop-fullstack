@@ -9,14 +9,13 @@ interface UserAttributes {
   name: string;
   surname: string;
   password: string;
-  imgProfile?: string;
   role?: string;
   isMember: boolean;
   registrationDate: Date;
   status: string;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'idUser' | 'dni' | 'imgProfile' | 'role' > {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'idUser' | 'dni' | 'role' > {}
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public idUser!: number;
@@ -25,7 +24,6 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public name!: string;
   public surname!: string;
   public password!: string;
-  public imgProfile?: string;
   public role?: string;
   public isMember!: boolean;
   public registrationDate!: Date;
@@ -64,10 +62,6 @@ User.init({
   password: {
     type: DataTypes.STRING(255),
     allowNull: false
-  },
-  imgProfile: {
-    type: DataTypes.STRING(255),
-    allowNull: true
   },
   role: {
     type: DataTypes.STRING(50),
