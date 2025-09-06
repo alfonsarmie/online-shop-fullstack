@@ -62,10 +62,10 @@ const ProfileEdit = () => {
     <div className="profile-edit-container">
       <h2>Editar Perfil</h2>
       <form onSubmit={handleProfileSubmit}>
-
         <Input
           type="text"
-          id="nombre"
+          id="name"
+          name="name"
           placeholder="Ingresa tu nombre"
           value={profile.name}
           onChange={handleProfileChange}
@@ -74,6 +74,7 @@ const ProfileEdit = () => {
         <Input
           type="email"
           id="email"
+          name="email"
           placeholder="Ingresa tu email"
           value={profile.email}
           onChange={handleProfileChange}
@@ -81,28 +82,33 @@ const ProfileEdit = () => {
         />
         <Input
           type="tel"
-          id="telefono"
+          id="phone"
+          name="phone"
           placeholder="Ingresa tu teléfono"
           value={profile.phone}
           onChange={handleProfileChange}
           required
         />
+
         <button type="submit">Guardar cambios</button>
       </form>
 
       <h2>Cambiar Contraseña</h2>
       <form onSubmit={handlePasswordSubmit}>
         <PasswordInput
+          name="actual"
           value={passwords.actual}
           onChange={handlePasswordChange}
           placeholder="Ingresa tu contraseña actual"
         />
         <PasswordInput
+          name="new"
           value={passwords.new}
           onChange={handlePasswordChange}
           placeholder="Ingresa tu nueva contraseña"
         />
         <PasswordConfirm
+          name="confirm"
           value={passwords.confirm}
           onChange={handlePasswordChange}
           match={passwords.new === passwords.confirm ? 'Las contraseñas coinciden' : 'Las contraseñas no coinciden'}

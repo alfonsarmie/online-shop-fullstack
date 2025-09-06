@@ -8,7 +8,6 @@ import '../styles/input.css';
 import '../styles/signUp.css';
 import axios from 'axios';
 
-// Interface for form data
 interface FormData {
   name: string;
   surname: string;
@@ -18,7 +17,6 @@ interface FormData {
   confirmPassword: string;
 }
 
-// Interface for password strength
 interface PasswordStrength {
   strength: number;
   label: string;
@@ -27,8 +25,6 @@ interface PasswordStrength {
 }
 
 export default function SignUp() {
-
-  // useState to handle form data
   const [formData, setFormData] = useState<FormData>({
     name: '',
     surname: '',
@@ -38,39 +34,49 @@ export default function SignUp() {
     confirmPassword: ''
   });
 
-  // State for password strength, match message, and form validity
-  const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>({ strength: 0, label: '', color: '', width: '0%' });
+  const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>({
+    strength: 0,
+    label: '',
+    color: '',
+    width: '0%'
+  });
+
+  const [requirements, setRequirements] = useState([
+    { text: 'Debe tener al menos 6 caracteres', valid: false },
+    { text: 'Debe contener al menos una mayúscula', valid: false },
+    { text: 'Debe contener al menos un número', valid: false }
+  ]);
+
   const [matchMessage, setMatchMessage] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
 
-  // Handle input changes
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData(prev => ({ ...prev, [id]: value }));
   };
 
-  // Validate form data on changes
   useEffect(() => {
     const { password, confirmPassword, name, surname, email, dni } = formData;
 
-    // Password strength logic
-    let strength = 0;
-    if (password.length >= 6) strength++;
-    if (/[A-Z]/.test(password)) strength++;
-    if (/[0-9]/.test(password)) strength++;
-    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    // Requisitos de la contraseña
+    const newReqs = [
+      { text: 'Debe tener al menos 6 caracteres', valid: password.length >= 6 },
+      { text: 'Debe contener al menos una mayúscula', valid: /[A-Z]/.test(password) },
+      { text: 'Debe contener al menos un número', valid: /[0-9]/.test(password) }
+    ];
+    setRequirements(newReqs);
 
+    // Fuerza de la contraseña
+    const strength = newReqs.filter(r => r.valid).length;
     const strengthMap = [
       { width: '0%', label: '', color: '' },
-      { width: '25%', label: 'Débil', color: 'red' },
-      { width: '50%', label: 'Media', color: 'orange' },
-      { width: '75%', label: 'Fuerte', color: 'green' },
-      { width: '100%', label: 'Muy fuerte', color: 'darkgreen' }
+      { width: '33%', label: 'Débil', color: 'red' },
+      { width: '66%', label: 'Media', color: 'orange' },
+      { width: '100%', label: 'Fuerte', color: 'green' }
     ];
-
     setPasswordStrength({ strength, ...strengthMap[strength] });
 
-    // Password match logic
+    // Confirmación
     if (!confirmPassword) {
       setMatchMessage('');
     } else if (password === confirmPassword) {
@@ -79,24 +85,17 @@ export default function SignUp() {
       setMatchMessage('Las contraseñas no coinciden');
     }
 
-// Form validity logic
-const valid = Boolean(
-  name && 
-  surname && 
-  email && 
-  dni && 
-  password && 
-  confirmPassword && 
-  password === confirmPassword
-);
+    // Validez total del form
+    const valid =
+      Boolean(name && surname && email && dni) &&
+      newReqs.every(r => r.valid) &&
+      password === confirmPassword;
 
-setIsFormValid(valid);
+    setIsFormValid(valid);
   }, [formData]);
 
-  // Handle form submission
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
     try {
       const response = await axios.post("http://localhost:3000/api/users/create", {
         name: formData.name,
@@ -105,7 +104,6 @@ setIsFormValid(valid);
         email: formData.email,
         password: formData.password
       });
-
       console.log("Registro exitoso:", response.data);
     } catch (error: any) {
       if (error.response) {
@@ -123,8 +121,29 @@ setIsFormValid(valid);
       <Input id="email" type="email" placeholder="Correo electrónico" value={formData.email} onChange={handleChange} required />
       <Input id="dni" type="number" placeholder="DNI (opcional)" value={formData.dni} onChange={handleChange} required={false} />
 
-      <PasswordInput value={formData.password} onChange={handleChange} strength={passwordStrength} />
-      <PasswordConfirm value={formData.confirmPassword} onChange={handleChange} match={matchMessage} color={formData.password === formData.confirmPassword ? 'green' : 'red'} />
+      <PasswordInput
+        name="password" 
+        value={formData.password}
+        onChange={handleChange}
+        strength={passwordStrength}
+      />
+
+      {/* Requisitos de la contraseña */}
+      <ul className="password-requirements">
+        {requirements.map((req, idx) => (
+          <li key={idx} className={req.valid ? "valid" : "invalid"}>
+            {req.text}
+          </li>
+        ))}
+      </ul>
+
+      <PasswordConfirm 
+        name="confirmPassword" 
+        value={formData.confirmPassword} 
+        onChange={handleChange} 
+        match={matchMessage} 
+        color={formData.password === formData.confirmPassword ? 'green' : 'red'} 
+      />
 
       <button id="submit-btn" disabled={!isFormValid} className={isFormValid ? 'allow' : 'disabled'}>
         CREAR CUENTA

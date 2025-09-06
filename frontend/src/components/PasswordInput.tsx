@@ -14,17 +14,19 @@ interface PasswordInputProps {
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   strength?: Strength;
   placeholder?: string;
+  name: string; // Añade esta propiedad
 }
 
 // Password input component with strength indicator
-export default function PasswordInput({ value, onChange, strength, placeholder }: PasswordInputProps) {
+export default function PasswordInput({ value, onChange, strength, placeholder, name }: PasswordInputProps) {
     // Default strength values to prevent errors
     const safeStrength = strength || { width: '0%', color: '#ccc', label: '' };
 
     return (
         <Input
             type="password"
-            id="password"
+            id={name}
+            name={name}
             placeholder={placeholder || "Contraseña"}
             value={value}
             onChange={onChange}
