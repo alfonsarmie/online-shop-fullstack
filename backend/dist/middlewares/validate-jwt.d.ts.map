@@ -1,1 +1,0 @@
-{"version":3,"file":"validate-jwt.d.ts","sourceRoot":"","sources":["../../src/middlewares/validate-jwt.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,QAAQ,EAAE,YAAY,EAAE,MAAM,SAAS,CAAC;AAI1D,eAAO,MAAM,WAAW,GAAU,KAAK,OAAO,EAAE,KAAK,QAAQ,EAAE,MAAM,YAAY,KAAG,OAAO,CAAC,IAAI,CAsD/F,CAAC"}
