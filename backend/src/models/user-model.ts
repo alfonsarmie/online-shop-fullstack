@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import db from '../db/connection';
 
+
 interface UserAttributes {
   idUser: number;
   dni?: number;
