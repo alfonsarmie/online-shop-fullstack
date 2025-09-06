@@ -9,7 +9,6 @@ CREATE TABLE `user` (
   `name` varchar(255) NOT NULL,
   `surname` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `imgProfile` varchar(255) NULL,
   `role` varchar(50),
   `isMember` BOOLEAN NOT NULL,
   `registrationDate` datetime NOT NULL,

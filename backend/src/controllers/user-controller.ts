@@ -15,8 +15,7 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
       email, 
       name, 
       surname, 
-      password,
-      imgProfile 
+      password 
     } = req.body;
 
     // Encrypt the password
@@ -30,7 +29,6 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
       name,
       surname,
       password: hashedPassword,
-      imgProfile,
       role: 'client', // Default role
       isMember: false, // Default membership status
       registrationDate: new Date(), // Current date as registration date,
@@ -81,7 +79,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
 
 export const updateUser = async (req: Request, res: Response): Promise<Response> => {
   const { id } = req.params;
-  const { name, surname, email, imgProfile } = req.body;
+  const { name, surname, email } = req.body;
   
   try {
     // Logic to update user
@@ -95,7 +93,7 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
     if (name !== undefined) userToUpdate.name = name;
     if (surname !== undefined) userToUpdate.surname = surname;
     if (email !== undefined) userToUpdate.email = email;
-    if (imgProfile !== undefined) userToUpdate.imgProfile = imgProfile;
+    
 
     // Save the updated user
     await userToUpdate.save();
