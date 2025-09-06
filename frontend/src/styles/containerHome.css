@@ -28,6 +28,7 @@
     color: white;
     z-index: 100;
     text-align: center;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Sombra más fuerte para un efecto más dramático */
 }
 
 .opaco {
@@ -36,5 +37,5 @@
     left: 0;
     width: 100%;
     height: 90vh;
-    background: linear-gradient(transparent, #1E7335);
+    background: rgba(30, 115, 53, 0.4); /* Color de superposición semitransparente */
 }
