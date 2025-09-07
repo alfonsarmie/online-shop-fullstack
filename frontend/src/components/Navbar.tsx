@@ -7,8 +7,9 @@ import { faUser, faCartShopping, faBars } from '@fortawesome/free-solid-svg-icon
 import { useCart } from './CartContext';
 import DropdownMenu from './DropdownMenu';
 import { User } from '../types/user';
-import { useState } from 'react'; 
+import { useState, useEffect } from 'react'; // Importar useEffect
 import UserSidebar from './UserSideBar'; 
+import SuccessMessage from './SuccessMessage';
 
 // Navbar props interface
 interface NavbarProps {
@@ -19,19 +20,30 @@ interface NavbarProps {
 function Navbar({ user, setUser }: NavbarProps) {
   const navigate = useNavigate();
   const { openCart, cartCount } = useCart();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar state
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  // Efecto para limpiar automáticamente el mensaje después de 3 segundos
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000); // 3 segundos
+
+      // Limpiar el timer si el componente se desmonta o el mensaje cambia
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  // Toggle sidebar function
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   // Navigate to home and scroll to top
   const handleHomeClick = () => {
     navigate('/');
     window.scrollTo(0, 0);
-  };
-
-  // Logout function
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    setUser(null);
-    navigate('/'); // Redirect to home after logout
   };
 
   // Toggle options menu
@@ -54,6 +66,9 @@ function Navbar({ user, setUser }: NavbarProps) {
 
   return (
     <div>
+      {/* SuccessMessage a nivel superior */}
+      <SuccessMessage message={successMessage} onClose={() => setSuccessMessage('')} />
+      
       <nav>
         <div className="nav-toggle" id="navToggle">
           <FontAwesomeIcon icon={faBars} />
@@ -88,12 +103,13 @@ function Navbar({ user, setUser }: NavbarProps) {
                 <Link to="/admin" className="admin-link">Panel Admin</Link>
               )}
 
-{/* User Sidebar is only displayed if user exists */}
-              <UserSidebar 
+              {/* User Sidebar is only displayed if user exists */}
+              <UserSidebar
                 isOpen={isSidebarOpen}
                 onClose={closeUserSidebar}
                 user={user}
                 setUser={setUser}
+                setSuccessMessage={setSuccessMessage}
               />
             </>
           ) : (
