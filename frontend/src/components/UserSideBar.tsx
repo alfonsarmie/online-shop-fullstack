@@ -15,10 +15,17 @@ interface UserSidebarProps {
     dni?: string;
   } | null;
   setUser: (user: null) => void;
+  setSuccessMessage: (message: string) => void; // Nueva prop
 }
 
 // User Side Panel Component
-const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose, user, setUser }) => {
+const UserSidebar: React.FC<UserSidebarProps> = ({ 
+  isOpen, 
+  onClose, 
+  user, 
+  setUser, 
+  setSuccessMessage 
+}) => {
   const navigate = useNavigate();
 
   // Function to log out the user
@@ -27,6 +34,7 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose, user, setUse
     localStorage.removeItem('token');
     setUser(null);
     onClose();
+    setSuccessMessage('Cierre de sesión exitoso'); // Usar la prop del padre
     navigate('/');
   };
 
