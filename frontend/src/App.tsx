@@ -16,6 +16,7 @@ import AboutUs from './pages/AboutUs';
 import Catalog from './pages/Catalog';
 import Admin from './pages/Admin';
 import ProfileEdit from './pages/ProfileEdit';
+import Delivery from './pages/Delivery';
 import { User } from './types/user';
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/profile-edit" element={<ProfileEdit />} />
+          <Route path="/delivery" element={<Delivery user={user} setUser={setUser} />} />
         </Routes>
         <Footer />
         <Cart />

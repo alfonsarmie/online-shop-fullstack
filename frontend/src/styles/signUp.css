@@ -1,17 +1,30 @@
 /* Contenedor general del formulario */
+/* Añade este contenedor principal al inicio del archivo */
+.signup-page-container {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Contenedor general del formulario */
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
     width: 600px;
-    margin: 120px auto 50px auto;
+    margin: 50px auto;
     padding: 20px;
     border-radius: 10px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     background-color: white;
+    position: relative; /* Elimina position: relative si existe */
 }
 
+/* Resto de tus estilos existentes... */
 .container img {
     width: 100px;
 }
@@ -22,6 +35,8 @@
     text-align: center;
     font-family: "Afacad";
 }
+
+/* ... el resto de tus estilos permanecen igual ... */
 
 /* Barra de fuerza */
 .strength-bar {
@@ -40,7 +55,7 @@
 }
 
 #strength-text {
-    font-family: 'Afacad', sans-serif;
+  font-family: 'Afacad', sans-serif;
   font-size: 1rem;
   margin: 4px 0 10px 0;
   font-weight: bold;
@@ -153,50 +168,14 @@
     font-weight: 700;
 }
 
-/* Imagen de perfil */
-.img_group {
-    margin-top: 15px;
-}
-
-.img_field {
-    padding: 6px 12px;
-    width: 100%;
-    max-width: 420px;
-    border: none;
-    border-bottom: 2px solid #9b9b9b;
-    outline: 0;
-    font-size: 14px;
-    background: transparent;
-}
-
-.img_field[type="file"] {
-    display: none;
-}
-
-.img_label {
-    color: rgb(61, 61, 61);
-    font-weight: bold;
-}
-
-.upload_label {
-    display: inline-block;
-    padding: 6px 16px;
-    background-color: white;
-    color: #1E7335;
-    border: 2px solid #1E7335;
-    border-radius: 10px;
-    cursor: pointer;
-    font-family: 'Afacad', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    margin-top: 10px;
-}
-
-.upload_label:hover {
-    background-color: #e6f4ec;
-    color: #072e11;
-    border-color: #072e11;
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+  border-left: 4px solid #c62828;
+  font-family: 'Afacad', sans-serif;
 }
 
 /* Ocultar flechas en input de tipo number */
@@ -204,4 +183,33 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+.password-input-container,
+.password-confirm-container {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  font-size: 1.2rem;
+  padding: 5px;
+  z-index: 2;
+}
+
+.password-toggle:hover {
+  color: #000;
+}
+
+/* Ajustar el padding del input para que no se solape con el botón */
+.password-input-container .form__field,
+.password-confirm-container .form__field {
+  padding-right: 40px;
 }

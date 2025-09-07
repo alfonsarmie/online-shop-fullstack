@@ -6,6 +6,7 @@ import PasswordInput from '../components/PasswordInput';
 import PasswordConfirm from '../components/PasswordConfirm';
 import '../styles/input.css';
 import '../styles/signUp.css';
+import SuccessMessage from '../components/SuccessMessage';
 import axios from 'axios';
 
 interface FormData {
@@ -49,14 +50,25 @@ export default function SignUp() {
 
   const [matchMessage, setMatchMessage] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setFormData(prev => ({ ...prev, [id]: value }));
+    
+    // Para el campo DNI, permitir solo números o vacío
+    if (id === 'dni') {
+      // Solo permitir números o campo vacío
+      if (value === '' || /^\d+$/.test(value)) {
+        setFormData(prev => ({ ...prev, [id]: value }));
+      }
+    } else {
+      setFormData(prev => ({ ...prev, [id]: value }));
+    }
   };
 
   useEffect(() => {
-    const { password, confirmPassword, name, surname, email, dni } = formData;
+    const { password, confirmPassword, name, surname, email } = formData;
 
     // Requisitos de la contraseña
     const newReqs = [
@@ -85,9 +97,9 @@ export default function SignUp() {
       setMatchMessage('Las contraseñas no coinciden');
     }
 
-    // Validez total del form
+    // Validez total del form (DNI es opcional, no se incluye en la validación)
     const valid =
-      Boolean(name && surname && email && dni) &&
+      Boolean(name && surname && email) &&
       newReqs.every(r => r.valid) &&
       password === confirmPassword;
 
@@ -97,59 +109,102 @@ export default function SignUp() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/api/users/create", {
+      // Prepare user data, excluding confirmPassword
+      const userData = {
         name: formData.name,
         surname: formData.surname,
-        dni: formData.dni,
+        dni: formData.dni || undefined, // Send undefined if empty
         email: formData.email,
         password: formData.password
-      });
+      };
+
+      const response = await axios.post("http://localhost:3000/api/users/create", userData);
       console.log("Registro exitoso:", response.data);
+      setSuccessMessage('Registro exitoso. Redirigiendo al login...');
+      setErrorMessage('');
+
+      // Clear form
+      setFormData({
+        name: '',
+        surname: '',
+        dni: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+      });
+      
+      // Redirigir después de 2 segundos
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 2000);
+      
     } catch (error: any) {
       if (error.response) {
         console.error("Error en la respuesta:", error.response.data);
+        setErrorMessage('Error en el registro. Inténtalo de nuevo.');
+        setSuccessMessage('');
       } else {
         console.error("Error:", error.message);
+        setErrorMessage('Error en el registro. Inténtalo de nuevo.');
+        setSuccessMessage('');
       }
     }
   };
 
+  const closeSuccessMessage = () => {
+    setSuccessMessage('');
+  };
+
   return (
-    <FormContainer logo={logo} title="Introduce tus datos para registrarte" onSubmit={handleSubmit}>
-      <Input id="name" type="text" placeholder="Nombre" value={formData.name} onChange={handleChange} required />
-      <Input id="surname" type="text" placeholder="Apellido" value={formData.surname} onChange={handleChange} required />
-      <Input id="email" type="email" placeholder="Correo electrónico" value={formData.email} onChange={handleChange} required />
-      <Input id="dni" type="number" placeholder="DNI (opcional)" value={formData.dni} onChange={handleChange} required={false} />
+    <div className="signup-page-container">
+      <SuccessMessage message={successMessage} onClose={closeSuccessMessage} />
+      <FormContainer logo={logo} title="Introduce tus datos para registrarte" onSubmit={handleSubmit}>
+        <Input id="name" type="text" placeholder="Nombre" value={formData.name} onChange={handleChange} required />
+        <Input id="surname" type="text" placeholder="Apellido" value={formData.surname} onChange={handleChange} required />
+        <Input id="email" type="email" placeholder="Correo electrónico" value={formData.email} onChange={handleChange} required />
+        
+        {/* DNI opcional - tipo number pero sin required */}
+        <Input 
+          id="dni" 
+          type="number" 
+          placeholder="DNI (opcional)" 
+          value={formData.dni} 
+          onChange={handleChange} 
+          required={false} 
+        />
 
-      <PasswordInput
-        name="password" 
-        value={formData.password}
-        onChange={handleChange}
-        strength={passwordStrength}
-      />
+        <PasswordInput
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          strength={passwordStrength}
+        />
 
-      {/* Requisitos de la contraseña */}
-      <ul className="password-requirements">
-        {requirements.map((req, idx) => (
-          <li key={idx} className={req.valid ? "valid" : "invalid"}>
-            {req.text}
-          </li>
-        ))}
-      </ul>
+        {/* Requisitos de la contraseña */}
+        <ul className="password-requirements">
+          {requirements.map((req, idx) => (
+            <li key={idx} className={req.valid ? "valid" : "invalid"}>
+              {req.text}
+            </li>
+          ))}
+        </ul>
 
-      <PasswordConfirm 
-        name="confirmPassword" 
-        value={formData.confirmPassword} 
-        onChange={handleChange} 
-        match={matchMessage} 
-        color={formData.password === formData.confirmPassword ? 'green' : 'red'} 
-      />
+        <PasswordConfirm 
+          name="confirmPassword"
+          value={formData.confirmPassword} 
+          onChange={handleChange} 
+          match={matchMessage} 
+          color={formData.password === formData.confirmPassword ? 'green' : 'red'} 
+        />
 
-      <button id="submit-btn" disabled={!isFormValid} className={isFormValid ? 'allow' : 'disabled'}>
-        CREAR CUENTA
-      </button>
+        <button id="submit-btn" disabled={!isFormValid} className={isFormValid ? 'allow' : 'disabled'}>
+          CREAR CUENTA
+        </button>
 
-      <p className="msjreg">¿Ya tenés cuenta? <a className="msjreg login_link" href="/login">Inicia sesión</a></p>
-    </FormContainer>
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
+
+        <p className="msjreg">¿Ya tenés cuenta? <a className="msjreg login_link" href="/login">Inicia sesión</a></p>
+      </FormContainer>
+    </div>
   );
 }

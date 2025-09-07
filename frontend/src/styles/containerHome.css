@@ -1,5 +1,5 @@
 .contenedorInicio {
-    background-image: url(../assets/img/fotoInicio.jpg);
+    background-image: url(../assets/img/fotoInicio.jpeg);
     width: 100%;
     max-width: 100vw;
     box-sizing: border-box;
@@ -38,4 +38,29 @@
     width: 100%;
     height: 90vh;
     background: rgba(30, 115, 53, 0.4); /* Color de superposición semitransparente */
+}
+
+/* Posicionamiento del indicador */
+.scroll-down-indicator {
+    position: absolute;
+    bottom: 30px; /* Ajusta la distancia desde la parte inferior */
+    left: 50%;
+    transform: translateX(-50%);
+    color: white; /* Color de la flecha */
+    font-size: 2rem; /* Tamaño de la flecha */
+    z-index: 101; /* Asegúrate de que esté por encima de otros elementos */
+    animation: bounce 2s infinite; /* Aplica la animación */
+}
+
+/* Animación de rebote */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px); /* Rebota hacia arriba */
+    }
+    60% {
+        transform: translateY(-5px); /* Rebota un poco menos */
+    }
 }

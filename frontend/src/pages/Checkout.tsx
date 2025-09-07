@@ -2,8 +2,8 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import '../styles/checkout.css';
 import { useCart } from '../components/CartContext';
 import { useNavigate } from 'react-router-dom';
-import ProgressContainer from '../components/ProgressContainer';
 import { CartItem } from '../types/cart';
+import WhatsAppButton from '../components/WhatsAppButton';
 
 // Form data interface
 interface FormData {
@@ -18,6 +18,7 @@ const Checkout = () => {
     // Access cart items and navigation
     const { cartItems } = useCart();
     const navigate = useNavigate();
+    const [isFormValid, setIsFormValid] = useState(false);
 
     // Redirect to products if cart is empty
     useEffect(() => {
@@ -55,10 +56,18 @@ const Checkout = () => {
         return price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
+    // Validate form fields
+    useEffect(() => {
+        const { name, email, phone } = formData;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const isValid = name.trim() !== '' && emailRegex.test(email) && phone.trim() !== '';
+        setIsFormValid(isValid);
+    }, [formData]);
+
 return (
+    //VER QUE DATOS PEDIR
     <main>
         <div className="data-container">
-            <ProgressContainer />
 
             <div className="form-container">
                 <form onSubmit={handleSubmit} className='checkout-form'>
@@ -103,7 +112,7 @@ return (
                         </div>
                     </div>
 
-                    <button type="submit" onClick={() => navigate('/payment')}>CONTINUAR</button>
+                    <button type="submit" onClick={() => navigate('/payment')} disabled={!isFormValid} className={isFormValid ? "allow" : "disabled"}>CONTINUAR</button>
                 </form>
             </div>
         </div>
@@ -142,6 +151,7 @@ return (
                 <p className="cart-footer-item">Total: $<span id="total">{formatPrice(total)}</span></p>
             </div>
         </div>
+        <WhatsAppButton />
     </main>
 );
 };
