@@ -88,17 +88,17 @@ const Delivery = ({ user, setUser }: { user: User | null, setUser: (user: User |
 
     {/* Información adicional */}
     <div className="info-item">
-      <FaParking className="info-icon" />
-      <div>
-        <h4>Estacionamiento</h4>
-        <p>Disponible para socios • Gratuito</p>
-      </div>
-    </div>
-    <div className="info-item">
       <FaAccessibleIcon className="info-icon" />
       <div>
         <h4>Accesibilidad</h4>
         <p>Acceso para sillas de ruedas • Baños adaptados</p>
+      </div>
+    </div>
+    <div className="info-item">
+      <FaCheckCircle className="info-icon" />
+      <div>
+        <h4>Atención Personalizada</h4>
+        <p>Recibe asistencia directa de nuestro equipo en el club para cualquier consulta.</p>
       </div>
     </div>
   </div>
@@ -203,10 +203,7 @@ const Delivery = ({ user, setUser }: { user: User | null, setUser: (user: User |
               </div>
               <div className="map-info">
                 <h3>Rosario Rowing Club</h3>
-                <p>📍 Av. Carlos Colombres 1798, S2005NXW Rosario, Santa Fe</p>
-                <p>🚗 Estacionamiento gratuito para socios</p>
-                <p>🚍 Líneas de colectivo: 102, 115, 120, 131</p>
-                <p>🚲 Estacionamiento para bicicletas disponible</p>
+                <p>📍 Av. Carlos Colombres 1798, Rosario, Santa Fe</p>
               </div>
             </div>
           </section>
