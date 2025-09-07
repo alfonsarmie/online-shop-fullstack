@@ -5,6 +5,7 @@ import Product from '../components/Product';
 import { useCart } from '../components/CartContext';
 import ProductFilter from '../components/ProductFilter';
 import { ProductWithSize } from '../types/product';
+import WhatsAppButton from '../components/WhatsAppButton';
 
 // Define filter types
 type FilterType = 'price_asc' | 'price_desc' | 'name_asc' | '';
@@ -100,7 +101,9 @@ const Catalog = () => {
         <button>3</button>
         <button>Siguiente →</button>
       </div>
+      <WhatsAppButton />
     </div>
+    
   );
 };
 

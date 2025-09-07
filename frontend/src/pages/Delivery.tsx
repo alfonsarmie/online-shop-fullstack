@@ -4,6 +4,7 @@ import { User } from '../types/user';
 import '../styles/delivery.css';
 import '../styles/nav.css';
 import '../styles/footer.css';
+import WhatsAppButton from '../components/WhatsAppButton';
 
 // icon imports
 import { 
@@ -233,6 +234,7 @@ const Delivery = ({ user, setUser }: { user: User | null, setUser: (user: User |
           </section>
 
         </div>
+        <WhatsAppButton />
       </div>
 
     </>
