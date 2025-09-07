@@ -8,6 +8,7 @@ import '../styles/login.css';
 import axios from 'axios';
 import { User } from '../types/user';
 import SuccessMessage from '../components/SuccessMessage';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importar iconos de ojo
 
 // Props interface for LoginForm component
 interface LoginFormProps {
@@ -15,14 +16,18 @@ interface LoginFormProps {
 }
 
 export default function LoginForm({ setUser }: LoginFormProps) {
-
     // useState to handle form data
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
     const isFormValid = email.trim() !== '' && password.trim() !== '';
     const navigate = useNavigate();
     const [message, setMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     // Handle form submission
     const handleSubmit = async (e: FormEvent) => {
@@ -69,12 +74,24 @@ export default function LoginForm({ setUser }: LoginFormProps) {
             value={email} 
             onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} required />
 
-            <Input 
-            id="password" 
-            type="password" 
-            placeholder="Contraseña" 
-            value={password} 
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} required />
+            <div className="password-input-container">
+                <Input 
+                id="password" 
+                type={showPassword ? "text" : "password"} 
+                placeholder="Contraseña" 
+                value={password} 
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} required />
+                
+                {/* Eye icon to toggle password visibility */}
+                <button 
+                    type="button" 
+                    className="password-toggle"
+                    onClick={togglePasswordVisibility}
+                    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+            </div>
 
             {/* Display success or error message */}
             {errorMessage && <div className="error-message">{errorMessage}</div>}
