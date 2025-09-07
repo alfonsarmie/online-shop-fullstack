@@ -29,6 +29,8 @@ function ContainerHome() {
             <h1 className="reveal">TIENDA OFICIAL</h1>
             <h2 className="reveal">ROSARIO ROWING CLUB</h2>
         </div>
+        <div className="scroll-down-indicator">
+        <i className="fas fa-chevron-down"></i> </div>
     </div>
   );
 }
