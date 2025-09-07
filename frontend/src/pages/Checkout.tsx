@@ -17,6 +17,7 @@ const Checkout = () => {
     // Access cart items and navigation
     const { cartItems } = useCart();
     const navigate = useNavigate();
+    const [isFormValid, setIsFormValid] = useState(false);
 
     // Redirect to products if cart is empty
     useEffect(() => {
@@ -53,6 +54,14 @@ const Checkout = () => {
     const formatPrice = (price: number) => {
         return price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
+
+    // Validate form fields
+    useEffect(() => {
+        const { name, email, phone } = formData;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const isValid = name.trim() !== '' && emailRegex.test(email) && phone.trim() !== '';
+        setIsFormValid(isValid);
+    }, [formData]);
 
 return (
     <main>
@@ -101,7 +110,7 @@ return (
                         </div>
                     </div>
 
-                    <button type="submit" onClick={() => navigate('/payment')}>CONTINUAR</button>
+                    <button type="submit" onClick={() => navigate('/payment')} disabled={!isFormValid} className={isFormValid ? "allow" : "disabled"}>CONTINUAR</button>
                 </form>
             </div>
         </div>
