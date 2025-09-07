@@ -1,6 +1,6 @@
 .profile-edit-container {
   max-width: 500px;
-  margin: 2rem auto;
+  margin: 120px auto 40px auto;
   padding: 2rem;
   background: #fff;
   border-radius: 8px;
@@ -25,10 +25,10 @@
   margin-top: 1rem;
   width: 100%;
   padding: 0.7rem;
-  background: #222;
+  background: #1E7335;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 30px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
@@ -37,7 +37,7 @@
 }
 
 .profile-edit-container button:hover {
-  background: #555;
+  background: #072e11;
 }
 
 .profile-image-preview {
@@ -70,9 +70,9 @@
 }
 
 #strength-text {
-  font-size: 0.9rem;
+  font-size: 1rem;
   margin-top: 0.2rem;
   text-align: right;
-  font-family: 'Montserrat', Arial, sans-serif;
+  font-family: 'Afacad', sans-serif;
 }
 

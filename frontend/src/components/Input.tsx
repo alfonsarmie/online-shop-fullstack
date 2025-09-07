@@ -4,7 +4,8 @@ import { ChangeEvent, ReactNode } from 'react';
 // Props interface for Input component
 interface InputProps {
   type: string;
-  id: string;
+  id?: string;
+  name?: string;
   placeholder: string;
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -13,14 +14,17 @@ interface InputProps {
 }
 
 // Reusable input component with floating label design
-function Input({ type, id, placeholder, value, onChange, required, children }: InputProps) {
+function Input({ type, id, name, placeholder, value, onChange, required, children }: InputProps) {
+    const inputId = id || name; // Usa id si existe, sino usa name
+    
     return (
         <div className="form__group field">
             {/* Main input field */}
             <input
                 type={type}
                 className="form__field"
-                id={id}
+                id={inputId}
+                name={name || id} // Asegurar que name tenga valor
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
@@ -28,8 +32,8 @@ function Input({ type, id, placeholder, value, onChange, required, children }: I
             />
 
             {/* Floating label that moves up when input is focused */}
-            <label htmlFor={id} className="form__label">
-                {placeholder}
+            <label htmlFor={inputId} className="form__label">
+                {placeholder}{required && <span className='required'>*</span>}
             </label>
             {/* Optional children elements */}
             {children}

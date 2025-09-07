@@ -2,7 +2,6 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import '../styles/checkout.css';
 import { useCart } from '../components/CartContext';
 import { useNavigate } from 'react-router-dom';
-import ProgressContainer from '../components/ProgressContainer';
 import { CartItem } from '../types/cart';
 
 // Form data interface
@@ -18,6 +17,7 @@ const Checkout = () => {
     // Access cart items and navigation
     const { cartItems } = useCart();
     const navigate = useNavigate();
+    const [isFormValid, setIsFormValid] = useState(false);
 
     // Redirect to products if cart is empty
     useEffect(() => {
@@ -55,13 +55,20 @@ const Checkout = () => {
         return price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
+    // Validate form fields
+    useEffect(() => {
+        const { name, email, phone } = formData;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const isValid = name.trim() !== '' && emailRegex.test(email) && phone.trim() !== '';
+        setIsFormValid(isValid);
+    }, [formData]);
+
 return (
     <main>
         <div className="data-container">
-            <ProgressContainer />
 
             <div className="form-container">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className='checkout-form'>
                     <h3>Tus detalles</h3>
                     <div className="form__group field">
                         <input 
@@ -103,7 +110,7 @@ return (
                         </div>
                     </div>
 
-                    <button type="submit" onClick={() => navigate('/payment')}>CONTINUAR</button>
+                    <button type="submit" onClick={() => navigate('/payment')} disabled={!isFormValid} className={isFormValid ? "allow" : "disabled"}>CONTINUAR</button>
                 </form>
             </div>
         </div>

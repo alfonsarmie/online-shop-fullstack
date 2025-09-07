@@ -3,7 +3,6 @@ import { useCart } from '../components/CartContext';
 import { useNavigate } from 'react-router-dom';
 import '../styles/payment.css';
 import mpLogo from '../assets/img/mercado-pago-logo.png';
-import ProgressContainer from '../components/ProgressContainer';
 import { CartItem } from '../types/cart';
 
 const Payment = () => {
@@ -24,7 +23,6 @@ const Payment = () => {
     
       <div className='form-left'>
 
-        <ProgressContainer className='progress-container'/>
         <div className="payment-summary">
         <h2>Resumen de tu compra</h2>
 
