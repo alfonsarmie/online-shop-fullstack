@@ -2,7 +2,6 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import '../styles/checkout.css';
 import { useCart } from '../components/CartContext';
 import { useNavigate } from 'react-router-dom';
-import ProgressContainer from '../components/ProgressContainer';
 import { CartItem } from '../types/cart';
 
 // Form data interface
@@ -58,7 +57,6 @@ const Checkout = () => {
 return (
     <main>
         <div className="data-container">
-            <ProgressContainer />
 
             <div className="form-container">
                 <form onSubmit={handleSubmit} className='checkout-form'>
