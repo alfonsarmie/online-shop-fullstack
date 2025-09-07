@@ -158,89 +158,131 @@ nav li {
 /* Menú principal horizontal */
 .dropdown-menu {
   list-style: none;
-  display: none; /* oculto al inicio */
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  z-index: 300;
-  flex-direction: row; /* Cambia a fila */
-  min-width: 450px;
-  align-items: flex-start; /* Alinea las columnas arriba */
-  justify-content: center; 
-}
-
-/* Mostrar menú principal al hover */
-.dropdown:hover > .dropdown-menu {
-  display: flex;
+  display: flex; /* Siempre flex para transiciones */
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;
-  left: 0;
+  background-color: #ffffff; /* Fondo blanco puro */
+  border: 1px solid #e0e0e0; /* Borde más suave */
+  border-radius: 8px; /* Bordes ligeramente más redondeados */
+  position: absolute;
+  top: calc(100% + 10px); /* Ajusta la distancia del menú al botón "PRODUCTOS" */
+  left: 50%; /* Centra el menú horizontalmente */
+  transform: translateX(-50%); /* Ajuste para centrar */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada para un efecto flotante */
+  z-index: 300;
+  padding: 15px; /* Relleno interior del menú */
+  opacity: 0; /* Oculto inicialmente para la transición */
+  visibility: hidden; /* Oculto para la transición */
+  transform: translateX(-50%) translateY(-10px); /* Empieza ligeramente arriba */
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+  min-width: 600px; /* Ancho mínimo para que se vean bien las 3 columnas */
+  max-width: 900px; /* Ancho máximo para evitar que sea demasiado grande */
+}
+
+
+/* Mostrar menú principal al hover */
+.dropdown:hover > .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0); /* Vuelve a la posición original */
 }
 
 /* Items del menú principal */
 .dropdown-item {
   position: relative;
-  padding: 30px 150px 30px 30px;
+  padding: 10px 15px; /* Relleno ajustado */
   cursor: pointer;
   display: flex;
-  flex-direction: column; /* para que el título y subcategorías estén uno debajo del otro */
-  align-items: start;
-  min-width: 150px; /* Cada columna tiene un ancho mínimo */
-  border-right: 1px solid #eee;
+  flex-direction: column;
+  align-items: flex-start; /* Alinear al inicio */
+  min-width: 150px; /* Ancho mínimo para cada columna */
+  border-right: 1px solid #f0f0f0; /* Separador más sutil */
   background: transparent;
   color: #1D1D1D;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  flex-grow: 1; /* Para que las columnas ocupen el espacio disponible */
 }
+
 
 .dropdown-item span {
   color: #1E7335;
   font-weight: 1000;
   font-family: "Afacad", sans-serif;
-  margin-bottom: 10px;
+  margin-bottom: 5px; /* Margen reducido */
   text-align: start;
   width: 100%;
-  font-size: 28px;
+  font-size: 20px; /* Tamaño de fuente reducido */
+}
+
+.dropdown-item:hover {
+  background-color: #f8f8f8; /* Un hover muy sutil */
+  transform: translateY(-2px); /* Un pequeño levantamiento al pasar el ratón */
 }
 
 .dropdown-item:last-child {
   border-right: none; /* Quita el borde a la última columna */
 }
 
+.dropdown-item span.category-title {
+  color: #1E7335; /* Tu verde distintivo */
+  font-weight: 700; /* Un poco más de peso para el título */
+  font-family: "Afacad", sans-serif;
+  margin-bottom: 10px; /* Más espacio debajo del título */
+  text-align: start;
+  width: 100%;
+  font-size: 22px; /* Tamaño de fuente para el título de categoría */
+  letter-spacing: 0.5px; /* Un poco de espaciado entre letras */
+  text-transform: uppercase; /* Convertir a mayúsculas */
+}
+
 /* Submenu SIEMPRE visible */
+/* Submenú (lista de enlaces de productos) */
 .submenu {
   list-style: none;
   margin: 0;
-  background-color: #ffffff;
-  display: block;
-  width: 100%;         /* Ocupa todo el ancho de la columna */
-  min-width: unset;    /* Quita el min-width fijo */
-  border-radius: 6px;
-  left: 0;
-  position: static;    /* Asegura que esté debajo del título */
-  box-shadow: none;
   padding: 0;
-  margin-top: 0;
+  display: flex;
+  flex-direction: column; /* Lista vertical */
+  width: 100%;
 }
 
 
 .submenu li {
-  padding: 5px 0;
-  text-align: start;
-  width: 100%;
+  margin-bottom: 8px; /* Espacio entre cada enlace de producto */
+}
+
+.submenu li:last-child {
+  margin-bottom: 0;
+  margin-top: 10px; /* Espacio antes del enlace "Ver todos" */
 }
 
 .submenu li a {
-  color: #333;
+  color: #555; /* Un gris más suave para los enlaces */
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
   font-family: "Afacad", sans-serif;
-  font-size: 15px;;
+  font-size: 15px; /* Tamaño de fuente ligeramente mayor para los enlaces */
+  display: block; /* Para que el área de clic sea mayor */
+  padding: 3px 0; /* Pequeño padding para cada enlace */
 }
 
 .submenu li a:hover {
-  color: #0f6823;
+  color: #1E7335; /* El verde distintivo al pasar el ratón */
+  transform: translateX(3px); /* Pequeño desplazamiento a la derecha */
+}
+
+
+/* Estilo para el enlace "Ver todos" */
+.submenu li .view-all {
+  color: #1E7335; /* Color verde para destacarlo */
+  font-weight: 600; /* Más peso para destacarlo */
+  border-top: 1px solid #f0f0f0; /* Línea separadora */
+  padding-top: 10px;
+  margin-top: 5px;
+  display: block;
+}
+
+.submenu li .view-all:hover {
+  color: #16572A; /* Un verde más oscuro al pasar el ratón */
 }
