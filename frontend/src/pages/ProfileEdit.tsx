@@ -3,6 +3,7 @@ import Input from '../components/Input';
 import PasswordInput from '../components/PasswordInput';
 import PasswordConfirm from '../components/PasswordConfirm';
 import '../styles/profileEdit.css';
+import WhatsAppButton from '../components/WhatsAppButton';
 
 // Interface for profile data
 interface Profile {
@@ -115,6 +116,7 @@ const ProfileEdit = () => {
         />
         <button type="submit">Actualizar contraseña</button>
       </form>
+      <WhatsAppButton />
     </div>
   );
 };

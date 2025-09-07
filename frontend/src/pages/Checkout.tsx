@@ -3,6 +3,7 @@ import '../styles/checkout.css';
 import { useCart } from '../components/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { CartItem } from '../types/cart';
+import WhatsAppButton from '../components/WhatsAppButton';
 
 // Form data interface
 interface FormData {
@@ -64,6 +65,7 @@ const Checkout = () => {
     }, [formData]);
 
 return (
+    //VER QUE DATOS PEDIR
     <main>
         <div className="data-container">
 
@@ -149,6 +151,7 @@ return (
                 <p className="cart-footer-item">Total: $<span id="total">{formatPrice(total)}</span></p>
             </div>
         </div>
+        <WhatsAppButton />
     </main>
 );
 };
