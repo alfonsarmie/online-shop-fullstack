@@ -62,60 +62,70 @@ const ProfileEdit = () => {
   return (
     <div className="profile-edit-container">
       <h2>Editar Perfil</h2>
-      <form onSubmit={handleProfileSubmit}>
-        <Input
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Ingresa tu nombre"
-          value={profile.name}
-          onChange={handleProfileChange}
-          required
-        />
-        <Input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="Ingresa tu email"
-          value={profile.email}
-          onChange={handleProfileChange}
-          required
-        />
-        <Input
-          type="tel"
-          id="phone"
-          name="phone"
-          placeholder="Ingresa tu teléfono"
-          value={profile.phone}
-          onChange={handleProfileChange}
-          required
-        />
+      
+      <div className="profile-edit-columns">
+        <div className="profile-column">
+          <form onSubmit={handleProfileSubmit} className="profile-form">
+            <h3>Información Personal</h3>
+            <Input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Ingresa tu nombre"
+              value={profile.name}
+              onChange={handleProfileChange}
+              required
+            />
+            <Input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Ingresa tu email"
+              value={profile.email}
+              onChange={handleProfileChange}
+              required
+            />
+            <Input
+              type="tel"
+              id="phone"
+              name="phone"
+              placeholder="Ingresa tu teléfono"
+              value={profile.phone}
+              onChange={handleProfileChange}
+              required
+            />
+            
+            <button type="submit">Actualizar datos</button>
+          </form>
+        </div>
 
-      </form>
-
-      <h2>Cambiar Contraseña</h2>
-      <form onSubmit={handlePasswordSubmit}>
-        <PasswordInput
-          name="actual"
-          value={passwords.actual}
-          onChange={handlePasswordChange}
-          placeholder="Ingresa tu contraseña actual"
-        />
-        <PasswordInput
-          name="new"
-          value={passwords.new}
-          onChange={handlePasswordChange}
-          placeholder="Ingresa tu nueva contraseña"
-        />
-        <PasswordConfirm
-          name="confirm"
-          value={passwords.confirm}
-          onChange={handlePasswordChange}
-          match={passwords.new === passwords.confirm ? 'Las contraseñas coinciden' : 'Las contraseñas no coinciden'}
-          color={passwords.new === passwords.confirm ? 'green' : 'red'}
-        />
-        <button type="submit">Actualizar contraseña</button>
-      </form>
+        <div className="password-column">
+          <form onSubmit={handlePasswordSubmit} className="password-form">
+            <h3>Cambiar Contraseña</h3>
+            <PasswordInput
+              name="actual"
+              value={passwords.actual}
+              onChange={handlePasswordChange}
+              placeholder="Ingresa tu contraseña actual"
+            />
+            <PasswordInput
+              name="new"
+              value={passwords.new}
+              onChange={handlePasswordChange}
+              placeholder="Ingresa tu nueva contraseña"
+            />
+            <PasswordConfirm
+              name="confirm"
+              value={passwords.confirm}
+              onChange={handlePasswordChange}
+              match={passwords.new === passwords.confirm ? 'Las contraseñas coinciden' : 'Las contraseñas no coinciden'}
+              color={passwords.new === passwords.confirm ? 'green' : 'red'}
+            />
+            <button type="submit">Actualizar contraseña</button>
+          </form>
+        </div>
+      </div>
+      
       <WhatsAppButton />
     </div>
   );
