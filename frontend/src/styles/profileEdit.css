@@ -7,7 +7,6 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   font-family: 'Afacad', sans-serif;
-  box-sizing: border-box;
 }
 
 .profile-edit-container h2 {
@@ -25,8 +24,6 @@
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
-  box-sizing: border-box;
-  align-items: stretch; /* Forzar que ambas columnas tengan misma altura */
 }
 
 /* Columnas individuales */
@@ -34,48 +31,31 @@
 .password-column {
   flex: 1;
   min-width: 300px;
-  box-sizing: border-box;
-  max-width: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
-/* Estilos para los formularios - MISMA ALTURA */
+/* Estilos para los formularios */
 .profile-form,
 .password-form {
   background: #f9f9f9;
-  padding: 1.2rem;
+  padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
   margin-bottom: 2rem;
-  box-sizing: border-box;
-  width: 100%;
-  overflow: hidden;
-  flex: 1; /* Hace que ambos formularios ocupen la misma altura */
-  display: flex;
-  flex-direction: column;
 }
 
 .profile-form h3,
 .password-form h3 {
   margin-top: 0;
-  margin-bottom: 1.2rem;
-  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #1E7335;
   text-align: center;
 }
 
-/* Contenedor de campos del formulario */
-.form-fields {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
 /* Estilo para ambos botones (Actualizar datos y Actualizar contraseña) */
 .profile-edit-container form button[type="submit"] {
-  margin-top: auto; /* Empuja el botón hacia abajo */
+  margin-top: 1rem;
   width: 100%;
   padding: 0.7rem;
   background: #1E7335;
@@ -87,128 +67,25 @@
   cursor: pointer;
   transition: background 0.2s;
   font-family: 'Afacad', sans-serif;
-  box-sizing: border-box;
 }
 
 .profile-edit-container form button[type="submit"]:hover {
   background: #072e11;
 }
 
-/* ESTILOS PARA INPUTS */
-.input-wrapper {
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 1rem;
-  position: relative;
-}
-
-.input-wrapper input {
-  width: 100%;
-  padding: 0.6rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-family: 'Afacad', sans-serif;
-  transition: border-color 0.3s;
-  box-sizing: border-box;
-  display: block;
-}
-
-.input-wrapper input:focus {
-  outline: none;
-  border-color: #1E7335;
-  box-shadow: 0 0 0 2px rgba(30, 115, 53, 0.2);
-}
-
-/* Campos de contraseña con botón de ojo */
-.password-field-wrapper {
-  position: relative;
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 1rem;
-}
-
-.password-field-wrapper input {
-  width: 100%;
-  padding: 0.6rem 3rem 0.6rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-family: 'Afacad', sans-serif;
-  transition: border-color 0.3s;
-  box-sizing: border-box;
-  display: block;
-}
-
-.password-field-wrapper input:focus {
-  outline: none;
-  border-color: #1E7335;
-  box-shadow: 0 0 0 2px rgba(30, 115, 53, 0.2);
-}
-
-.password-toggle-btn {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #777;
-  padding: 0;
-  width: 24px;
-  height: 24px;
+.profile-image-preview {
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 2;
-}
-
-.password-toggle-btn:hover {
-  color: #1E7335;
-}
-
-/* Contenedor de confirmación de contraseña */
-.password-confirm-wrapper {
-  position: relative;
-  width: 100%;
-  box-sizing: border-box;
   margin-bottom: 1rem;
 }
 
-.password-confirm-wrapper input {
-  width: 100%;
-  padding: 0.6rem 3rem 0.6rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-family: 'Afacad', sans-serif;
-  transition: border-color 0.3s;
-  box-sizing: border-box;
-  display: block;
-}
-
-.password-confirm-wrapper input:focus {
-  outline: none;
-  border-color: #1E7335;
-  box-shadow: 0 0 0 2px rgba(30, 115, 53, 0.2);
-}
-
-.confirmation-message {
-  font-size: 0.9rem;
-  margin-top: 0.3rem;
-  text-align: right;
-  font-family: 'Afacad', sans-serif;
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* Barra de fortaleza de contraseña */
-.strength-indicator {
-  width: 100%;
-  box-sizing: border-box;
-  margin: 0.3rem 0;
+.profile-image-preview img {
+  width: 120px;
+  height: 120px;
+  border-radius: 10%;
+  object-fit: cover;
+  border: 2px solid #eee;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
 
 .strength-bar {
@@ -216,8 +93,8 @@
   height: 8px;
   background: #eee;
   border-radius: 4px;
+  margin: 0.5rem 0;
   overflow: hidden;
-  box-sizing: border-box;
 }
 
 .strength-fill {
@@ -225,19 +102,136 @@
   transition: width 0.3s;
 }
 
-.strength-text {
-  font-size: 0.9rem;
+#strength-text {
+  font-size: 1rem;
   margin-top: 0.2rem;
   text-align: right;
   font-family: 'Afacad', sans-serif;
-  display: block;
+}
+
+/* Estilos para los campos de entrada */
+.input-container {
+  position: relative;
+  margin-bottom: 1.5rem;
   width: 100%;
-  box-sizing: border-box;
+}
+
+.input-container input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: 'Afacad', sans-serif;
+  transition: border-color 0.3s;
+  box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
+}
+
+.input-container input:focus {
+  outline: none;
+  border-color: #1E7335;
+  box-shadow: 0 0 0 2px rgba(30, 115, 53, 0.2);
+}
+
+/* Estilos específicos para campos de contraseña */
+/* Contenedor de los requisitos para alinearlos al inicio del formulario */
+.password-requirements {
+  font-family: 'Afacad', sans-serif;
+  list-style: none; /* Sin bullets */
+  padding-left: 0;
+  margin-left: 140px;
+  text-align: left;
+  width: 100%; /* ocupar todo el ancho del formulario */
+}
+
+.password-requirements li {
+  font-size: 0.95rem;
+  margin: 3px 0;
+}
+.password-requirements li.valid {
+  color: green;
+}
+.password-requirements li.invalid {
+  color: red;
 }
 
 /* Ocultar barra de fortaleza para la contraseña actual */
-.password-field-wrapper:first-of-type .strength-indicator {
+.password-input-container:first-of-type .strength-bar,
+.password-input-container:first-of-type #strength-text {
   display: none;
+}
+
+/* Errores de contraseña */
+.password-errors {
+    margin-top: 8px;
+    margin-bottom: 0;
+    padding-left: 20px;
+    margin-left: 70px;
+    list-style-type: disc;
+    font-family: "Afacad", sans-serif;
+    font-size: 14px;
+    color: red;
+    align-self: flex-start;
+    text-align: left;
+}
+
+.password-errors li {
+    margin-bottom: 4px;
+}
+
+/* Estilos para el grupo de formulario (necesarios para PasswordConfirm) */
+.form__group {
+  position: relative;
+  padding: 15px 0 0;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.form__field {
+  font-family: inherit;
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid #9b9b9b;
+  outline: 0;
+  font-size: 1.1rem;
+  color: #000;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+  box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
+}
+
+.form__field::placeholder {
+  color: transparent;
+}
+
+.form__field:placeholder-shown ~ .form__label {
+  font-size: 1.1rem;
+  cursor: text;
+  top: 20px;
+}
+
+.form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: #9b9b9b;
+}
+
+.form__field:focus ~ .form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: #1E7335;
+  font-weight: 700;
+}
+
+.required {
+  color: red;
 }
 
 /* Responsive */
@@ -250,22 +244,6 @@
     max-width: 100%;
     padding: 1rem;
     margin: 100px auto 20px auto;
-  }
-  
-  .profile-column,
-  .password-column {
-    min-width: 100%;
-  }
-  
-  .password-field-wrapper input,
-  .password-confirm-wrapper input {
-    padding: 0.8rem 2.5rem 0.8rem 1rem;
-  }
-  
-  .profile-form,
-  .password-form {
-    height: auto; /* Altura automática en móviles */
-    min-height: 0;
   }
 }
 
@@ -283,4 +261,3 @@
   width: 100% !important;
   box-sizing: border-box !important;
 }
-
