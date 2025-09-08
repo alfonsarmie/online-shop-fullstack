@@ -44,7 +44,7 @@ function App() {
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/profile-edit" element={<ProfileEdit />} />
+          <Route path="/profile-edit" element={<ProfileEdit user={user} setUser={setUser} />} />
           <Route path="/delivery" element={<Delivery user={user} setUser={setUser} />} />
         </Routes>
         <Footer />

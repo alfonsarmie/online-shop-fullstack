@@ -1,5 +1,5 @@
 import '../styles/input.css';
-import { ChangeEvent, ReactNode } from 'react';
+import { ChangeEvent, ReactNode, MouseEvent } from 'react';
 
 // Props interface for Input component
 interface InputProps {
@@ -11,11 +11,22 @@ interface InputProps {
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
   children?: ReactNode;
+  onClick?: (e: MouseEvent<HTMLInputElement>) => void; // ← Agregar esta línea
 }
 
 // Reusable input component with floating label design
-function Input({ type, id, name, placeholder, value, onChange, required, children }: InputProps) {
-    const inputId = id || name; // Usa id si existe, sino usa name
+function Input({ 
+  type, 
+  id, 
+  name, 
+  placeholder, 
+  value, 
+  onChange, 
+  required, 
+  children, 
+  onClick // ← Agregar esta prop
+}: InputProps) {
+    const inputId = id || name;
     
     return (
         <div className="form__group field">
@@ -24,11 +35,12 @@ function Input({ type, id, name, placeholder, value, onChange, required, childre
                 type={type}
                 className="form__field"
                 id={inputId}
-                name={name || id} // Asegurar que name tenga valor
+                name={name || id}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
                 required={required}
+                onClick={onClick} // ← Pasar la prop al input
             />
 
             {/* Floating label that moves up when input is focused */}

@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState, MouseEvent } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importar iconos de ojo
 
 // Props interface for PasswordConfirm component
@@ -8,10 +8,18 @@ interface PasswordConfirmProps {
   match: string;
   color: string;
   name: string;
+  onClick?: (e: MouseEvent<HTMLInputElement>) => void; // ← Agregar esta línea
 }
 
 // Password confirmation input with match validation
-export default function PasswordConfirm({ value, onChange, match, color, name }: PasswordConfirmProps) {
+export default function PasswordConfirm({ 
+  value, 
+  onChange, 
+  match, 
+  color, 
+  name, 
+  onClick // ← Agregar esta prop
+}: PasswordConfirmProps) {
     const [showPassword, setShowPassword] = useState(false);
 
     const togglePasswordVisibility = () => {
@@ -29,6 +37,7 @@ export default function PasswordConfirm({ value, onChange, match, color, name }:
                 placeholder="Confirmar Contraseña"
                 value={value}
                 onChange={onChange}
+                onClick={onClick} // ← Pasar la prop
                 required
             />
             {/* Floating label for confirmation field */}

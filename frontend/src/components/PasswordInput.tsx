@@ -1,5 +1,5 @@
 import Input from './Input';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState, MouseEvent } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importar iconos de ojo
 
 // Interface for strength object
@@ -16,10 +16,18 @@ interface PasswordInputProps {
   strength?: Strength;
   placeholder?: string;
   name: string;
+  onClick?: (e: MouseEvent<HTMLInputElement>) => void; // ← Agregar esta línea
 }
 
 // Password input component with strength indicator
-export default function PasswordInput({ value, onChange, strength, placeholder, name }: PasswordInputProps) {
+export default function PasswordInput({ 
+  value, 
+  onChange, 
+  strength, 
+  placeholder, 
+  name, 
+  onClick // ← Agregar esta prop
+}: PasswordInputProps) {
     // Default strength values to prevent errors
     const safeStrength = strength || { width: '0%', color: '#ccc', label: '' };
     const [showPassword, setShowPassword] = useState(false);
@@ -37,6 +45,7 @@ export default function PasswordInput({ value, onChange, strength, placeholder, 
                 placeholder={placeholder || "Contraseña"}
                 value={value}
                 onChange={onChange}
+                onClick={onClick} // ← Pasar la prop
                 required
             >
                 {/* Password strength visual indicator bar */}
