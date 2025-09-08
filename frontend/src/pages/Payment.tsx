@@ -5,6 +5,7 @@ import '../styles/payment.css';
 import mpLogo from '../assets/img/mercado-pago-logo.png';
 import { CartItem } from '../types/cart';
 
+// Payment component
 const Payment = () => {
   const { cartItems, clearCart } = useCart();
   const navigate = useNavigate();

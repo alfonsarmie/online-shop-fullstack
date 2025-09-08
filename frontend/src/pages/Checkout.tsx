@@ -51,7 +51,7 @@ const Checkout = () => {
         navigate('/payment');
     };
 
-    // Function to format prices
+    // Function to format prices, example: 1000 -> 1,000.00
     const formatPrice = (price: number) => {
         return price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };

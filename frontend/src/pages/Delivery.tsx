@@ -19,9 +19,7 @@ import {
   FaTshirt,
   FaBuilding,
   FaCheckCircle,
-  FaQuoteLeft,
   FaInfoCircle,
-  FaParking,
   FaAccessibleIcon
 } from 'react-icons/fa';
 

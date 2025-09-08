@@ -4,6 +4,7 @@ import PasswordInput from '../components/PasswordInput';
 import PasswordConfirm from '../components/PasswordConfirm';
 import '../styles/profileEdit.css';
 import WhatsAppButton from '../components/WhatsAppButton';
+import axios from 'axios';
 
 // Interface for profile data
 interface Profile {
@@ -32,6 +33,7 @@ interface PasswordStrength {
 // Interface for component props
 interface ProfileEditProps {
   user: {
+    idUser: number;
     name: string;
     surname?: string;
     email: string;
@@ -42,7 +44,7 @@ interface ProfileEditProps {
 }
 
 const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
-  // Estado para los datos del perfil
+  // State for profile information
   const [profile, setProfile] = useState<Profile>({
     name: '',
     email: '',
@@ -51,7 +53,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     dni: ''
   });
 
-  // Estado original del perfil para comparar cambios
+  // Original profile state to check for changes
   const [originalProfile, setOriginalProfile] = useState<Profile>({
     name: '',
     email: '',
@@ -60,7 +62,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     dni: ''
   });
 
-  // Cargar datos del usuario cuando el componente se monta o el user cambia
+  // Load user data into profile state on component mount or when user changes
   useEffect(() => {
     if (user) {
       const userProfile = {
@@ -75,7 +77,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     }
   }, [user]);
 
-  // Estado para la edición de campos
+  // State for edit mode of each field
   const [editMode, setEditMode] = useState({
     name: false,
     surname: false,
@@ -105,7 +107,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     { text: 'Debe contener al menos un número', valid: false }
   ]);
 
-  // Verificar si hay cambios en el perfil
+  // Check if there are changes in profile data
   const hasProfileChanges = () => {
     return (
       profile.name !== originalProfile.name ||
@@ -116,7 +118,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     );
   };
 
-  // Verificar si se puede actualizar la contraseña
+  // Check if password can be updated
   const canUpdatePassword = () => {
     return (
       passwords.actual.trim() !== '' &&
@@ -132,12 +134,12 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
-  // Handler para activar/desactivar el modo de edición
+  // Handler to activate/deactivate edit mode
   const toggleEditMode = (fieldName: keyof Profile) => {
     setEditMode({ ...editMode, [fieldName]: !editMode[fieldName] });
   };
 
-  // Handler para evitar que el click en el input cierre el modo edición
+  // Handler to prevent clicking on the input from closing edit mode
   const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
     e.stopPropagation();
   };
@@ -147,7 +149,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     const { name, value } = e.target;
     setPasswords({ ...passwords, [name]: value });
 
-    // Calcular fuerza de la contraseña solo para el campo "new"
+    // Calculate password strenght, only for new password
     if (name === 'new') {
       const newReqs = [
         { text: 'Debe tener al menos 6 caracteres', valid: value.length >= 6 },
@@ -177,30 +179,33 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     }
 
     try {
-      // Aquí iría la llamada a tu API para actualizar el perfil
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/api/users/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(profile)
-      });
+      const token = localStorage.getItem('token'); 
+      
+      // ✅ Usar axios con la ruta correcta
+      const response = await axios.put(
+        `http://localhost:3000/api/users/update/${user?.idUser}`, 
+        profile,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-token': token // ✅ Header temporal para testing
+          }
+        }
+      );
 
-      if (response.ok) {
-        const updatedUser = await response.json();
+      if (response.status === 200) {
+        const updatedUser = response.data.userToUpdate;
         setUser(updatedUser);
         localStorage.setItem('user', JSON.stringify(updatedUser));
-        setOriginalProfile(profile); // Actualizar el estado original
+        setOriginalProfile(profile);
         alert('Perfil actualizado correctamente');
         setEditMode({ name: false, surname: false, email: false, phone: false, dni: false });
       } else {
         alert('Error al actualizar el perfil');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error:', error);
-      alert('Error al actualizar el perfil');
+      alert(error.response?.data?.message || 'Error al actualizar el perfil');
     }
   };
 
@@ -215,28 +220,32 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/api/users/change-password', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
+      
+      // ✅ Usar axios
+      const response = await axios.put(
+        'http://localhost:3000/api/users/change-password',
+        {
           currentPassword: passwords.actual,
           newPassword: passwords.new
-        })
-      });
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
 
-      if (response.ok) {
+      if (response.status === 200) {
         alert('Contraseña actualizada correctamente');
         setPasswords({ actual: '', new: '', confirm: '' });
         setPasswordStrength({ strength: 0, label: '', color: '', width: '0%' });
       } else {
         alert('Error al cambiar la contraseña');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error:', error);
-      alert('Error al cambiar la contraseña');
+      alert(error.response?.data?.message || 'Error al cambiar la contraseña');
     }
   };
 
@@ -379,7 +388,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
               strength={passwordStrength}
             />
 
-            {/* Requisitos de la contraseña */}
+            {/* Password requirements */}
             <ul className="password-requirements">
               {requirements.map((req, idx) => (
                 <li key={idx} className={req.valid ? "valid" : "invalid"}>

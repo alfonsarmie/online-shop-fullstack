@@ -34,7 +34,7 @@ function ProductDetails() {
     // Add product with selected size to cart
     addToCart({
       ...product,
-      id: product.id.toString(), // Convertir number a string
+      id: product.id.toString(), // Ensure ID is a string for cart
       size: selectedSize,
       quantity: 1
     } as ProductWithSize);

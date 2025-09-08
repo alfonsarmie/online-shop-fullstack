@@ -8,7 +8,7 @@ import '../styles/login.css';
 import axios from 'axios';
 import { User } from '../types/user';
 import SuccessMessage from '../components/SuccessMessage';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importar iconos de ojo
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
 
 // Props interface for LoginForm component
 interface LoginFormProps {
@@ -19,14 +19,15 @@ export default function LoginForm({ setUser }: LoginFormProps) {
     // useState to handle form data
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
+    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
     const isFormValid = email.trim() !== '' && password.trim() !== '';
     const navigate = useNavigate();
     const [message, setMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
+    // Toggle password visibility
     const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
+        setShowPassword(!showPassword); // Initially false, toggles between true/false
     };
 
     // Handle form submission

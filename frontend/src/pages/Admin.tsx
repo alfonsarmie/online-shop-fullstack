@@ -3,7 +3,7 @@
 function Admin() {
     return (
         <div>
-            <h1>Admin Page</h1>
+            <h1>En desarrollo...</h1>
         </div>
     );
 }
