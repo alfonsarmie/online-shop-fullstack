@@ -1,0 +1,235 @@
+/* Admin Dashboard Styles
+   Purpose: Dark, clean UI for executive metrics and simple charts
+   Notes: Reuses brand typography (Anton / Afacad) and green accents
+*/
+@import url('https://fonts.googleapis.com/css2?family=Afacad&display=swap');
+
+/* Page container */
+.admin-dashboard {
+  /* Use padding-top instead of margin-top so the space under the fixed navbar
+     keeps the dark background and no white gap shows through */
+  padding: 24px 32px;
+  padding-top: 100px; /* clear fixed navbar */
+  color: #f0f0f0;
+  background: #121212;
+  min-height: calc(100vh - 100px);
+  font-family: 'Afacad', sans-serif;
+}
+
+/* Page title */
+.admin-dashboard h1 {
+  margin: 0;
+  font-family: 'Anton', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+/* Subtitle under the main title */
+.subtitle {
+  color: #bdbdbd;
+  margin-top: 6px;
+  margin-bottom: 18px;
+  font-family: 'Afacad', sans-serif;
+}
+
+/* Top KPI grid */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* KPI card */
+.kpi-card {
+  background: #1D1D1D;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+/* KPI label (caption) */
+.kpi-label {
+  color: #bdbdbd;
+  font-size: 14px;
+  font-family: 'Afacad', sans-serif;
+}
+
+/* KPI main number */
+.kpi-value {
+  display: block;
+  margin-top: 6px;
+  font-size: 26px;
+  color: #1E7335;
+  font-family: 'Anton', sans-serif;
+}
+
+/* KPI subtext (delta/extra info) */
+.kpi-sub {
+  color: #8f8f8f;
+  font-size: 12px;
+  font-family: 'Afacad', sans-serif;
+}
+
+/* Two-column responsive grid */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+/* Single-column section */
+.grid-1 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+/* Card-like panel wrapper */
+.panel {
+  background: #1D1D1D;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+}
+
+/* Panel header */
+.panel-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+/* Panel header title */
+.panel-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-family: 'Afacad', sans-serif;
+  color: #e8e8e8;
+}
+
+/* Panel content area */
+.panel-body {
+  padding: 14px 16px 18px;
+}
+
+/* Inline chart background */
+.sparkline {
+  width: 100%;
+  background: #151515;
+  border-radius: 8px;
+}
+
+/* Small labels under sparkline */
+.legend {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: #bdbdbd;
+  font-family: 'Afacad', sans-serif;
+}
+
+/* Single legend chip */
+.legend-item {
+  background: #151515;
+  border: 1px solid #2a2a2a;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+/* Horizontal stacked bar */
+.stacked-bar {
+  display: flex;
+  height: 14px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #151515;
+  border: 1px solid #2a2a2a;
+}
+
+/* Taller variant for key mixes */
+.stacked-bar.large {
+  height: 18px;
+}
+
+.stacked-seg { display: inline-block; }
+
+/* Textual breakdown next to stacked bars */
+.status-list {
+  margin-top: 12px;
+  list-style: none;
+  padding: 0;
+}
+
+.status-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #dcdcdc;
+  padding: 6px 0;
+  border-bottom: 1px dashed #2a2a2a;
+  font-family: 'Afacad', sans-serif;
+}
+
+.status-list li:last-child { border-bottom: none; }
+
+/* Small color dot indicator */
+.status-list .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.status-list .right { margin-left: auto; color: #bdbdbd; }
+
+/* Simple table for rankings */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Afacad', sans-serif;
+}
+
+/* Table cell baselines */
+.data-table th, .data-table td {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.data-table th { color: #bdbdbd; font-weight: 600; }
+
+.data-table td { color: #e6e6e6; }
+
+/* Generic vertical list */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* List row */
+.list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+/* Stock badges */
+.badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #fff;
+  font-family: 'Afacad', sans-serif;
+}
+
+.badge.warn { background: #E6B800; }
+.badge.danger { background: #C0392B; }
+
+/* Responsive breakpoint */
+@media (max-width: 1000px) {
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  .grid-2 { grid-template-columns: 1fr; }
+}

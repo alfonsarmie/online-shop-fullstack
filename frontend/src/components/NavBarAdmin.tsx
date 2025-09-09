@@ -1,25 +1,28 @@
+/**
+ * Admin Navigation Bar
+ * Purpose: top navigation for all `/admin/*` pages.
+ * Reuses public navbar styles for visual consistency and exposes admin links.
+ */
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/nav.css';
 import '../index.css';
 import logo from '../assets/img/logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faCartShopping, faBars } from '@fortawesome/free-solid-svg-icons';
-import { useCart } from './CartContext';
-import DropdownMenu from './DropdownMenu';
+import { faUser, faBars } from '@fortawesome/free-solid-svg-icons';
 import { User } from '../types/user';
-import { useState, useEffect } from 'react'; // Importar useEffect
-import UserSidebar from './UserSideBar'; 
+import { useState, useEffect } from 'react';
+import UserSidebar from './UserSideBar';
 import SuccessMessage from './SuccessMessage';
 
 // Navbar props interface
+// Props contract: current user (or null) and a setter to update auth state
 interface NavbarProps {
   user: User | null;
   setUser: (user: User | null) => void;
 }
 
-function Navbar({ user, setUser }: NavbarProps) {
+function NavBarAdmin({ user, setUser }: NavbarProps) {
   const navigate = useNavigate();
-  const { openCart, cartCount } = useCart();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -42,7 +45,7 @@ function Navbar({ user, setUser }: NavbarProps) {
 
   // Navigate to home and scroll to top
   const handleHomeClick = () => {
-    navigate('/');
+    navigate('/admin');
     window.scrollTo(0, 0);
   };
 
@@ -75,17 +78,17 @@ function Navbar({ user, setUser }: NavbarProps) {
         </div>
 
         <div className="nav-left" onClick={handleHomeClick}>
-          <Link to="/">
+          <Link to="/admin">
             <img src={logo} alt="logo" />
           </Link>
         </div>
 
         <div className="nav-links" id="navLinks">
           <ul>
-            <li onClick={handleHomeClick}><Link to="/">INICIO</Link></li>
-            <li><Link to="/about-us">PEDIDOS</Link></li>
-            <li><Link to="/delivery">ESTADISTICAS</Link></li>
-            <li><Link to="/contact">PRODUCTOS</Link></li>
+            <li><Link to="/admin">INICIO ADMIN</Link></li>
+            <li><Link to="/admin/orders">PEDIDOS</Link></li>
+            <li><Link to="/admin/dashboard">ESTADÍSTICAS</Link></li>
+            <li><Link to="/admin/products">PRODUCTOS</Link></li>
           </ul>
         </div>
 
@@ -120,4 +123,4 @@ function Navbar({ user, setUser }: NavbarProps) {
   );
 }
 
-export default Navbar;
+export default NavBarAdmin;
