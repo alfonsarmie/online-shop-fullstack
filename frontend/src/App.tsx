@@ -22,6 +22,7 @@ import AboutUs from './pages/AboutUs';
 import Catalog from './pages/Catalog';
 import Admin from './pages/Admin';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminProducts from './pages/AdminProducts';
 import ProfileEdit from './pages/ProfileEdit';
 import Delivery from './pages/Delivery';
 import { User } from './types/user';
@@ -63,6 +64,7 @@ function App() {
           <Route path="/admin" element={<Admin />} />
           {/* Admin routes */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/products" element={<AdminProducts />} />
           <Route path="/profile-edit" element={<ProfileEdit user={user} setUser={setUser} />} />
           <Route path="/delivery" element={<Delivery user={user} setUser={setUser} />} />
         </Routes>
