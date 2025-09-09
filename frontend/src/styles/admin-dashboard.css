@@ -9,7 +9,7 @@
   /* Use padding-top instead of margin-top so the space under the fixed navbar
      keeps the dark background and no white gap shows through */
   padding: 24px 32px;
-  padding-top: 100px; /* clear fixed navbar */
+  padding-top: 50px; /* clear fixed navbar */
   color: #f0f0f0;
   background: #121212;
   min-height: calc(100vh - 100px);

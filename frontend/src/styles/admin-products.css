@@ -1,7 +1,7 @@
 /* Admin Products Styles: consistent with dark admin look */
 .admin-products {
   padding: 24px 32px;
-  padding-top: 100px; /* keep clear of fixed navbar */
+  padding-top: 50px; /* keep clear of fixed navbar */
   color: #f0f0f0;
   background: #121212;
   min-height: calc(100vh - 100px);
@@ -51,14 +51,14 @@
 
 .form-grid .col-2 { grid-column: span 2; }
 
-label span {
+label .span-admin {
   display: block;
   color: #bdbdbd;
   font-size: 12px;
   margin-bottom: 6px;
 }
 
-input, textarea {
+.input-admin, textarea {
   width: 100%;
   padding: 10px 12px;
   color: #e6e6e6;

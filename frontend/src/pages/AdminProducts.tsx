@@ -133,43 +133,43 @@ const AdminProducts: React.FC = () => {
         </div>
         <div className="panel-body form-grid">
           <label>
-            <span>Nombre</span>
-            <input value={creating.name} onChange={e => setCreating({ ...creating, name: e.target.value })} />
+            <span className='span-admin'>Nombre</span>
+            <input className='input-admin' value={creating.name} onChange={e => setCreating({ ...creating, name: e.target.value })} />
           </label>
           <label>
-            <span>Precio</span>
-            <input type="number" value={creating.price} onChange={e => setCreating({ ...creating, price: Number(e.target.value) })} />
+            <span className='span-admin'>Precio</span>
+            <input className='input-admin' type="number" value={creating.price} onChange={e => setCreating({ ...creating, price: Number(e.target.value) })} />
           </label>
           <label>
-            <span>Color</span>
+            <span className='span-admin'>Color</span>
           </label>
           <label>
-            <span>Categoría</span>
-            <input value={creating.category} onChange={e => setCreating({ ...creating, category: e.target.value })} />
+            <span className='span-admin'>Categoría</span>
+            <input className='input-admin' value={creating.category} onChange={e => setCreating({ ...creating, category: e.target.value })} />
           </label>
           <label className="col-2">
-            <span>Descripción</span>
+            <span className='span-admin'>Descripción</span>
             <textarea rows={3} value={creating.description} onChange={e => setCreating({ ...creating, description: e.target.value })} />
           </label>
           <label>
-            <span>Talles (CSV)</span>
-            <input placeholder="XS,S,M,L,XL" value={creating.sizes.join(',')} onChange={e => setCreating({ ...creating, sizes: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} />
+            <span className='span-admin'>Talles (CSV)</span>
+            <input className='input-admin' placeholder="XS,S,M,L,XL" value={creating.sizes.join(',')} onChange={e => setCreating({ ...creating, sizes: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} />
           </label>
           <label>
-            <span>Stock</span>
-            <input type="number" value={creating.stock} onChange={e => setCreating({ ...creating, stock: Number(e.target.value) })} />
+            <span className='span-admin'>Stock</span>
+            <input className='input-admin' type="number" value={creating.stock} onChange={e => setCreating({ ...creating, stock: Number(e.target.value) })} />
           </label>
           <label>
-            <span>Imagen principal (URL)</span>
-            <input value={creating.img || ''} onChange={e => setCreating({ ...creating, img: e.target.value })} />
+            <span className='span-admin'>Imagen principal (URL)</span>
+            <input className='input-admin' value={creating.img || ''} onChange={e => setCreating({ ...creating, img: e.target.value })} />
           </label>
           <label>
-            <span>Imagen 2 (URL)</span>
-            <input value={creating.img2 || ''} onChange={e => setCreating({ ...creating, img2: e.target.value })} />
+            <span className='span-admin'>Imagen 2 (URL)</span>
+            <input className='input-admin' value={creating.img2 || ''} onChange={e => setCreating({ ...creating, img2: e.target.value })} />
           </label>
           <label>
-            <span>Imagen 3 (URL)</span>
-            <input value={creating.img3 || ''} onChange={e => setCreating({ ...creating, img3: e.target.value })} />
+            <span className='span-admin'>Imagen 3 (URL)</span>
+            <input className='input-admin' value={creating.img3 || ''} onChange={e => setCreating({ ...creating, img3: e.target.value })} />
           </label>
           <div className="actions col-2">
             <button className="btn primary" onClick={create}>Crear producto</button>
