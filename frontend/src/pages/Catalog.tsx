@@ -60,6 +60,7 @@ const Catalog = () => {
   const sortedProducts = getSortedProducts();
 
   return (
+    
     <div className="catalogo-productos">
       {/* Category Header */}
       <div className="categoria-header">

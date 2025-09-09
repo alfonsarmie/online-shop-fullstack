@@ -304,24 +304,6 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
               </div>
             </div>
 
-            <div className="profile-field" onClick={() => toggleEditMode('email')}>
-              <label>Correo Electrónico</label>
-              <div className="profile-input-container">
-                {editMode.email ? (
-                  <Input
-                    type="email"
-                    name="email"
-                    placeholder="Ingresa tu correo"
-                    value={profile.email}
-                    onChange={handleProfileChange}
-                    onClick={handleInputClick}
-                    required
-                  />
-                ) : (
-                  <p>{profile.email || 'No especificado'}</p>
-                )}
-              </div>
-            </div>
 
             <div className="profile-field" onClick={() => toggleEditMode('phone')}>
               <label>Teléfono</label>

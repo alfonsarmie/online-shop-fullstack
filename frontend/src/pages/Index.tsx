@@ -3,6 +3,7 @@ import PreProducts from '../components/PreProducts';
 import DinamicsImgContainer from '../components/DinamicsImgContainer';
 import Products from '../components/Products';
 import WhatsAppButton from '../components/WhatsAppButton';
+import Navbar from '../components/Navbar';
 
 // Main Index component rendering home page sections
 function Index() {
