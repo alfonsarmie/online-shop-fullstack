@@ -38,7 +38,6 @@ const emptyDraft: Draft = {
   sizes: [],
   stock: 0,
   category: '',
-  color: '',
 };
 
 const AdminProducts: React.FC = () => {
@@ -62,8 +61,7 @@ const AdminProducts: React.FC = () => {
     if (!q) return products;
     return products.filter(p =>
       p.name.toLowerCase().includes(q) ||
-      (p.category || '').toLowerCase().includes(q) ||
-      (p.color || '').toLowerCase().includes(q)
+      (p.category || '').toLowerCase().includes(q)
     );
   }, [products, filter]);
 
@@ -76,7 +74,6 @@ const AdminProducts: React.FC = () => {
       sizes: p.sizes,
       stock: p.stock,
       category: p.category || '',
-      color: p.color || '',
       img: p.img,
       img2: p.img2,
       img3: p.img3,
@@ -118,7 +115,6 @@ const AdminProducts: React.FC = () => {
       sizes: creating.sizes,
       stock: creating.stock,
       category: creating.category || undefined,
-      color: creating.color || undefined,
     };
     setProducts(prev => [newP, ...prev]);
     setCreating(emptyDraft);
@@ -146,7 +142,6 @@ const AdminProducts: React.FC = () => {
           </label>
           <label>
             <span>Color</span>
-            <input value={creating.color} onChange={e => setCreating({ ...creating, color: e.target.value })} />
           </label>
           <label>
             <span>Categoría</span>
@@ -212,7 +207,6 @@ const AdminProducts: React.FC = () => {
                 <tr key={p.id}>
                   <td>{p.name}</td>
                   <td>{p.price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
-                  <td>{p.color || '-'}</td>
                   <td>{p.category || '-'}</td>
                   <td>{renderSizes(p.sizes)}</td>
                   <td>
@@ -263,7 +257,6 @@ const AdminProducts: React.FC = () => {
             </label>
             <label>
               <span>Color</span>
-              <input value={editing.color || ''} onChange={e => setEditing({ ...editing, color: e.target.value })} />
             </label>
             <label>
               <span>Categoría</span>
