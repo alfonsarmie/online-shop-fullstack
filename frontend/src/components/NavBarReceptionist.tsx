@@ -1,11 +1,7 @@
-// NavBarReceiver.tsx (actualizado)
+// NavBarReceiver.tsx
 /**
  * NavBarReceiver
- * Purpose: Navigation bar for receptionist routes with access to stock management.
- * Notes:
- *  - Similar to NavBarAdmin but with receptionist-specific links
- *  - Maintains consistent styling with the admin interface
- *  - Uses UserSideBar component like other navbars
+ * Purpose: Navigation bar for receptionist routes with access to stock and pending orders.
  */
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/nav.css';
@@ -18,7 +14,6 @@ import { useState, useEffect } from 'react';
 import UserSidebar from './UserSideBar';
 import SuccessMessage from './SuccessMessage';
 
-// Navbar props interface
 interface NavbarProps {
   user: User | null;
   setUser: (user: User | null) => void;
@@ -29,44 +24,24 @@ function NavBarReceiver({ user, setUser }: NavbarProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Efecto para limpiar automáticamente el mensaje después de 3 segundos
   useEffect(() => {
     if (successMessage) {
-      const timer = setTimeout(() => {
-        setSuccessMessage('');
-      }, 3000); // 3 segundos
-
-      // Limpiar el timer si el componente se desmonta o el mensaje cambia
+      const timer = setTimeout(() => setSuccessMessage(''), 3000);
       return () => clearTimeout(timer);
     }
   }, [successMessage]);
 
-  // Toggle sidebar function
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  // Navigate to home and scroll to top
   const handleHomeClick = () => {
     navigate('/receptionist');
     window.scrollTo(0, 0);
   };
 
-  // Open user sidebar
-  const openUserSidebar = () => {
-    setIsSidebarOpen(true);
-  };
-
-  // Close user sidebar
-  const closeUserSidebar = () => {
-    setIsSidebarOpen(false);
-  };
+  const openUserSidebar = () => setIsSidebarOpen(true);
+  const closeUserSidebar = () => setIsSidebarOpen(false);
 
   return (
     <div>
-      {/* SuccessMessage a nivel superior */}
       <SuccessMessage message={successMessage} onClose={() => setSuccessMessage('')} />
-      
       <nav>
         <div className="nav-toggle" id="navToggle">
           <FontAwesomeIcon icon={faBars} />
@@ -80,20 +55,17 @@ function NavBarReceiver({ user, setUser }: NavbarProps) {
 
         <div className="nav-links" id="navLinks">
           <ul>
-            <li><Link to="/receptionist">GESTIÓN DE STOCK</Link></li>
+            <li><Link to="/receptionist">PEDIDOS PENDIENTES</Link></li>
+            <li><Link to="/receptionist/stock">GESTIÓN DE STOCK</Link></li>
           </ul>
         </div>
 
         <div className="btnsRight">
-          {/* conditional rendering */}
           {user ? (
             <>
-              {/* Button to open user sidebar */}
               <button onClick={openUserSidebar} className="userOptions">
                 <span className="user-name">Hola, {user.name}!</span>
               </button>
-
-              {/* User Sidebar is only displayed if user exists */}
               <UserSidebar
                 isOpen={isSidebarOpen}
                 onClose={closeUserSidebar}

@@ -5,8 +5,8 @@
  */
 import { User } from '../types/user';
 import { useState, useEffect } from 'react';
-import NavBarReceiver from '../components/NavBarReceiver';
-import ReceiverDashboard from '../components/ReceiverDashboard'; // Esta importación debe ser correcta
+import NavBarReceiver from '../components/NavBarReceptionist';
+import ReceiverDashboard from '../components/ReceptionistDashboard'; // Esta importación debe ser correcta
 
 interface ReceptionistProps {
   user: User | null;

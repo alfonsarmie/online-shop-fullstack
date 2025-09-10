@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react';
 import Index from './pages/Index';
 import Navbar from './components/Navbar';
 import NavBarAdmin from './components/NavBarAdmin';
-import NavBarReceiver from './components/NavBarReceiver'; // Nuevo import
+import NavBarReceiver from './components/NavBarReceptionist'; // Nuevo import
 import Login from './pages/Login';
 import Footer from './components/Footer';
 import Cart from './components/Cart';
@@ -28,6 +28,8 @@ import ProfileEdit from './pages/ProfileEdit';
 import Delivery from './pages/Delivery';
 import AdminOrders from './pages/AdminOrders';
 import Receptionist from './pages/Receptionist';
+import ReceptionistOrders from './pages/ReceptionistOrders';
+import ReceiverDashboard from './components/ReceptionistDashboard';
 import { User } from './types/user';
 import { useLocation } from 'react-router-dom';
 
@@ -78,7 +80,9 @@ function App() {
           <Route path="/profile-edit" element={<ProfileEdit user={user} setUser={setUser} />} />
           <Route path="/delivery" element={<Delivery user={user} setUser={setUser} />} />
           {/* Receptionist routes */}
-          <Route path="/receptionist" element={<Receptionist user={user} setUser={setUser}/>} />
+          <Route path="/receptionist" element={<ReceptionistOrders />} />
+          <Route path="/receptionist/orders" element={<ReceptionistOrders />} />
+          <Route path="/receptionist/stock" element={<ReceiverDashboard />} />
         </Routes>
         <Footer />
         <Cart />

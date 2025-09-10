@@ -232,3 +232,8 @@ label .span-admin {
   .row-actions { flex-direction: column; align-items: flex-start; }
   .status-select { width: 100%; min-width: auto; }
 }
+
+/* Delivered section muted styling */
+.delivered-panel .panel-header h2 { color: #bdbdbd; }
+.delivered-table tbody tr.delivered-row td { color: #a0a0a0; }
+.delivered-table tbody tr.delivered-row { background: #181818; }
