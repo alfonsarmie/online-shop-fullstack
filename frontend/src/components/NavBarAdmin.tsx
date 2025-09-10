@@ -3,7 +3,7 @@
  * Purpose: top navigation for all `/admin/*` pages.
  * Reuses public navbar styles for visual consistency and exposes admin links.
  */
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../styles/nav.css';
 import '../index.css';
 import logo from '../assets/img/logo.png';
@@ -22,7 +22,6 @@ interface NavbarProps {
 }
 
 function NavBarAdmin({ user, setUser }: NavbarProps) {
-  const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -43,11 +42,7 @@ function NavBarAdmin({ user, setUser }: NavbarProps) {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Navigate to home and scroll to top
-  const handleHomeClick = () => {
-    navigate('/admin');
-    window.scrollTo(0, 0);
-  };
+  // Removed custom home click; logo link handles navigation
 
   // Toggle options menu
   const openOptions = () => {
@@ -77,17 +72,17 @@ function NavBarAdmin({ user, setUser }: NavbarProps) {
           <FontAwesomeIcon icon={faBars} />
         </div>
 
-        <div className="nav-left" onClick={handleHomeClick}>
-          <Link to="/admin/dashboard"> {/* debería renderizarse el dashboard */}
+        <div className="nav-left">
+          <Link to="/admindashboard"> {/* debería renderizarse el dashboard */}
             <img src={logo} alt="logo" />
           </Link>
         </div>
 
         <div className="nav-links" id="navLinks">
           <ul>
-            <li><Link to="/admin/dashboard">ESTADÍSTICAS</Link></li>
-            <li><Link to="/admin/orders">PEDIDOS</Link></li>
-            <li><Link to="/admin/products">PRODUCTOS</Link></li>
+            <li><Link to="/admindashboard">ESTADÍSTICAS</Link></li>
+            <li><Link to="/adminorders">PEDIDOS</Link></li>
+            <li><Link to="/adminproducts">PRODUCTOS</Link></li>
           </ul>
         </div>
 

@@ -22,7 +22,6 @@ import Checkout from './pages/Checkout';
 import Payment from './pages/Payment';
 import AboutUs from './pages/AboutUs';
 import Catalog from './pages/Catalog';
-import Admin from './pages/Admin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminProducts from './pages/AdminProducts';
 import ProfileEdit from './pages/ProfileEdit';
@@ -42,18 +41,22 @@ function App() {
     if (savedUser) setUser(JSON.parse(savedUser));
   }, []);
 
-  // Determine which navbar to show based on route
+  // Determine which navbar to show based on user role
   const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith('/admin');
-  const isReceptionistRoute = location.pathname.startsWith('/receptionist');
+  // Always scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname, location.search]);
+  const isAdminUser = user?.role === 'admin';
+  const isReceptionistUser = user?.role === 'receptionist';
 
   return (
     <CartProvider> {/* Cart provider to use cart context */}
       <div>
         {/* Route-aware navbar: admin vs receptionist vs public */}
-        {isAdminRoute ? (
+        {isAdminUser ? (
           <NavBarAdmin user={user} setUser={setUser} />
-        ) : isReceptionistRoute ? (
+        ) : isReceptionistUser ? (
           <NavBarReceiver user={user} setUser={setUser} />
         ) : (
           <Navbar user={user} setUser={setUser} />
@@ -68,11 +71,10 @@ function App() {
           <Route path="/payment" element={<Payment />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/catalog" element={<Catalog />} />
-          <Route path="/admin" element={<Admin />} />
           {/* Admin routes */}
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/products" element={<AdminProducts />} />
-          <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route path="/admindashboard" element={<AdminDashboard />} />
+          <Route path="/adminproducts" element={<AdminProducts />} />
+          <Route path="/adminorders" element={<AdminOrders />} />
           <Route path="/profile-edit" element={<ProfileEdit user={user} setUser={setUser} />} />
           <Route path="/delivery" element={<Delivery user={user} setUser={setUser} />} />
           {/* Receptionist routes */}

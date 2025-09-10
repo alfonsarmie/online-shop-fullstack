@@ -52,13 +52,14 @@ export default function LoginForm({ setUser }: LoginFormProps) {
         // Redirect based on role after a short delay
         setTimeout(() => {
             if (userData.role === 'admin') {
-                navigate('/admin/dashboard');
+                navigate('/admindashboard');
+                window.scrollTo(0, 0);
             } else if (userData.role === 'receptionist') {
                 navigate('/receptionist');
             } else {
                 navigate('/');
             }
-        }, 1500);
+        }, 500);
 
     } catch (error: any) {
         console.error('Login failed:', error.response?.data || error.message);

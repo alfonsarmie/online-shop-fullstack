@@ -6,7 +6,7 @@
 //   - Replace the mock constants with API calls (e.g., useEffect + fetch)
 //   - Map responses to the KPI shape and chart series expected here
 //   - Keep presentational code (labels/titles) separate from data wiring
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../styles/admin-dashboard.css';
 
 // KPI card shape used for the top summary tiles
@@ -21,6 +21,10 @@ const currency = (n: number) =>
   n.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
 
 const AdminDashboard: React.FC = () => {
+  // Ensure we land at top when entering dashboard
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   // Mock data (replace with real backend wiring)
   // Executive, consistent labels for clarity across the team
   const kpis: KPI[] = [

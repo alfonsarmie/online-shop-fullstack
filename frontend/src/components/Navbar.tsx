@@ -100,7 +100,7 @@ function Navbar({ user, setUser }: NavbarProps) {
               </button>
               
               {user.role === 'admin' && (
-                <Link to="/admin" className="admin-link">Panel Admin</Link>
+                <></>
               )}
 
               {/* User Sidebar is only displayed if user exists */}
