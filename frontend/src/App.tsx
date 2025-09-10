@@ -1,3 +1,4 @@
+// App.tsx (actualizado)
 /**
  * App router and layout
  * - Decides which navbar to render based on route prefix
@@ -9,6 +10,7 @@ import { useState, useEffect } from 'react';
 import Index from './pages/Index';
 import Navbar from './components/Navbar';
 import NavBarAdmin from './components/NavBarAdmin';
+import NavBarReceiver from './components/NavBarReceiver'; // Nuevo import
 import Login from './pages/Login';
 import Footer from './components/Footer';
 import Cart from './components/Cart';
@@ -25,6 +27,8 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminProducts from './pages/AdminProducts';
 import ProfileEdit from './pages/ProfileEdit';
 import Delivery from './pages/Delivery';
+import AdminOrders from './pages/AdminOrders';
+import Receptionist from './pages/Receptionist';
 import { User } from './types/user';
 import { useLocation } from 'react-router-dom';
 
@@ -38,23 +42,26 @@ function App() {
     if (savedUser) setUser(JSON.parse(savedUser));
   }, []);
 
-  // If the current URL starts with /admin, we show the admin navbar
+  // Determine which navbar to show based on route
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const isReceptionistRoute = location.pathname.startsWith('/receptionist');
 
   return (
     <CartProvider> {/* Cart provider to use cart context */}
       <div>
-        {/* Route-aware navbar: admin vs public */}
+        {/* Route-aware navbar: admin vs receptionist vs public */}
         {isAdminRoute ? (
           <NavBarAdmin user={user} setUser={setUser} />
+        ) : isReceptionistRoute ? (
+          <NavBarReceiver user={user} setUser={setUser} />
         ) : (
           <Navbar user={user} setUser={setUser} />
         )}
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/products" element={<Products />} />
-          <Route path="/login" element={<Login setUser={setUser} />} /> {/* <Login /> component with setUser prop */}
+          <Route path="/login" element={<Login setUser={setUser} />} />
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/checkout" element={<Checkout />} />
@@ -65,8 +72,11 @@ function App() {
           {/* Admin routes */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/products" element={<AdminProducts />} />
+          <Route path="/admin/orders" element={<AdminOrders />} />
           <Route path="/profile-edit" element={<ProfileEdit user={user} setUser={setUser} />} />
           <Route path="/delivery" element={<Delivery user={user} setUser={setUser} />} />
+          {/* Receptionist routes */}
+          <Route path="/receptionist" element={<Receptionist user={user} setUser={setUser}/>} />
         </Routes>
         <Footer />
         <Cart />

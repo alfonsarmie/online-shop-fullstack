@@ -1,21 +1,16 @@
+// UserSidebar.tsx (corregido)
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/userSidebar.css';
+import { User } from '../types/user'; // Importar el tipo User
 
 // Interface for the component props
 interface UserSidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  user: {
-    name: string;
-    surname: string;
-    email: string;
-    role?: string;
-    phone?: string;
-    dni?: string;
-  } | null;
-  setUser: (user: null) => void;
-  setSuccessMessage: (message: string) => void; // Nueva prop
+  user: User | null; // Usar el tipo User importado
+  setUser: (user: User | null) => void; // Corregir el tipo
+  setSuccessMessage: (message: string) => void;
 }
 
 // User Side Panel Component
@@ -34,7 +29,7 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
     localStorage.removeItem('token');
     setUser(null);
     onClose();
-    setSuccessMessage('Cierre de sesión exitoso'); // Usar la prop del padre
+    setSuccessMessage('Cierre de sesión exitoso');
     navigate('/');
   };
 

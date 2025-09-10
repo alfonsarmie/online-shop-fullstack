@@ -52,9 +52,11 @@ export default function LoginForm({ setUser }: LoginFormProps) {
         // Redirect based on role after a short delay
         setTimeout(() => {
             if (userData.role === 'admin') {
-            navigate('/admin/dashboard');
+                navigate('/admin/dashboard');
+            } else if (userData.role === 'receptionist') {
+                navigate('/receptionist');
             } else {
-            navigate('/');
+                navigate('/');
             }
         }, 1500);
 

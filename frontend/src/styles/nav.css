@@ -286,3 +286,85 @@ nav li {
 .submenu li .view-all:hover {
   color: #16572A; /* Un verde más oscuro al pasar el ratón */
 }
+
+/* Agregar esto a nav.css o crear un archivo aparte */
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-welcome {
+  color: #e6e6e6;
+  font-size: 14px;
+}
+
+.user-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.user-btn {
+  background: #2a2a2a;
+  color: #e6e6e6;
+  border: 1px solid #3a3a3a;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.user-btn:hover {
+  background: #343434;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background: #1D1D1D;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  min-width: 200px;
+  z-index: 1000;
+  padding: 8px 0;
+}
+
+.user-dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  color: #e6e6e6;
+  text-decoration: none;
+  cursor: pointer;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+}
+
+.dropdown-item:hover {
+  background: #2a2a2a;
+}
+
+.dropdown-divider {
+  border: none;
+  border-top: 1px solid #2a2a2a;
+  margin: 4px 0;
+}
+
+.logout-btn {
+  color: #C0392B;
+}
+
+.logout-btn:hover {
+  background: rgba(192, 57, 43, 0.1);
+}
