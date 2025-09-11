@@ -83,14 +83,16 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
 
         {/* User options */}
         <div className="user-options">
-          {/* Edit profile link */}
-          <Link 
-            to="/profile-edit" 
-            className="option-link edit-profile"
-            onClick={onClose}
-          >
-            Editar Perfil
-          </Link>
+          {/* Edit profile link (hidden for receptionists) */}
+          {user?.role !== 'receptionist' && (
+            <Link 
+              to="/profile-edit" 
+              className="option-link edit-profile"
+              onClick={onClose}
+            >
+              Editar Perfil
+            </Link>
+          )}
 
           {/* Log out link */}
           <a 

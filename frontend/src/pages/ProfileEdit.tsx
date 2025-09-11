@@ -253,6 +253,16 @@ const handleProfileSubmit = async (e: FormEvent) => {
     );
   }
 
+  // Restrict access for receptionist role
+  if (user && (user as any).role === 'receptionist') {
+    return (
+      <div className="profile-edit-container">
+        <h2>Editar Perfil</h2>
+        <p>Esta sección no está disponible para recepcionistas.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="profile-edit-container">
       <h2>Editar Perfil</h2>

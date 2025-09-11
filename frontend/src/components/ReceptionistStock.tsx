@@ -1,4 +1,4 @@
-// ReceiverDashboard.tsx (corregido)
+// ReceptionistStock.tsx
 /**
  * ReceiverDashboard
  * Purpose: Stock management for receivers (view products, adjust stock).
@@ -26,8 +26,10 @@ function saveProducts(data: Product[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
-const ReceiverDashboard: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+const ReceptionistStock: React.FC = () => {
+  const [products, setProducts] = useState<Product[]>([]); // persisted data
+  const [draft, setDraft] = useState<Product[] | null>(null); // editing buffer
+  const [editing, setEditing] = useState(false);
   const [filter, setFilter] = useState('');
   const [lowStockOnly, setLowStockOnly] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState('all');
@@ -38,21 +40,24 @@ const ReceiverDashboard: React.FC = () => {
     setProducts(data);
   }, []);
 
+  // Persist only when not editing; Save button will persist edits
   useEffect(() => {
-    if (products.length) saveProducts(products);
-  }, [products]);
+    if (!editing && products.length) saveProducts(products);
+  }, [products, editing]);
 
   // Get unique categories for filter
+  const currentList = editing && draft ? draft : products;
+
   const categories = useMemo(() => {
-    const cats = products
+    const cats = currentList
       .map(p => p.category)
       .filter(Boolean)
       .filter((cat, index, arr) => arr.indexOf(cat) === index);
     return cats.sort();
-  }, [products]);
+  }, [currentList]);
 
   const filteredProducts = useMemo(() => {
-    let result = products;
+    let result = currentList;
     
     // Filter by search text
     if (filter.trim()) {
@@ -74,35 +79,23 @@ const ReceiverDashboard: React.FC = () => {
     }
     
     return result;
-  }, [products, filter, lowStockOnly, categoryFilter]);
+  }, [currentList, filter, lowStockOnly, categoryFilter]);
 
   const adjustStock = (id: number, delta: number) => {
-    setProducts(prev => prev.map(p => {
+    if (!editing || !draft) return;
+    setDraft(prev => (prev || []).map(p => {
       if (p.id === id) {
         const newStock = Math.max(0, p.stock + delta);
         return { ...p, stock: newStock };
       }
       return p;
     }));
-    
-    // Show success message
-    const product = products.find(p => p.id === id);
-    if (product) {
-      setSuccessMessage(`Stock de ${product.name} actualizado correctamente`);
-      setTimeout(() => setSuccessMessage(''), 3000);
-    }
   };
 
   const setStockValue = (id: number, value: number) => {
+    if (!editing || !draft) return;
     const newStock = Math.max(0, value);
-    setProducts(prev => prev.map(p => p.id === id ? { ...p, stock: newStock } : p));
-    
-    // Show success message
-    const product = products.find(p => p.id === id);
-    if (product) {
-      setSuccessMessage(`Stock de ${product.name} establecido a ${newStock}`);
-      setTimeout(() => setSuccessMessage(''), 3000);
-    }
+    setDraft(prev => (prev || []).map(p => p.id === id ? { ...p, stock: newStock } : p));
   };
 
   const getStockStatus = (stock: number) => {
@@ -132,6 +125,20 @@ const ReceiverDashboard: React.FC = () => {
           {successMessage}
         </div>
       )}
+
+      {/* Edit controls */}
+      <section className="panel" style={{ display: 'none' }}>
+        <div className="panel-header">
+          <h2>Edición</h2>
+        </div>
+        <div className="panel-body" style={{ display: 'flex', gap: 8 }}>
+          {!editing && (
+            <button className="btn primary" onClick={() => { setDraft(JSON.parse(JSON.stringify(products))); setEditing(true); }}>
+              Modificar stock
+            </button>
+          )}
+        </div>
+      </section>
 
       <section className="panel">
         <div className="panel-header">
@@ -191,6 +198,11 @@ const ReceiverDashboard: React.FC = () => {
               Sin stock: <strong className="danger">{products.filter(p => p.stock === 0).length}</strong>
             </span>
           </div>
+          {!editing && (
+            <button className="btn primary" onClick={() => { setDraft(JSON.parse(JSON.stringify(products))); setEditing(true); }}>
+              Modificar stock
+            </button>
+          )}
         </div>
         <div className="panel-body">
           <table className="data-table">
@@ -230,13 +242,14 @@ const ReceiverDashboard: React.FC = () => {
                         <button 
                           className="btn stock-btn"
                           onClick={() => adjustStock(product.id, -1)}
-                          disabled={product.stock <= 0}
+                          disabled={!editing || product.stock <= 0}
                         >
                           -
                         </button>
                         <button 
                           className="btn stock-btn"
                           onClick={() => adjustStock(product.id, 1)}
+                          disabled={!editing}
                         >
                           +
                         </button>
@@ -249,16 +262,8 @@ const ReceiverDashboard: React.FC = () => {
                           value={product.stock}
                           onChange={e => setStockValue(product.id, parseInt(e.target.value) || 0)}
                           className="stock-input"
+                          disabled={!editing}
                         />
-                        <button 
-                          className="btn primary"
-                          onClick={() => {
-                            // Force update in case input was changed without blur
-                            setStockValue(product.id, product.stock);
-                          }}
-                        >
-                          OK
-                        </button>
                       </div>
                     </div>
                   </td>
@@ -273,6 +278,12 @@ const ReceiverDashboard: React.FC = () => {
               )}
             </tbody>
           </table>
+          {editing && (
+            <div style={{ marginTop: 12, display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              <button className="btn" onClick={() => { setEditing(false); setDraft(null); }}>Cancelar</button>
+              <button className="btn primary" onClick={() => { if (draft) { setProducts(draft); saveProducts(draft); setSuccessMessage('Cambios de stock guardados'); setTimeout(() => setSuccessMessage(''), 3000); } setEditing(false); setDraft(null); }}>Guardar cambios</button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -297,14 +308,7 @@ const ReceiverDashboard: React.FC = () => {
                         {product.stock} unidades
                       </span>
                     </div>
-                    <div className="alert-actions">
-                      <button 
-                        className="btn primary"
-                        onClick={() => setStockValue(product.id, 10)}
-                      >
-                        Reponer a 10
-                      </button>
-                    </div>
+                    {/* Solo aviso: sin acciones de reposición */}
                   </div>
                 ))
               }
@@ -318,4 +322,4 @@ const ReceiverDashboard: React.FC = () => {
   );
 };
 
-export default ReceiverDashboard;
+export default ReceptionistStock;

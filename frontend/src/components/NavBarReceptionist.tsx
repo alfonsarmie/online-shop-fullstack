@@ -1,4 +1,4 @@
-// NavBarReceiver.tsx
+﻿// NavBarReceiver.tsx
 /**
  * NavBarReceiver
  * Purpose: Navigation bar for receptionist routes with access to stock and pending orders.
@@ -32,7 +32,7 @@ function NavBarReceiver({ user, setUser }: NavbarProps) {
   }, [successMessage]);
 
   const handleHomeClick = () => {
-    navigate('/receptionist');
+    navigate('/receptionist-orders');
     window.scrollTo(0, 0);
   };
 
@@ -48,15 +48,15 @@ function NavBarReceiver({ user, setUser }: NavbarProps) {
         </div>
 
         <div className="nav-left" onClick={handleHomeClick}>
-          <Link to="/receptionist">
+          <Link to="/receptionist-orders">
             <img src={logo} alt="logo" />
           </Link>
         </div>
 
         <div className="nav-links" id="navLinks">
           <ul>
-            <li><Link to="/receptionist">PEDIDOS PENDIENTES</Link></li>
-            <li><Link to="/receptionist/stock">GESTIÓN DE STOCK</Link></li>
+            <li><Link to="/receptionist-orders">PEDIDOS PENDIENTES</Link></li>
+            <li><Link to="/receptionist-stock">GESTIÓN DE STOCK</Link></li>
           </ul>
         </div>
 
@@ -86,3 +86,4 @@ function NavBarReceiver({ user, setUser }: NavbarProps) {
 }
 
 export default NavBarReceiver;
+
