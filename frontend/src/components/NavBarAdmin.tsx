@@ -73,16 +73,16 @@ function NavBarAdmin({ user, setUser }: NavbarProps) {
         </div>
 
         <div className="nav-left">
-          <Link to="/admindashboard"> {/* debería renderizarse el dashboard */}
+          <Link to="/admin-dashboard"> {/* debería renderizarse el dashboard */}
             <img src={logo} alt="logo" />
           </Link>
         </div>
 
         <div className="nav-links" id="navLinks">
           <ul>
-            <li><Link to="/admindashboard">ESTADÍSTICAS</Link></li>
-            <li><Link to="/adminorders">PEDIDOS</Link></li>
-            <li><Link to="/adminproducts">PRODUCTOS</Link></li>
+            <li><Link to="/admin-dashboard">ESTADÍSTICAS</Link></li>
+            <li><Link to="/admin-orders">PEDIDOS</Link></li>
+            <li><Link to="/admin-products">PRODUCTOS</Link></li>
           </ul>
         </div>
 
