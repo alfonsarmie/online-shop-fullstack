@@ -1,22 +1,41 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../index.css';
 import '../styles/products.css';
-import Product from './Product';
+import ProductComponent from './Product'; // Cambia el nombre de importación
 import { useCart } from './CartContext';
 import ProductFilter from './ProductFilter';
-import products from '../data/products.js';
 import { ProductWithSize } from '../types/product';
+import { productService } from '../services/productService';
+import { Product } from '../types/product'; // Esta es la interfaz
 
-// Define filter types
 type FilterType = 'price_asc' | 'price_desc' | 'name_asc' | '';
 
 function Products() {
-  // Access cart context for adding products
   const { addToCart } = useCart();
-  // State for active filter
   const [activeFilter, setActiveFilter] = useState<FilterType>('');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Function to get sorted products based on active filter
+  // Cargar productos desde el backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const productsData = await productService.getAllProducts();
+        setProducts(productsData);
+        setError(null);
+      } catch (err) {
+        console.error('Error loading products:', err);
+        setError('Error al cargar los productos. Intenta nuevamente.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   const getSortedProducts = () => {
     if (!activeFilter) return products;
     
@@ -38,21 +57,27 @@ function Products() {
 
   const sortedProducts = getSortedProducts();
 
+  if (loading) {
+    return <div className="loading">Cargando productos...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
+
   return (
     <>
-      {/* Product filter component */}   
       <ProductFilter 
         activeFilter={activeFilter}
         onFilterChange={setActiveFilter}
       />
-      {/* Products grid container */}
       <div className="contenedorProd">
         {sortedProducts.map(product => (
-        <Product 
-          key={product.id}
-          {...product}
-          onAddToCart={(productWithSize: ProductWithSize) => addToCart(productWithSize)}
-        />
+          <ProductComponent 
+            key={product.id}
+            {...product}
+            onAddToCart={(productWithSize: ProductWithSize) => addToCart(productWithSize)}
+          />
         ))}
       </div>
     </>

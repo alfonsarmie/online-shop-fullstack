@@ -11,7 +11,6 @@ interface Profile {
   name: string;
   surname?: string;
   email: string;
-  phone?: string;
   dni?: string;
 }
 
@@ -37,7 +36,6 @@ interface ProfileEditProps {
     name: string;
     surname?: string;
     email: string;
-    phone?: string;
     dni?: string;
   } | null;
   setUser: (user: any) => void;
@@ -48,7 +46,6 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
   const [profile, setProfile] = useState<Profile>({
     name: '',
     email: '',
-    phone: '',
     surname: '',
     dni: ''
   });
@@ -57,7 +54,6 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
   const [originalProfile, setOriginalProfile] = useState<Profile>({
     name: '',
     email: '',
-    phone: '',
     surname: '',
     dni: ''
   });
@@ -69,7 +65,6 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
         name: user.name || '',
         surname: user.surname || '',
         email: user.email || '',
-        phone: user.phone || '',
         dni: user.dni || ''
       };
       setProfile(userProfile);
@@ -82,7 +77,6 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     name: false,
     surname: false,
     email: false,
-    phone: false,
     dni: false
   });
 
@@ -113,7 +107,6 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
       profile.name !== originalProfile.name ||
       profile.surname !== originalProfile.surname ||
       profile.email !== originalProfile.email ||
-      profile.phone !== originalProfile.phone ||
       profile.dni !== originalProfile.dni
     );
   };
@@ -170,44 +163,46 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
   };
 
   // Handler for profile form submission
-  const handleProfileSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    
-    if (!hasProfileChanges()) {
-      alert('No hay cambios para guardar');
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem('token'); 
-      
-      // ✅ Usar axios con la ruta correcta
-      const response = await axios.put(
-        `http://localhost:3000/api/users/update/${user?.idUser}`, 
-        profile,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-token': token // ✅ Header temporal para testing
-          }
-        }
-      );
-
-      if (response.status === 200) {
-        const updatedUser = response.data.userToUpdate;
-        setUser(updatedUser);
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        setOriginalProfile(profile);
-        alert('Perfil actualizado correctamente');
-        setEditMode({ name: false, surname: false, email: false, phone: false, dni: false });
-      } else {
-        alert('Error al actualizar el perfil');
-      }
-    } catch (error: any) {
-      console.error('Error:', error);
-      alert(error.response?.data?.message || 'Error al actualizar el perfil');
-    }
+const handleProfileSubmit = async (e: FormEvent) => {
+  e.preventDefault();
+  
+  // Preparar datos para enviar, convirtiendo DNI vacío a null
+  const dataToSend = {
+    ...profile,
+    dni: profile.dni === '' ? null : profile.dni
   };
+
+  console.log('📤 Datos a enviar:', dataToSend);
+
+  try {
+    const token = localStorage.getItem('token'); 
+    
+    const response = await axios.put(
+      `http://localhost:3000/api/users/update/${user?.idUser}`, 
+      dataToSend, // ← Usar dataToSend en lugar de profile
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-token': token
+        }
+      }
+    );
+
+    if (response.status === 200) {
+      const updatedUser = response.data.userToUpdate;
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setOriginalProfile(profile);
+      alert('Perfil actualizado correctamente');
+      setEditMode({ name: false, surname: false, email: false, dni: false });
+    } else {
+      alert('Error al actualizar el perfil');
+    }
+  } catch (error: any) {
+    console.error('Error:', error);
+    alert(error.response?.data?.message || 'Error al actualizar el perfil');
+  }
+};
 
   // Handler for password form submission
   const handlePasswordSubmit = async (e: FormEvent) => {
@@ -300,25 +295,6 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
                   />
                 ) : (
                   <p>{profile.surname || 'No especificado'}</p>
-                )}
-              </div>
-            </div>
-
-
-            <div className="profile-field" onClick={() => toggleEditMode('phone')}>
-              <label>Teléfono</label>
-              <div className="profile-input-container">
-                {editMode.phone ? (
-                  <Input
-                    type="tel"
-                    name="phone"
-                    placeholder="Ingresa tu teléfono"
-                    value={profile.phone || ''}
-                    onChange={handleProfileChange}
-                    onClick={handleInputClick}
-                  />
-                ) : (
-                  <p>{profile.phone || 'No especificado'}</p>
                 )}
               </div>
             </div>

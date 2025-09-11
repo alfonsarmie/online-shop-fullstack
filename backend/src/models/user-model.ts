@@ -4,17 +4,17 @@ import db from '../db/connection';
 
 interface UserAttributes {
   idUser: number;
-  dni?: number;
+  dni?: number | null;
   email: string;
   name: string;
   surname: string;
+  //phone?: string; // ← Agregar esto
   password: string;
   role?: string;
   isMember: boolean;
   registrationDate: Date;
   status: string;
 }
-
 interface UserCreationAttributes extends Optional<UserAttributes, 'idUser' | 'dni' | 'role' > {}
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
@@ -28,6 +28,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public isMember!: boolean;
   public registrationDate!: Date;
   public status!: string;
+  //public phone?: string; // ← Agregar esto
 
   toJSON(): Omit<UserAttributes, 'password'> {
     const values = Object.assign({}, this.get()) as UserAttributes;
@@ -82,7 +83,11 @@ User.init({
     type: DataTypes.STRING(150),
     allowNull: false,
     defaultValue: 'pending'
-  }
+  },
+  //phone: {
+  //  type: DataTypes.STRING(20),
+  //  allowNull: true
+  //}
 }, {
   sequelize: db,
   tableName: 'user',

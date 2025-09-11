@@ -11,13 +11,16 @@ import '../styles/admin-products.css';
 import { Product } from '../types/product';
 import seed from '../data/products';
 
-type Draft = Omit<Product, 'id' | 'img' | 'img2' | 'img3'> & {
-  img?: string;
-  img2?: string;
-  img3?: string;
+type Draft = Omit<Product, 'id'> & {
+  color?: string;
 };
 
 const STORAGE_KEY = 'adminProducts';
+
+// Opciones predefinidas para los selects
+const COLOR_OPTIONS = ['Rojo', 'Azul', 'Verde', 'Negro', 'Blanco', 'Gris', 'Amarillo', 'Rosa'];
+const CATEGORY_OPTIONS = ['Ropa', 'Calzado', 'Accesorios', 'Deportes', 'Hogar'];
+const SIZE_OPTIONS = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Único'];
 
 function loadProducts(): Product[] {
   try {
@@ -38,6 +41,10 @@ const emptyDraft: Draft = {
   sizes: [],
   stock: 0,
   category: '',
+  color: '',
+  img: '',
+  img2: '',
+  img3: ''
 };
 
 const AdminProducts: React.FC = () => {
@@ -61,7 +68,8 @@ const AdminProducts: React.FC = () => {
     if (!q) return products;
     return products.filter(p =>
       p.name.toLowerCase().includes(q) ||
-      (p.category || '').toLowerCase().includes(q)
+      (p.category || '').toLowerCase().includes(q) ||
+      (p.color || '').toLowerCase().includes(q)
     );
   }, [products, filter]);
 
@@ -74,14 +82,24 @@ const AdminProducts: React.FC = () => {
       sizes: p.sizes,
       stock: p.stock,
       category: p.category || '',
-      img: p.img,
-      img2: p.img2,
-      img3: p.img3,
+      color: p.color || '',
+      img: p.img || '',
+      img2: p.img2 || '',
+      img3: p.img3 || '',
     });
   };
 
-  const applyEdit = (id: number) => {
-    setProducts(prev => prev.map(p => (p.id === id ? { ...p, ...editing } as Product : p)));
+  const applyEdit = () => {
+    if (editingId === null) return;
+    if (!editing.name.trim()) return alert('Nombre requerido');
+    if (editing.price <= 0) return alert('Precio inválido');
+    
+    setProducts(prev => prev.map(p => (p.id === editingId ? { 
+      ...p, 
+      ...editing,
+      color: editing.color || undefined,
+      category: editing.category || undefined
+    } as Product : p)));
     setEditingId(null);
   };
 
@@ -90,7 +108,7 @@ const AdminProducts: React.FC = () => {
   };
 
   const del = (id: number) => {
-    if (!confirm('Eliminar este producto?')) return;
+    if (!confirm('¿Eliminar este producto?')) return;
     setProducts(prev => prev.filter(p => p.id !== id));
   };
 
@@ -101,7 +119,7 @@ const AdminProducts: React.FC = () => {
   const create = () => {
     // Basic validation
     if (!creating.name.trim()) return alert('Nombre requerido');
-    if (creating.price <= 0) return alert('Precio invalido');
+    if (creating.price <= 0) return alert('Precio inválido');
 
     const nextId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
     const newP: Product = {
@@ -110,14 +128,23 @@ const AdminProducts: React.FC = () => {
       price: creating.price,
       img: creating.img || '',
       img2: creating.img2 || '',
-      img3: creating.img3,
+      img3: creating.img3 || '',
       description: creating.description.trim(),
       sizes: creating.sizes,
       stock: creating.stock,
       category: creating.category || undefined,
+      color: creating.color || undefined,
     };
     setProducts(prev => [newP, ...prev]);
     setCreating(emptyDraft);
+  };
+
+  const handleSizeChange = (sizes: string[], size: string, checked: boolean) => {
+    if (checked) {
+      return [...sizes, size];
+    } else {
+      return sizes.filter(s => s !== size);
+    }
   };
 
   const renderSizes = (sizes: string[]) => (sizes.length ? sizes.join(', ') : '-');
@@ -138,26 +165,59 @@ const AdminProducts: React.FC = () => {
           </label>
           <label>
             <span className='span-admin'>Precio</span>
-            <input className='input-admin' type="number" value={creating.price} onChange={e => setCreating({ ...creating, price: Number(e.target.value) })} />
+            <input className='input-admin' type="number" min="0" step="0.01" value={creating.price} onChange={e => setCreating({ ...creating, price: Number(e.target.value) })} />
           </label>
           <label>
             <span className='span-admin'>Color</span>
+            <select 
+              className='input-admin' 
+              value={creating.color || ''} 
+              onChange={e => setCreating({ ...creating, color: e.target.value })}
+            >
+              <option value="">Seleccionar color</option>
+              {COLOR_OPTIONS.map(color => (
+                <option key={color} value={color}>{color}</option>
+              ))}
+            </select>
           </label>
           <label>
             <span className='span-admin'>Categoría</span>
-            <input className='input-admin' value={creating.category} onChange={e => setCreating({ ...creating, category: e.target.value })} />
+            <select 
+              className='input-admin' 
+              value={creating.category} 
+              onChange={e => setCreating({ ...creating, category: e.target.value })}
+            >
+              <option value="">Seleccionar categoría</option>
+              {CATEGORY_OPTIONS.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
           </label>
           <label className="col-2">
             <span className='span-admin'>Descripción</span>
             <textarea rows={3} value={creating.description} onChange={e => setCreating({ ...creating, description: e.target.value })} />
           </label>
-          <label>
-            <span className='span-admin'>Talles (CSV)</span>
-            <input className='input-admin' placeholder="XS,S,M,L,XL" value={creating.sizes.join(',')} onChange={e => setCreating({ ...creating, sizes: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} />
+          <label className="col-2">
+            <span className='span-admin'>Talles</span>
+            <div className="sizes-container">
+              {SIZE_OPTIONS.map(size => (
+                <label key={size} className="size-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={creating.sizes.includes(size)}
+                    onChange={e => setCreating({ 
+                      ...creating, 
+                      sizes: handleSizeChange(creating.sizes, size, e.target.checked) 
+                    })}
+                  />
+                  {size}
+                </label>
+              ))}
+            </div>
           </label>
           <label>
             <span className='span-admin'>Stock</span>
-            <input className='input-admin' type="number" value={creating.stock} onChange={e => setCreating({ ...creating, stock: Number(e.target.value) })} />
+            <input className='input-admin' type="number" min="0" value={creating.stock} onChange={e => setCreating({ ...creating, stock: Number(e.target.value) })} />
           </label>
           <label>
             <span className='span-admin'>Imagen principal (URL)</span>
@@ -207,6 +267,7 @@ const AdminProducts: React.FC = () => {
                 <tr key={p.id}>
                   <td>{p.name}</td>
                   <td>{p.price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
+                  <td>{p.color || '-'}</td>
                   <td>{p.category || '-'}</td>
                   <td>{renderSizes(p.sizes)}</td>
                   <td>
@@ -219,7 +280,7 @@ const AdminProducts: React.FC = () => {
                   <td>
                     {editingId === p.id ? (
                       <div className="row-actions">
-                        <button className="btn primary" onClick={() => applyEdit(p.id)}>Guardar</button>
+                        <button className="btn primary" onClick={applyEdit}>Guardar</button>
                         <button className="btn" onClick={cancelEdit}>Cancelar</button>
                       </div>
                     ) : (
@@ -253,26 +314,57 @@ const AdminProducts: React.FC = () => {
             </label>
             <label>
               <span>Precio</span>
-              <input type="number" value={editing.price} onChange={e => setEditing({ ...editing, price: Number(e.target.value) })} />
+              <input type="number" min="0" step="0.01" value={editing.price} onChange={e => setEditing({ ...editing, price: Number(e.target.value) })} />
             </label>
             <label>
               <span>Color</span>
+              <select 
+                value={editing.color || ''} 
+                onChange={e => setEditing({ ...editing, color: e.target.value })}
+              >
+                <option value="">Seleccionar color</option>
+                {COLOR_OPTIONS.map(color => (
+                  <option key={color} value={color}>{color}</option>
+                ))}
+              </select>
             </label>
             <label>
               <span>Categoría</span>
-              <input value={editing.category || ''} onChange={e => setEditing({ ...editing, category: e.target.value })} />
+              <select 
+                value={editing.category || ''} 
+                onChange={e => setEditing({ ...editing, category: e.target.value })}
+              >
+                <option value="">Seleccionar categoría</option>
+                {CATEGORY_OPTIONS.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
             </label>
             <label className="col-2">
               <span>Descripción</span>
               <textarea rows={3} value={editing.description} onChange={e => setEditing({ ...editing, description: e.target.value })} />
             </label>
-            <label>
-              <span>Talles (CSV)</span>
-              <input value={editing.sizes.join(',')} onChange={e => setEditing({ ...editing, sizes: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} />
+            <label className="col-2">
+              <span>Talles</span>
+              <div className="sizes-container">
+                {SIZE_OPTIONS.map(size => (
+                  <label key={size} className="size-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={editing.sizes.includes(size)}
+                      onChange={e => setEditing({ 
+                        ...editing, 
+                        sizes: handleSizeChange(editing.sizes, size, e.target.checked) 
+                      })}
+                    />
+                    {size}
+                  </label>
+                ))}
+              </div>
             </label>
             <label>
               <span>Stock</span>
-              <input type="number" value={editing.stock} onChange={e => setEditing({ ...editing, stock: Number(e.target.value) })} />
+              <input type="number" min="0" value={editing.stock} onChange={e => setEditing({ ...editing, stock: Number(e.target.value) })} />
             </label>
             <label>
               <span>Imagen principal (URL)</span>
@@ -286,6 +378,10 @@ const AdminProducts: React.FC = () => {
               <span>Imagen 3 (URL)</span>
               <input value={editing.img3 || ''} onChange={e => setEditing({ ...editing, img3: e.target.value })} />
             </label>
+            <div className="actions col-2">
+              <button className="btn primary" onClick={applyEdit}>Guardar cambios</button>
+              <button className="btn" onClick={cancelEdit}>Cancelar</button>
+            </div>
           </div>
         </section>
       )}

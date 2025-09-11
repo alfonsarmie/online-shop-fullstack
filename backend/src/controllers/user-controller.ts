@@ -77,12 +77,12 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
   }
 };
 
+
 export const updateUser = async (req: Request, res: Response): Promise<Response> => {
   const { id } = req.params;
-  const { name, surname, email } = req.body;
+  const { name, surname, email, dni } = req.body;
   
   try {
-    // Logic to update user
     const userToUpdate = await User.findByPk(id);
     if (!userToUpdate) {
       return res.status(404).json({
@@ -90,12 +90,27 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
       });
     }
 
+    // Actualizar todos los campos disponibles
     if (name !== undefined) userToUpdate.name = name;
     if (surname !== undefined) userToUpdate.surname = surname;
     if (email !== undefined) userToUpdate.email = email;
     
+    // Manejar DNI vacío o undefined
+    if (dni !== undefined) {
+      if (dni === '' || dni === null) {
+        userToUpdate.dni = undefined; // ✅ Ahora esto es válido
+      } else {
+        // Convertir a número si no está vacío
+        const dniNumber = parseInt(dni, 10);
+        if (!isNaN(dniNumber)) {
+          userToUpdate.dni = dniNumber;
+        } else {
+          // Manejar caso donde dni no es un número válido
+          userToUpdate.dni = undefined;
+        }
+      }
+    }
 
-    // Save the updated user
     await userToUpdate.save();
     
     return res.status(200).json({

@@ -5,7 +5,7 @@ import { ProductWithSize } from '../types/product';
 
 // Props interface for Product component
 interface ProductProps {
-  id: number;
+  id: string; // Cambiado de number a string
   name: string;
   price: number;
   img: string;
@@ -16,7 +16,7 @@ interface ProductProps {
   onAddToCart: (product: ProductWithSize) => void;
 }
 
-function Product({ id, name, price, img, img2, description, sizes, stock, onAddToCart }: ProductProps) {
+function ProductComponent({ id, name, price, img, img2, description, sizes, stock, onAddToCart }: ProductProps) {
   // State for selected size and size selector visibility
   const [selectedSize, setSelectedSize] = useState<string | null>(null); 
   const [showSizeSelector, setShowSizeSelector] = useState(false); 
@@ -31,30 +31,28 @@ function Product({ id, name, price, img, img2, description, sizes, stock, onAddT
   const handleSizeSelection = (size: string) => {
     setSelectedSize(size);
     onAddToCart({ 
-      id: id.toString(), // Convert number to string
+      id: id, // Ya es string
       name, 
       price, 
       img,
-      img2, // ← add img2
-      description, // ← add description
-      sizes, // ← add sizes
-      stock, // ← add stock
-      size, // send selected size
+      img2,
+      description,
+      sizes,
+      stock,
+      size,
       quantity: 1 
     });
-    setTimeout(() => setShowSizeSelector(false), 300); // close popup after selection
+    setTimeout(() => setShowSizeSelector(false), 300);
   };
 
   return (
     <div className="cajaProducto reveal">
-      {/* Product link to details page */}
       <Link to={`/product/${id}`} className="product-link">
         <img src={img} className="imgProd" alt={name} />
         <p className='nombre'>{name}</p>
         <p className="precio">${price} ARS</p>
       </Link>
       
-      {/* Add to cart button */}
       <button 
         className='btnAddToCart' 
         onClick={handleAddToCartClick}
@@ -62,7 +60,6 @@ function Product({ id, name, price, img, img2, description, sizes, stock, onAddT
         Añadir al carrito
       </button>
 
-      {/* Size selector popup */}
       <div className={`size-selector-popup ${showSizeSelector ? 'visible' : ''}`}>
         <p>Selecciona un talle:</p>
         <div className="size-options">
@@ -86,4 +83,5 @@ function Product({ id, name, price, img, img2, description, sizes, stock, onAddT
     </div>
   );
 }
-export default Product;
+
+export default ProductComponent; // Cambia el export también

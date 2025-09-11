@@ -1,3 +1,5 @@
+//HAY QUE BORRAR ESTO CUANDO ESTÉN LOS PRODUCTOS DE LA DB
+
 import buzoHalo from '../assets/img/buzo-halo-frente.png';
 import buzoHalo2 from '../assets/img/buzo-halo-espalda.png';
 import pantVestaEsc from '../assets/img/PANTALON-VESTA-ESCUDO.png'

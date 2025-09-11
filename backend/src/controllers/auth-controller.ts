@@ -36,7 +36,7 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     }
 
     // Generate JWT (solucionar el tipo de dato del idUser)
-    const token = await generateJWT(userFound.idUser.toString());
+    const token = await generateJWT(userFound.idUser);
 
     return res.json({
       msg: 'Login successful - User authenticated',

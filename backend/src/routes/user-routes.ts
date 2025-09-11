@@ -4,6 +4,7 @@ import { createUser, deleteUser, updateUser } from '../controllers/user-controll
 import { existsEmail, existsDni, existsUserById } from '../helpers/db-validator-helper';
 import { validateFields } from '../middlewares/validate-fields';
 import { validateJWT } from '../middlewares/validate-jwt';
+import { validateProfileUpdate } from '../middlewares/validate-profile-update';
 
 const router = Router();
 
@@ -36,7 +37,7 @@ router.delete("/delete/:id", [
 ], deleteUser);
 
 router.put("/update/:id", [
-  validateJWT,
+  validateProfileUpdate, // ← Cambiar por el nuevo middleware
   check('id', 'ID must be a number').isNumeric(),
   check('id').custom(existsUserById),
   validateFields
