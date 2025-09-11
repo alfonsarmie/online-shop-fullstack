@@ -131,6 +131,9 @@ export const changePassword = async (req: Request, res: Response): Promise<Respo
     const userId = (req as any).userId as number | string | undefined;
     const { currentPassword, newPassword } = req.body as { currentPassword: string; newPassword: string };
 
+    if (currentPassword == newPassword){
+      return res.status(400).json({message: 'New password must be different than current password'})
+    }
     if (!userId) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
