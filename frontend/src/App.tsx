@@ -5,12 +5,12 @@
  * - Registers public routes and admin routes (e.g., /admin/dashboard)
  */
 import './App.css';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Index from './pages/Index';
 import Navbar from './components/Navbar';
 import NavBarAdmin from './components/NavBarAdmin';
-import NavBarReceiver from './components/NavBarReceptionist'; // Nuevo import
+import NavBarReceiver from './components/NavBarReceptionist';
 import Login from './pages/Login';
 import Footer from './components/Footer';
 import Cart from './components/Cart';
@@ -27,9 +27,8 @@ import AdminProducts from './pages/AdminProducts';
 import ProfileEdit from './pages/ProfileEdit';
 import Delivery from './pages/Delivery';
 import AdminOrders from './pages/AdminOrders';
-import Receptionist from './pages/Receptionist';
 import ReceptionistOrders from './pages/ReceptionistOrders';
-import ReceiverDashboard from './components/ReceptionistDashboard';
+import ReceptionistStock from './components/ReceptionistStock';
 import { User } from './types/user';
 import { useLocation } from 'react-router-dom';
 
@@ -73,16 +72,23 @@ function App() {
           <Route path="/payment" element={<Payment />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/catalog" element={<Catalog />} />
-          {/* Admin routes */}
-          <Route path="/admindashboard" element={<AdminDashboard />} />
-          <Route path="/adminproducts" element={<AdminProducts />} />
-          <Route path="/adminorders" element={<AdminOrders />} />
+          {/* Admin routes (kebab-case) */}
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/admin-products" element={<AdminProducts />} />
+          <Route path="/admin-orders" element={<AdminOrders />} />
+          {/* Backwards compatibility redirects */}
+          <Route path="/admindashboard" element={<Navigate to="/admin-dashboard" replace />} />
+          <Route path="/adminproducts" element={<Navigate to="/admin-products" replace />} />
+          <Route path="/adminorders" element={<Navigate to="/admin-orders" replace />} />
           <Route path="/profile-edit" element={<ProfileEdit user={user} setUser={setUser} />} />
           <Route path="/delivery" element={<Delivery user={user} setUser={setUser} />} />
-          {/* Receptionist routes */}
-          <Route path="/receptionist" element={<ReceptionistOrders />} />
-          <Route path="/receptionist/orders" element={<ReceptionistOrders />} />
-          <Route path="/receptionist/stock" element={<ReceiverDashboard />} />
+          {/* Receptionist routes (kebab-case) */}
+          <Route path="/receptionist-orders" element={<ReceptionistOrders />} />
+          <Route path="/receptionist-stock" element={<ReceptionistStock />} />
+          {/* Backwards compatibility redirects */}
+          <Route path="/receptionist" element={<Navigate to="/receptionist-orders" replace />} />
+          <Route path="/receptionist/orders" element={<Navigate to="/receptionist-orders" replace />} />
+          <Route path="/receptionist/stock" element={<Navigate to="/receptionist-stock" replace />} />
         </Routes>
         <Footer />
         <Cart />
