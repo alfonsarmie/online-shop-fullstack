@@ -80,7 +80,7 @@ function ProductDetails() {
 
       <div className="product-info">
         <h1>{product.name}</h1>
-        <p className="stock">{product.stock ? 'En stock' : 'Sin stock'}</p>
+        <p className="product-stock">{product.stock ? 'En stock' : 'Sin stock'}</p>
         <p className="price">${product.price.toLocaleString('es-AR')}</p>
         <p className="description">{product.description}</p>
 

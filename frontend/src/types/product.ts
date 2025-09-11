@@ -9,6 +9,7 @@ export interface Product {
   sizes: string[];
   stock: number;
   category?: string;
+  color?: string;
 }
 
 export interface ProductWithSize {

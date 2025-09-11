@@ -18,8 +18,8 @@ type Draft = Omit<Product, 'id'> & {
 const STORAGE_KEY = 'adminProducts';
 
 // Opciones predefinidas para los selects
-const COLOR_OPTIONS = ['Rojo', 'Azul', 'Verde', 'Negro', 'Blanco', 'Gris', 'Amarillo', 'Rosa'];
-const CATEGORY_OPTIONS = ['Ropa', 'Calzado', 'Accesorios', 'Deportes', 'Hogar'];
+const COLOR_OPTIONS = ['Verde', 'Negro', 'Blanco', 'Gris'];
+const CATEGORY_OPTIONS = ['Hombre', 'Mujer'];
 const SIZE_OPTIONS = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Único'];
 
 function loadProducts(): Product[] {
@@ -74,7 +74,7 @@ const AdminProducts: React.FC = () => {
   }, [products, filter]);
 
   const startEdit = (p: Product) => {
-    setEditingId(p.id);
+    setEditingId(Number(p.id));
     setEditing({
       name: p.name,
       price: p.price,
@@ -93,9 +93,9 @@ const AdminProducts: React.FC = () => {
     if (editingId === null) return;
     if (!editing.name.trim()) return alert('Nombre requerido');
     if (editing.price <= 0) return alert('Precio inválido');
-    
-    setProducts(prev => prev.map(p => (p.id === editingId ? { 
-      ...p, 
+
+    setProducts(prev => prev.map(p => (Number(p.id) === editingId ? {
+      ...p,
       ...editing,
       color: editing.color || undefined,
       category: editing.category || undefined
@@ -109,11 +109,11 @@ const AdminProducts: React.FC = () => {
 
   const del = (id: number) => {
     if (!confirm('¿Eliminar este producto?')) return;
-    setProducts(prev => prev.filter(p => p.id !== id));
+    setProducts(prev => prev.filter(p => Number(p.id) !== id));
   };
 
   const incStock = (id: number, delta: number) => {
-    setProducts(prev => prev.map(p => (p.id === id ? { ...p, stock: Math.max(0, p.stock + delta) } : p)));
+    setProducts(prev => prev.map(p => (Number(p.id) === id ? { ...p, stock: Math.max(0, p.stock + delta) } : p)));
   };
 
   const create = () => {
@@ -121,9 +121,9 @@ const AdminProducts: React.FC = () => {
     if (!creating.name.trim()) return alert('Nombre requerido');
     if (creating.price <= 0) return alert('Precio inválido');
 
-    const nextId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
+    const nextId = products.length ? Math.max(...products.map(p => Number(p.id))) + 1 : 1;
     const newP: Product = {
-      id: nextId,
+      id: String(nextId),
       name: creating.name.trim(),
       price: creating.price,
       img: creating.img || '',
@@ -201,10 +201,10 @@ const AdminProducts: React.FC = () => {
             <span className='span-admin'>Talles</span>
             <div className="sizes-container">
               {SIZE_OPTIONS.map(size => (
-                <label key={size} className="size-checkbox">
+                <label key={size} className="checkbox">
                   <input
                     type="checkbox"
-                    checked={creating.sizes.includes(size)}
+                    checked= {creating.sizes.includes(size)}
                     onChange={e => setCreating({ 
                       ...creating, 
                       sizes: handleSizeChange(creating.sizes, size, e.target.checked) 
@@ -272,13 +272,13 @@ const AdminProducts: React.FC = () => {
                   <td>{renderSizes(p.sizes)}</td>
                   <td>
                     <div className="stock-ctrl">
-                      <button className="btn" onClick={() => incStock(p.id, -1)}>-</button>
+                      <button className="btn" onClick={() => incStock(Number(p.id), -1)}>-</button>
                       <span className="stock">{p.stock}</span>
-                      <button className="btn" onClick={() => incStock(p.id, 1)}>+</button>
+                      <button className="btn" onClick={() => incStock(Number(p.id), 1)}>+</button>
                     </div>
                   </td>
                   <td>
-                    {editingId === p.id ? (
+                    {editingId === Number(p.id) ? (
                       <div className="row-actions">
                         <button className="btn primary" onClick={applyEdit}>Guardar</button>
                         <button className="btn" onClick={cancelEdit}>Cancelar</button>
@@ -286,7 +286,7 @@ const AdminProducts: React.FC = () => {
                     ) : (
                       <div className="row-actions">
                         <button className="btn" onClick={() => startEdit(p)}>Editar</button>
-                        <button className="btn danger" onClick={() => del(p.id)}>Eliminar</button>
+                        <button className="btn danger" onClick={() => del(Number(p.id))}>Eliminar</button>
                       </div>
                     )}
                   </td>
@@ -348,7 +348,7 @@ const AdminProducts: React.FC = () => {
               <span>Talles</span>
               <div className="sizes-container">
                 {SIZE_OPTIONS.map(size => (
-                  <label key={size} className="size-checkbox">
+                  <label key={size} className="checkbox">
                     <input
                       type="checkbox"
                       checked={editing.sizes.includes(size)}
@@ -358,6 +358,7 @@ const AdminProducts: React.FC = () => {
                       })}
                     />
                     {size}
+                  <div className="checkmark"></div>
                   </label>
                 ))}
               </div>

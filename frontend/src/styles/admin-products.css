@@ -13,6 +13,68 @@
   font-family: "Anton", sans-serif;
 }
 
+.sizes-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px; /* espacio entre talles */
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  user-select: none;
+  gap: 8px;
+  position: relative;
+}
+
+/* Ocultamos el checkbox original */
+.checkbox input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #333;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Efecto hover */
+.checkbox input[type="checkbox"]:hover {
+  border-color: #555;
+}
+
+/* Fondo cuando está activo */
+.checkbox input[type="checkbox"]:checked {
+  background-color: #4caf50;
+  border-color: #4caf50;
+}
+
+/* Dibujamos el check con un pseudo-elemento */
+.checkbox input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 12px;
+  border-right: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: scale(0) rotate(45deg);
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+/* Cuando está marcado, aparece el check con animación */
+.checkbox input[type="checkbox"]:checked::after {
+  transform: scale(1) rotate(45deg);
+  opacity: 1;
+}
+
 .subtitle {
   color: #bdbdbd;
   margin-top: 6px;
@@ -88,6 +150,11 @@ textarea {
   cursor: pointer;
 }
 
+button {
+  font-family: "Afacad", sans-serif;
+  transition: all 0.3s ease;
+}
+
 .btn:hover {
   background: #343434;
 }
@@ -137,6 +204,8 @@ textarea {
   display: inline-flex;
   gap: 8px;
   align-items: center;
+  font-size: 20px;
+  font-weight: 600;
 }
 .stock-ctrl .stock-count {
   min-width: 28px;
