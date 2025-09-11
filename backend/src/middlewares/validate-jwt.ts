@@ -2,6 +2,25 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/user-model';
 
+// Basic auth: verifies JWT and attaches userId to request. Accepts 'x-token' or 'Authorization: Bearer ...'
+export const requireAuth = (req: Request, res: Response, next: NextFunction): void => {
+  try {
+    //revise what headers to use
+    const bearer = req.header('authorization');
+    const token = req.header('x-token') || (bearer && bearer.startsWith('Bearer ') ? bearer.slice(7) : undefined);
+    if (!token) {
+      res.status(401).json({ message: 'No token provided' });
+      return;
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret') as { userId: number };
+    (req as any).userId = decoded.userId;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+};
+
+// Admin/self delete validator previously used for delete operations
 export const validateJWT = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const token = req.header('x-token'); //This is the name of the header frontend will send the token
   

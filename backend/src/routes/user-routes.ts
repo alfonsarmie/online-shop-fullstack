@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { createUser, deleteUser, updateUser } from '../controllers/user-controller';
+import { changePassword, createUser, deleteUser, updateUser } from '../controllers/user-controller';
 import { existsEmail, existsDni, existsUserById } from '../helpers/db-validator-helper';
 import { validateFields } from '../middlewares/validate-fields';
-import { validateJWT } from '../middlewares/validate-jwt';
+import { validateJWT, requireAuth } from '../middlewares/validate-jwt';
 import { validateProfileUpdate } from '../middlewares/validate-profile-update';
 
 const router = Router();
@@ -44,5 +44,13 @@ router.put("/update/:id", [
 ], updateUser);
 
 // Custom validator to check if user exists by ID
+
+// Change password for authenticated user
+router.put('/change-password', [
+  requireAuth,
+  check('currentPassword', 'Current password is required').notEmpty(),
+  check('newPassword', 'New password must be at least 6 characters').isLength({ min: 6 }),
+  validateFields
+], changePassword);
 
 export default router;

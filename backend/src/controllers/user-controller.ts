@@ -125,3 +125,35 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
     });
   }
 };
+
+export const changePassword = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const userId = (req as any).userId as number | string | undefined;
+    const { currentPassword, newPassword } = req.body as { currentPassword: string; newPassword: string };
+
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'Current and new password are required' });
+    }
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isValid = bcrypt.compareSync(currentPassword, user.password);
+    if (!isValid) {
+      return res.status(400).json({ message: 'Current password is incorrect' });
+    }
+
+    const salt = bcrypt.genSaltSync(10);
+    const hashed = bcrypt.hashSync(newPassword, salt);
+    user.password = hashed;
+    await user.save();
+
+    return res.status(200).json({ message: 'Password updated successfully' });
+  } catch (error: any) {
+    return res.status(500).json({ message: 'Error updating password', error: error.message });
+  }
+};
