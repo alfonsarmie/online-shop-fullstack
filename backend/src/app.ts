@@ -10,6 +10,7 @@ dotenv.config();
 // Import routes
 import userRoutes from './routes/user-routes';
 import authRoutes from './routes/auth-routes';
+import productRoutes from './routes/product-routes'
 import { connectDB } from './db/connection';
 
 
@@ -25,6 +26,7 @@ connectDB().catch(error => console.error('Database connection failed:', error));
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
 
 // Initialize the server
 const PORT = process.env.PORT || 3000;
