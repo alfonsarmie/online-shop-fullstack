@@ -1,7 +1,9 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../styles/cart.css';
 import { useCart } from './CartContext'; // custom hook to use cart context
 import { CartItem } from '../types/cart'; // Import CartItem type
+import { useState } from 'react';
+import LoginRequiredModal from './LoginRequiredModal';
 
 function Cart() {
 
@@ -16,6 +18,26 @@ function Cart() {
   // Calculate subtotal and total
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const total = subtotal; // Add tax or shipping if needed
+
+  const navigate = useNavigate();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const handleCheckout = () => {
+    let loggedIn = false;
+    try {
+      loggedIn = !!localStorage.getItem('user');
+    } catch {
+      loggedIn = false;
+    }
+    if (!loggedIn) {
+      // Close the cart panel before showing modal so it doesn't cover it
+      closeCart();
+      setShowLoginModal(true);
+      return;
+    }
+    closeCart();
+    navigate('/checkout');
+  };
 
   return (
     <>
@@ -68,11 +90,20 @@ function Cart() {
           {/* Checkout button, only if there are items in the cart */}
           {cartItems.length > 0 && (
             <div className="btnCompletarPedido">
-              <Link to="/checkout"><button onClick={closeCart}>COMPLETAR PEDIDO</button></Link>
+              <button onClick={handleCheckout}>COMPLETAR PEDIDO</button>
             </div>
           )}
         </div>
       </div>
+      <LoginRequiredModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onLoginClick={() => {
+          setShowLoginModal(false);
+          closeCart();
+          navigate('/login');
+        }}
+      />
     </>
   );
 }
