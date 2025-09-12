@@ -1,11 +1,27 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { createProduct, updateProduct, deleteProduct } from '../controllers/product-controller';
+import { 
+  createProduct, 
+  updateProduct, 
+  deleteProduct, 
+  getAllProducts, 
+  getProduct 
+} from '../controllers/product-controller';
 import { validateFields } from '../middlewares/validate-fields';
 import { validateJWT } from '../middlewares/validate-jwt';
 
 const router = Router();
 
+// GET - Obtener todos los productos (pública)
+router.get("/", getAllProducts);
+
+// GET - Obtener un producto por ID (pública)
+router.get("/:id", [
+  check('id', 'ID must be a number').isNumeric(),
+  validateFields
+], getProduct);
+
+// POST - Crear producto (solo admin)
 router.post("/create", [
   validateJWT,
   check('name', 'Product name is required').notEmpty(),
@@ -16,6 +32,7 @@ router.post("/create", [
   validateFields
 ], createProduct);
 
+// PUT - Actualizar producto (solo admin)
 router.put("/update/:id", [
   validateJWT,
   check('id', 'ID must be a number').isNumeric(),
@@ -26,6 +43,7 @@ router.put("/update/:id", [
   validateFields
 ], updateProduct);
 
+// DELETE - Eliminar producto (solo admin)
 router.delete("/delete/:id", [
   validateJWT,
   check('id', 'ID must be a number').isNumeric(),
