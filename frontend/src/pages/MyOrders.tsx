@@ -1,9 +1,9 @@
-// pages/MyOrders.tsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/myOrders.css';
+import SuccessMessage from '../components/SuccessMessage';
 
-// Interface para los pedidos
+// Interface for orders
 interface Order {
   id: number;
   orderNumber: string;
@@ -11,8 +11,8 @@ interface Order {
   status: 'pending' | 'processing' | 'completed' | 'cancelled';
   total: number;
   items: OrderItem[];
-  pickupDate?: string; // Fecha límite de retiro
-  canCancel: boolean; // Si el pedido puede ser cancelado
+  pickupDate?: string; // Limit date for pickup
+  canCancel: boolean; // If the order can be canceled
 }
 
 interface OrderItem {
@@ -28,6 +28,7 @@ const MyOrders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [successMessage, setSuccessMessage] = useState('');
 
   // Calcular días restantes para retiro
   const calculateDaysRemaining = (pickupDate: string): number => {
@@ -46,7 +47,7 @@ const MyOrders: React.FC = () => {
           ? { ...order, status: 'cancelled', canCancel: false }
           : order
       ));
-      alert('Pedido cancelado exitosamente');
+      setSuccessMessage('Pedido cancelado exitosamente');
     }
   };
 
@@ -178,6 +179,7 @@ const MyOrders: React.FC = () => {
 
   return (
     <div className="my-orders-container">
+      <SuccessMessage message={successMessage} onClose={() => setSuccessMessage('')} />
       {/* Header */}
       <div className="orders-header">
         <Link to="/" className="back-button">
@@ -191,7 +193,6 @@ const MyOrders: React.FC = () => {
       <div className="orders-list">
         {orders.length === 0 ? (
           <div className="empty-orders">
-            <div className="empty-icon">📦</div>
             <h3>No tienes pedidos aún</h3>
             <p>¡Comienza a comprar y verás tus pedidos aquí!</p>
             <Link to="/products" className="shop-button">
