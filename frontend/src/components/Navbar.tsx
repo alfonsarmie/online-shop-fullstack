@@ -1,15 +1,19 @@
-import { Link, useNavigate } from 'react-router-dom';
-import '../styles/nav.css';
-import '../index.css';
-import logo from '../assets/img/logo.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faCartShopping, faBars } from '@fortawesome/free-solid-svg-icons';
-import { useCart } from './CartContext';
-import DropdownMenu from './DropdownMenu';
-import { User } from '../types/user';
-import { useState, useEffect } from 'react'; // Importar useEffect
-import UserSidebar from './UserSideBar'; 
-import SuccessMessage from './SuccessMessage';
+import { Link, useNavigate } from "react-router-dom";
+import "../styles/nav.css";
+import "../index.css";
+import logo from "../assets/img/logo.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUser,
+  faCartShopping,
+  faBars,
+} from "@fortawesome/free-solid-svg-icons";
+import { useCart } from "./CartContext";
+import DropdownMenu from "./DropdownMenu";
+import { User } from "../types/user";
+import { useState, useEffect } from "react"; // Importar useEffect
+import UserSidebar from "./UserSideBar";
+import SuccessMessage from "./SuccessMessage";
 
 // Navbar props interface
 interface NavbarProps {
@@ -21,13 +25,13 @@ function Navbar({ user, setUser }: NavbarProps) {
   const navigate = useNavigate();
   const { openCart, cartCount } = useCart();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
 
   // Efecto para limpiar automáticamente el mensaje después de 3 segundos
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
-        setSuccessMessage('');
+        setSuccessMessage("");
       }, 3000); // 3 segundos
 
       // Limpiar el timer si el componente se desmonta o el mensaje cambia
@@ -42,15 +46,15 @@ function Navbar({ user, setUser }: NavbarProps) {
 
   // Navigate to home and scroll to top
   const handleHomeClick = () => {
-    navigate('/');
+    navigate("/");
     window.scrollTo(0, 0);
   };
 
   // Toggle options menu
   const openOptions = () => {
-    const optionsMenu = document.getElementById('optionsMenu');
+    const optionsMenu = document.getElementById("optionsMenu");
     if (optionsMenu) {
-      optionsMenu.classList.toggle('show');
+      optionsMenu.classList.toggle("show");
     }
   };
 
@@ -67,8 +71,11 @@ function Navbar({ user, setUser }: NavbarProps) {
   return (
     <div>
       {/* SuccessMessage a nivel superior */}
-      <SuccessMessage message={successMessage} onClose={() => setSuccessMessage('')} />
-      
+      <SuccessMessage
+        message={successMessage}
+        onClose={() => setSuccessMessage("")}
+      />
+
       <nav>
         <div className="nav-toggle" id="navToggle">
           <FontAwesomeIcon icon={faBars} />
@@ -82,26 +89,32 @@ function Navbar({ user, setUser }: NavbarProps) {
 
         <div className="nav-links" id="navLinks">
           <ul>
-            <li onClick={handleHomeClick}><Link to="/">INICIO</Link></li>
-            <li><DropdownMenu /></li>
-            <li><Link to="/about-us">ACERCA DE NOSOTROS</Link></li>
-            <li><Link to="/delivery">FORMAS DE ENTREGA</Link></li>
+            <li onClick={handleHomeClick}>
+              <Link to="/">INICIO</Link>
+            </li>
+            <li>
+              <DropdownMenu />
+            </li>
+            <li>
+              <Link to="/about-us">ACERCA DE NOSOTROS</Link>
+            </li>
+            <li>
+              <Link to="/delivery">FORMAS DE ENTREGA</Link>
+            </li>
           </ul>
         </div>
 
         <div className="btnsRight">
-
           {/* conditional rendering */}
           {user ? (
             <>
               {/* Button to open user sidebar */}
               <button onClick={openUserSidebar} className="userOptions">
+                <FontAwesomeIcon icon={faUser} className="user-icon" />
                 <span className="user-name">Hola, {user.name}!</span>
               </button>
-              
-              {user.role === 'admin' && (
-                <></>
-              )}
+
+              {user.role === "admin" && <></>}
 
               {/* User Sidebar is only displayed if user exists */}
               <UserSidebar
