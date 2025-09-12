@@ -29,6 +29,7 @@ import Delivery from './pages/Delivery';
 import AdminOrders from './pages/AdminOrders';
 import ReceptionistOrders from './pages/ReceptionistOrders';
 import ReceptionistStock from './components/ReceptionistStock';
+import MyOrders from './pages/MyOrders';
 import { User } from './types/user';
 import { useLocation } from 'react-router-dom';
 
@@ -72,6 +73,7 @@ function App() {
           <Route path="/payment" element={<Payment />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/catalog" element={<Catalog />} />
+          <Route path="/my-orders" element={<MyOrders />} />
           {/* Admin routes (kebab-case) */}
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/admin-products" element={<AdminProducts />} />
