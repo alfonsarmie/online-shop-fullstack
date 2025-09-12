@@ -135,3 +135,13 @@
 .password-confirm-container .form__field {
   padding-right: 40px;
 }
+
+.forgot-password {
+    margin-top: 10px;
+    font-family: "Afacad", sans-serif;
+    color: #1E7335;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: flex-end;
+    margin-right: 70px;
+}
