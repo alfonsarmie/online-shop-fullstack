@@ -1,17 +1,27 @@
-import api from './api';
-import { Product } from '../types/product';
+import api from "./api";
+import { Product, FrontendProduct } from "../types/product";
 
 export const productService = {
   // Obtener todos los productos
-  getAllProducts: async (): Promise<Product[]> => {
+  getAllProducts: async (): Promise<FrontendProduct[]> => {
     try {
-      console.log('Fetching products from:', '/products');
-      const response = await api.get('/products');
-      console.log('Products response:', response.data);
-      return response.data;
+      const response = await api.get<{ products: Product[] }>("/products");
+      return response.data.products.map((product) => ({
+        id: product.idProduct.toString(),
+        name: product.name,
+        price: product.prices[0]?.value || 0,
+        img: product.images[0]?.url || "",
+        img2: product.images[1]?.url || "",
+        description: product.description,
+        sizes: product.sizes?.map((size) => size.name) || ["S", "M", "L", "XL"],
+        stock: product.stock,
+        category: product.category?.name || "",
+      }));
     } catch (error: any) {
-      console.error('Error fetching products:', error.response?.data || error.message);
-      console.error('Error details:', error.response?.status, error.response?.statusText);
+      console.error(
+        "Error fetching products:",
+        error.response?.data || error.message
+      );
       throw error;
     }
   },
@@ -28,26 +38,39 @@ export const productService = {
   },
 
   // Crear un nuevo producto (para admin)
-  createProduct: async (productData: FormData): Promise<Product> => {
+  createProduct: async (productData: any): Promise<Product> => {
     try {
-      const response = await api.post('/products', productData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      let response;
+
+      if (productData instanceof FormData) {
+        response = await api.post("/products", productData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      } else {
+        response = await api.post("/products/create", productData);
+      }
+
       return response.data;
-    } catch (error) {
-      console.error('Error creating product:', error);
+    } catch (error: any) {
+      console.error(
+        "Error creating product:",
+        error.response?.data || error.message
+      );
       throw error;
     }
   },
 
   // Actualizar un producto (para admin)
-  updateProduct: async (id: string, productData: FormData): Promise<Product> => {
+  updateProduct: async (
+    id: string,
+    productData: FormData
+  ): Promise<Product> => {
     try {
       const response = await api.put(`/products/${id}`, productData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
       return response.data;
@@ -60,10 +83,13 @@ export const productService = {
   // Eliminar un producto (para admin)
   deleteProduct: async (id: string): Promise<void> => {
     try {
-      await api.delete(`/products/${id}`);
-    } catch (error) {
-      console.error(`Error deleting product ${id}:`, error);
+      await api.delete(`/products/delete/${id}`);
+    } catch (error: any) {
+      console.error(
+        `Error deleting product ${id}:`,
+        error.response?.data || error.message
+      );
       throw error;
     }
-  }
+  },
 };

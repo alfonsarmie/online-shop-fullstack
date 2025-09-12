@@ -5,6 +5,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
 dotenv.config();
 
 // Import routes
@@ -14,6 +15,7 @@ import productRoutes from './routes/product-routes';
 import priceRoutes from './routes/price-routes';
 import imageRoutes from './routes/image-routes';
 import sizeRoutes from './routes/size-routes';
+import uploadRoutes from './routes/upload-routes';
 import { defineAssociations } from './models/associations';
 import { connectDB } from './db/connection';
 
@@ -37,6 +39,8 @@ app.use("/api/products", productRoutes);
 app.use("/api/prices", priceRoutes);
 app.use("/api/images", imageRoutes);
 app.use("/api/sizes", sizeRoutes);
+app.use('/api', uploadRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Initialize the server
 const PORT = process.env.PORT || 3000;

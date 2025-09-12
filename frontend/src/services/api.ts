@@ -1,3 +1,4 @@
+// api.ts - MODIFICAR el interceptor
 import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:3000/api';
@@ -10,12 +11,15 @@ const api = axios.create({
   },
 });
 
-// Interceptor para agregar el token a las requests
+// Interceptor para agregar el token en x-token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      // Cambiar de Authorization a x-token
+      config.headers['x-token'] = token;
+      // Opcional: remover el header Authorization si existe
+      delete config.headers.Authorization;
     }
     return config;
   },

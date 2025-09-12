@@ -1,19 +1,18 @@
 import { useState, useEffect } from 'react';
 import '../index.css';
 import '../styles/products.css';
-import ProductComponent from './Product'; // Cambia el nombre de importación
+import ProductComponent from './Product';
 import { useCart } from './CartContext';
 import ProductFilter from './ProductFilter';
-import { ProductWithSize } from '../types/product';
+import { ProductWithSize, Product, FrontendProduct } from '../types/product';
 import { productService } from '../services/productService';
-import { Product } from '../types/product'; // Esta es la interfaz
 
 type FilterType = 'price_asc' | 'price_desc' | 'name_asc' | '';
 
 function Products() {
   const { addToCart } = useCart();
   const [activeFilter, setActiveFilter] = useState<FilterType>('');
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<FrontendProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -75,7 +74,14 @@ function Products() {
         {sortedProducts.map(product => (
           <ProductComponent 
             key={product.id}
-            {...product}
+            id={product.id}
+            name={product.name}
+            price={product.price}
+            img={product.img}
+            img2={product.img2}
+            description={product.description}
+            sizes={product.sizes}
+            stock={product.stock}
             onAddToCart={(productWithSize: ProductWithSize) => addToCart(productWithSize)}
           />
         ))}
