@@ -1,5 +1,5 @@
-/* Overlay para fondo oscuro */
-.user-sidebar-overlay {
+/* Estilos unificados para ambos componentes laterales */
+.sidebar-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -12,16 +12,16 @@
   transition: all 0.3s ease;
 }
 
-.user-sidebar-overlay.active {
+.sidebar-overlay.active {
   display: block;
 }
 
-/* Panel lateral */
-.user-sidebar {
+/* Panel lateral (compartido) */
+.sidebar {
   position: fixed;
   top: 0;
-  right: -350px;
-  width: 350px;
+  right: -400px;
+  width: 400px;
   height: 100%;
   background-color: white;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
@@ -31,14 +31,15 @@
   flex-direction: column;
   font-family: 'Afacad', sans-serif;
   border-radius: 20px 0 0 20px;
+  overflow: hidden;
 }
 
-.user-sidebar.open {
+.sidebar.open {
   right: 0;
 }
 
 /* Header del panel */
-.user-sidebar-header {
+.sidebar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -48,23 +49,24 @@
   border-radius: 20px 0 0 0;
 }
 
-.user-sidebar-header h2 {
+.sidebar-header h2 {
   margin: 0;
-  color: #323232;
   font-size: 1.5rem;
+  color: #323232;
 }
 
-.close-btn {
-  background: none;
+.close-btn-sidebar {
+  background-color: transparent;
   border: none;
-  font-size: 1.5rem;
+  font-size: 30px;
   cursor: pointer;
-  color: #6c757d;
+  color: #323232;
   transition: color 0.3s ease;
+  border-radius: 50%;
 }
 
-.close-btn:hover {
-  color: #323232;
+.close-btn-sidebar:hover {
+  color: #1E7335;
 }
 
 /* Información del usuario */
@@ -73,6 +75,7 @@
   align-items: center;
   padding: 1.5rem;
   border-bottom: 1px solid #e0e0e0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
 
 .user-avatar {
@@ -87,64 +90,75 @@
   font-size: 1.2rem;
   font-weight: bold;
   margin-right: 1rem;
+  flex-shrink: 0;
 }
 
 .user-details h3 {
   margin: 0 0 0.5rem 0;
   color: #323232;
   font-size: 1.2rem;
+  font-weight: 600;
 }
 
 .user-details p {
   margin: 0 0 0.5rem 0;
   color: #6c757d;
+  font-size: 0.9rem;
 }
 
 .user-role {
-  background-color: #e9ecef;
-  color: #495057;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: bold;
+  background-color: #afafaf;
+  color: white;
+  padding: 0.2rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 /* Información adicional */
 .additional-info {
   padding: 1.5rem;
   border-bottom: 1px solid #e0e0e0;
+  background-color: #fff;
 }
 
-.info-item {
+.info-user {
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.8rem;
+  padding: 0.5rem 0;
 }
 
-.info-item:last-child {
+.info-user:last-child {
   margin-bottom: 0;
+  border-bottom: none;
 }
 
-.info-item strong {
+.info-user strong {
   color: #323232;
+  font-weight: 600;
 }
 
-.info-item span {
+.info-user span {
   color: #6c757d;
+  font-weight: 500;
 }
 
-/* Opciones del usuario */
-.user-options {
+/* Opciones del sidebar */
+.sidebar-options {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.6rem;
   margin-top: auto;
+  background-color: #f8f9fa;
 }
 
-.option-link {
-  padding: 0.8rem 1rem;
-  border-radius: 8px;
+.option-btn {
+  padding: .7rem 1rem;
+  border-radius: 12px;
+  border: none;
   font-family: 'Afacad', sans-serif;
   font-size: 1rem;
   font-weight: 600;
@@ -152,41 +166,180 @@
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.8rem;
   text-decoration: none;
+  text-align: left;
+}
+
+.option-btn:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.my-orders {
+  border: 2px solid #4a90e2;
+  color: #4a90e2;
+}
+
+.my-orders:hover {
+  background-color: #357abd;
+  color: white;
 }
 
 .edit-profile {
-  background-color: #1E7335;
-  color: white;
-  text-align: center;
+  border: 2px solid #1E7335;
+  color: #1E7335;
 }
 
 .edit-profile:hover {
   background-color: #0c3f19;
+  color: white;
 }
 
 .logout {
-  background-color: #f8f9fa;
-  color: #dc3545;
-  border: 1px solid #dc3545;
-  text-align: center;
-}
-
-.logout:hover {
   background-color: #dc3545;
   color: white;
 }
 
-/* Quitar el subrayado de los links */
-.option-link:hover {
+.logout:hover {
+  background-color: #bd2130;
+}
+
+/* Estilos específicos para el carrito */
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  max-height: 400px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+}
+
+.cart-item img {
+  border-radius: 8px;
+  object-fit: cover;
+  width: 60px;
+  height: 60px;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #dc3545;
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.remove-btn:hover {
+  background-color: #ffeaea;
+}
+
+.cart-footer {
+  padding: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+  background-color: white;
+}
+
+.cart-footer-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.cart-footer-item:last-child {
+  border-bottom: none;
+}
+
+.cart-footer-item p {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #323232;
+}
+
+.btnCompletarPedido {
+  margin-top: 1.5rem;
+}
+
+.btnCompletarPedido a {
+  width: 100%;
   text-decoration: none;
+}
+
+.btnCompletarPedido button {
+  background-color: #1E7335;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 30px;
+  font-family: "Afacad", sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.btnCompletarPedido button:hover {
+  background-color: #0c3f19;
+}
+
+/* Scroll personalizado */
+.sidebar ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.sidebar ::-webkit-scrollbar-thumb {
+  background: #1E7335;
+  border-radius: 10px;
+}
+
+.sidebar ::-webkit-scrollbar-thumb:hover {
+  background: #0c3f19;
 }
 
 /* Responsive */
 @media (max-width: 480px) {
-  .user-sidebar {
-    width: 300px;
-    right: -300px;
+  .sidebar {
+    width: 100%;
+    right: -100%;
+    border-radius: 0;
+  }
+  
+  .sidebar.open {
+    right: 0;
+  }
+  
+  .sidebar-header {
+    border-radius: 0;
+  }
+  
+  .user-info,
+  .additional-info,
+  .sidebar-options {
+    padding: 1rem;
+  }
+  
+  .option-btn {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
   }
 }

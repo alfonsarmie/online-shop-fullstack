@@ -1,19 +1,17 @@
-// UserSidebar.tsx (corregido)
+// UserSidebar.tsx 
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/userSidebar.css';
-import { User } from '../types/user'; // Importar el tipo User
+import { User } from '../types/user';
 
-// Interface for the component props
 interface UserSidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  user: User | null; // Usar el tipo User importado
-  setUser: (user: User | null) => void; // Corregir el tipo
+  user: User | null;
+  setUser: (user: User | null) => void;
   setSuccessMessage: (message: string) => void;
 }
 
-// User Side Panel Component
 const UserSidebar: React.FC<UserSidebarProps> = ({ 
   isOpen, 
   onClose, 
@@ -23,7 +21,6 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  // Function to log out the user
   const handleLogout = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
@@ -33,26 +30,26 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
     navigate('/');
   };
 
-  // Function to edit profile
   const handleEditProfile = () => {
     navigate('/profile-edit');
     onClose();
   };
 
+  const handleMyOrders = () => {
+    navigate('/my-orders');
+    onClose();
+  };
+
   return (
     <>
-      {/* Overlay to close the panel when clicking outside */}
-      <div className={`user-sidebar-overlay ${isOpen ? 'active' : ''}`} onClick={onClose}></div>
+      <div className={`sidebar-overlay ${isOpen ? 'active' : ''}`} onClick={onClose}></div>
 
-      {/* Side panel */}
-      <div className={`user-sidebar ${isOpen ? 'open' : ''}`}>
-        {/* Header panel */}
-        <div className="user-sidebar-header">
+      <div className={`sidebar ${isOpen ? 'open' : ''}`}>
+        <div className="sidebar-header">
           <h2>Mi Cuenta</h2>
-          <button className="close-btn" onClick={onClose}>✖</button>
+          <button className="close-btn-sidebar" onClick={onClose}>✖</button>
         </div>
 
-        {/* User information */}
         <div className="user-info">
           <div className="user-avatar">
             {user?.name?.charAt(0).toUpperCase()}
@@ -65,46 +62,47 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
           </div>
         </div>
 
-        {/* Additional user information */}
         <div className="additional-info">
           {user?.phone && (
-            <div className="info-item">
+            <div className="info-user">
               <strong>Teléfono:</strong>
               <span>{user.phone}</span>
             </div>
           )}
           {user?.dni && (
-            <div className="info-item">
+            <div className="info-user">
               <strong>DNI:</strong>
               <span>{user.dni}</span>
             </div>
           )}
         </div>
 
-        {/* User options */}
-        <div className="user-options">
-          {/* Edit profile link (hidden for receptionists) */}
+        <div className="sidebar-options">
+          {/* Mis Pedidos - Visible para todos los usuarios */}
+          <button 
+            className="option-btn my-orders"
+            onClick={handleMyOrders}
+          >
+            Mis Pedidos
+          </button>
+
+          {/* Editar Perfil - Oculto para receptionists */}
           {user?.role !== 'receptionist' && (
-            <Link 
-              to="/profile-edit" 
-              className="option-link edit-profile"
-              onClick={onClose}
+            <button 
+              className="option-btn edit-profile"
+              onClick={handleEditProfile}
             >
               Editar Perfil
-            </Link>
+            </button>
           )}
 
-          {/* Log out link */}
-          <a 
-            href="#" 
-            className="option-link logout"
-            onClick={(e) => {
-              e.preventDefault();
-              handleLogout();
-            }}
+          {/* Cerrar Sesión */}
+          <button 
+            className="option-btn logout"
+            onClick={handleLogout}
           >
             Cerrar Sesión
-          </a>
+          </button>
         </div>
       </div>
     </>
