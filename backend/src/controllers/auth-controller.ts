@@ -4,7 +4,8 @@ import bcrypt from "bcryptjs";
 
 import User from "../models/user-model";
 import { generateJWT } from "../helpers/generate-jwt-helper";
-
+import { googleVerify } from "../helpers/google-verify-helper";
+import { ok } from "assert";
 
 
 export const loginUser = async (req: Request, res: Response): Promise<Response> => {
@@ -50,4 +51,71 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
       msg: 'Auth server error. Please contact the administrator.'
     });
   }
+};
+
+
+
+export const googleSignIn = async (req: Request, res: Response): Promise<Response> => {
+
+
+  const { id_token } = req.body; //Expect to receive a google id_token from the client through a POST request
+
+  try {
+    
+    const {email, name, surname} = await googleVerify(id_token);
+
+
+    let user = await User.findOne({ where: { email } });
+
+    if (!user) {
+
+      const data = {
+        dni: null,
+        name,
+        surname,
+        email,
+        password: ':P', // Placeholder password since Google users won't use it
+        isMember: false, // or true, depending on your logic
+        registrationDate: new Date(),
+        status: 'active' // or another default status as needed
+      }
+
+      user = await User.create(data);
+      await user.save();
+
+
+    }
+
+
+    if (user.status !== 'active') {
+      return res.status(401).json({
+        msg: 'User is not active. Please contact the administrator.'
+      });
+    }
+
+
+    // Generate JWT (solucionar el tipo de dato del idUser)
+    const token = await generateJWT(user.idUser);
+
+
+
+    return res.json({
+      user,
+      token
+    });
+
+
+
+  } catch (error) {
+    
+    console.log(error);
+    return res.status(400).json({
+      ok: false,
+      msg: 'Invalid Google token'
+    });
+
+  }
+
+
+
 };
