@@ -10,7 +10,11 @@ dotenv.config();
 // Import routes
 import userRoutes from './routes/user-routes';
 import authRoutes from './routes/auth-routes';
-import productRoutes from './routes/product-routes'
+import productRoutes from './routes/product-routes';
+import priceRoutes from './routes/price-routes';
+import imageRoutes from './routes/image-routes';
+import sizeRoutes from './routes/size-routes';
+import { defineAssociations } from './models/associations';
 import { connectDB } from './db/connection';
 
 
@@ -23,10 +27,16 @@ app.use(cors()); //To enable CORS
 // Connect to the database
 connectDB().catch(error => console.error('Database connection failed:', error));
 
+// Define all model associations
+defineAssociations();
+
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/prices", priceRoutes);
+app.use("/api/images", imageRoutes);
+app.use("/api/sizes", sizeRoutes);
 
 // Initialize the server
 const PORT = process.env.PORT || 3000;
