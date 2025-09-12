@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/img/logo.png";
 import FormContainer from "../components/FormContainer";
@@ -9,6 +9,7 @@ import axios from "axios";
 import { User } from "../types/user";
 import SuccessMessage from "../components/SuccessMessage";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
+
 
 // Props interface for LoginForm component
 interface LoginFormProps {
@@ -67,7 +68,12 @@ export default function LoginForm({ setUser }: LoginFormProps) {
       console.error("Login failed:", error.response?.data || error.message);
       setErrorMessage("Error al iniciar sesión");
     }
+
+
   };
+
+
+  
 
   return (
     <div className="login-container">
@@ -135,7 +141,20 @@ export default function LoginForm({ setUser }: LoginFormProps) {
             Registrate
           </a>
         </p>
+
+
       </FormContainer>
+
+
+
+
+
+      
+
+
+      
+      
+
     </div>
   );
 }
