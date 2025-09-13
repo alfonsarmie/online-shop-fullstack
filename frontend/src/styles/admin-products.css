@@ -1,9 +1,9 @@
 /* Admin Products Styles: consistent with dark admin look */
 .admin-products {
   padding: 24px 32px;
-  padding-top: 50px; /* keep clear of fixed navbar */
+  padding-top: 50px;
   color: #f0f0f0;
-  background: #121212;
+  background: #121212; /* Asegúrate de que este color sea el deseado */
   min-height: calc(100vh - 100px);
   font-family: "Afacad", sans-serif;
 }
@@ -81,13 +81,14 @@
   margin-bottom: 18px;
 }
 
-.panel {
-  background: #1d1d1d;
-  border: 1px solid #2a2a2a;
+.admin-products .panel {
+  background: #1D1D1D;
+  border: 1px solid #2a2a2a !important;
   border-radius: 12px;
+  box-shadow: none;
+  overflow: hidden;
   margin-bottom: 16px;
 }
-
 .panel-header {
   padding: 14px 16px;
   border-bottom: 1px solid #2a2a2a;
@@ -159,11 +160,11 @@ button {
   background: #343434;
 }
 .btn.primary {
-  background: #1e7335;
+  background: #22a341;
   border-color: #1e7335;
 }
 .btn.primary:hover {
-  background: #16572a;
+  background: #1c8a39;
 }
 .btn.danger {
   background: #c0392b;
@@ -225,3 +226,120 @@ button {
     grid-column: span 1;
   }
 }
+
+/* Panel and table visuals (two grey boxes on black background) */
+.admin-products .panel { box-shadow: none; background: #1D1D1D; border: 1px solid #2a2a2a; border-radius: 12px; overflow: hidden; }
+.admin-products .panel-body { background: #1D1D1D; padding-bottom: 16px; overflow: hidden; }
+.admin-products .data-table { background: #1D1D1D; border: 0; border-collapse: separate; border-spacing: 0; }
+.admin-products .data-table th, .admin-products .data-table td { background: transparent; border-bottom-color: #2a2a2a; }
+.admin-products .data-table tbody tr { background: #1D1D1D; }
+.admin-products .data-table tbody tr:last-child td { border-bottom: none; }
+.admin-products .data-table { margin-bottom: 0; }
+
+/* Pretty file inputs */
+.admin-products input[type="file"] {
+  /* Match clean button look from Admin Orders primary button */
+  width: auto;
+  padding: 0; /* the visible padding is on the inner button */
+  color: #e6e6e6;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.admin-products input[type="file"]::file-selector-button {
+  background: #22a341;
+  color: #fff;
+  border: 1px solid #1E7335;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-right: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: 'Afacad', sans-serif;
+  transition: transform 0.06s ease, background 0.15s ease;
+}
+.admin-products input[type="file"]::file-selector-button:hover { background: #1c8a39; transform: translateY(-1px); }
+.admin-products input[type="file"]::file-selector-button:active { transform: translateY(0); }
+
+/* Safari/legacy */
+.admin-products input[type="file"]::-webkit-file-upload-button {
+  background: #22a341;
+  color: #fff;
+  border: 1px solid #1E7335;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-right: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: 'Afacad', sans-serif;
+}
+.admin-products input[type="file"]::-webkit-file-upload-button:hover { background: #1c8a39; }
+
+/* Quitar sombras verdes de botones primarios en esta vista */
+.admin-products .btn.primary { box-shadow: none; }
+.admin-products .btn.primary:hover { box-shadow: none; }
+
+.admin-products .btn {
+  background: #2a2a2a;
+  color: #f5f5f5;
+  border: 1px solid #3a3a3a;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.06s ease, background 0.15s ease;
+  box-shadow: none;
+}
+.admin-products .btn:hover { background: #343434; transform: translateY(-1px); }
+.admin-products .btn:active { transform: translateY(0); }
+.admin-products .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.admin-products .btn.primary { background: #22a341; border-color: #1E7335; color: #fff; box-shadow: none; }
+.admin-products .btn.primary:hover { background: #1c8a39; }
+.admin-products .btn.danger { background: #C0392B; border-color: #C0392B; color: #fff; box-shadow: none; }
+.admin-products .btn.danger:hover { background: #9d2f23; }
+
+/* Modal styles (aligned with admin orders) */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(0,0,0,0), #2a2a2a 20%, #2a2a2a 80%, rgba(0,0,0,0));
+  margin: 18px 0 24px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #ffffff;
+  color: #1a1a1a;
+  border: 1px solid #dfe3e6;
+  border-radius: 16px;
+  max-width: 800px; width: 90%;
+  max-height: 90vh; overflow-y: auto;
+  font-family: 'Afacad', sans-serif;
+}
+
+.modal-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e6eaee;
+  background: #eef1f4; color: #1a1a1a;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.modal-header h2 { font-family: 'Anton', sans-serif; margin: 0; font-size: 18px; }
+
+.btn-close {
+  background: none; border: none; color: #1a1a1a;
+  font-size: 24px; cursor: pointer; padding: 0;
+  width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+}
+
+.modal-body { padding: 14px 16px 18px; color: #1a1a1a; }
+.modal-body .modal-warning { color: #333; font-weight: 500; }
+
+
