@@ -27,6 +27,7 @@ import AdminProducts from './pages/AdminProducts';
 import ProfileEdit from './pages/ProfileEdit';
 import Delivery from './pages/Delivery';
 import AdminOrders from './pages/AdminOrders';
+import AdminCategories from './pages/AdminCategories';
 import ReceptionistOrders from './pages/ReceptionistOrders';
 import ReceptionistStock from './components/ReceptionistStock';
 import MyOrders from './pages/MyOrders';
@@ -78,10 +79,12 @@ function App() {
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/admin-products" element={<AdminProducts />} />
           <Route path="/admin-orders" element={<AdminOrders />} />
+          <Route path="/admin-categories" element={<AdminCategories />} />
           {/* Backwards compatibility redirects */}
           <Route path="/admindashboard" element={<Navigate to="/admin-dashboard" replace />} />
           <Route path="/adminproducts" element={<Navigate to="/admin-products" replace />} />
           <Route path="/adminorders" element={<Navigate to="/admin-orders" replace />} />
+          <Route path="/admincategories" element={<Navigate to="/admin-categories" replace />} />
           <Route path="/profile-edit" element={<ProfileEdit user={user} setUser={setUser} />} />
           <Route path="/delivery" element={<Delivery user={user} setUser={setUser} />} />
           {/* Receptionist routes (kebab-case) */}

@@ -96,6 +96,9 @@ function NavBarAdmin({ user, setUser }: NavbarProps) {
             <li>
               <Link to="/admin-products">PRODUCTOS</Link>
             </li>
+            <li>
+              <Link to="/admin-categories">CATEGORÍAS</Link>
+            </li>
           </ul>
         </div>
 
