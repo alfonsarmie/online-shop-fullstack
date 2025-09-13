@@ -40,6 +40,8 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
     onClose();
   };
 
+  const role = (user?.role || '').toLowerCase();
+
   return (
     <>
       <div className={`sidebar-overlay ${isOpen ? 'active' : ''}`} onClick={onClose}></div>
@@ -78,16 +80,18 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
         </div>
 
         <div className="sidebar-options">
-          {/* Mis Pedidos - Visible para todos los usuarios */}
-          <button 
-            className="option-btn my-orders"
-            onClick={handleMyOrders}
-          >
-            Mis Pedidos
-          </button>
+          {/* Mis Pedidos - Solo clientes (no admin ni recepcionista) */}
+          {role !== 'admin' && role !== 'receptionist' && (
+            <button 
+              className="option-btn my-orders"
+              onClick={handleMyOrders}
+            >
+              Mis Pedidos
+            </button>
+          )}
 
-          {/* Editar Perfil - Oculto para receptionists */}
-          {user?.role !== 'receptionist' && (
+          {/* Editar Perfil - Oculto para recepcionistas */}
+          {role !== 'receptionist' && (
             <button 
               className="option-btn edit-profile"
               onClick={handleEditProfile}
