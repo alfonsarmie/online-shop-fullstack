@@ -9,6 +9,7 @@ import axios from "axios";
 import { User } from "../types/user";
 import SuccessMessage from "../components/SuccessMessage";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
+import { GoogleLogin } from '@react-oauth/google';
 
 
 // Props interface for LoginForm component
@@ -72,6 +73,42 @@ export default function LoginForm({ setUser }: LoginFormProps) {
 
   };
 
+
+  // Handle Google login success
+  const handleGoogleLogin = async (credentialResponse: any) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/google-login",
+        { id_token: credentialResponse.credential }
+      );
+
+      const userData = response.data.user;
+      const token = response.data.token;
+      
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", token);
+      
+      setUser(userData);
+      setMessage("Inicio de sesión con Google exitoso");
+      setErrorMessage("");
+      setTimeout(() => {
+        
+        if (userData.role === "admin") {
+          navigate("/admin-dashboard");
+        } else if (userData.role === "receptionist") {
+          navigate("/receptionist-orders");
+        } else {
+          navigate("/");
+        }
+      
+      }, 500);
+    
+    } catch (error: any) {
+      
+      setErrorMessage("Error al iniciar sesión con Google");
+    
+    }
+  };
 
   
 
@@ -141,6 +178,16 @@ export default function LoginForm({ setUser }: LoginFormProps) {
             Registrate
           </a>
         </p>
+
+      
+
+      <GoogleLogin
+            onSuccess={handleGoogleLogin}
+            onError={() => setErrorMessage("Error al iniciar sesión con Google")}
+            width={300}
+            text="signin_with"
+            shape="pill"
+      />
 
 
       </FormContainer>
