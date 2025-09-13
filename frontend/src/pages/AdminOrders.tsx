@@ -29,12 +29,11 @@ type OrderItem = {
   size: string;
 };
 
-type OrderStatus = 
-  | 'pending' 
-  | 'confirmed' 
-  | 'processing' 
-  | 'shipped' 
-  | 'delivered' 
+type OrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'processing'
+  | 'delivered'
   | 'cancelled';
 
 const STORAGE_KEY = 'adminOrders';
@@ -77,7 +76,7 @@ const initialOrders: Order[] = [
       { productId: 4, productName: 'Medias Oficiales', quantity: 2, price: 5000, size: 'Único' }
     ],
     total: 35000,
-    status: 'shipped',
+    status: 'confirmed',
     date: '2023-11-14',
     address: 'Cabildo 2345, CABA',
     paymentMethod: 'Transferencia'
@@ -122,13 +121,13 @@ function saveOrders(data: Order[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
+// Order of statuses as requested: pendiente, confirmado, entregado, cambiado, cancelado
 const statusOptions: { value: OrderStatus; label: string }[] = [
   { value: 'pending', label: 'Pendiente' },
   { value: 'confirmed', label: 'Confirmado' },
-  { value: 'processing', label: 'Procesando' },
-  { value: 'shipped', label: 'Enviado' },
   { value: 'delivered', label: 'Entregado' },
-  { value: 'cancelled', label: 'Cancelado' }
+  { value: 'processing', label: 'Cambiado' },
+  { value: 'cancelled', label: 'Cancelado' },
 ];
 
 const AdminOrders: React.FC = () => {
@@ -136,6 +135,9 @@ const AdminOrders: React.FC = () => {
   const [filter, setFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Order | null>(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editedOrders, setEditedOrders] = useState<Order[]>([]);
 
   useEffect(() => {
     const data = loadOrders();
@@ -147,7 +149,9 @@ const AdminOrders: React.FC = () => {
   }, [orders]);
 
   const filteredOrders = useMemo(() => {
-    let result = orders;
+    // When editing, operate on the draft copy
+    let source = editMode ? editedOrders : orders;
+    let result = source;
     
     // Filter by search text
     if (filter.trim()) {
@@ -165,16 +169,35 @@ const AdminOrders: React.FC = () => {
     }
     
     return result;
-  }, [orders, filter, statusFilter]);
+  }, [orders, editedOrders, editMode, filter, statusFilter]);
 
   const updateOrderStatus = (id: number, newStatus: OrderStatus) => {
-    setOrders(prev => prev.map(order => 
+    if (!editMode) return; // Only allow changes in edit mode
+    setEditedOrders(prev => prev.map(order =>
       order.id === id ? { ...order, status: newStatus } : order
     ));
   };
 
+  const startEdit = () => {
+    setEditedOrders(orders.map(o => ({ ...o, items: o.items.map(i => ({ ...i })) })));
+    setEditMode(true);
+  };
+
+  const cancelEdit = () => {
+    setEditedOrders([]);
+    setEditMode(false);
+  };
+
+  const saveChanges = () => {
+    setOrders(editedOrders);
+    setEditMode(false);
+  };
+
+  const confirmDelete = (order: Order) => {
+    setDeleteTarget(order);
+  };
+
   const deleteOrder = (id: number) => {
-    if (!confirm('¿Eliminar este pedido?')) return;
     setOrders(prev => prev.filter(order => order.id !== id));
   };
 
@@ -183,7 +206,6 @@ const AdminOrders: React.FC = () => {
       case 'pending': return 'status-pending';
       case 'confirmed': return 'status-confirmed';
       case 'processing': return 'status-processing';
-      case 'shipped': return 'status-shipped';
       case 'delivered': return 'status-delivered';
       case 'cancelled': return 'status-cancelled';
       default: return '';
@@ -243,6 +265,9 @@ const AdminOrders: React.FC = () => {
       <section className="panel">
         <div className="panel-header">
           <h2>Pedidos ({filteredOrders.length})</h2>
+          {!editMode && (
+            <button className="btn primary" onClick={startEdit}>Modificar estados</button>
+          )}
         </div>
         <div className="panel-body">
           <table className="data-table">
@@ -287,6 +312,7 @@ const AdminOrders: React.FC = () => {
                         value={order.status}
                         onChange={e => updateOrderStatus(order.id, e.target.value as OrderStatus)}
                         className="status-select"
+                        disabled={!editMode}
                       >
                         {statusOptions.map(option => (
                           <option key={option.value} value={option.value}>
@@ -294,9 +320,9 @@ const AdminOrders: React.FC = () => {
                           </option>
                         ))}
                       </select>
-                      <button 
-                        className="btn danger" 
-                        onClick={() => deleteOrder(order.id)}
+                      <button
+                        className="btn danger"
+                        onClick={() => confirmDelete(order)}
                       >
                         Eliminar
                       </button>
@@ -313,6 +339,13 @@ const AdminOrders: React.FC = () => {
               )}
             </tbody>
           </table>
+
+          {editMode && (
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 12 }}>
+              <button className="btn" onClick={cancelEdit}>Cancelar</button>
+              <button className="btn primary" onClick={saveChanges}>Guardar cambios</button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -368,6 +401,34 @@ const AdminOrders: React.FC = () => {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteTarget && (
+        <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Eliminar pedido #{deleteTarget.id}</h2>
+              <button className="btn-close" onClick={() => setDeleteTarget(null)}>×</button>
+            </div>
+            <div className="modal-body">
+              <p className="modal-warning">
+                ¿Estás seguro de eliminar el pedido #{deleteTarget.id} de {deleteTarget.customerName}? Esta acción es irreversible.
+              </p>
+              <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                <button className="btn" onClick={() => setDeleteTarget(null)}>Cancelar</button>
+                <button
+                  className="btn danger"
+                  onClick={() => {
+                    deleteOrder(deleteTarget.id);
+                    setDeleteTarget(null);
+                  }}
+                >
+                  Eliminar definitivamente
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -63,7 +63,7 @@ export default function LoginForm({ setUser }: LoginFormProps) {
         } else {
           navigate("/");
         }
-      }, 500);
+      }, 3000);
     } catch (error: any) {
       console.error("Login failed:", error.response?.data || error.message);
       setErrorMessage("Error al iniciar sesión");

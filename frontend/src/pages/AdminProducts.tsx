@@ -136,6 +136,41 @@ const AdminProducts: React.FC = () => {
     }
   };
 
+  // Asignar talles al producto usando endpoints del backend
+  const assignSizesToProduct = async (
+    productId: number,
+    sizes: string[]
+  ): Promise<void> => {
+    try {
+      const token = localStorage.getItem("token") || "";
+      // Obtener todos los talles para mapear nombre -> idSize
+      const listResp = await fetch("http://localhost:3000/api/sizes/all", {
+        headers: { "x-token": token },
+      });
+      const listData: any = await listResp.json();
+      const allSizes: any[] = listData?.sizes || [];
+
+      for (const sizeName of sizes) {
+        const sizeObj = allSizes.find(
+          (s) =>
+            (s.sizeDesc || s.name || "").toString().toLowerCase() ===
+            sizeName.toLowerCase()
+        );
+        if (!sizeObj?.idSize) continue;
+
+        await fetch(
+          `http://localhost:3000/api/sizes/${productId}/add/${sizeObj.idSize}`,
+          {
+            method: "POST",
+            headers: { "x-token": token },
+          }
+        ).catch(() => {});
+      }
+    } catch (err) {
+      console.warn("assignSizesToProduct falló (se continúa):", err);
+    }
+  };
+
   // Función para crear producto
   // En tu función create - CORREGIR
   const create = async () => {
@@ -172,10 +207,6 @@ const AdminProducts: React.FC = () => {
 
       console.log("Producto creado:", newProduct);
       console.log("ID del producto:", productId);
-
-      const response = await productService.createProduct(productData);
-      const newProduct = response.product;
-      const productId = newProduct.idProduct;
 
       // ✅ ASIGNAR TALLES después de crear el producto
       if (creating.sizes.length > 0) {
