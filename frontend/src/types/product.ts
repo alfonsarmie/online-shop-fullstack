@@ -34,6 +34,7 @@ export interface Category {
 export interface Size {
   idSize: number;
   name: string;
+  sizeDesc: string;
 }
 
 export interface Price {

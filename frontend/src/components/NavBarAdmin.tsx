@@ -80,7 +80,6 @@ function NavBarAdmin({ user, setUser }: NavbarProps) {
         <div className="nav-left">
           <Link to="/admin-dashboard">
             {" "}
-            {/* debería renderizarse el dashboard */}
             <img src={logo} alt="logo" />
           </Link>
         </div>

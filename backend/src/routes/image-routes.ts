@@ -8,8 +8,8 @@ const router = Router();
 
 router.post("/:idProduct/add", [
   validateJWT,
-  check('url', 'URL is required').notEmpty(),
-  check('url', 'URL must be a valid URL').isURL(),
+  check('url', 'Image URL is required').notEmpty(),
+  check('description', 'Description must be at most 255 characters').optional().isLength({ max: 255 }),
   validateFields
 ], addImage);
 

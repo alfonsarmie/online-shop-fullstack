@@ -63,7 +63,7 @@ export default function LoginForm({ setUser }: LoginFormProps) {
         } else {
           navigate("/");
         }
-      }, 3000);
+      }, 1000);
     } catch (error: any) {
       console.error("Login failed:", error.response?.data || error.message);
       setErrorMessage("Error al iniciar sesión");
@@ -95,7 +95,7 @@ export default function LoginForm({ setUser }: LoginFormProps) {
         } else {
           navigate("/");
         }
-      }, 500);
+      }, 1000);
     } catch (error: any) {
       setErrorMessage("Error al iniciar sesión con Google");
     }

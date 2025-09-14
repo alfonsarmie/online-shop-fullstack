@@ -41,6 +41,7 @@ app.use("/api/images", imageRoutes);
 app.use("/api/sizes", sizeRoutes);
 app.use('/api', uploadRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(express.urlencoded({ extended: true })); // Para form-data
 
 // Initialize the server
 const PORT = process.env.PORT || 3000;

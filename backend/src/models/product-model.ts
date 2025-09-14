@@ -9,9 +9,13 @@ interface ProductAttributes {
   idCategory: number;
 }
 
-interface ProductCreationAttributes extends Optional<ProductAttributes, "idProduct"> {}
+interface ProductCreationAttributes
+  extends Optional<ProductAttributes, "idProduct"> {}
 
-class Product extends Model<ProductAttributes, ProductCreationAttributes> implements ProductAttributes {
+class Product
+  extends Model<ProductAttributes, ProductCreationAttributes>
+  implements ProductAttributes
+{
   public idProduct!: number;
   public name!: string;
   public description!: string;
@@ -32,7 +36,8 @@ Product.init(
     },
     description: {
       type: DataTypes.STRING(500),
-      allowNull: true,
+      allowNull: false,
+      defaultValue: "",
     },
     stock: {
       type: DataTypes.INTEGER.UNSIGNED,

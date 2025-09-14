@@ -4,12 +4,24 @@ import Category from "../models/category-model";
 import Price from "../models/price-model";
 import Image from "../models/image-model";
 import db from "../db/connection";
+import ProductSize from "../models/size-product-model";
+import Size from "../models/size-model";
 
-export const createProduct = async ( req: Request, res: Response ): Promise<Response> => {
+export const createProduct = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const transaction = await db.transaction();
   try {
-    const { name, description, stock, idCategory, initialPrice, images } =
-      req.body;
+    const {
+      name,
+      description,
+      stock,
+      idCategory,
+      initialPrice,
+      images,
+      sizes,
+    } = req.body;
 
     // Validate that category exists
     const category = await Category.findByPk(idCategory, { transaction });
@@ -57,9 +69,22 @@ export const createProduct = async ( req: Request, res: Response ): Promise<Resp
       }
     }
 
+    // Add sizes if provided
+    if (sizes && Array.isArray(sizes)) {
+      for (const sizeId of sizes) {
+        await ProductSize.create(
+          {
+            idProduct: productCreated.idProduct,
+            idSize: sizeId,
+          },
+          { transaction }
+        );
+      }
+    }
+
     await transaction.commit();
 
-    // Get the complete product with associations
+    // Get the complete product with ALL associations including sizes and category
     const completeProduct = await Product.findByPk(productCreated.idProduct, {
       include: [
         {
@@ -68,7 +93,19 @@ export const createProduct = async ( req: Request, res: Response ): Promise<Resp
           limit: 1,
           order: [["updateDate", "DESC"]],
         },
-        { model: Image, as: "images" },
+        {
+          model: Image,
+          as: "images",
+        },
+        {
+          model: Category,
+          as: "category",
+        },
+        {
+          model: Size,
+          as: "sizes",
+          through: { attributes: [] }, // Exclude the join table attributes
+        },
       ],
     });
 
@@ -89,26 +126,36 @@ export const createProduct = async ( req: Request, res: Response ): Promise<Resp
   }
 };
 
+// product-controller.ts - SIMPLIFICAR updateProduct
 export const updateProduct = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   const { id } = req.params;
-  const { name, description, stock, idCategory } = req.body;
+
+  // 🔧 Ahora recibimos JSON normal, no FormData
+  const { name, description, stock, idCategory, sizes, initialPrice } =
+    req.body;
+
+  const transaction = await db.transaction();
 
   try {
     // Find the product
-    const productToUpdate = await Product.findByPk(id);
+    const productToUpdate = await Product.findByPk(id, { transaction });
     if (!productToUpdate) {
+      await transaction.rollback();
       return res.status(404).json({
         message: "Product not found",
       });
     }
 
-    // Validate new category exists
+    // Validate new category exists if provided
     if (idCategory !== undefined) {
-      const category = await Category.findByPk(idCategory);
+      const category = await Category.findByPk(idCategory, {
+        transaction,
+      });
       if (!category) {
+        await transaction.rollback();
         return res.status(400).json({
           message: "Category does not exist",
         });
@@ -116,19 +163,88 @@ export const updateProduct = async (
       productToUpdate.idCategory = idCategory;
     }
 
-    // Update fields
+    // Update basic fields
     if (name !== undefined) productToUpdate.name = name;
     if (description !== undefined) productToUpdate.description = description;
     if (stock !== undefined) productToUpdate.stock = stock;
 
-    // Save changes
-    await productToUpdate.save();
+    // Save changes to product
+    await productToUpdate.save({ transaction });
+
+    // Update price if provided
+    if (initialPrice !== undefined) {
+      await Price.create(
+        {
+          idProduct: parseInt(id),
+          value: initialPrice,
+          updateDate: new Date(),
+        },
+        { transaction }
+      );
+    }
+
+    // Update sizes if provided
+    if (sizes !== undefined) {
+      // Delete existing sizes
+      await ProductSize.destroy({
+        where: { idProduct: id },
+        transaction,
+      });
+
+      // Add new sizes if array is provided and not empty
+      if (Array.isArray(sizes) && sizes.length > 0) {
+        for (const sizeId of sizes) {
+          await ProductSize.create(
+            {
+              idProduct: parseInt(id),
+              idSize: sizeId,
+            },
+            { transaction }
+          );
+        }
+      }
+    }
+
+    await transaction.commit();
+
+    // Get the complete updated product with all associations
+    const completeProduct = await Product.findByPk(id, {
+      include: [
+        {
+          model: Price,
+          as: "prices",
+          order: [["updateDate", "DESC"]],
+          limit: 1,
+        },
+        {
+          model: Image,
+          as: "images",
+        },
+        {
+          model: Category,
+          as: "category",
+        },
+        {
+          model: Size,
+          as: "sizes",
+          through: { attributes: [] },
+        },
+      ],
+    });
 
     return res.status(200).json({
       message: "Product updated successfully",
-      product: productToUpdate,
+      product: completeProduct,
     });
   } catch (error: any) {
+    // Check if transaction has already been committed
+    // @ts-ignore: Property 'finished' does not exist on type 'Transaction' but it exists at runtime
+    if (transaction && !transaction.finished) {
+      await transaction.rollback();
+    }
+
+    console.error("Error in updateProduct:", error);
+
     return res.status(500).json({
       message: "Error updating product",
       error: error.message,
@@ -153,7 +269,13 @@ export const deleteProduct = async (
       });
     }
 
-    // Delete related prices and images first
+    // Primero eliminar todas las relaciones Many-to-Many
+    await ProductSize.destroy({
+      where: { idProduct: id },
+      transaction,
+    });
+
+    // Luego eliminar precios e imágenes
     await Price.destroy({
       where: { idProduct: id },
       transaction,
@@ -164,7 +286,7 @@ export const deleteProduct = async (
       transaction,
     });
 
-    // Delete product
+    // Finalmente eliminar el producto
     await productToDelete.destroy({ transaction });
 
     await transaction.commit();
@@ -194,9 +316,24 @@ export const getProduct = async (
   try {
     const product = await Product.findByPk(id, {
       include: [
-        { model: Price, as: "prices", order: [["updateDate", "DESC"]] },
-        { model: Image, as: "images" },
-        { model: Category, as: "category" },
+        {
+          model: Price,
+          as: "prices",
+          order: [["updateDate", "DESC"]],
+        },
+        {
+          model: Image,
+          as: "images",
+        },
+        {
+          model: Category,
+          as: "category",
+        },
+        {
+          model: Size,
+          as: "sizes",
+          through: { attributes: [] }, // Exclude the join table attributes
+        },
       ],
     });
 
@@ -217,6 +354,7 @@ export const getProduct = async (
   }
 };
 
+// product-controller.ts - Asegurar que incluya todas las asociaciones
 export const getAllProducts = async (
   req: Request,
   res: Response
@@ -228,10 +366,22 @@ export const getAllProducts = async (
           model: Price,
           as: "prices",
           order: [["updateDate", "DESC"]],
-          limit: 1, // Get only the latest price
+          limit: 1,
         },
-        { model: Image, as: "images", limit: 1 }, // Get only the first image
-        { model: Category, as: "category" },
+        {
+          model: Image,
+          as: "images",
+          limit: 2,
+        },
+        {
+          model: Category,
+          as: "category",
+        },
+        {
+          model: Size,
+          as: "sizes",
+          through: { attributes: [] },
+        },
       ],
     });
 

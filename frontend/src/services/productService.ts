@@ -3,6 +3,7 @@ import { Product, FrontendProduct } from "../types/product";
 
 export const productService = {
   // Obtener todos los productos
+  // productService.ts - Corregir el mapeo
   getAllProducts: async (): Promise<FrontendProduct[]> => {
     try {
       const response = await api.get<{ products: Product[] }>("/products");
@@ -13,9 +14,19 @@ export const productService = {
         img: product.images[0]?.url || "",
         img2: product.images[1]?.url || "",
         description: product.description,
-        sizes: product.sizes?.map((size) => size.name) || ["S", "M", "L", "XL"],
+        // 🔧 FIX: Manejar diferentes estructuras de talles
+        sizes: product.sizes?.map(
+          (size) => size.sizeDesc || size.name || ""
+        ) || ["S", "M", "L", "XL"],
         stock: product.stock,
-        category: product.category?.name || "",
+        // 🔧 FIX: Manejar diferentes estructuras de categoría
+        category:
+          product.category?.name ||
+          (product.idCategory === 1
+            ? "Hombre"
+            : product.idCategory === 2
+              ? "Mujer"
+              : ""),
       }));
     } catch (error: any) {
       console.error(
@@ -37,22 +48,11 @@ export const productService = {
     }
   },
 
-  // Crear un nuevo producto (para admin)
+  // Crear un nuevo producto
   createProduct: async (productData: any): Promise<Product> => {
     try {
-      let response;
-
-      if (productData instanceof FormData) {
-        response = await api.post("/products", productData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-      } else {
-        response = await api.post("/products/create", productData);
-      }
-
-      return response.data;
+      const response = await api.post("/products/create", productData);
+      return response.data.product;
     } catch (error: any) {
       console.error(
         "Error creating product:",
@@ -62,25 +62,25 @@ export const productService = {
     }
   },
 
-  // Actualizar un producto (para admin)
+  // Actualizar un producto
   updateProduct: async (
     id: string,
-    productData: FormData
+    productData: any 
   ): Promise<Product> => {
     try {
-      const response = await api.put(`/products/${id}`, productData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.error(`Error updating product ${id}:`, error);
+      // 🔧 Ahora envía JSON normal
+      const response = await api.put(`/products/update/${id}`, productData);
+      return response.data.product || response.data;
+    } catch (error: any) {
+      console.error(
+        `Error updating product ${id}:`,
+        error.response?.data || error.message
+      );
       throw error;
     }
   },
 
-  // Eliminar un producto (para admin)
+  // Eliminar un producto
   deleteProduct: async (id: string): Promise<void> => {
     try {
       await api.delete(`/products/delete/${id}`);
