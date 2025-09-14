@@ -9,8 +9,7 @@ import axios from "axios";
 import { User } from "../types/user";
 import SuccessMessage from "../components/SuccessMessage";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
-import { GoogleLogin } from '@react-oauth/google';
-
+import { GoogleLogin } from "@react-oauth/google";
 
 // Props interface for LoginForm component
 interface LoginFormProps {
@@ -69,10 +68,7 @@ export default function LoginForm({ setUser }: LoginFormProps) {
       console.error("Login failed:", error.response?.data || error.message);
       setErrorMessage("Error al iniciar sesión");
     }
-
-
   };
-
 
   // Handle Google login success
   const handleGoogleLogin = async (credentialResponse: any) => {
@@ -84,15 +80,14 @@ export default function LoginForm({ setUser }: LoginFormProps) {
 
       const userData = response.data.user;
       const token = response.data.token;
-      
+
       localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("token", token);
-      
+
       setUser(userData);
       setMessage("Inicio de sesión con Google exitoso");
       setErrorMessage("");
       setTimeout(() => {
-        
         if (userData.role === "admin") {
           navigate("/admin-dashboard");
         } else if (userData.role === "receptionist") {
@@ -100,17 +95,11 @@ export default function LoginForm({ setUser }: LoginFormProps) {
         } else {
           navigate("/");
         }
-      
       }, 500);
-    
     } catch (error: any) {
-      
       setErrorMessage("Error al iniciar sesión con Google");
-    
     }
   };
-
-  
 
   return (
     <div className="login-container">
@@ -120,6 +109,14 @@ export default function LoginForm({ setUser }: LoginFormProps) {
         title="Introduce tus datos para iniciar sesión"
         onSubmit={handleSubmit}
       >
+        <GoogleLogin
+          onSuccess={handleGoogleLogin}
+          onError={() => setErrorMessage("Error al iniciar sesión con Google")}
+          width={300}
+          text="signin_with"
+          shape="pill"
+        />
+
         <Input
           id="email"
           type="email"
@@ -178,30 +175,7 @@ export default function LoginForm({ setUser }: LoginFormProps) {
             Registrate
           </a>
         </p>
-
-      
-
-      <GoogleLogin
-            onSuccess={handleGoogleLogin}
-            onError={() => setErrorMessage("Error al iniciar sesión con Google")}
-            width={300}
-            text="signin_with"
-            shape="pill"
-      />
-
-
       </FormContainer>
-
-
-
-
-
-      
-
-
-      
-      
-
     </div>
   );
 }
