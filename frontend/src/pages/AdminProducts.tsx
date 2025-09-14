@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../styles/admin-products.css";
-import { Product, FrontendProduct } from "../types/product";
+import { FrontendProduct } from "../types/product";
 import { productService } from "../services/productService";
 import api from "../services/api";
 import SuccessMessage from "../components/SuccessMessage";
@@ -12,13 +12,14 @@ type Draft = Omit<FrontendProduct, "id"> & {
   img2File?: File;
 };
 
-// Opciones predefinidas para los selects
+// Predefined options for selects
 const CATEGORY_OPTIONS = [
   { id: "1", name: "Hombre" },
   { id: "2", name: "Mujer" },
 ];
 const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL", "Único"];
 
+// Empty draft template
 const emptyDraft: Draft = {
   name: "",
   price: 0,
@@ -31,7 +32,7 @@ const emptyDraft: Draft = {
   img2: "",
 };
 
-// Productos mock para fallback
+// Mock products for fallback
 const MOCK_PRODUCTS: FrontendProduct[] = [
   {
     id: "101",
@@ -45,22 +46,21 @@ const MOCK_PRODUCTS: FrontendProduct[] = [
     img2: "",
     color: "Verde",
   },
-  // ... otros productos mock
 ];
 
 const AdminProducts: React.FC = () => {
   const [products, setProducts] = useState<FrontendProduct[]>([]);
   const [filter, setFilter] = useState("");
-  const [creating, setCreating] = useState<Draft>(emptyDraft);
+  const [creating, setCreating] = useState<Draft>(emptyDraft); // State for new product
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editing, setEditing] = useState<Draft>(emptyDraft);
+  const [editing, setEditing] = useState<Draft>(emptyDraft); // State for editing product
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  // 🔧 FUNCIÓN UNIFICADA para subir imágenes usando axios
+  // Function to upload images
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("image", file);
@@ -80,7 +80,7 @@ const AdminProducts: React.FC = () => {
     }
   };
 
-  // 🔧 FUNCIÓN UNIFICADA para agregar imágenes usando axios
+  // Function for adding images
   const addImageToProduct = async (
     productId: number,
     imageData: { url: string; description: string }
@@ -92,8 +92,8 @@ const AdminProducts: React.FC = () => {
     }
   };
 
+  // Implement logic to get size ID by name
   const mapSizeNameToId = async (sizeName: string): Promise<number> => {
-    // Implementar lógica para obtener ID del talle por nombre
     const sizeMap: { [key: string]: number } = {
       XS: 1,
       S: 2,
@@ -106,19 +106,18 @@ const AdminProducts: React.FC = () => {
     return sizeMap[sizeName] || 0;
   };
 
-  // Cargar productos desde el backend
-  // En el useEffect que carga productos
+  // Load products from the backend
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
         const productsData = await productService.getAllProducts();
 
-        // 🔧 DEBUG: Ver qué devuelve el backend
+        // DEBUG: See what the backend returns
         console.log("Productos desde backend:", productsData);
 
         if (Array.isArray(productsData) && productsData.length > 0) {
-          // 🔧 DEBUG: Ver estructura de cada producto
+          // DEBUG: See the structure of each product
           productsData.forEach((product, index) => {
             console.log(`Producto ${index}:`, product);
             console.log(`Talles:`, product.sizes);
@@ -142,7 +141,7 @@ const AdminProducts: React.FC = () => {
     fetchProducts();
   }, []);
 
-  // Helpers
+  // Helper to manage size selection
   const handleSizeChange = (
     sizes: string[],
     size: string,
@@ -154,11 +153,14 @@ const AdminProducts: React.FC = () => {
   const renderSizes = (sizes: string[]) =>
     sizes.length ? sizes.join(", ") : "-";
 
-  // 🔧 FUNCIÓN CREATE CORREGIDA
+  // Function to create a new product
   const create = async () => {
-    if (!creating.name.trim()) setErrorMessage("Nombre requerido"); setTimeout(() => setErrorMessage(""), 3000);
-    if (creating.price <= 0) setErrorMessage("Precio inválido"); setTimeout(() => setErrorMessage(""), 3000);
-    if (!creating.category) setErrorMessage("Categoría requerida"); setTimeout(() => setErrorMessage(""), 3000);
+    if (!creating.name.trim()) setErrorMessage("Nombre requerido");
+    setTimeout(() => setErrorMessage(""), 3000);
+    if (creating.price <= 0) setErrorMessage("Precio inválido");
+    setTimeout(() => setErrorMessage(""), 3000);
+    if (!creating.category) setErrorMessage("Categoría requerida");
+    setTimeout(() => setErrorMessage(""), 3000);
 
     try {
       setUploading(true);
@@ -167,14 +169,14 @@ const AdminProducts: React.FC = () => {
         creating.sizes.map(async (sizeName) => await mapSizeNameToId(sizeName))
       );
 
-      // 1. Crear el producto básico
+      // 1. Create the basic product
       const productData = {
         name: creating.name.trim(),
         description: creating.description.trim(),
         stock: creating.stock,
-        idCategory: parseInt(creating.category), // Convertir a número
+        idCategory: parseInt(creating.category), 
         initialPrice: creating.price,
-        sizes: sizeIds.filter((id) => id !== 0), // Filtrar IDs válidos
+        sizes: sizeIds.filter((id) => id !== 0), 
       };
 
       console.log("Enviando datos del producto:", productData);
@@ -184,7 +186,7 @@ const AdminProducts: React.FC = () => {
         productData.idCategory
       );
 
-      // 🔧 FIX: productService.createProduct retorna directamente el producto
+      // productService.createProduct returns the product directly
       const newProduct = await productService.createProduct(productData);
 
       if (!newProduct || !newProduct.idProduct) {
@@ -194,7 +196,7 @@ const AdminProducts: React.FC = () => {
       const productId = newProduct.idProduct;
       console.log("Producto creado:", newProduct);
 
-      // 3. Subir imágenes si hay archivos
+      // 3. Upload images if there are files
       const imageFiles = [
         { file: creating.imgFile, description: "Imagen principal" },
         { file: creating.img2File, description: "Imagen secundaria" },
@@ -214,7 +216,7 @@ const AdminProducts: React.FC = () => {
         }
       }
 
-      // 4. Recargar el producto completo
+      // 4. Refill the full product details
       const completeProduct = await api.get(`/products/${productId}`);
       const mappedProduct = mapProductToFrontend(completeProduct.data.product);
 
@@ -228,13 +230,14 @@ const AdminProducts: React.FC = () => {
       console.error("Error creating product:", error);
       const errorMessage =
         error.response?.data?.message || error.message || "Error desconocido";
-      setErrorMessage(`Error al crear el producto: ${errorMessage}`); setTimeout(() => setErrorMessage(""), 3000);
+      setErrorMessage(`Error al crear el producto: ${errorMessage}`);
+      setTimeout(() => setErrorMessage(""), 3000);
     } finally {
       setUploading(false);
     }
   };
 
-  // AdminProducts.tsx - Mejorar la función de mapeo
+  // Function to map backend product to frontend format
   const mapProductToFrontend = (product: any): FrontendProduct => {
     if (!product) {
       return {
@@ -251,7 +254,7 @@ const AdminProducts: React.FC = () => {
       };
     }
 
-    // 🔧 EXTRAER el precio más reciente
+    // Extract the most recent price
     let latestPrice = 0;
     if (product.prices && product.prices.length > 0) {
       const sortedPrices = [...product.prices].sort(
@@ -261,13 +264,13 @@ const AdminProducts: React.FC = () => {
       latestPrice = sortedPrices[0]?.value || 0;
     }
 
-    // 🔧 EXTRAER talles
+    // Extract sizes
     const sizes =
       product.sizes
         ?.map((size: any) => size.sizeDesc || size.name || "")
         .filter(Boolean) || [];
 
-    // 🔧 EXTRAER categoría
+    // Extract category
     const category =
       product.category?.name ||
       (product.idCategory === 1
@@ -290,7 +293,7 @@ const AdminProducts: React.FC = () => {
     };
   };
 
-  // 🔧 FUNCIÓN DELETE USANDO AXIOS
+  // Function to delete a product
   const deleteProduct = async (id: string) => {
     try {
       await productService.deleteProduct(id);
@@ -307,23 +310,25 @@ const AdminProducts: React.FC = () => {
     }
   };
 
-  // FUNCIÓN UPDATE CORREGIDA
-  // AdminProducts.tsx - MODIFICAR applyEdit
+  // Function to apply edits to a product
   const applyEdit = async () => {
     if (editingId === null) return;
-    if (!editing.name.trim()) return setErrorMessage("Nombre requerido"); setTimeout(() => setErrorMessage(""), 3000);
-    if (editing.price <= 0) return setErrorMessage("Precio inválido"); setTimeout(() => setErrorMessage(""), 3000);
-    if (!editing.category) return setErrorMessage("Categoría requerida"); setTimeout(() => setErrorMessage(""), 3000);
+    if (!editing.name.trim()) return setErrorMessage("Nombre requerido");
+    setTimeout(() => setErrorMessage(""), 3000);
+    if (editing.price <= 0) return setErrorMessage("Precio inválido");
+    setTimeout(() => setErrorMessage(""), 3000);
+    if (!editing.category) return setErrorMessage("Categoría requerida");
+    setTimeout(() => setErrorMessage(""), 3000);
 
     try {
       setUploading(true);
 
-      // 🔧 Convertir talles a IDs
+      // Convert sizes to IDs
       const sizeIds = await Promise.all(
         editing.sizes.map(async (sizeName) => await mapSizeNameToId(sizeName))
       );
 
-      // 1. Primero actualizar el producto básico
+      // 1. First update the basic product
       const productData = {
         name: editing.name.trim(),
         description: editing.description.trim(),
@@ -335,14 +340,14 @@ const AdminProducts: React.FC = () => {
 
       console.log("Enviando datos de actualización:", productData);
 
-      // 2. Actualizar producto
+      // 2. Update product
       const response = await api.put(
         `/products/update/${editingId}`,
         productData
       );
       const updatedProductFromBackend = response.data.product;
 
-      // 3. Subir imágenes por separado si hay archivos nuevos
+      // 3. Upload images separately if there are new files
       if (editing.imgFile) {
         try {
           const imgUrl = await uploadImage(editing.imgFile);
@@ -367,19 +372,19 @@ const AdminProducts: React.FC = () => {
         }
       }
 
-      // 4. 🔧 OBTENER EL PRODUCTO COMPLETO ACTUALIZADO (con imágenes y precios)
+      // 4. Get the complete updated product (with images and prices)
       const completeResponse = await api.get(`/products/${editingId}`);
       const completeProduct = completeResponse.data.product;
 
-      // 🔧 DEBUG: Verificar qué devuelve el backend
+      // Debug: Check what the backend returns
       console.log("Producto completo desde backend:", completeProduct);
       console.log("Precios:", completeProduct.prices);
 
-      // 5. 🔧 MAPEAR CORRECTAMENTE y ACTUALIZAR ESTADO
+      // 5. Map correctly and update state
       const mappedProduct = mapProductToFrontend(completeProduct);
       console.log("Producto mapeado:", mappedProduct);
 
-      // 6. 🔧 ACTUALIZAR EL ESTADO correctamente
+      // 6. Update state correctly
       setProducts((prev) =>
         prev.map((p) => (p.id === editingId ? mappedProduct : p))
       );
@@ -393,17 +398,18 @@ const AdminProducts: React.FC = () => {
       console.error("Error updating product:", error);
       const errorMessage =
         error.response?.data?.message || "Error al actualizar producto";
-      setErrorMessage(errorMessage); setTimeout(() => setErrorMessage(""), 3000);
+      setErrorMessage(errorMessage);
+      setTimeout(() => setErrorMessage(""), 3000);
     } finally {
       setUploading(false);
     }
   };
 
-  // Estados y funciones de edición
+  // States and editing functions
   const startEdit = (p: FrontendProduct) => {
     setEditingId(p.id);
 
-    // 🔧 Convertir nombre de categoría a ID
+    // Convert category name to ID
     const categoryId =
       p.category === "Hombre" ? "1" : p.category === "Mujer" ? "2" : "";
 
@@ -413,7 +419,7 @@ const AdminProducts: React.FC = () => {
       description: p.description,
       sizes: p.sizes,
       stock: p.stock,
-      category: categoryId, // 🔧 Guardar el ID, no el nombre
+      category: categoryId, // Save the ID, not the name
       color: p.color || "",
       img: p.img || "",
       img2: p.img2 || "",
@@ -431,7 +437,7 @@ const AdminProducts: React.FC = () => {
     }
   };
 
-  // Función de filtrado
+  // Filtering function
   const filteredProducts = useMemo(() => {
     const q = filter.trim().toLowerCase();
     if (!q) return products;
@@ -449,7 +455,10 @@ const AdminProducts: React.FC = () => {
 
   return (
     <div className="admin-products">
-      <ErrorMessage message={errorMessage} onClose={() => setErrorMessage("")} />
+      <ErrorMessage
+        message={errorMessage}
+        onClose={() => setErrorMessage("")}
+      />
       <SuccessMessage message={message} onClose={() => setMessage("")} />
       <h1>Gestión de productos</h1>
       <p className="subtitle">Crear, editar, eliminar y ajustar stock</p>
@@ -457,7 +466,7 @@ const AdminProducts: React.FC = () => {
       {error && <div className="error-message">{error}</div>}
       {uploading && <div className="loading">Procesando...</div>}
 
-      {/* FORMULARIO DE CREACIÓN */}
+      {/* CREATION FORM */}
       <section className="panel">
         <div className="panel-header">
           <h2>Crear nuevo producto</h2>
@@ -605,7 +614,7 @@ const AdminProducts: React.FC = () => {
         </div>
       </section>
 
-      {/* TABLA DE PRODUCTOS */}
+      {/* PRODUCT TABLE */}
       <section className="panel">
         <div className="panel-header">
           <h2>Inventario ({products.length} productos)</h2>
@@ -668,7 +677,7 @@ const AdminProducts: React.FC = () => {
         </div>
       </section>
 
-      {/* MODAL DE EDICIÓN */}
+      {/* EDITING MODAL */}
       {editingId !== null && (
         <section className="panel">
           <div className="panel-header">

@@ -126,14 +126,13 @@ export const createProduct = async (
   }
 };
 
-// product-controller.ts - SIMPLIFICAR updateProduct
 export const updateProduct = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   const { id } = req.params;
 
-  // 🔧 Ahora recibimos JSON normal, no FormData
+  // Extract fields from body
   const { name, description, stock, idCategory, sizes, initialPrice } =
     req.body;
 
@@ -269,13 +268,13 @@ export const deleteProduct = async (
       });
     }
 
-    // Primero eliminar todas las relaciones Many-to-Many
+    // Delete associated sizes first
     await ProductSize.destroy({
       where: { idProduct: id },
       transaction,
     });
 
-    // Luego eliminar precios e imágenes
+    // Delete associated prices and images next
     await Price.destroy({
       where: { idProduct: id },
       transaction,
@@ -286,7 +285,7 @@ export const deleteProduct = async (
       transaction,
     });
 
-    // Finalmente eliminar el producto
+    // Finally delete the product
     await productToDelete.destroy({ transaction });
 
     await transaction.commit();
@@ -354,7 +353,6 @@ export const getProduct = async (
   }
 };
 
-// product-controller.ts - Asegurar que incluya todas las asociaciones
 export const getAllProducts = async (
   req: Request,
   res: Response
