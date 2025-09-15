@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "../styles/product.css";
 import { useState } from "react";
-import { Product, ProductWithSize } from "../types/product";
+import { ProductWithSize, FrontendProduct } from "../types/product";
 
 // Props interface for Product component
 interface ProductProps {
@@ -30,36 +30,45 @@ function ProductComponent({
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [showSizeSelector, setShowSizeSelector] = useState(false);
 
-  const mainImage = img || "";
-  const secondaryImage = img2 || "";
-  const idProduct = parseInt(id, 10);
+  // Asegurar que las URLs de imágenes sean válidas
+  const mainImage = img || "/placeholder-image.jpg";
+  const secondaryImage = img2 || "/placeholder-image.jpg";
 
   const handleAddToCartClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation(); // Prevenir que el enlace se active
     setShowSizeSelector(true);
   };
 
   const handleSizeSelection = (size: string) => {
     setSelectedSize(size);
     onAddToCart({
-      id: idProduct.toString(),
+      id: id, // Ya es string
       name,
       price,
       img: mainImage,
       img2: secondaryImage,
       description,
-      sizes: ["S", "M", "L", "XL"], // Temporal o obtener del backend
+      sizes: sizes || [],
       stock,
       size,
       quantity: 1,
-    });
+    } as ProductWithSize);
     setTimeout(() => setShowSizeSelector(false), 300);
   };
 
   return (
-    <div className="cajaProducto reveal">
-      <Link to={`/product/${idProduct}`} className="product-link">
-        <img src={mainImage} className="imgProd" alt={name} />
+    <div className="cajaProducto">
+      <Link to={`/product/${id}`} className="product-link">
+        <img
+          src={mainImage}
+          className="imgProd"
+          alt={name}
+          onError={(e) => {
+            // Fallback para imágenes rotas
+            e.currentTarget.src = "/placeholder-image.jpg";
+          }}
+        />
         <p className="nombre">{name}</p>
         <p className="precio">${price} ARS</p>
       </Link>
@@ -94,4 +103,4 @@ function ProductComponent({
   );
 }
 
-export default ProductComponent; // Cambia el export también
+export default ProductComponent;

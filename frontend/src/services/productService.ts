@@ -3,7 +3,7 @@ import { Product, FrontendProduct } from "../types/product";
 
 export const productService = {
   // Obtener todos los productos
-  // productService.ts - Corregir el mapeo
+  // productService.ts - Solución definitiva
   getAllProducts: async (): Promise<FrontendProduct[]> => {
     try {
       const response = await api.get<{ products: Product[] }>("/products");
@@ -11,22 +11,21 @@ export const productService = {
         id: product.idProduct.toString(),
         name: product.name,
         price: product.prices[0]?.value || 0,
-        img: product.images[0]?.url || "",
-        img2: product.images[1]?.url || "",
+        // 🔧 SOLUCIÓN: Construir URL completa con el host del backend
+        img:
+          product.images && product.images.length > 0
+            ? `http://localhost:3000${product.images[0].url}` // ← URL completa
+            : "/placeholder-image.jpg",
+        img2:
+          product.images && product.images.length > 1
+            ? `http://localhost:3000${product.images[1].url}` // ← URL completa
+            : "/placeholder-image.jpg",
         description: product.description,
-        // 🔧 FIX: Manejar diferentes estructuras de talles
         sizes: product.sizes?.map(
           (size) => size.sizeDesc || size.name || ""
         ) || ["S", "M", "L", "XL"],
         stock: product.stock,
-        // 🔧 FIX: Manejar diferentes estructuras de categoría
-        category:
-          product.category?.name ||
-          (product.idCategory === 1
-            ? "Hombre"
-            : product.idCategory === 2
-              ? "Mujer"
-              : ""),
+        category: product.category?.name || "",
       }));
     } catch (error: any) {
       console.error(
@@ -38,10 +37,20 @@ export const productService = {
   },
 
   // Obtener un producto por ID
-  getProductById: async (id: string): Promise<Product> => {
+  getProductById: async (id: string): Promise<any> => {
     try {
       const response = await api.get(`/products/${id}`);
-      return response.data;
+      const productData = response.data.product || response.data;
+
+      // Procesar las imágenes para construir URLs completas
+      if (productData.images && Array.isArray(productData.images)) {
+        productData.images = productData.images.map((image: any) => ({
+          ...image,
+          url: `http://localhost:3000${image.url}`,
+        }));
+      }
+
+      return productData;
     } catch (error) {
       console.error(`Error fetching product ${id}:`, error);
       throw error;
@@ -63,10 +72,7 @@ export const productService = {
   },
 
   // Actualizar un producto
-  updateProduct: async (
-    id: string,
-    productData: any 
-  ): Promise<Product> => {
+  updateProduct: async (id: string, productData: any): Promise<Product> => {
     try {
       // 🔧 Ahora envía JSON normal
       const response = await api.put(`/products/update/${id}`, productData);
