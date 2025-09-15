@@ -1,355 +1,249 @@
-/*  CONTEINER PRINCIPAL  */
+/*
+    Colores Principales:
+    - Verde Oscuro: #0C3F19
+    - Verde Botón: #1E7335
+    - Verde Hover: #072e11
+    - Gris de Texto: #5f5f5f
+    - Gris de Fondo: #F5F5F5
+*/
 
+/* CONTENEDOR PRINCIPAL  */
 .product-details-container {
     display: flex;
-    justify-content: space-around;
-    font-family: "Raleway";
-    font-weight: bolder;
-    margin-bottom: 40px;
-    flex: 1;
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+    justify-content: center; /* Centra el contenido */
+    align-items: flex-start;
+    gap: 40px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 40px auto;
+    background-color: #F5F5F5;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
+/* GALERÍA DE IMÁGENES */
 .product-gallery {
     display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-top: 10px;
-    margin-left: 20px;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
 }
 
 .product-gallery img {
-    width: 450px;
-    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
 }
 
+.product-gallery img:hover {
+    transform: scale(1.02);
+}
+
+/* INFORMACIÓN DEL PRODUCTO */
 .product-info {
-  padding: 0 20px 0 40px;
-  font-weight: lighter;
+    flex-grow: 1;
+    max-width: 500px;
+    padding: 20px;
+    font-family: 'Afacad', sans-serif;
 }
 
 .product-info h1 {
-  color: #0c3f19;
-  font-family: "Anton";
-  font-weight: lighter;
-  font-size: 40px;
-  margin: 20px 0px;
-}
-
-.description {
-  color: #5f5f5f;
-  margin: 20px 0px;
-  font-size: 18px;
+    font-family: 'Anton', sans-serif;
+    color: #0c3f19;
+    font-size: 3rem;
+    margin: 0 0 10px 0;
+    line-height: 1.1;
 }
 
 .product-stock {
-  color: #5f5f5f;
-  font-weight: bold;
-  font-size: 20px;
-  margin: 10px 0px;
+    font-family: 'Afacad', sans-serif;
+    color: #5f5f5f;
+    font-weight: bold;
+    font-size: 1rem;
+    margin: 0 0 20px 0;
 }
 
 .price {
-  font-family: "Anton";
-  font-size: 30px;
-  color: #0c3f19;
+    font-family: 'Anton', sans-serif;
+    font-size: 2.5rem;
+    color: #1E7335;
+    margin: 10px 0 25px 0;
+}
+
+.description {
+    font-family: 'Raleway', sans-serif;
+    color: #5f5f5f;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+/* SELECTOR DE TALLES */
+.size-selector {
+    margin-bottom: 30px;
 }
 
 .size-selector h3 {
-  font-family: "Afacad";
-  font-size: 25px;
-  color: #0c3f19;
-  margin: 0;
+    font-family: 'Afacad', sans-serif;
+    font-size: 1.5rem;
+    color: #0c3f19;
+    margin-bottom: 15px;
 }
 
 .size-options {
-  display: flex;
-  justify-content: start;
-  gap: 8px;
-  margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .size-options button {
-  padding: 10px;
-  border: 2px solid #0c3f19;
-  background-color: transparent;
-  color: #0c3f19;
-  font-family: "Afacad";
-  font-weight: 900;
-  margin: 10px 6px;
-  cursor: pointer;
-  transition: all .2s ease;
+    padding: 12px 20px;
+    border: 2px solid #0c3f19;
+    background-color: transparent;
+    color: #0c3f19;
+    font-family: 'Afacad', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
 }
 
 .size-options button:hover {
-  background-color: rgb(200, 200, 200);
+    background-color: #0c3f19;
+    color: white;
 }
 
-.size-options button:focus {
-  background-color: rgb(200, 200, 200);
-  transform: scale(1.1);
+.size-options button.selected {
+    background-color: #0c3f19;
+    color: white;
+    border-color: #0c3f19;
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(12, 63, 25, 0.3);
 }
 
-.product-info > button {
-  margin-top: 20px;
-  padding: 15px;
-  border-radius: 30px;
-  border: none;
-  background-color: #1E7335;
-  font-family: "Afacad";
-  font-weight: 700;
-  font-size: 20px;
-  color: white;
-  width: 300px;
-  cursor: pointer;
-  transition: all .1s ease;
-}
-
-.product-info > button:hover {
-  background-color: #072e11;
-}
-
-.product-info > button:active {
-  transform: scale(.98);
-}
-
+/* BOTÓN AÑADIR AL CARRITO */
 .add-to-cart-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.add-to-cart-btn a{
-  width: 100%;
-}
-
-/*  RESPONSIVE  */
-
-
-@media (max-width: 1024px) {
-  .contenedorProd {
-    justify-content: center;
-  }
-
-  .preProductos {
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    text-align: center;
-  }
-}
-
-@media (max-width: 768px) {
-  nav {
-    flex-direction: column;
-    align-items: center;
-    height: auto;
-    padding: 10px 0;
-    font-size: 16px;
-  }
-
-  nav img {
-    margin: 0;
-    width: 60px;
-  }
-
-  nav ul {
-    flex-direction: column;
-    align-items: center;
-    padding: 0;
-    margin: 10px 0;
-  }
-
-  nav li {
-    margin: 5px 0;
-  }
-
-  nav li a {
-    padding: 8px 12px;
-    font-size: 16px;
-  }
-
-  .btnLogIn {
-    margin: 10px 0;
-    font-size: 14px;
-    padding: 10px 20px;
-  }
-
-  .contenedorInicio {
-    height: 70vh;
-  }
-
-  h1 {
-    font-size: 32px;
-  }
-
-  h2 {
-    font-size: 42px;
-  }
-
-  .filtro {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
-    margin-left: 10px;
-  }
-
-  .contenedorProd {
-    justify-content: center;
-    margin: 10px;
-  }
-
-  .cajaProducto {
-    margin: 10px;
-  }
-
-  .btnWsp {
-    bottom: 20px;
-    right: 20px;
-    width: 45px;
-    height: 45px;
-  }
-
-  .btnWsp img {
-    width: 45px;
-  }
-
-  footer {
-    font-size: 13px;
-  }
-
-  .footerSocial {
-    font-size: 18px;
-  }
-}
-
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 28px;
-  }
-
-  h2 {
-    font-size: 35px;
-  }
-
-  .cajaProducto {
-    width: 150px;
-    font-size: 16px;
-  }
-
-  .cajaProducto img {
-    width: 130px;
-  }
-
-  .preProductos i {
-    font-size: 30px;
-  }
-
-  .preProductos p {
-    font-size: 16px;
-  }
-
-  .filtro {
-    font-size: 16px;
-  }
-
-  .footerLinks {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .footerSocial a {
-    font-size: 18px;
-  }
-}
-
-/* Estilos base para menú hamburguesa */
-.nav-toggle {
-  display: none;
-  font-size: 26px;
-  color: #1E7335;
-  cursor: pointer;
-  margin-right: 20px;
-}
-
-.nav-links {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 20px;
-}
-
-@media (max-width: 768px) {
-  nav {
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0 20px;
-    height: 70px;
-  }
-
-  .nav-toggle {
-    display: block;
-  }
-
-  .nav-links {
-    display: none;
-    flex-direction: column;
-    background-color: #1D1D1D;
-    position: absolute;
-    top: 70px;
-    left: 0;
     width: 100%;
-    padding: 20px 0;
-    z-index: 100;
-    border-top: 1px solid #333;
-  }
-
-  .nav-links ul {
-    flex-direction: column;
-    align-items: center;
-    padding: 0;
-    margin: 0;
-  }
-
-  .nav-links li {
-    margin: 10px 0;
-  }
-
-  .btnLogIn {
-    margin-top: 10px;
-  }
-
-  .nav-links.active {
-    display: flex;
-  }
+    max-width: 320px;
+    padding: 18px;
+    border: none;
+    border-radius: 50px;
+    background-color: #1E7335;
+    color: white;
+    font-family: 'Afacad', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(30, 115, 53, 0.4);
 }
 
+.add-to-cart-btn:hover {
+    background-color: #072e11;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(7, 46, 17, 0.5);
+}
+
+.add-to-cart-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* MENSAJES DE ESTADO Y ERRORES */
 .loading, .error, .not-found {
-  text-align: center;
-  padding: 2rem;
-  font-size: 1.2rem;
+    text-align: center;
+    padding: 40px;
+    font-size: 1.5rem;
+    font-family: 'Raleway', sans-serif;
 }
 
 .error {
-  color: #d32f2f;
-  font-family: 'Afacad';
+    color: #d32f2f;
 }
 
 .not-found h2 {
-  color: #666;
+    color: #333;
+    font-family: 'Anton', sans-serif;
 }
 
 .btn-back {
-  display: inline-block;
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: #007bff;
-  color: white;
-  text-decoration: none;
-  border-radius: 4px;
+    display: inline-block;
+    margin: 15px;
+    padding: 12px 24px;
+    background-color: #0c3f19;
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-family: 'Afacad', sans-serif;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
 }
 
 .btn-back:hover {
-  background-color: #0056b3;
+    background-color: #072e11;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+    .product-details-container {
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+        margin: 20px auto;
+        gap: 20px;
+    }
+
+    .product-info {
+        max-width: 100%;
+        padding: 0 10px;
+        text-align: center;
+    }
+
+    .product-info h1 {
+        font-size: 2.5rem;
+    }
+
+    .price {
+        font-size: 2rem;
+    }
+
+    .size-selector h3 {
+        text-align: left;
+    }
+
+    .size-options {
+        justify-content: center;
+    }
+    
+    .add-to-cart-btn {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-details-container {
+        padding: 10px;
+    }
+    
+    .product-info h1 {
+        font-size: 2rem;
+    }
+
+    .price {
+        font-size: 1.8rem;
+    }
+
+    .add-to-cart-btn {
+        padding: 15px;
+        font-size: 1rem;
+    }
 }

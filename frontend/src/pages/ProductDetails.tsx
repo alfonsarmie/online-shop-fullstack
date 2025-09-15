@@ -5,6 +5,8 @@ import '../styles/productDetails.css';
 import ProductGallery from '../components/ProductGallery';
 import { FrontendProduct, ProductWithSize } from '../types/product';
 import { productService } from '../services/productService';
+import SuccessMessage from '../components/SuccessMessage';
+import ErrorMessage from '../components/ErrorMessage';
 
 function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -13,6 +15,8 @@ function ProductDetails() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
   
   const { addToCart } = useCart();
 
@@ -84,7 +88,8 @@ function ProductDetails() {
 
   const handleAddToCart = () => {
     if (!selectedSize) {
-      alert("Por favor selecciona un talle");
+      setErrorMessage('Por favor, selecciona un talle.');
+      setTimeout(() => setErrorMessage(""), 1500);
       return;
     }
 
@@ -103,28 +108,13 @@ function ProductDetails() {
       quantity: 1
     } as ProductWithSize);
     
-    alert("Producto añadido al carrito");
+    setSuccessMessage('Producto añadido al carrito');
+    setTimeout(() => setSuccessMessage(""), 1500);
   };
 
   if (loading) return <div className="loading">Cargando producto...</div>;
   
-  if (error) return (
-    <div className="error">
-      <h2>{error}</h2>
-      {debugInfo && (
-        <div style={{ marginTop: '20px', padding: '10px', background: '#f5f5f5', borderRadius: '5px' }}>
-          <h4>Información de depuración:</h4>
-          <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
-        </div>
-      )}
-      <div style={{ marginTop: '20px' }}>
-        <button onClick={() => navigate(-1)} className="btn-back">
-          Volver atrás
-        </button>
-        <Link to="/" className="btn-back">Volver a inicio</Link>
-      </div>
-    </div>
-  );
+
   
   if (!product) return (
     <div className="not-found">
@@ -137,11 +127,14 @@ function ProductDetails() {
   );
 
   return (
-    <div className="product-details-container">
-      <div className="product-gallery">
-        <ProductGallery 
-          img1={product.img} 
-          img2={product.img2} 
+      
+      <div className="product-details-container">
+        <SuccessMessage message={successMessage} onClose={() => setSuccessMessage("")} />
+        <ErrorMessage message={errorMessage} onClose={() => setErrorMessage("")} />
+        <div className="product-gallery">
+          <ProductGallery
+            img1={product.img}
+            img2={product.img2}
         />
       </div>
 

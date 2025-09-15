@@ -1,7 +1,7 @@
 /* Contenedor general del formulario de login */
-
 .login-container {
-    margin-top: 140px;
+    margin-top: 100px;
+    margin-bottom: 50px;
 }
 
 .container {
@@ -9,35 +9,48 @@
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
-    width: 600px;
-    margin: 120px auto 50px auto;
-    padding: 20px;
-    border-radius: 10px;
+    width: 90%; /* Ajuste para mejor responsividad */
+    max-width: 600px; /* Ancho máximo para pantallas grandes */
+    margin: 60px auto; /* Reducido para una mejor ubicación */
+    padding: 30px; /* Aumento del padding para más espacio */
+    border-radius: 12px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     background-color: white;
 }
 
 .container img {
-    width: 100px;
+    width: 80px; /* Tamaño más pequeño para el logo */
+    margin-bottom: 10px;
 }
 
 .container h1 {
-    padding: 10px;
-    font-size: 30px;
+    font-size: 2rem; /* Tamaño de fuente más grande */
+    font-family: "Afacad", sans-serif;
     text-align: center;
-    font-family: "Afacad";
+    color: #0c3f19;
+    margin-bottom: 20px;
 }
 
-/* Botones de login */
+/* Estilos para el contenedor de Google */
+.google-login-container {
+    margin-bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Centrar el botón de Google */
+}
+
+/* Botones y inputs */
 #login-btn {
-    margin: 40px 10px 10px 10px;
+    margin-top: 30px;
+    margin-bottom: 10px;
     font-family: "Afacad", sans-serif !important;
-    font-size: 20px;
+    font-size: 1.25rem;
     font-weight: 700;
     color: white;
     border: none;
-    padding: 10px;
-    width: 420px;
+    padding: 15px; /* Aumento del padding */
+    width: 100%; /* Ocupa el 100% del contenedor */
+    max-width: 420px; /* Límite para el ancho */
     border-radius: 30px;
     cursor: pointer;
     transition: background-color 0.1s ease, transform 0.1s ease;
@@ -45,7 +58,7 @@
 }
 
 #login-btn:disabled {
-    background-color: gray;
+    background-color: #ccc;
     cursor: not-allowed;
 }
 
@@ -58,21 +71,23 @@
 }
 
 .error-message {
-  background-color: #ffebee;
-  color: #c62828;
-  padding: 10px;
-  border-radius: 4px;
-  margin: 10px 0;
-  border-left: 4px solid #c62828;
-  font-family: 'Afacad', sans-serif;
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 12px;
+    border-radius: 6px;
+    margin: 15px 0;
+    border-left: 4px solid #c62828;
+    font-family: 'Afacad', sans-serif;
+    width: 100%;
+    text-align: center;
 }
-
 
 /* Texto de registro */
 .msjreg {
     font-family: "Afacad", sans-serif;
-    color: black;
-    margin-top: 15px;
+    color: #333;
+    margin-top: 20px;
+    text-align: center;
 }
 
 /* Link para registro */
@@ -85,63 +100,90 @@
 /* Estilo de los inputs */
 .form__group.field {
     width: 100%;
-    width: 420px;
-    margin-top: 15px;
+    max-width: 420px; /* Ancho consistente con el botón */
+    margin-top: 20px;
 }
 
 .form__field {
     width: 100%;
-    padding: 10px 12px;
-    font-size: 16px;
+    padding: 12px 12px;
+    font-size: 1rem;
     border: none;
     border-bottom: 2px solid #9b9b9b;
     outline: none;
     background: transparent;
-    font-family: 'Afacad';
+    font-family: 'Afacad', sans-serif;
+    transition: border-bottom-color 0.3s ease;
+}
+
+.form__field:focus {
+    border-bottom-color: #1E7335;
 }
 
 /* Etiqueta flotante */
 .form__label {
-    font-family: 'Afacad';
+    font-family: 'Afacad', sans-serif;
     font-weight: 600;
-    color: #3d3d3d;
+    color: #555;
 }
 
-.password-input-container,
-.password-confirm-container {
-  position: relative;
+.password-input-container {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    margin-top: 20px;
 }
 
 .password-toggle {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #555;
-  font-size: 1.2rem;
-  padding: 5px;
-  z-index: 2;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    font-size: 1.2rem;
+    padding: 5px;
+    z-index: 2;
 }
 
 .password-toggle:hover {
-  color: #000;
+    color: #000;
 }
 
-/* Ajustar el padding del input para que no se solape con el botón */
-.password-input-container .form__field,
-.password-confirm-container .form__field {
-  padding-right: 40px;
+.password-input-container .form__field {
+    padding-right: 40px;
 }
 
 .forgot-password {
-    margin-top: 10px;
+    margin-top: 15px;
     font-family: "Afacad", sans-serif;
     color: #1E7335;
     font-weight: 600;
     cursor: pointer;
     align-self: flex-end;
-    margin-right: 70px;
+    margin-right: 0;
+    text-align: right;
+    width: 100%;
+    max-width: 420px;
+}
+
+/* Media Queries para responsividad */
+@media (max-width: 480px) {
+    .container {
+        padding: 20px;
+        margin: 30px auto;
+    }
+
+    .container h1 {
+        font-size: 1.5rem;
+    }
+
+    #login-btn,
+    .form__group.field,
+    .password-input-container,
+    .forgot-password {
+        max-width: 100%;
+    }
 }

@@ -8,6 +8,7 @@ import "../styles/login.css";
 import axios from "axios";
 import { User } from "../types/user";
 import SuccessMessage from "../components/SuccessMessage";
+import ErrorMessage from "../components/ErrorMessage";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 import { GoogleLogin } from "@react-oauth/google";
 
@@ -67,6 +68,9 @@ export default function LoginForm({ setUser }: LoginFormProps) {
     } catch (error: any) {
       console.error("Login failed:", error.response?.data || error.message);
       setErrorMessage("Error al iniciar sesión");
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 3000);
     }
   };
 
@@ -98,12 +102,16 @@ export default function LoginForm({ setUser }: LoginFormProps) {
       }, 1000);
     } catch (error: any) {
       setErrorMessage("Error al iniciar sesión con Google");
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 3000);
     }
   };
 
   return (
     <div className="login-container">
       <SuccessMessage message={message} onClose={() => setMessage("")} />
+      <ErrorMessage message={errorMessage} onClose={() => setErrorMessage("")} />
       <FormContainer
         logo={logo}
         title="Introduce tus datos para iniciar sesión"
@@ -152,9 +160,6 @@ export default function LoginForm({ setUser }: LoginFormProps) {
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </button>
         </div>
-
-        {/* Display success or error message */}
-        {errorMessage && <div className="error-message">{errorMessage}</div>}
 
         <p
           className="forgot-password"
