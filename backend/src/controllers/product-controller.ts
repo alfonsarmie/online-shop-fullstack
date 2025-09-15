@@ -133,7 +133,7 @@ export const updateProduct = async (
   const { id } = req.params;
 
   // Extract fields from body
-  const { name, description, stock, idCategory, sizes, initialPrice } =
+  const { name, description, stock, idCategory, sizes, initialPrice, images } =
     req.body;
 
   const transaction = await db.transaction();
@@ -197,6 +197,29 @@ export const updateProduct = async (
             {
               idProduct: parseInt(id),
               idSize: sizeId,
+            },
+            { transaction }
+          );
+        }
+      }
+    }
+
+    // 🔧 NUEVA LÓGICA: Manejo de imágenes
+    if (images !== undefined) {
+      // Eliminar todas las imágenes existentes del producto
+      await Image.destroy({
+        where: { idProduct: parseInt(id) },
+        transaction,
+      });
+
+      // Agregar las nuevas imágenes si se proporcionaron
+      if (Array.isArray(images) && images.length > 0) {
+        for (const imageData of images) {
+          await Image.create(
+            {
+              idProduct: parseInt(id),
+              url: imageData.url,
+              description: imageData.description || "",
             },
             { transaction }
           );

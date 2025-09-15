@@ -174,9 +174,9 @@ const AdminProducts: React.FC = () => {
         name: creating.name.trim(),
         description: creating.description.trim(),
         stock: creating.stock,
-        idCategory: parseInt(creating.category), 
+        idCategory: parseInt(creating.category),
         initialPrice: creating.price,
-        sizes: sizeIds.filter((id) => id !== 0), 
+        sizes: sizeIds.filter((id) => id !== 0),
       };
 
       console.log("Enviando datos del producto:", productData);
@@ -328,33 +328,13 @@ const AdminProducts: React.FC = () => {
         editing.sizes.map(async (sizeName) => await mapSizeNameToId(sizeName))
       );
 
-      // 1. First update the basic product
-      const productData = {
-        name: editing.name.trim(),
-        description: editing.description.trim(),
-        stock: editing.stock,
-        idCategory: parseInt(editing.category),
-        initialPrice: editing.price,
-        sizes: sizeIds.filter((id) => id !== 0),
-      };
+      // 1. Subir nuevas imágenes primero
+      const newImages: { url: string; description: string }[] = [];
 
-      console.log("Enviando datos de actualización:", productData);
-
-      // 2. Update product
-      const response = await api.put(
-        `/products/update/${editingId}`,
-        productData
-      );
-      const updatedProductFromBackend = response.data.product;
-
-      // 3. Upload images separately if there are new files
       if (editing.imgFile) {
         try {
           const imgUrl = await uploadImage(editing.imgFile);
-          await addImageToProduct(parseInt(editingId), {
-            url: imgUrl,
-            description: "Imagen principal",
-          });
+          newImages.push({ url: imgUrl, description: "Imagen principal" });
         } catch (imageError) {
           console.warn("Error subiendo imagen principal:", imageError);
         }
@@ -363,22 +343,48 @@ const AdminProducts: React.FC = () => {
       if (editing.img2File) {
         try {
           const img2Url = await uploadImage(editing.img2File);
-          await addImageToProduct(parseInt(editingId), {
-            url: img2Url,
-            description: "Imagen secundaria",
-          });
+          newImages.push({ url: img2Url, description: "Imagen secundaria" });
         } catch (imageError) {
           console.warn("Error subiendo imagen secundaria:", imageError);
         }
       }
 
-      // 4. Get the complete updated product (with images and prices)
-      const completeResponse = await api.get(`/products/${editingId}`);
-      const completeProduct = completeResponse.data.product;
+      // 2. Preparar datos del producto incluyendo las imágenes
+      const productData = {
+        name: editing.name.trim(),
+        description: editing.description.trim(),
+        stock: editing.stock,
+        idCategory: parseInt(editing.category),
+        initialPrice: editing.price,
+        sizes: sizeIds.filter((id) => id !== 0),
+        images: newImages.length > 0 ? newImages : undefined,
+      };
+
+      console.log("Enviando datos de actualización:", productData);
+
+      // 3. Update product (ahora con manejo de imágenes)
+      const response = await api.put(
+        `/products/update/${editingId}`,
+        productData
+      );
+      const updatedProductFromBackend = response.data.product;
+
+      // 4. Si no se subieron nuevas imágenes pero se quiere mantener las existentes,
+      // obtener el producto completo para mantener las imágenes actuales
+      let completeProduct;
+      if (newImages.length === 0) {
+        // No hay nuevas imágenes, mantener las existentes
+        const completeResponse = await api.get(`/products/${editingId}`);
+        completeProduct = completeResponse.data.product;
+      } else {
+        // Usar el producto devuelto por la actualización
+        completeProduct = updatedProductFromBackend;
+      }
 
       // Debug: Check what the backend returns
       console.log("Producto completo desde backend:", completeProduct);
       console.log("Precios:", completeProduct.prices);
+      console.log("Imágenes:", completeProduct.images);
 
       // 5. Map correctly and update state
       const mappedProduct = mapProductToFrontend(completeProduct);
@@ -727,7 +733,7 @@ const AdminProducts: React.FC = () => {
               >
                 <option value="">Seleccionar categoría</option>
                 {CATEGORY_OPTIONS.map((cat) => (
-                  <option key={cat.id} value={cat.name}>
+                  <option key={cat.id} value={cat.id}>
                     {cat.name}
                   </option>
                 ))}
