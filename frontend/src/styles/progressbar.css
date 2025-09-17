@@ -21,6 +21,7 @@
 .step.active {
   background-color: #edfdf1;
   box-shadow: 0 0 5px #63b377;
+  font-weight: 700;
 }
 
 .progress-line {

@@ -1,20 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Afacad&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Afacad&display=swap");
 
 nav {
-    font-family: "Anton";
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    height: 80px;
-    width: 100%;
-    background-color: #1D1D1D;
-    color: #1E7335;
-    align-items: center;
-    font-size: 18px;
-    padding: 10px 40px;
-    position: fixed;
-    z-index: 200;
-    top: 0;
+  font-family: "Anton";
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 80px;
+  width: 100%;
+  background-color: #1d1d1d;
+  color: #1e7335;
+  align-items: center;
+  font-size: 18px;
+  padding: 10px 40px;
+  position: fixed;
+  z-index: 200;
+  top: 0;
 }
 
 .nav-toggle {
@@ -22,32 +22,32 @@ nav {
 }
 
 nav img {
-    width: 70px;
-    height: auto;
-    transition: all .3s ease;
+  width: 70px;
+  height: auto;
+  transition: all 0.3s ease;
 }
 
 nav img:hover {
-    transform: scale(1.2);
+  transform: scale(1.2);
 }
 
 nav ul {
-    display: flex;
-    flex-direction: row;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    font-size: 20px;
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
 }
 
 nav li {
-    margin: 0;
-    position: relative;
-    display: flex;
-    align-items: center;
+  margin: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.nav-links ul li a{
+.nav-links ul li a {
   text-decoration: none;
   padding: 7px 0;
   position: relative;
@@ -72,8 +72,8 @@ nav li {
 .btnLogIn {
   font-size: 25px;
   margin-right: 25px;
-  color: #1E7335;
-  transition: all .2s ease;
+  color: #1e7335;
+  transition: all 0.2s ease;
   margin-bottom: 3px;
 }
 
@@ -82,7 +82,7 @@ nav li {
 }
 
 .userOptions {
-  background: linear-gradient(145deg, #1a4a2a, #1E7335);
+  background: linear-gradient(145deg, #1a4a2a, #1e7335);
   border: none;
   cursor: pointer;
   color: white;
@@ -90,7 +90,7 @@ nav li {
   margin-right: 15px;
   display: flex;
   align-items: center;
-  font-family: 'Anton';
+  font-family: "Anton";
   font-size: 16px;
   padding: 8px 15px;
   border-radius: 15px;
@@ -100,13 +100,18 @@ nav li {
 }
 
 .userOptions::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: all 0.5s ease;
 }
 
@@ -145,20 +150,36 @@ nav li {
     padding: 6px 12px;
     font-size: 14px;
   }
-  
+
   .user-name {
     display: none;
   }
-  
+
   .userOptions {
     margin-right: 10px;
     padding: 10px;
     border-radius: 50%;
   }
-  
+
   .user-icon {
     margin-right: 0;
     font-size: 20px;
+  }
+  .dropdown {
+    position: static; /* Cambiar posicionamiento en móviles */
+  }
+  .dropdown-menu {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    min-width: unset;
+    max-width: unset;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    grid-template-columns: 1fr; /* 1 columna en móviles */
   }
 }
 
@@ -177,8 +198,8 @@ nav li {
   margin-right: 15px;
   border-radius: 100%;
   position: relative;
-  color: #1E7335;
-  transition: all .2s ease;
+  color: #1e7335;
+  transition: all 0.2s ease;
 }
 
 .cart-icon:hover {
@@ -212,7 +233,7 @@ nav li {
 }
 
 .dropdown > span {
-  color: #1E7335;
+  color: #1e7335;
   padding: 10px 15px;
   font-family: "Anton", sans-serif;
 }
@@ -228,7 +249,9 @@ nav li {
   border: 1px solid #e0e0e0; /* Borde más suave */
   border-radius: 8px; /* Bordes ligeramente más redondeados */
   position: absolute;
-  top: calc(100% + 10px); /* Ajusta la distancia del menú al botón "PRODUCTOS" */
+  top: calc(
+    100% + 10px
+  ); /* Ajusta la distancia del menú al botón "PRODUCTOS" */
   left: 50%; /* Centra el menú horizontalmente */
   transform: translateX(-50%); /* Ajuste para centrar */
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada para un efecto flotante */
@@ -237,11 +260,22 @@ nav li {
   opacity: 0; /* Oculto inicialmente para la transición */
   visibility: hidden; /* Oculto para la transición */
   transform: translateX(-50%) translateY(-10px); /* Empieza ligeramente arriba */
-  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    visibility 0.3s;
   min-width: 600px; /* Ancho mínimo para que se vean bien las 3 columnas */
   max-width: 900px; /* Ancho máximo para evitar que sea demasiado grande */
+  min-width: 800px; /* Reducido de 900px */
+  max-width: 1000px; /* Aumentado de 900px */
+  display: grid !important;
+  grid-template-columns: repeat(
+    3,
+    1fr
+  ); /* 3 columnas para 6 categorías (2 filas) */
+  gap: 5px;
+  padding: 15px 10px !important; /* Reducir padding para ahorrar espacio */
 }
-
 
 /* Mostrar menú principal al hover */
 .dropdown:hover > .dropdown-menu {
@@ -261,14 +295,17 @@ nav li {
   min-width: 150px; /* Ancho mínimo para cada columna */
   border-right: 1px solid #f0f0f0; /* Separador más sutil */
   background: transparent;
-  color: #1D1D1D;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  color: #1d1d1d;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
   flex-grow: 1; /* Para que las columnas ocupen el espacio disponible */
+  padding: 8px 10px; /* Reducido de 10px 15px */
+  min-width: 120px; /* Reducido de 150px */
 }
 
-
 .dropdown-item span {
-  color: #1E7335;
+  color: #1e7335;
   font-weight: 1000;
   font-family: "Afacad", sans-serif;
   margin-bottom: 5px; /* Margen reducido */
@@ -287,7 +324,7 @@ nav li {
 }
 
 .dropdown-item span.category-title {
-  color: #1E7335; /* Tu verde distintivo */
+  color: #1e7335; /* Tu verde distintivo */
   font-weight: 700; /* Un poco más de peso para el título */
   font-family: "Afacad", sans-serif;
   margin-bottom: 10px; /* Más espacio debajo del título */
@@ -296,6 +333,8 @@ nav li {
   font-size: 22px; /* Tamaño de fuente para el título de categoría */
   letter-spacing: 0.5px; /* Un poco de espaciado entre letras */
   text-transform: uppercase; /* Convertir a mayúsculas */
+  font-size: 18px; /* Reducido de 22px */
+  margin-bottom: 8px;
 }
 
 /* Submenu SIEMPRE visible */
@@ -309,9 +348,9 @@ nav li {
   width: 100%;
 }
 
-
 .submenu li {
   margin-bottom: 8px; /* Espacio entre cada enlace de producto */
+  margin-bottom: 6px; /* Reducido de 8px */
 }
 
 .submenu li:last-child {
@@ -322,31 +361,35 @@ nav li {
 .submenu li a {
   color: #555; /* Un gris más suave para los enlaces */
   text-decoration: none;
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
   font-family: "Afacad", sans-serif;
   font-size: 15px; /* Tamaño de fuente ligeramente mayor para los enlaces */
   display: block; /* Para que el área de clic sea mayor */
   padding: 3px 0; /* Pequeño padding para cada enlace */
+  font-size: 14px; /* Reducido de 15px */
 }
 
 .submenu li a:hover {
-  color: #1E7335; /* El verde distintivo al pasar el ratón */
+  color: #1e7335; /* El verde distintivo al pasar el ratón */
   transform: translateX(3px); /* Pequeño desplazamiento a la derecha */
 }
 
-
 /* Estilo para el enlace "Ver todos" */
 .submenu li .view-all {
-  color: #1E7335; /* Color verde para destacarlo */
+  color: #1e7335; /* Color verde para destacarlo */
   font-weight: 600; /* Más peso para destacarlo */
   border-top: 1px solid #f0f0f0; /* Línea separadora */
   padding-top: 10px;
   margin-top: 5px;
   display: block;
+  padding-top: 8px; /* Reducido de 10px */
+  margin-top: 3px; /* Reducido de 5px */
 }
 
 .submenu li .view-all:hover {
-  color: #16572A; /* Un verde más oscuro al pasar el ratón */
+  color: #16572a; /* Un verde más oscuro al pasar el ratón */
 }
 
 /* Agregar esto a nav.css o crear un archivo aparte */
@@ -387,7 +430,7 @@ nav li {
   display: none;
   position: absolute;
   right: 0;
-  background: #1D1D1D;
+  background: #1d1d1d;
   border: 1px solid #2a2a2a;
   border-radius: 8px;
   min-width: 200px;
@@ -411,6 +454,7 @@ nav li {
   background: none;
   border: none;
   text-align: left;
+  border-right: none !important;
 }
 
 .dropdown-item:hover {
@@ -424,7 +468,7 @@ nav li {
 }
 
 .logout-btn {
-  color: #C0392B;
+  color: #c0392b;
 }
 
 .logout-btn:hover {

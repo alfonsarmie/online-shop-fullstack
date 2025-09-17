@@ -14,8 +14,12 @@ type Draft = Omit<FrontendProduct, "id"> & {
 
 // Predefined options for selects
 const CATEGORY_OPTIONS = [
-  { id: "1", name: "Hombre" },
-  { id: "2", name: "Mujer" },
+  { id: "1", name: "Remera" },
+  { id: "2", name: "Pantalón" },
+  { id: "3", name: "Campera" },
+  { id: "4", name: "Buzo" },
+  { id: "5", name: "Short" },
+  { id: "6", name: "Top" },
 ];
 const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL", "Único"];
 
@@ -41,7 +45,7 @@ const MOCK_PRODUCTS: FrontendProduct[] = [
     description: "Camiseta oficial temporada 24/25",
     sizes: ["S", "M", "L", "XL"],
     stock: 12,
-    category: "Hombre",
+    category: "Remera",
     img: "",
     img2: "",
     color: "Verde",

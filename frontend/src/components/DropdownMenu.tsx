@@ -11,19 +11,34 @@ interface Category {
 function DropdownMenu() {
   const categories: Category[] = [
     {
-      title: 'Hombre',
-      items: ['Remeras', 'Pantalones', 'Shorts', 'Buzos', 'Accesorios'],
-      basePath: 'hombre'
+      title: 'Remeras',
+      items: ['Hombre', 'Mujer', 'Niño'],
+      basePath: 'remeras'
     },
     {
-      title: 'Mujer',
-      items: ['Remeras', 'Pantalones', 'Shorts', 'Buzos', 'Accesorios'],
-      basePath: 'mujer'
+      title: 'Buzos',
+      items: ['Hombre', 'Mujer', 'Niño'],
+      basePath: 'buzos'
     },
     {
-      title: 'Niño',
-      items: ['Remeras', 'Pantalones', 'Shorts', 'Buzos', 'Accesorios'],
-      basePath: 'nino'
+      title: 'Pantalones',
+      items: ['Hombre', 'Mujer', 'Niño'],
+      basePath: 'pantalones'
+    },
+    {
+      title: 'Camperas',
+      items: ['Hombre', 'Mujer', 'Niño'],
+      basePath: 'camperas'
+    },
+    {
+      title: 'Tops',
+      items: ['Mujer', 'Niña'],
+      basePath: 'tops'
+    },
+    {
+      title: 'Shorts',
+      items: ['Hombre', 'Mujer', 'Niño'],
+      basePath: 'shorts'
     }
   ];
 
@@ -31,18 +46,16 @@ function DropdownMenu() {
     <div className="dropdown">
       <span>PRODUCTOS</span>
       <ul className="dropdown-menu">
-
         {/* Render category items */}
         {categories.map(cat => (
         <li className="dropdown-item" key={cat.title}>
           <span className="category-title">{cat.title}</span> 
           <ul className="submenu">
-
             {/* Render subcategory items */}
-            {cat.items.map(subcat => (
-              <li key={subcat}>
-                <Link to={`/catalog`}>
-                  {subcat}
+            {cat.items.map(gender => (
+              <li key={gender}>
+                <Link to={`/catalog/${cat.basePath}/${gender.toLowerCase()}`}>
+                  {gender}
                 </Link>
               </li>
             ))} 
