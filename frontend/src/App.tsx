@@ -73,7 +73,7 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/about-us" element={<AboutUs />} />
-          <Route path="/catalog" element={<Catalog />} />
+          <Route path="/catalog/:category" element={<Catalog />} />
           <Route path="/my-orders" element={<MyOrders />} />
           {/* Admin routes (kebab-case) */}
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
