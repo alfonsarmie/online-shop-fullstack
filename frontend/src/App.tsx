@@ -17,6 +17,8 @@ import Cart from './components/Cart';
 import Products from './components/Products';
 import CartProvider from './components/CartContext';
 import SignUp from './pages/SignUp';
+// Intermediate screen prompting users to verify their email
+import VerifyEmail from './pages/VerifyEmail';
 import ProductDetails from './pages/ProductDetails';
 import Checkout from './pages/Checkout';
 import Payment from './pages/Payment';
@@ -69,6 +71,8 @@ function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/login" element={<Login setUser={setUser} />} />
           <Route path="/SignUp" element={<SignUp />} />
+          {/* Remind newly registered users to confirm their email */
+          <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/payment" element={<Payment />} />
