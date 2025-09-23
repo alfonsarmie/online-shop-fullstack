@@ -161,17 +161,17 @@ const Delivery = ({ user, setUser }: { user: User | null, setUser: (user: User |
               <div className="contact-card">
                 <FaWhatsapp className="contact-icon whatsapp" />
                 <h3>WhatsApp</h3>
-                <p>+54 341 123-4567</p>
+                <p>+54 9 341 521-3939</p>
                 <p>Lunes a Viernes: 8:00 - 20:00 hs</p>
-                <a href="https://wa.me/543411234567" className="contact-btn">Escribinos por WhatsApp</a>
+                <a href="https://wa.me/5493415213939" className="contact-btn">Escribinos por WhatsApp</a>
               </div>
 
               <div className="contact-card">
                 <FaPhone className="contact-icon phone" />
                 <h3>Teléfono</h3>
-                <p>0341 123-4567</p>
+                <p>341 521-3939</p>
                 <p>Lunes a Sábados: 9:00 - 18:00 hs</p>
-                <a href="tel:03411234567" className="contact-btn">Llamar ahora</a>
+                <a href="tel:3415213939" className="contact-btn">Llamar ahora</a>
               </div>
 
               <div className="contact-card">

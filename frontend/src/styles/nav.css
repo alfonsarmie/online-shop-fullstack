@@ -52,6 +52,7 @@ nav li {
   padding: 7px 0;
   position: relative;
   margin: 0 30px;
+  color: #1e7335;
 }
 
 .nav-links ul li a::after {
@@ -324,7 +325,7 @@ nav li {
 }
 
 .dropdown-item span.category-title {
-  color: #1e7335; /* Tu verde distintivo */
+  color: #1e7335 !important; /* Tu verde distintivo */
   font-weight: 700; /* Un poco más de peso para el título */
   font-family: "Afacad", sans-serif;
   margin-bottom: 10px; /* Más espacio debajo del título */
