@@ -3,24 +3,19 @@ import axios from 'axios';
 import '../styles/admin-orders.css';
 
 type Category = {
-  id: number;
+  idCategory: number;
   name: string;
-  description?: string;
 };
-
-
 
 const AdminCategories: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [filter, setFilter] = useState('');
-  const [creating, setCreating] = useState<Omit<Category, 'id'>>({ name: '', description: '' });
-  // Bulk edit mode (igual a productos/pedidos)
+  const [creating, setCreating] = useState<Omit<Category, 'idCategory'>>({ name: '' });
   const [editMode, setEditMode] = useState(false);
   const [edited, setEdited] = useState<Category[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<Category | null>(null);
 
-
-  // Render categories from backend on mount
+  // Obtener categorías del backend
   useEffect(() => {
     axios.get('/api/categories')
       .then(res => {
@@ -44,8 +39,7 @@ const AdminCategories: React.FC = () => {
     if (!q) return source;
     return source.filter(c =>
       c.name.toLowerCase().includes(q) ||
-      (c.description || '').toLowerCase().includes(q) ||
-      c.id.toString().includes(q)
+      c.idCategory.toString().includes(q)
     );
   }, [categories, edited, editMode, filter]);
 
@@ -60,44 +54,47 @@ const AdminCategories: React.FC = () => {
     setEditMode(false);
   };
 
-  const onEditedChange = <K extends keyof Omit<Category,'id'>>(
-    id: number,
-    key: K,
-    value: Omit<Category, 'id'>[K]
-  ) => {
+  const onEditedChange = (idCategory: number, key: 'name', value: string) => {
     if (!editMode) return;
-    setEdited(prev => prev.map(c => c.id === id ? { ...c, [key]: value } as Category : c));
+    setEdited(prev => prev.map(c => c.idCategory === idCategory ? { ...c, [key]: value } : c));
   };
-
 
   const saveBulkChanges = async () => {
-    // Actualiza todas las categorías editadas en el backend
-    await Promise.all(edited.map(async (cat) => {
-      await axios.put(`/api/categories/${cat.id}`, cat);
-    }));
-    setCategories(edited);
-    setEditMode(false);
+    try {
+      await Promise.all(edited.map(async (cat) => {
+        await axios.put(`/api/categories/${cat.idCategory}`, cat);
+      }));
+      setCategories(edited);
+      setEditMode(false);
+    } catch (error) {
+      console.error('Error al guardar cambios:', error);
+    }
   };
-
 
   const create = async () => {
     const name = creating.name.trim();
     if (!name) return;
-    const res = await axios.post('/api/categories', {
-      name,
-      description: creating.description?.trim(),
-    });
-    if (res.status === 201 || res.status === 200) {
-      setCategories(prev => [...prev, res.data]);
-      setCreating({ name: '', description: '' });
+    
+    try {
+      const res = await axios.post('/api/categories', { name });
+      if (res.status === 201 || res.status === 200) {
+        setCategories(prev => [...prev, res.data]);
+        setCreating({ name: '' });
+      }
+    } catch (error) {
+      console.error('Error al crear categoría:', error);
     }
   };
 
   const confirmDelete = (c: Category) => setDeleteTarget(c);
 
-  const deleteCategory = async (id: number) => {
-    await axios.delete(`/api/categories/${id}`);
-    setCategories(prev => prev.filter(c => c.id !== id));
+  const deleteCategory = async (idCategory: number) => {
+    try {
+      await axios.delete(`/api/categories/${idCategory}`);
+      setCategories(prev => prev.filter(c => c.idCategory !== idCategory));
+    } catch (error) {
+      console.error('Error al eliminar categoría:', error);
+    }
   };
 
   return (
@@ -105,7 +102,7 @@ const AdminCategories: React.FC = () => {
       <h1>Gestión de categorías</h1>
       <p className="subtitle">Crear, editar y eliminar categorías de productos</p>
 
-      {/* Crear nueva */}
+      {/* Crear nueva categoría */}
       <section className="panel">
         <div className="panel-header">
           <h2>Crear nueva categoría</h2>
@@ -118,14 +115,7 @@ const AdminCategories: React.FC = () => {
                 className="input-admin"
                 value={creating.name}
                 onChange={e => setCreating(v => ({ ...v, name: e.target.value }))}
-              />
-            </label>
-            <label>
-              <span className="span-admin">Descripción</span>
-              <input
-                className="input-admin"
-                value={creating.description || ''}
-                onChange={e => setCreating(v => ({ ...v, description: e.target.value }))}
+                placeholder="Nombre de la categoría"
               />
             </label>
           </div>
@@ -135,14 +125,14 @@ const AdminCategories: React.FC = () => {
         </div>
       </section>
 
-      {/* Listado */}
+      {/* Listado de categorías */}
       <section className="panel">
         <div className="panel-header">
           <h2>Categorías ({view.length})</h2>
           <div className="tools">
             <input
               className="input-admin"
-              placeholder="Buscar por nombre o descripción"
+              placeholder="Buscar por nombre o ID"
               value={filter}
               onChange={e => setFilter(e.target.value)}
               style={{ minWidth: 260 }}
@@ -158,31 +148,21 @@ const AdminCategories: React.FC = () => {
               <tr>
                 <th>ID</th>
                 <th>Nombre</th>
-                <th>Descripción</th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {view.map(c => (
-                <tr key={c.id}>
-                  <td>#{c.id}</td>
+                <tr key={c.idCategory}>
+                  <td>#{c.idCategory}</td>
                   <td>
                     {editMode ? (
                       <input
                         className="input-admin"
                         value={c.name}
-                        onChange={e => onEditedChange(c.id, 'name', e.target.value)}
+                        onChange={e => onEditedChange(c.idCategory, 'name', e.target.value)}
                       />
                     ) : (c.name)}
-                  </td>
-                  <td>
-                    {editMode ? (
-                      <input
-                        className="input-admin"
-                        value={c.description || ''}
-                        onChange={e => onEditedChange(c.id, 'description', e.target.value)}
-                      />
-                    ) : (c.description || '-')}
                   </td>
                   <td>
                     <div className="row-actions">
@@ -193,7 +173,7 @@ const AdminCategories: React.FC = () => {
               ))}
               {view.length === 0 && (
                 <tr>
-                  <td colSpan={4} style={{ textAlign: 'center', color: '#bdbdbd' }}>No hay categorías para mostrar</td>
+                  <td colSpan={3} style={{ textAlign: 'center', color: '#bdbdbd' }}>No hay categorías para mostrar</td>
                 </tr>
               )}
             </tbody>
@@ -212,14 +192,14 @@ const AdminCategories: React.FC = () => {
         <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>Eliminar categoría #{deleteTarget.id}</h2>
+              <h2>Eliminar categoría #{deleteTarget.idCategory}</h2>
               <button className="btn-close" onClick={() => setDeleteTarget(null)}>×</button>
             </div>
             <div className="modal-body">
               <p className="modal-warning">¿Estás seguro de eliminar "{deleteTarget.name}"? Esta acción es irreversible.</p>
               <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
                 <button className="btn" onClick={() => setDeleteTarget(null)}>Cancelar</button>
-                <button className="btn danger" onClick={() => { deleteCategory(deleteTarget.id); setDeleteTarget(null); }}>Eliminar definitivamente</button>
+                <button className="btn danger" onClick={() => { deleteCategory(deleteTarget.idCategory); setDeleteTarget(null); }}>Eliminar definitivamente</button>
               </div>
             </div>
           </div>
