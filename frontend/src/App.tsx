@@ -71,7 +71,7 @@ function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/login" element={<Login setUser={setUser} />} />
           <Route path="/SignUp" element={<SignUp />} />
-          {/* Remind newly registered users to confirm their email */
+          {/* Remind newly registered users to confirm their email */}
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/checkout" element={<Checkout />} />

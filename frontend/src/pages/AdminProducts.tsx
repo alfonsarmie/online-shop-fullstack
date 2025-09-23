@@ -59,7 +59,6 @@ const AdminProducts: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editing, setEditing] = useState<Draft>(emptyDraft); // State for editing product
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -97,7 +96,7 @@ const AdminProducts: React.FC = () => {
   };
 
   // Implement logic to get size ID by name
-  const mapSizeNameToId = async (sizeName: string): Promise<number> => {
+  const mapSizeNameToId = (sizeName: string): number => {
     const sizeMap: { [key: string]: number } = {
       XS: 1,
       S: 2,
@@ -132,11 +131,11 @@ const AdminProducts: React.FC = () => {
         } else {
           setProducts(MOCK_PRODUCTS);
         }
-        setError(null);
       } catch (err) {
+        setErrorMessage("Error cargando productos. Usando datos de prueba.");
+        setTimeout(() => setErrorMessage(""), 3000);
         console.error("Error loading products:", err);
         setProducts(MOCK_PRODUCTS);
-        setError(null);
       } finally {
         setLoading(false);
       }
@@ -154,6 +153,7 @@ const AdminProducts: React.FC = () => {
     return checked ? [...sizes, size] : sizes.filter((s) => s !== size);
   };
 
+  // Helper to render sizes as a string
   const renderSizes = (sizes: string[]) =>
     sizes.length ? sizes.join(", ") : "-";
 
@@ -169,9 +169,8 @@ const AdminProducts: React.FC = () => {
     try {
       setUploading(true);
 
-      const sizeIds = await Promise.all(
-        creating.sizes.map(async (sizeName) => await mapSizeNameToId(sizeName))
-      );
+      // Convert sizes to IDs
+      const sizeIds = creating.sizes.map(mapSizeNameToId);
 
       // 1. Create the basic product
       const productData = {
@@ -183,6 +182,7 @@ const AdminProducts: React.FC = () => {
         sizes: sizeIds.filter((id) => id !== 0),
       };
 
+      // DEBUG: Check the data being sent
       console.log("Enviando datos del producto:", productData);
       console.log(
         "idCategory type:",
@@ -197,7 +197,10 @@ const AdminProducts: React.FC = () => {
         throw new Error("Respuesta inválida del backend");
       }
 
+      // 2. Get the new product ID
       const productId = newProduct.idProduct;
+
+      // Debug: Check the created product
       console.log("Producto creado:", newProduct);
 
       // 3. Upload images if there are files
@@ -206,6 +209,7 @@ const AdminProducts: React.FC = () => {
         { file: creating.img2File, description: "Imagen secundaria" },
       ].filter((img) => img.file);
 
+      // Upload each image and associate it with the product
       for (const image of imageFiles) {
         if (image.file) {
           try {
@@ -224,8 +228,9 @@ const AdminProducts: React.FC = () => {
       const completeProduct = await api.get(`/products/${productId}`);
       const mappedProduct = mapProductToFrontend(completeProduct.data.product);
 
-      setProducts((prev) => [mappedProduct, ...prev]);
-      setCreating(emptyDraft);
+      setProducts((prev) => [mappedProduct, ...prev]); // Add new product to the top
+      setCreating(emptyDraft); // Reset creation form
+
       setMessage("Producto creado exitosamente!");
       setTimeout(() => {
         setMessage("");
@@ -261,6 +266,7 @@ const AdminProducts: React.FC = () => {
     // Extract the most recent price
     let latestPrice = 0;
     if (product.prices && product.prices.length > 0) {
+      // Sort prices by updateDate descending
       const sortedPrices = [...product.prices].sort(
         (a: any, b: any) =>
           new Date(b.updateDate).getTime() - new Date(a.updateDate).getTime()
@@ -275,14 +281,17 @@ const AdminProducts: React.FC = () => {
         .filter(Boolean) || [];
 
     // Extract category
-    const category =
-      product.category?.name ||
-      (product.idCategory === 1
-        ? "Hombre"
-        : product.idCategory === 2
-          ? "Mujer"
-          : "");
+    let category = "";
+    if (product.category?.name) {
+      category = product.category.name;
+    } else if (product.idCategory) {
+      const found = CATEGORY_OPTIONS.find(
+        (opt) => parseInt(opt.id) === product.idCategory
+      );
+      category = found ? found.name : "";
+    }
 
+    // Map to FrontendProduct structure
     return {
       id: product.idProduct?.toString() || product.id || "0",
       name: product.name || "",
@@ -328,11 +337,9 @@ const AdminProducts: React.FC = () => {
       setUploading(true);
 
       // Convert sizes to IDs
-      const sizeIds = await Promise.all(
-        editing.sizes.map(async (sizeName) => await mapSizeNameToId(sizeName))
-      );
+      const sizeIds = editing.sizes.map(mapSizeNameToId);
 
-      // 1. Subir nuevas imágenes primero
+      // 1. Upload new images if any
       const newImages: { url: string; description: string }[] = [];
 
       if (editing.imgFile) {
@@ -353,7 +360,7 @@ const AdminProducts: React.FC = () => {
         }
       }
 
-      // 2. Preparar datos del producto incluyendo las imágenes
+      // 2. Prepare updated product data including images
       const productData = {
         name: editing.name.trim(),
         description: editing.description.trim(),
@@ -366,22 +373,21 @@ const AdminProducts: React.FC = () => {
 
       console.log("Enviando datos de actualización:", productData);
 
-      // 3. Update product (ahora con manejo de imágenes)
+      // 3. Update product
       const response = await api.put(
         `/products/update/${editingId}`,
         productData
       );
       const updatedProductFromBackend = response.data.product;
 
-      // 4. Si no se subieron nuevas imágenes pero se quiere mantener las existentes,
-      // obtener el producto completo para mantener las imágenes actuales
+      // 4. Get complete product details
       let completeProduct;
       if (newImages.length === 0) {
-        // No hay nuevas imágenes, mantener las existentes
+        // Not uploading new images, keep existing ones
         const completeResponse = await api.get(`/products/${editingId}`);
         completeProduct = completeResponse.data.product;
       } else {
-        // Usar el producto devuelto por la actualización
+        // New images were uploaded, use the updated product from response
         completeProduct = updatedProductFromBackend;
       }
 
@@ -419,9 +425,9 @@ const AdminProducts: React.FC = () => {
   const startEdit = (p: FrontendProduct) => {
     setEditingId(p.id);
 
-    // Convert category name to ID
-    const categoryId =
-      p.category === "Hombre" ? "1" : p.category === "Mujer" ? "2" : "";
+    // Find the category ID based on the name
+    const categoryObj = CATEGORY_OPTIONS.find((cat) => cat.name === p.category);
+    const categoryId = categoryObj ? categoryObj.id : "";
 
     setEditing({
       name: p.name,
@@ -440,11 +446,29 @@ const AdminProducts: React.FC = () => {
     setEditingId(null);
   };
 
-  const del = async (id: string) => {
+  // Modal state for delete confirmation
+  const [deleteModal, setDeleteModal] = useState<{
+    open: boolean;
+    id: string | null;
+    name: string;
+  }>({ open: false, id: null, name: "" });
+
+  const del = (id: string) => {
     const product = products.find((p) => p.id === id);
-    if (product && window.confirm(`¿Eliminar "${product.name}"?`)) {
-      await deleteProduct(id);
+    if (product) {
+      setDeleteModal({ open: true, id, name: product.name });
     }
+  };
+
+  const confirmDelete = async () => {
+    if (deleteModal.id) {
+      await deleteProduct(deleteModal.id);
+    }
+    setDeleteModal({ open: false, id: null, name: "" });
+  };
+
+  const cancelDelete = () => {
+    setDeleteModal({ open: false, id: null, name: "" });
   };
 
   // Filtering function
@@ -465,6 +489,23 @@ const AdminProducts: React.FC = () => {
 
   return (
     <div className="admin-products">
+      {/* DELETE CONFIRMATION MODAL */}
+      {deleteModal.open && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>¿Eliminar producto?</h3>
+            <p>¿Estás seguro de que deseas eliminar "{deleteModal.name}"?</p>
+            <div className="modal-actions">
+              <button className="btn danger" onClick={confirmDelete}>
+                Eliminar
+              </button>
+              <button className="btn" onClick={cancelDelete}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <ErrorMessage
         message={errorMessage}
         onClose={() => setErrorMessage("")}
@@ -473,7 +514,6 @@ const AdminProducts: React.FC = () => {
       <h1>Gestión de productos</h1>
       <p className="subtitle">Crear, editar, eliminar y ajustar stock</p>
 
-      {error && <div className="error-message">{error}</div>}
       {uploading && <div className="loading">Procesando...</div>}
 
       {/* CREATION FORM */}
@@ -498,12 +538,16 @@ const AdminProducts: React.FC = () => {
             <input
               className="input-admin"
               type="number"
-              min="0"
               step="0.01"
-              value={creating.price}
-              onChange={(e) =>
-                setCreating({ ...creating, price: Number(e.target.value) })
-              }
+              placeholder="Precio"
+              value={creating.price === 0 ? "" : creating.price}
+              onChange={(e) => {
+                const val = e.target.value;
+                setCreating({
+                  ...creating,
+                  price: val === "" ? 0 : Number(val),
+                });
+              }}
             />
           </label>
 
@@ -578,11 +622,15 @@ const AdminProducts: React.FC = () => {
             <input
               className="input-admin"
               type="number"
-              min="0"
-              value={creating.stock}
-              onChange={(e) =>
-                setCreating({ ...creating, stock: Number(e.target.value) })
-              }
+              placeholder="Stock"
+              value={creating.stock === 0 ? "" : creating.stock}
+              onChange={(e) => {
+                const val = e.target.value;
+                setCreating({
+                  ...creating,
+                  stock: val === "" ? 0 : Number(val),
+                });
+              }}
             />
           </label>
 
@@ -708,12 +756,16 @@ const AdminProducts: React.FC = () => {
               <span>Precio</span>
               <input
                 type="number"
-                min="0"
                 step="0.01"
-                value={editing.price}
-                onChange={(e) =>
-                  setEditing({ ...editing, price: Number(e.target.value) })
-                }
+                placeholder="Precio"
+                value={editing.price === 0 ? "" : editing.price}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setEditing({
+                    ...editing,
+                    price: val === "" ? 0 : Number(val),
+                  });
+                }}
               />
             </label>
 
@@ -784,11 +836,15 @@ const AdminProducts: React.FC = () => {
               <span>Stock</span>
               <input
                 type="number"
-                min="0"
-                value={editing.stock}
-                onChange={(e) =>
-                  setEditing({ ...editing, stock: Number(e.target.value) })
-                }
+                placeholder="Stock"
+                value={editing.stock === 0 ? "" : editing.stock}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setEditing({
+                    ...editing,
+                    stock: val === "" ? 0 : Number(val),
+                  });
+                }}
               />
             </label>
 

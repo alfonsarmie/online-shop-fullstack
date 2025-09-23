@@ -1,11 +1,5 @@
-// AdminCategories.tsx
-/**
- * AdminCategories
- * CRUD simple para categorías de productos.
- * - Usa localStorage como persistence mock.
- * - Reutiliza estilos oscuros de admin (panel, btn, inputs).
- */
 import React, { useEffect, useMemo, useState } from 'react';
+import axios from 'axios';
 import '../styles/admin-orders.css';
 
 type Category = {
@@ -14,25 +8,7 @@ type Category = {
   description?: string;
 };
 
-const STORAGE_KEY = 'adminCategories';
 
-const initialCategories: Category[] = [
-  { id: 1, name: 'Hombre', description: 'Indumentaria masculina' },
-  { id: 2, name: 'Mujer', description: 'Indumentaria femenina' },
-  { id: 3, name: 'Accesorios', description: 'Gorras, medias, etc.' },
-];
-
-function loadCategories(): Category[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (_) {}
-  return initialCategories;
-}
-
-function saveCategories(data: Category[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
 
 const AdminCategories: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -43,12 +19,28 @@ const AdminCategories: React.FC = () => {
   const [edited, setEdited] = useState<Category[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<Category | null>(null);
 
-  useEffect(() => { setCategories(loadCategories()); }, []);
-  useEffect(() => { if (categories.length) saveCategories(categories); }, [categories]);
+
+  // Render categories from backend on mount
+  useEffect(() => {
+    axios.get('/api/categories')
+      .then(res => {
+        console.log('Respuesta backend categorías:', res.data);
+        // Si el backend devuelve { categories: [...] }
+        if (Array.isArray(res.data)) {
+          setCategories(res.data);
+        } else if (res.data && Array.isArray(res.data.categories)) {
+          setCategories(res.data.categories);
+        } else {
+          setCategories([]);
+        }
+      })
+      .catch(() => setCategories([]));
+  }, []);
 
   const view = useMemo(() => {
     const q = filter.trim().toLowerCase();
     const source = editMode ? edited : categories;
+    if (!Array.isArray(source)) return [];
     if (!q) return source;
     return source.filter(c =>
       c.name.toLowerCase().includes(q) ||
@@ -77,21 +69,36 @@ const AdminCategories: React.FC = () => {
     setEdited(prev => prev.map(c => c.id === id ? { ...c, [key]: value } as Category : c));
   };
 
-  const saveBulkChanges = () => {
+
+  const saveBulkChanges = async () => {
+    // Actualiza todas las categorías editadas en el backend
+    await Promise.all(edited.map(async (cat) => {
+      await axios.put(`/api/categories/${cat.id}`, cat);
+    }));
     setCategories(edited);
     setEditMode(false);
   };
 
-  const create = () => {
+
+  const create = async () => {
     const name = creating.name.trim();
     if (!name) return;
-    const nextId = Math.max(0, ...categories.map(c => c.id)) + 1;
-    setCategories(prev => [...prev, { id: nextId, name, description: creating.description?.trim() }]);
-    setCreating({ name: '', description: '' });
+    const res = await axios.post('/api/categories', {
+      name,
+      description: creating.description?.trim(),
+    });
+    if (res.status === 201 || res.status === 200) {
+      setCategories(prev => [...prev, res.data]);
+      setCreating({ name: '', description: '' });
+    }
   };
 
   const confirmDelete = (c: Category) => setDeleteTarget(c);
-  const deleteCategory = (id: number) => setCategories(prev => prev.filter(c => c.id !== id));
+
+  const deleteCategory = async (id: number) => {
+    await axios.delete(`/api/categories/${id}`);
+    setCategories(prev => prev.filter(c => c.id !== id));
+  };
 
   return (
     <div className="admin-orders">
