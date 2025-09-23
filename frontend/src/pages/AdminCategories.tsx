@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import '../styles/admin-orders.css';
 
 type Category = {
@@ -17,10 +17,9 @@ const AdminCategories: React.FC = () => {
 
   // Obtener categorías del backend
   useEffect(() => {
-    axios.get('/api/categories')
+    api.get('/categories')
       .then(res => {
         console.log('Respuesta backend categorías:', res.data);
-        // Si el backend devuelve { categories: [...] }
         if (Array.isArray(res.data)) {
           setCategories(res.data);
         } else if (res.data && Array.isArray(res.data.categories)) {
@@ -62,7 +61,7 @@ const AdminCategories: React.FC = () => {
   const saveBulkChanges = async () => {
     try {
       await Promise.all(edited.map(async (cat) => {
-        await axios.put(`/api/categories/${cat.idCategory}`, cat);
+        await api.put(`/categories/${cat.idCategory}`, cat);
       }));
       setCategories(edited);
       setEditMode(false);
@@ -76,7 +75,7 @@ const AdminCategories: React.FC = () => {
     if (!name) return;
     
     try {
-      const res = await axios.post('/api/categories', { name });
+  const res = await api.post('/categories', { name });
       if (res.status === 201 || res.status === 200) {
         setCategories(prev => [...prev, res.data]);
         setCreating({ name: '' });
@@ -90,7 +89,7 @@ const AdminCategories: React.FC = () => {
 
   const deleteCategory = async (idCategory: number) => {
     try {
-      await axios.delete(`/api/categories/${idCategory}`);
+  await api.delete(`/categories/${idCategory}`);
       setCategories(prev => prev.filter(c => c.idCategory !== idCategory));
     } catch (error) {
       console.error('Error al eliminar categoría:', error);

@@ -12,15 +12,7 @@ type Draft = Omit<FrontendProduct, "id"> & {
   img2File?: File;
 };
 
-// Predefined options for selects
-const CATEGORY_OPTIONS = [
-  { id: "1", name: "Remera" },
-  { id: "2", name: "Pantalón" },
-  { id: "3", name: "Campera" },
-  { id: "4", name: "Buzo" },
-  { id: "5", name: "Short" },
-  { id: "6", name: "Top" },
-];
+// Opciones de categorías cargadas dinámicamente
 const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL", "Único"];
 
 // Empty draft template
@@ -62,6 +54,9 @@ const AdminProducts: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [categoryOptions, setCategoryOptions] = useState<{ id: string; name: string }[]>(
+    []
+  );
 
   // Function to upload images
   const uploadImage = async (file: File): Promise<string> => {
@@ -144,6 +139,31 @@ const AdminProducts: React.FC = () => {
     fetchProducts();
   }, []);
 
+  // Cargar categorías dinámicamente
+  useEffect(() => {
+    api.get("/categories")
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setCategoryOptions(
+            res.data.map((cat: any) => ({
+              id: cat.idCategory.toString(),
+              name: cat.name,
+            }))
+          );
+        } else if (res.data && Array.isArray(res.data.categories)) {
+          setCategoryOptions(
+            res.data.categories.map((cat: any) => ({
+              id: cat.idCategory.toString(),
+              name: cat.name,
+            }))
+          );
+        } else {
+          setCategoryOptions([]);
+        }
+      })
+      .catch(() => setCategoryOptions([]));
+  }, []);
+
   // Helper to manage size selection
   const handleSizeChange = (
     sizes: string[],
@@ -177,7 +197,7 @@ const AdminProducts: React.FC = () => {
         name: creating.name.trim(),
         description: creating.description.trim(),
         stock: creating.stock,
-        idCategory: parseInt(creating.category),
+  idCategory: parseInt(creating.category || ''),
         initialPrice: creating.price,
         sizes: sizeIds.filter((id) => id !== 0),
       };
@@ -285,7 +305,7 @@ const AdminProducts: React.FC = () => {
     if (product.category?.name) {
       category = product.category.name;
     } else if (product.idCategory) {
-      const found = CATEGORY_OPTIONS.find(
+      const found = categoryOptions.find(
         (opt) => parseInt(opt.id) === product.idCategory
       );
       category = found ? found.name : "";
@@ -426,8 +446,8 @@ const AdminProducts: React.FC = () => {
     setEditingId(p.id);
 
     // Find the category ID based on the name
-    const categoryObj = CATEGORY_OPTIONS.find((cat) => cat.name === p.category);
-    const categoryId = categoryObj ? categoryObj.id : "";
+  const categoryObj = categoryOptions.find((cat) => cat.name === p.category);
+  const categoryId = categoryObj ? categoryObj.id : "";
 
     setEditing({
       name: p.name,
@@ -573,7 +593,7 @@ const AdminProducts: React.FC = () => {
               }
             >
               <option value="">Seleccionar categoría</option>
-              {CATEGORY_OPTIONS.map((cat) => (
+              {categoryOptions.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {cat.name}
                 </option>
@@ -599,7 +619,7 @@ const AdminProducts: React.FC = () => {
                 <label key={size} className="checkbox">
                   <input
                     type="checkbox"
-                    checked={creating.sizes.includes(size)}
+                    checked={(creating.sizes || []).includes(size)}
                     onChange={(e) =>
                       setCreating({
                         ...creating,
@@ -661,7 +681,7 @@ const AdminProducts: React.FC = () => {
               className="btn primary"
               onClick={() => {
                 console.log("Estado completo de creating:", creating);
-                console.log("CATEGORY_OPTIONS:", CATEGORY_OPTIONS);
+                console.log("categoryOptions:", categoryOptions);
                 create();
               }}
               disabled={uploading}
@@ -788,7 +808,7 @@ const AdminProducts: React.FC = () => {
                 }
               >
                 <option value="">Seleccionar categoría</option>
-                {CATEGORY_OPTIONS.map((cat) => (
+                {categoryOptions.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.name}
                   </option>
@@ -814,7 +834,7 @@ const AdminProducts: React.FC = () => {
                   <label key={size} className="checkbox">
                     <input
                       type="checkbox"
-                      checked={editing.sizes.includes(size)}
+                      checked={(editing.sizes || []).includes(size)}
                       onChange={(e) =>
                         setEditing({
                           ...editing,

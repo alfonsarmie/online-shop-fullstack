@@ -1,21 +1,28 @@
-// ReceptionistStock.tsx
-/**
- * ReceiverDashboard
- * Purpose: Stock management for receivers (view products, adjust stock).
- * Notes:
- *  - Uses the same product data as AdminProducts but with a simplified interface
- *  - Focuses only on stock management without edit/delete capabilities
- *  - Maintains the dark admin look & feel
- */
 import React, { useEffect, useMemo, useState } from "react";
 import "../styles/receiver-dashboard.css";
-import { Product } from "../types/product";
+import { Product, FrontendProduct } from "../types/product";
 import { productService } from "../services/productService";
 import SuccessMessage from "./SuccessMessage";
 
+// Helper: map backend Product to flat FrontendProduct for UI
+function mapProductToFrontend(p: Product): FrontendProduct {
+  return {
+    id: p.idProduct.toString(),
+    name: p.name,
+    price: p.prices && p.prices.length > 0 ? p.prices[0].value : 0,
+    img: p.images && p.images[0] ? p.images[0].url : "",
+    img2: p.images && p.images[1] ? p.images[1].url : "",
+    description: p.description,
+    sizes: p.sizes ? p.sizes.map((s) => s.sizeDesc || s.name) : [],
+    stock: p.stock,
+    category: p.category ? p.category.name : "",
+    color: undefined,
+  };
+}
+
 const ReceptionistStock: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]); // persisted data
-  const [draft, setDraft] = useState<Product[] | null>(null); // editing buffer
+  const [products, setProducts] = useState<FrontendProduct[]>([]);
+  const [draft, setDraft] = useState<FrontendProduct[] | null>(null);
   const [editing, setEditing] = useState(false);
   const [filter, setFilter] = useState("");
   const [lowStockOnly, setLowStockOnly] = useState(false);
@@ -28,32 +35,17 @@ const ReceptionistStock: React.FC = () => {
     setLoading(true);
     productService
       .getAllProducts()
-      .then((frontendProducts) => {
-        // Map FrontendProduct[] to Product[]
-        const mappedProducts = frontendProducts.map((fp: any) => ({
-          id: fp.id ?? fp.idProduct,
-          name: fp.name,
-          category: fp.category ?? (fp.categoryName || "-"),
-          price: fp.price ?? (fp.prices ? fp.prices[0] : 0),
-          stock: fp.stock,
-          sizes: fp.sizes ?? [],
-          // Add any other fields required by Product type
-          idProduct: fp.idProduct ?? fp.id,
-          idCategory: fp.idCategory ?? null,
-          prices: fp.prices ?? [],
-          images: fp.images ?? [],
-        }));
-        setProducts(mappedProducts);
+      .then((backendProducts) => {
+        setProducts(backendProducts);
       })
       .finally(() => setLoading(false));
   }, []);
 
   // Get unique categories for filter
   const currentList = editing && draft ? draft : products;
-
   const categories = useMemo(() => {
     const cats = currentList
-      .map((p) => p.category)
+      .map((p) => (typeof p.category === "string" ? p.category : ""))
       .filter(Boolean)
       .filter((cat, index, arr) => arr.indexOf(cat) === index);
     return cats.sort();
@@ -61,8 +53,6 @@ const ReceptionistStock: React.FC = () => {
 
   const filteredProducts = useMemo(() => {
     let result = currentList;
-
-    // Filter by search text
     if (filter.trim()) {
       const q = filter.trim().toLowerCase();
       result = result.filter(
@@ -71,25 +61,20 @@ const ReceptionistStock: React.FC = () => {
           (p.category || "").toLowerCase().includes(q)
       );
     }
-
-    // Filter by low stock
     if (lowStockOnly) {
       result = result.filter((p) => p.stock < 10);
     }
-
-    // Filter by category
     if (categoryFilter !== "all") {
-      result = result.filter((p) => p.category === categoryFilter);
+      result = result.filter((p) => (p.category || "") === categoryFilter);
     }
-
     return result;
   }, [currentList, filter, lowStockOnly, categoryFilter]);
 
-  const adjustStock = (id: number, delta: number) => {
+  const adjustStock = (id: string, delta: number) => {
     if (!editing || !draft) return;
     setDraft((prev) =>
       (prev || []).map((p) => {
-        if (Number(p.id) === id) {
+        if (p.id === id) {
           const newStock = Math.max(0, p.stock + delta);
           return { ...p, stock: newStock };
         }
@@ -98,13 +83,11 @@ const ReceptionistStock: React.FC = () => {
     );
   };
 
-  const setStockValue = (id: number, value: number) => {
+  const setStockValue = (id: string, value: number) => {
     if (!editing || !draft) return;
     const newStock = Math.max(0, value);
     setDraft((prev) =>
-      (prev || []).map((p) =>
-        Number(p.id) === id ? { ...p, stock: newStock } : p
-      )
+      (prev || []).map((p) => (p.id === id ? { ...p, stock: newStock } : p))
     );
   };
 
@@ -284,7 +267,9 @@ const ReceptionistStock: React.FC = () => {
                   </td>
                   <td>{product.category || "-"}</td>
                   <td>
-                    {product.sizes.length ? product.sizes.join(", ") : "-"}
+                    {product.sizes && product.sizes.length
+                      ? product.sizes.join(", ")
+                      : "-"}
                   </td>
                   <td>
                     <span
@@ -304,14 +289,14 @@ const ReceptionistStock: React.FC = () => {
                       <div className="quick-adjust">
                         <button
                           className="btn stock-btn"
-                          onClick={() => adjustStock(Number(product.id), -1)}
+                          onClick={() => adjustStock(product.id, -1)}
                           disabled={!editing || product.stock <= 0}
                         >
                           -
                         </button>
                         <button
                           className="btn stock-btn"
-                          onClick={() => adjustStock(Number(product.id), 1)}
+                          onClick={() => adjustStock(product.id, 1)}
                           disabled={!editing}
                         >
                           +
@@ -325,7 +310,7 @@ const ReceptionistStock: React.FC = () => {
                           value={product.stock}
                           onChange={(e) =>
                             setStockValue(
-                              Number(product.id),
+                              product.id,
                               parseInt(e.target.value) || 0
                             )
                           }
@@ -402,7 +387,6 @@ const ReceptionistStock: React.FC = () => {
                         {product.stock} unidades
                       </span>
                     </div>
-                    {/* Solo aviso: sin acciones de reposición */}
                   </div>
                 ))}
             </div>

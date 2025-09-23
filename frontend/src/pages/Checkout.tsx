@@ -5,12 +5,21 @@ import { useNavigate } from "react-router-dom";
 import { CartItem } from "../types/cart";
 import WhatsAppButton from "../components/WhatsAppButton";
 import ProgressBar from "../components/ProgressBar";
+import { User } from "../types/user";
 
 // Form data interface
 interface FormData {
   name: string;
   email: string;
   phone: string;
+  notes: string; // New field for observations
+}
+
+// Get user from localStorage (same as App.tsx)
+function getLoggedUser(): User | null {
+  const savedUser = localStorage.getItem("user");
+  if (savedUser) return JSON.parse(savedUser);
+  return null;
 }
 
 // Page for handling checkout process
@@ -35,10 +44,14 @@ const Checkout = () => {
   const total = subtotal;
 
   // Form states
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    phone: "",
+  const [formData, setFormData] = useState<FormData>(() => {
+    const user = getLoggedUser();
+    return {
+      name: user ? `${user.name} ${user.surname ?? ""}`.trim() : "",
+      email: user?.email || "",
+      phone: user?.phone || "",
+      notes: "",
+    };
   });
 
   // Handle input changes
@@ -67,6 +80,17 @@ const Checkout = () => {
       name.trim() !== "" && emailRegex.test(email) && phone.trim() !== "";
     setIsFormValid(isValid);
   }, [formData]);
+
+  // (Opcional) Si el usuario cambia durante la sesión, actualizar el form
+  useEffect(() => {
+    const user = getLoggedUser();
+    setFormData((prev) => ({
+      ...prev,
+      name: user ? `${user.name} ${user.surname ?? ""}`.trim() : "",
+      email: user?.email || "",
+      phone: user?.phone || "",
+    }));
+  }, []);
 
   return (
     <>
@@ -120,6 +144,21 @@ const Checkout = () => {
                     Teléfono
                   </label>
                 </div>
+              </div>
+
+              <div className="form__group field">
+                <textarea
+                  className="form__field notesInput"
+                  placeholder="Observaciones (opcional)"
+                  name="notes"
+                  value={formData.notes}
+                  onChange={handleInputChange as any}
+                  rows={3}
+                  style={{ resize: "vertical" }}
+                />
+                <label htmlFor="notes" className="form__label">
+                  Observaciones (opcional)
+                </label>
               </div>
 
               <button
