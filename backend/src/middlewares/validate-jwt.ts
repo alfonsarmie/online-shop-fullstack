@@ -9,7 +9,7 @@ export const requireAuth = (
   next: NextFunction
 ): void => {
   try {
-    const token = req.header("x-token"); 
+    const token = req.header("x-token");
     if (!token) {
       res.status(401).json({ message: "No token provided" });
       return;
@@ -56,7 +56,7 @@ export const validateJWT = async (
       return;
     }
 
-    // Verify if user is admin
+    // Verify if user is admin or receptionist
     if (userToValidate.role !== "admin") {
       res.status(403).json({
         message: "You do not have permission to perform this action",
@@ -89,5 +89,45 @@ export const validateJWT = async (
     res.status(401).json({
       message: "Invalid token",
     });
+  }
+};
+
+// Middleware: Only admin or receptionist can update products
+export const allowAdminOrReceptionist = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const token = req.header("x-token");
+  if (!token) {
+    res.status(401).json({ message: "No token provided" });
+    return;
+  }
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || "default_secret"
+    ) as { userId: number };
+    const { userId } = decoded;
+    const user = await User.findByPk(userId);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    if (user.role !== "admin" && user.role !== "receptionist") {
+      res.status(403).json({
+        message: "You do not have permission to update products",
+      });
+      return;
+    }
+    if (user.status === "deleted") {
+      res.status(404).json({ message: "User not found or already deleted" });
+      return;
+    }
+    // Attach user info if needed
+    (req as any).userId = userId;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: "Invalid token" });
   }
 };

@@ -204,7 +204,6 @@ export const updateProduct = async (
       }
     }
 
-    // 🔧 NUEVA LÓGICA: Manejo de imágenes
     if (images !== undefined) {
       // Eliminar todas las imágenes existentes del producto
       await Image.destroy({

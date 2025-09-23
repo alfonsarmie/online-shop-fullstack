@@ -11,7 +11,6 @@ export const productService = {
         id: product.idProduct.toString(),
         name: product.name,
         price: product.prices[0]?.value || 0,
-        // 🔧 SOLUCIÓN: Construir URL completa con el host del backend
         img:
           product.images && product.images.length > 0
             ? `http://localhost:3000${product.images[0].url}` // ← URL completa
@@ -74,7 +73,6 @@ export const productService = {
   // Actualizar un producto
   updateProduct: async (id: string, productData: any): Promise<Product> => {
     try {
-      // 🔧 Ahora envía JSON normal
       const response = await api.put(`/products/update/${id}`, productData);
       return response.data.product || response.data;
     } catch (error: any) {

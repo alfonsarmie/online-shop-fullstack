@@ -10,22 +10,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../styles/receiver-dashboard.css";
 import { Product } from "../types/product";
-import seed from "../data/products";
+import { productService } from "../services/productService";
 import SuccessMessage from "./SuccessMessage";
-
-const STORAGE_KEY = "adminProducts";
-
-function loadProducts(): Product[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (_) {}
-  return seed as Product[];
-}
-
-function saveProducts(data: Product[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
 
 const ReceptionistStock: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]); // persisted data
@@ -35,16 +21,32 @@ const ReceptionistStock: React.FC = () => {
   const [lowStockOnly, setLowStockOnly] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  // Load products from backend
   useEffect(() => {
-    const data = loadProducts();
-    setProducts(data);
+    setLoading(true);
+    productService
+      .getAllProducts()
+      .then((frontendProducts) => {
+        // Map FrontendProduct[] to Product[]
+        const mappedProducts = frontendProducts.map((fp: any) => ({
+          id: fp.id ?? fp.idProduct,
+          name: fp.name,
+          category: fp.category ?? (fp.categoryName || "-"),
+          price: fp.price ?? (fp.prices ? fp.prices[0] : 0),
+          stock: fp.stock,
+          sizes: fp.sizes ?? [],
+          // Add any other fields required by Product type
+          idProduct: fp.idProduct ?? fp.id,
+          idCategory: fp.idCategory ?? null,
+          prices: fp.prices ?? [],
+          images: fp.images ?? [],
+        }));
+        setProducts(mappedProducts);
+      })
+      .finally(() => setLoading(false));
   }, []);
-
-  // Persist only when not editing; Save button will persist edits
-  useEffect(() => {
-    if (!editing && products.length) saveProducts(products);
-  }, [products, editing]);
 
   // Get unique categories for filter
   const currentList = editing && draft ? draft : products;
@@ -126,6 +128,30 @@ const ReceptionistStock: React.FC = () => {
       currency: "ARS",
       maximumFractionDigits: 0,
     });
+
+  // Save changes to backend
+  const saveStockChanges = async () => {
+    if (!draft) return;
+    setLoading(true);
+    try {
+      // Only update products whose stock changed
+      const updates = draft.filter((d, i) => d.stock !== products[i]?.stock);
+      await Promise.all(
+        updates.map((p) =>
+          productService.updateProduct(p.id, { stock: p.stock })
+        )
+      );
+      setProducts(draft);
+      setSuccessMessage("Cambios de stock guardados");
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (e) {
+      setSuccessMessage("Error al guardar los cambios de stock");
+    } finally {
+      setEditing(false);
+      setDraft(null);
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="receiver-dashboard">
@@ -343,18 +369,10 @@ const ReceptionistStock: React.FC = () => {
               </button>
               <button
                 className="btn primary"
-                onClick={() => {
-                  if (draft) {
-                    setProducts(draft);
-                    saveProducts(draft);
-                    setSuccessMessage("Cambios de stock guardados");
-                    setTimeout(() => setSuccessMessage(""), 3000);
-                  }
-                  setEditing(false);
-                  setDraft(null);
-                }}
+                onClick={saveStockChanges}
+                disabled={loading}
               >
-                Guardar cambios
+                {loading ? "Guardando..." : "Guardar cambios"}
               </button>
             </div>
           )}
