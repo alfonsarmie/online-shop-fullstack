@@ -11,22 +11,22 @@ type Category = {
 
 const AdminCategories: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState(""); // Search filter
   const [creating, setCreating] = useState<Omit<Category, "idCategory">>({
     name: "",
   });
-  const [editMode, setEditMode] = useState(false);
-  const [edited, setEdited] = useState<Category[]>([]);
-  const [deleteTarget, setDeleteTarget] = useState<Category | null>(null);
+  const [editMode, setEditMode] = useState(false); // Boolean to indicate if we are in edit mode
+  const [edited, setEdited] = useState<Category[]>([]); // Editable copy of categories
+  const [deleteTarget, setDeleteTarget] = useState<Category | null>(null); // Category to delete
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Obtener categorías del backend
+  // Fetch categories from backend
   useEffect(() => {
     api
       .get("/categories")
       .then((res) => {
-        console.log("Respuesta backend categorías:", res.data);
+        console.log("Respuesta backend categorías:", res.data); // Debug log
         if (Array.isArray(res.data)) {
           setCategories(res.data);
         } else if (res.data && Array.isArray(res.data.categories)) {
@@ -38,6 +38,7 @@ const AdminCategories: React.FC = () => {
       .catch(() => setCategories([]));
   }, []);
 
+  // Filtered and/or edited view of categories
   const view = useMemo(() => {
     const q = filter.trim().toLowerCase();
     const source = editMode ? edited : categories;
@@ -49,17 +50,20 @@ const AdminCategories: React.FC = () => {
     );
   }, [categories, edited, editMode, filter]);
 
+  // Start bulk editing
   const startBulkEdit = () => {
-    // Copia editable
+    // Editable copy
     setEdited(categories.map((c) => ({ ...c })));
     setEditMode(true);
   };
 
+  // Cancel bulk editing
   const cancelBulkEdit = () => {
     setEdited([]);
     setEditMode(false);
   };
 
+  // Handle changes in editable fields
   const onEditedChange = (idCategory: number, key: "name", value: string) => {
     if (!editMode) return;
     setEdited((prev) =>
@@ -69,6 +73,7 @@ const AdminCategories: React.FC = () => {
     );
   };
 
+  // Save all changes to backend
   const saveBulkChanges = async () => {
     try {
       await Promise.all(
@@ -79,14 +84,17 @@ const AdminCategories: React.FC = () => {
       setCategories(edited);
       setEditMode(false);
       setSuccessMessage("Cambios guardados exitosamente.");
-      setTimeout(() => setSuccessMessage(''), 3000);
+      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
       console.error("Error al guardar cambios:", error);
-      setErrorMessage("No se pudieron guardar los cambios. Intente nuevamente.");
-      setTimeout(() => setErrorMessage(''), 3000);
+      setErrorMessage(
+        "No se pudieron guardar los cambios. Intente nuevamente."
+      );
+      setTimeout(() => setErrorMessage(""), 3000);
     }
   };
 
+  // Create a new category
   const create = async () => {
     const name = creating.name.trim();
     if (!name) return;
@@ -97,41 +105,49 @@ const AdminCategories: React.FC = () => {
         setCategories((prev) => [...prev, res.data]);
         setCreating({ name: "" });
         setSuccessMessage("Categoría creada exitosamente.");
-        setTimeout(() => setSuccessMessage(''), 3000);
+        setTimeout(() => setSuccessMessage(""), 3000);
       }
     } catch (error) {
       console.error("Error al crear categoría:", error);
       setErrorMessage("No se pudo crear la categoría. Intente nuevamente.");
-      setTimeout(() => setErrorMessage(''), 3000);
+      setTimeout(() => setErrorMessage(""), 3000);
     }
   };
 
+  // Confirm deletion of a category
   const confirmDelete = (c: Category) => setDeleteTarget(c);
 
+  // Delete a category
   const deleteCategory = async (idCategory: number) => {
     try {
       await api.delete(`/categories/${idCategory}`);
       setCategories((prev) => prev.filter((c) => c.idCategory !== idCategory));
       setSuccessMessage("Categoría eliminada exitosamente.");
-      setTimeout(() => setSuccessMessage(''), 3000);
+      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error: any) {
       console.error("Error al eliminar categoría:", error);
-      setErrorMessage("No se pudo eliminar la categoría. Intente nuevamente.");
-      setTimeout(() => setErrorMessage(''), 3000);
-      if (error.response && error.response.data && error.response.data.error) {
-        if (
-          error.response.data.error.toLowerCase().includes("integridad referencial") ||
-          error.response.data.error.toLowerCase().includes("foreign key") ||
-          error.response.data.error.toLowerCase().includes("constraint")
-        ) {
-          setErrorMessage("No se puede eliminar la categoría porque tiene productos asociados.");
-          setTimeout(() => setErrorMessage(''), 3000);
-          return;
-        } else {
-          setErrorMessage("No se puede eliminar la categoría porque tiene productos asociados.");
-          setTimeout(() => setErrorMessage(''), 3000);
-        }
+      let backendMsg =
+        error.response?.data?.error?.toLowerCase() ||
+        error.message?.toLowerCase() ||
+        "";
+
+      // Si el mensaje del backend o el status code indica error de integridad, mostrar mensaje personalizado
+      const isIntegrityError =
+        backendMsg.includes("integridad referencial") ||
+        backendMsg.includes("foreign key") ||
+        backendMsg.includes("constraint") ||
+        (error.response?.status === 500 && backendMsg.includes("error interno"));
+
+      if (isIntegrityError) {
+        setErrorMessage(
+          "No se puede eliminar la categoría porque tiene productos asociados."
+        );
+      } else {
+        setErrorMessage(
+          backendMsg || "No se pudo eliminar la categoría. Intente nuevamente."
+        );
       }
+      setTimeout(() => setErrorMessage(""), 3000);
     }
   };
 

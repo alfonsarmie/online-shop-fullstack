@@ -12,7 +12,8 @@ interface FormData {
   name: string;
   email: string;
   phone: string;
-  notes: string; // New field for observations
+  notes: string;
+  deportes: string[];
 }
 
 // Get user from localStorage (same as App.tsx)
@@ -51,13 +52,25 @@ const Checkout = () => {
       email: user?.email || "",
       phone: user?.phone || "",
       notes: "",
+      deportes: [],
     };
   });
 
   // Handle input changes
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  // Hlde manejar cambios en los checkboxes de deportes
+  const handleDeporteChange = (deporte: string, checked: boolean) => {
+    setFormData((prev) => {
+      if (checked) {
+        return { ...prev, deportes: [...prev.deportes, deporte] };
+      } else {
+        return { ...prev, deportes: prev.deportes.filter((d) => d !== deporte) };
+      }
+    });
   };
 
   // Handle form submission
@@ -100,7 +113,7 @@ const Checkout = () => {
           <div className="form-container">
             <form onSubmit={handleSubmit} className="checkout-form">
               <h3>Tus detalles</h3>
-              <div className="form__group field">
+              <div className="form__group_checkout field">
                 <input
                   type="text"
                   className="form__field nameInput"
@@ -115,8 +128,8 @@ const Checkout = () => {
                 </label>
               </div>
 
-              <div className="email-phone-container">
-                <div className="form__group field">
+
+                <div className="form__group_checkout field">
                   <input
                     type="email"
                     className="form__field emailInput"
@@ -130,7 +143,7 @@ const Checkout = () => {
                     Correo electrónico
                   </label>
                 </div>
-                <div className="form__group field">
+                <div className="form__group_checkout field">
                   <input
                     type="text"
                     className="form__field phoneInput"
@@ -144,9 +157,8 @@ const Checkout = () => {
                     Teléfono
                   </label>
                 </div>
-              </div>
 
-              <div className="form__group field">
+              <div className="form__group_checkout field">
                 <textarea
                   className="form__field notesInput"
                   placeholder="Observaciones (opcional)"
@@ -159,6 +171,24 @@ const Checkout = () => {
                 <label htmlFor="notes" className="form__label">
                   Observaciones (opcional)
                 </label>
+              </div>
+
+              {/* Sports checkboxes */}
+              <div style={{ margin: "18px 0 10px 0" }}>
+                <span className="deportes-label">¿Qué deporte/s practicás?</span>
+                <span className="deportes-opcional">(opcional)</span>
+                <div className="deportes-container">
+                  {['hockey', 'futbol', 'futsal', 'voley', 'remo', 'natación', 'vela', 'tenis'].map((dep) => (
+                    <label key={dep} className="deporte-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={formData.deportes.includes(dep)}
+                        onChange={e => handleDeporteChange(dep, e.target.checked)}
+                      />
+                      {dep.charAt(0).toUpperCase() + dep.slice(1)}
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <button

@@ -213,9 +213,9 @@ nav li {
 
 .cart-badge {
   position: absolute;
-  top: -5px;
-  right: -5px;
-  background: red;
+  top: -12px;
+  right: -8px;
+  background: #0f401c;
   color: white;
   border-radius: 50%;
   width: 20px;
@@ -224,6 +224,9 @@ nav li {
   justify-content: center;
   align-items: center;
   font-size: 12px;
+  font-family: 'Afacad', sans-serif;
+  border: 2px solid #1d1d1d;
+  font-weight: bold;
 }
 
 /* Dropdown */
