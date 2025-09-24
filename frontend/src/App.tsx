@@ -22,6 +22,9 @@ import VerifyEmail from './pages/VerifyEmail';
 import ProductDetails from './pages/ProductDetails';
 import Checkout from './pages/Checkout';
 import Payment from './pages/Payment';
+import CheckoutSuccess from './pages/CheckoutSuccess';
+import CheckoutFailure from './pages/CheckoutFailure';
+import CheckoutPending from './pages/CheckoutPending';
 import AboutUs from './pages/AboutUs';
 import Catalog from './pages/Catalog';
 import AdminDashboard from './pages/AdminDashboard';
@@ -76,6 +79,9 @@ function App() {
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/payment" element={<Payment />} />
+          <Route path="/checkout/success" element={<CheckoutSuccess />} />
+          <Route path="/checkout/failure" element={<CheckoutFailure />} />
+          <Route path="/checkout/pending" element={<CheckoutPending />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/catalog/:category" element={<Catalog />} />
           <Route path="/my-orders" element={<MyOrders />} />
