@@ -6,6 +6,7 @@ import { useCart } from "./CartContext";
 import ProductFilter from "./ProductFilter";
 import { ProductWithSize, FrontendProduct } from "../types/product";
 import { productService } from "../services/productService";
+import LoadingSpinner from "./LoadingSpinner";
 
 type FilterType = "price_asc" | "price_desc" | "name_asc" | "";
 
@@ -88,7 +89,11 @@ function Products() {
   const sortedProducts = getSortedProducts();
 
   if (loading) {
-    return <div className="loading">Cargando productos...</div>;
+    return (
+      <div className="loading-container">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (error) {

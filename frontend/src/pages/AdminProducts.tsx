@@ -5,6 +5,7 @@ import { productService } from "../services/productService";
 import api from "../services/api";
 import SuccessMessage from "../components/SuccessMessage";
 import ErrorMessage from "../components/ErrorMessage";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 type Draft = Omit<FrontendProduct, "id"> & {
   color?: string;
@@ -504,7 +505,7 @@ const AdminProducts: React.FC = () => {
   }, [products, filter]);
 
   if (loading) {
-    return <div className="loading">Cargando productos...</div>;
+    return <div className="loading"><LoadingSpinner /></div>;
   }
 
   return (
@@ -534,7 +535,7 @@ const AdminProducts: React.FC = () => {
       <h1>Gestión de productos</h1>
       <p className="subtitle">Crear, editar, eliminar y ajustar stock</p>
 
-      {uploading && <div className="loading">Procesando...</div>}
+      {uploading && <div className="loading"><LoadingSpinner /></div>}
 
       {/* CREATION FORM */}
       <section className="panel">

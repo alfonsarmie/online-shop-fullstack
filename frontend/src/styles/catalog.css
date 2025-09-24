@@ -36,6 +36,10 @@ body {
   font-weight: bold;
 }
 
+.breadcrumb .no-active {
+  color: #2f2f2f;
+} 
+
 .categoria-header h1 {
   color: #1E7335;
   font-size: 2.2rem;
@@ -100,35 +104,6 @@ body {
   flex-wrap: wrap;
   gap: 40px;
   justify-content: center;
-}
-
-/* Pagination */
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 30px;
-}
-
-.pagination button {
-  padding: 8px 15px;
-  border: 1px solid #ddd;
-  background-color: white;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: 'Afacad';
-}
-
-.pagination button:hover {
-  border-color: #1E7335;
-  color: #1E7335;
-}
-
-.pagination .current-page  {
-  background-color: #1E7335;
-  color: white;
-  border-color: #1E7335;
 }
 
 /* Responsive */

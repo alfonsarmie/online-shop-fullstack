@@ -127,7 +127,7 @@ const Catalog = () => {
       {/* Category Header */}
       <div className="categoria-header">
         <div className="breadcrumb">
-          <Link to="/"><span>Inicio</span></Link> /
+          <Link to="/"><span className="no-active">Inicio</span></Link> /
           <Link to={`/catalog/${category}`}><span className="active"> {category}</span></Link>
         </div>
         <h1>{getHeaderTitle()}</h1>
@@ -167,16 +167,6 @@ const Catalog = () => {
           </div>
         )}
       </div>
-
-      {/* Pagination - Solo mostrar si hay productos */}
-      {sortedProducts.length > 0 && (
-        <div className="pagination">
-          <button className="current-page">1</button>
-          <button>2</button>
-          <button>3</button>
-          <button>Siguiente →</button>
-        </div>
-      )}
 
       <WhatsAppButton />
     </div>
