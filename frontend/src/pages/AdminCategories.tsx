@@ -1,6 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import api from '../services/api';
-import '../styles/admin-orders.css';
+import React, { useEffect, useMemo, useState } from "react";
+import api from "../services/api";
+import "../styles/admin-orders.css";
+import SuccessMessage from "../components/SuccessMessage";
+import ErrorMessage from "../components/ErrorMessage";
 
 type Category = {
   idCategory: number;
@@ -9,17 +11,22 @@ type Category = {
 
 const AdminCategories: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [filter, setFilter] = useState('');
-  const [creating, setCreating] = useState<Omit<Category, 'idCategory'>>({ name: '' });
+  const [filter, setFilter] = useState("");
+  const [creating, setCreating] = useState<Omit<Category, "idCategory">>({
+    name: "",
+  });
   const [editMode, setEditMode] = useState(false);
   const [edited, setEdited] = useState<Category[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<Category | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Obtener categorías del backend
   useEffect(() => {
-    api.get('/categories')
-      .then(res => {
-        console.log('Respuesta backend categorías:', res.data);
+    api
+      .get("/categories")
+      .then((res) => {
+        console.log("Respuesta backend categorías:", res.data);
         if (Array.isArray(res.data)) {
           setCategories(res.data);
         } else if (res.data && Array.isArray(res.data.categories)) {
@@ -36,15 +43,15 @@ const AdminCategories: React.FC = () => {
     const source = editMode ? edited : categories;
     if (!Array.isArray(source)) return [];
     if (!q) return source;
-    return source.filter(c =>
-      c.name.toLowerCase().includes(q) ||
-      c.idCategory.toString().includes(q)
+    return source.filter(
+      (c) =>
+        c.name.toLowerCase().includes(q) || c.idCategory.toString().includes(q)
     );
   }, [categories, edited, editMode, filter]);
 
   const startBulkEdit = () => {
     // Copia editable
-    setEdited(categories.map(c => ({ ...c })));
+    setEdited(categories.map((c) => ({ ...c })));
     setEditMode(true);
   };
 
@@ -53,35 +60,49 @@ const AdminCategories: React.FC = () => {
     setEditMode(false);
   };
 
-  const onEditedChange = (idCategory: number, key: 'name', value: string) => {
+  const onEditedChange = (idCategory: number, key: "name", value: string) => {
     if (!editMode) return;
-    setEdited(prev => prev.map(c => c.idCategory === idCategory ? { ...c, [key]: value } : c));
+    setEdited((prev) =>
+      prev.map((c) =>
+        c.idCategory === idCategory ? { ...c, [key]: value } : c
+      )
+    );
   };
 
   const saveBulkChanges = async () => {
     try {
-      await Promise.all(edited.map(async (cat) => {
-        await api.put(`/categories/${cat.idCategory}`, cat);
-      }));
+      await Promise.all(
+        edited.map(async (cat) => {
+          await api.put(`/categories/${cat.idCategory}`, cat);
+        })
+      );
       setCategories(edited);
       setEditMode(false);
+      setSuccessMessage("Cambios guardados exitosamente.");
+      setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
-      console.error('Error al guardar cambios:', error);
+      console.error("Error al guardar cambios:", error);
+      setErrorMessage("No se pudieron guardar los cambios. Intente nuevamente.");
+      setTimeout(() => setErrorMessage(''), 3000);
     }
   };
 
   const create = async () => {
     const name = creating.name.trim();
     if (!name) return;
-    
+
     try {
-  const res = await api.post('/categories', { name });
+      const res = await api.post("/categories", { name });
       if (res.status === 201 || res.status === 200) {
-        setCategories(prev => [...prev, res.data]);
-        setCreating({ name: '' });
+        setCategories((prev) => [...prev, res.data]);
+        setCreating({ name: "" });
+        setSuccessMessage("Categoría creada exitosamente.");
+        setTimeout(() => setSuccessMessage(''), 3000);
       }
     } catch (error) {
-      console.error('Error al crear categoría:', error);
+      console.error("Error al crear categoría:", error);
+      setErrorMessage("No se pudo crear la categoría. Intente nuevamente.");
+      setTimeout(() => setErrorMessage(''), 3000);
     }
   };
 
@@ -89,17 +110,45 @@ const AdminCategories: React.FC = () => {
 
   const deleteCategory = async (idCategory: number) => {
     try {
-  await api.delete(`/categories/${idCategory}`);
-      setCategories(prev => prev.filter(c => c.idCategory !== idCategory));
-    } catch (error) {
-      console.error('Error al eliminar categoría:', error);
+      await api.delete(`/categories/${idCategory}`);
+      setCategories((prev) => prev.filter((c) => c.idCategory !== idCategory));
+      setSuccessMessage("Categoría eliminada exitosamente.");
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (error: any) {
+      console.error("Error al eliminar categoría:", error);
+      setErrorMessage("No se pudo eliminar la categoría. Intente nuevamente.");
+      setTimeout(() => setErrorMessage(''), 3000);
+      if (error.response && error.response.data && error.response.data.error) {
+        if (
+          error.response.data.error.toLowerCase().includes("integridad referencial") ||
+          error.response.data.error.toLowerCase().includes("foreign key") ||
+          error.response.data.error.toLowerCase().includes("constraint")
+        ) {
+          setErrorMessage("No se puede eliminar la categoría porque tiene productos asociados.");
+          setTimeout(() => setErrorMessage(''), 3000);
+          return;
+        } else {
+          setErrorMessage("No se puede eliminar la categoría porque tiene productos asociados.");
+          setTimeout(() => setErrorMessage(''), 3000);
+        }
+      }
     }
   };
 
   return (
     <div className="admin-orders">
+      <SuccessMessage
+        message={successMessage ?? ""}
+        onClose={() => setSuccessMessage(null)}
+      />
+      <ErrorMessage
+        message={errorMessage ?? ""}
+        onClose={() => setErrorMessage(null)}
+      />
       <h1>Gestión de categorías</h1>
-      <p className="subtitle">Crear, editar y eliminar categorías de productos</p>
+      <p className="subtitle">
+        Crear, editar y eliminar categorías de productos
+      </p>
 
       {/* Crear nueva categoría */}
       <section className="panel">
@@ -113,13 +162,17 @@ const AdminCategories: React.FC = () => {
               <input
                 className="input-admin"
                 value={creating.name}
-                onChange={e => setCreating(v => ({ ...v, name: e.target.value }))}
+                onChange={(e) =>
+                  setCreating((v) => ({ ...v, name: e.target.value }))
+                }
                 placeholder="Nombre de la categoría"
               />
             </label>
           </div>
-          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-            <button className="btn primary" onClick={create}>Crear categoría</button>
+          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+            <button className="btn primary" onClick={create}>
+              Crear categoría
+            </button>
           </div>
         </div>
       </section>
@@ -133,11 +186,13 @@ const AdminCategories: React.FC = () => {
               className="input-admin"
               placeholder="Buscar por nombre o ID"
               value={filter}
-              onChange={e => setFilter(e.target.value)}
+              onChange={(e) => setFilter(e.target.value)}
               style={{ minWidth: 260 }}
             />
             {!editMode && (
-              <button className="btn primary" onClick={startBulkEdit}>Modificar categorías</button>
+              <button className="btn primary" onClick={startBulkEdit}>
+                Modificar categorías
+              </button>
             )}
           </div>
         </div>
@@ -151,7 +206,7 @@ const AdminCategories: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {view.map(c => (
+              {view.map((c) => (
                 <tr key={c.idCategory}>
                   <td>#{c.idCategory}</td>
                   <td>
@@ -159,28 +214,54 @@ const AdminCategories: React.FC = () => {
                       <input
                         className="input-admin"
                         value={c.name}
-                        onChange={e => onEditedChange(c.idCategory, 'name', e.target.value)}
+                        onChange={(e) =>
+                          onEditedChange(c.idCategory, "name", e.target.value)
+                        }
                       />
-                    ) : (c.name)}
+                    ) : (
+                      c.name
+                    )}
                   </td>
                   <td>
                     <div className="row-actions">
-                      <button className="btn danger" disabled={editMode} onClick={() => confirmDelete(c)}>Eliminar</button>
+                      <button
+                        className="btn danger"
+                        disabled={editMode}
+                        onClick={() => confirmDelete(c)}
+                      >
+                        Eliminar
+                      </button>
                     </div>
                   </td>
                 </tr>
               ))}
               {view.length === 0 && (
                 <tr>
-                  <td colSpan={3} style={{ textAlign: 'center', color: '#bdbdbd' }}>No hay categorías para mostrar</td>
+                  <td
+                    colSpan={3}
+                    style={{ textAlign: "center", color: "#bdbdbd" }}
+                  >
+                    No hay categorías para mostrar
+                  </td>
                 </tr>
               )}
             </tbody>
           </table>
           {editMode && (
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 12 }}>
-              <button className="btn" onClick={cancelBulkEdit}>Cancelar</button>
-              <button className="btn primary" onClick={saveBulkChanges}>Guardar cambios</button>
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                justifyContent: "flex-end",
+                marginTop: 12,
+              }}
+            >
+              <button className="btn" onClick={cancelBulkEdit}>
+                Cancelar
+              </button>
+              <button className="btn primary" onClick={saveBulkChanges}>
+                Guardar cambios
+              </button>
             </div>
           )}
         </div>
@@ -189,16 +270,34 @@ const AdminCategories: React.FC = () => {
       {/* Modal de confirmación */}
       {deleteTarget && (
         <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Eliminar categoría #{deleteTarget.idCategory}</h2>
-              <button className="btn-close" onClick={() => setDeleteTarget(null)}>×</button>
+              <button
+                className="btn-close"
+                onClick={() => setDeleteTarget(null)}
+              >
+                ×
+              </button>
             </div>
             <div className="modal-body">
-              <p className="modal-warning">¿Estás seguro de eliminar "{deleteTarget.name}"? Esta acción es irreversible.</p>
-              <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-                <button className="btn" onClick={() => setDeleteTarget(null)}>Cancelar</button>
-                <button className="btn danger" onClick={() => { deleteCategory(deleteTarget.idCategory); setDeleteTarget(null); }}>Eliminar definitivamente</button>
+              <p className="modal-warning">
+                ¿Estás seguro de eliminar "{deleteTarget.name}"? Esta acción es
+                irreversible.
+              </p>
+              <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                <button className="btn" onClick={() => setDeleteTarget(null)}>
+                  Cancelar
+                </button>
+                <button
+                  className="btn danger"
+                  onClick={() => {
+                    deleteCategory(deleteTarget.idCategory);
+                    setDeleteTarget(null);
+                  }}
+                >
+                  Eliminar definitivamente
+                </button>
               </div>
             </div>
           </div>
