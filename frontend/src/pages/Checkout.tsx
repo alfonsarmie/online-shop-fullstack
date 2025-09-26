@@ -175,7 +175,7 @@ const Checkout = () => {
 
               {/* Sports checkboxes */}
               <div style={{ margin: "18px 0 10px 0" }}>
-                <span className="deportes-label">¿Qué deporte/s practicás?</span>
+                <span className="deportes-label">¿Qué deporte/s practicás en Rowing?</span>
                 <span className="deportes-opcional">(opcional)</span>
                 <div className="deportes-container">
                   {['hockey', 'futbol', 'futsal', 'voley', 'remo', 'natación', 'vela', 'tenis'].map((dep) => (

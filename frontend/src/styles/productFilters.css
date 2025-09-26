@@ -55,6 +55,7 @@
 .filters li {
   padding: 10px 20px;
   cursor: pointer;
+  color: #323232;
 }
 
 .filters li:hover {

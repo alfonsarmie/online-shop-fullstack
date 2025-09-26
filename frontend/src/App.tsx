@@ -38,6 +38,7 @@ import ReceptionistStock from './components/ReceptionistStock';
 import MyOrders from './pages/MyOrders';
 import { User } from './types/user';
 import { useLocation } from 'react-router-dom';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   // State to manage user authentication
@@ -85,11 +86,27 @@ function App() {
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/catalog/:category" element={<Catalog />} />
           <Route path="/my-orders" element={<MyOrders />} />
-          {/* Admin routes (kebab-case) */}
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/admin-products" element={<AdminProducts />} />
-          <Route path="/admin-orders" element={<AdminOrders />} />
-          <Route path="/admin-categories" element={<AdminCategories />} />
+          {/* Admin protected routes */}
+          <Route path="/admin-dashboard" element={
+            <PrivateRoute user={user} requiredRole="admin">
+              <AdminDashboard />
+            </PrivateRoute>
+          } />
+          <Route path="/admin-products" element={
+            <PrivateRoute user={user} requiredRole="admin">
+              <AdminProducts />
+            </PrivateRoute>
+          } />
+          <Route path="/admin-orders" element={
+            <PrivateRoute user={user} requiredRole="admin">
+              <AdminOrders />
+            </PrivateRoute>
+          } />
+          <Route path="/admin-categories" element={
+            <PrivateRoute user={user} requiredRole="admin">
+              <AdminCategories />
+            </PrivateRoute>
+          } />
           {/* Backwards compatibility redirects */}
           <Route path="/admindashboard" element={<Navigate to="/admin-dashboard" replace />} />
           <Route path="/adminproducts" element={<Navigate to="/admin-products" replace />} />
@@ -97,9 +114,17 @@ function App() {
           <Route path="/admincategories" element={<Navigate to="/admin-categories" replace />} />
           <Route path="/profile-edit" element={<ProfileEdit user={user} setUser={setUser} />} />
           <Route path="/delivery" element={<Delivery user={user} setUser={setUser} />} />
-          {/* Receptionist routes (kebab-case) */}
-          <Route path="/receptionist-orders" element={<ReceptionistOrders />} />
-          <Route path="/receptionist-stock" element={<ReceptionistStock />} />
+          {/* Receptionist routes protegidas */}
+          <Route path="/receptionist-orders" element={
+            <PrivateRoute user={user} requiredRole="receptionist">
+              <ReceptionistOrders />
+            </PrivateRoute>
+          } />
+          <Route path="/receptionist-stock" element={
+            <PrivateRoute user={user} requiredRole="receptionist">
+              <ReceptionistStock />
+            </PrivateRoute>
+          } />
           {/* Backwards compatibility redirects */}
           <Route path="/receptionist" element={<Navigate to="/receptionist-orders" replace />} />
           <Route path="/receptionist/orders" element={<Navigate to="/receptionist-orders" replace />} />
