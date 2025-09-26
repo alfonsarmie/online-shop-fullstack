@@ -16,7 +16,6 @@ function mapProductToFrontend(p: Product): FrontendProduct {
     sizes: p.sizes ? p.sizes.map((s) => s.sizeDesc || s.name) : [],
     stock: p.stock,
     category: p.category ? p.category.name : "",
-    color: undefined,
   };
 }
 

@@ -8,7 +8,6 @@ import ErrorMessage from "../components/ErrorMessage";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 type Draft = Omit<FrontendProduct, "id"> & {
-  color?: string;
   imgFile?: File;
   img2File?: File;
 };
@@ -24,7 +23,6 @@ const emptyDraft: Draft = {
   sizes: [],
   stock: 0,
   category: "",
-  color: "",
   img: "",
   img2: "",
 };
@@ -41,7 +39,6 @@ const MOCK_PRODUCTS: FrontendProduct[] = [
     category: "Remera",
     img: "",
     img2: "",
-    color: "Verde",
   },
 ];
 
@@ -55,9 +52,9 @@ const AdminProducts: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [categoryOptions, setCategoryOptions] = useState<{ id: string; name: string }[]>(
-    []
-  );
+  const [categoryOptions, setCategoryOptions] = useState<
+    { id: string; name: string }[]
+  >([]);
 
   // Function to upload images
   const uploadImage = async (file: File): Promise<string> => {
@@ -142,7 +139,8 @@ const AdminProducts: React.FC = () => {
 
   // Cargar categorías dinámicamente
   useEffect(() => {
-    api.get("/categories")
+    api
+      .get("/categories")
       .then((res) => {
         if (Array.isArray(res.data)) {
           setCategoryOptions(
@@ -198,7 +196,7 @@ const AdminProducts: React.FC = () => {
         name: creating.name.trim(),
         description: creating.description.trim(),
         stock: creating.stock,
-  idCategory: parseInt(creating.category || ''),
+        idCategory: parseInt(creating.category || ""),
         initialPrice: creating.price,
         sizes: sizeIds.filter((id) => id !== 0),
       };
@@ -280,7 +278,6 @@ const AdminProducts: React.FC = () => {
         category: "",
         img: "",
         img2: "",
-        color: "",
       };
     }
 
@@ -323,7 +320,6 @@ const AdminProducts: React.FC = () => {
       sizes: sizes,
       stock: product.stock || 0,
       category: category,
-      color: product.color || "",
     };
   };
 
@@ -447,8 +443,8 @@ const AdminProducts: React.FC = () => {
     setEditingId(p.id);
 
     // Find the category ID based on the name
-  const categoryObj = categoryOptions.find((cat) => cat.name === p.category);
-  const categoryId = categoryObj ? categoryObj.id : "";
+    const categoryObj = categoryOptions.find((cat) => cat.name === p.category);
+    const categoryId = categoryObj ? categoryObj.id : "";
 
     setEditing({
       name: p.name,
@@ -457,7 +453,6 @@ const AdminProducts: React.FC = () => {
       sizes: p.sizes,
       stock: p.stock,
       category: categoryId, // Save the ID, not the name
-      color: p.color || "",
       img: p.img || "",
       img2: p.img2 || "",
     });
@@ -499,13 +494,16 @@ const AdminProducts: React.FC = () => {
     return products.filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
-        (p.category || "").toLowerCase().includes(q) ||
-        (p.color || "").toLowerCase().includes(q)
+        (p.category || "").toLowerCase().includes(q)
     );
   }, [products, filter]);
 
   if (loading) {
-    return <div className="loading"><LoadingSpinner /></div>;
+    return (
+      <div className="loading">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   return (
@@ -535,7 +533,11 @@ const AdminProducts: React.FC = () => {
       <h1>Gestión de productos</h1>
       <p className="subtitle">Crear, editar, eliminar y ajustar stock</p>
 
-      {uploading && <div className="loading"><LoadingSpinner /></div>}
+      {uploading && (
+        <div className="loading">
+          <LoadingSpinner />
+        </div>
+      )}
 
       {/* CREATION FORM */}
       <section className="panel">
@@ -573,18 +575,6 @@ const AdminProducts: React.FC = () => {
           </label>
 
           <label>
-            <span className="span-admin">Color</span>
-            <input
-              className="input-admin"
-              placeholder="Ej: Verde, Negro, Blanco"
-              value={creating.color || ""}
-              onChange={(e) =>
-                setCreating({ ...creating, color: e.target.value })
-              }
-            />
-          </label>
-
-          <label>
             <span className="span-admin">Categoría</span>
             <select
               className="input-admin"
@@ -613,30 +603,30 @@ const AdminProducts: React.FC = () => {
             />
           </label>
 
-          <label className="col-2">
+          <div className="sizes">
             <span className="span-admin">Talles</span>
             <div className="sizes-container">
               {SIZE_OPTIONS.map((size) => (
                 <label key={size} className="checkbox">
                   <input
-                    type="checkbox"
-                    checked={(creating.sizes || []).includes(size)}
-                    onChange={(e) =>
-                      setCreating({
-                        ...creating,
-                        sizes: handleSizeChange(
-                          creating.sizes,
-                          size,
-                          e.target.checked
-                        ),
-                      })
-                    }
-                  />
-                  {size}
-                </label>
-              ))}
-            </div>
-          </label>
+                  type="checkbox"
+                  checked={(creating.sizes || []).includes(size)}
+                  onChange={(e) =>
+                    setCreating({
+                      ...creating,
+                      sizes: handleSizeChange(
+                        creating.sizes,
+                        size,
+                        e.target.checked
+                      ),
+                    })
+                  }
+                />
+                {size}
+              </label>
+            ))}
+          </div>
+          </div>
 
           <label>
             <span className="span-admin">Stock</span>
@@ -700,7 +690,7 @@ const AdminProducts: React.FC = () => {
           <div className="tools">
             <input
               className="search"
-              placeholder="Buscar por nombre, categoría o color"
+              placeholder="Buscar por nombre o categoría"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
             />
@@ -713,7 +703,6 @@ const AdminProducts: React.FC = () => {
               <tr>
                 <th>Producto</th>
                 <th>Precio</th>
-                <th>Color</th>
                 <th>Categoría</th>
                 <th>Talles</th>
                 <th>Stock</th>
@@ -725,7 +714,6 @@ const AdminProducts: React.FC = () => {
                 <tr key={p.id}>
                   <td>{p.name}</td>
                   <td>${p.price} ARS</td>
-                  <td>{p.color || "-"}</td>
                   <td>{p.category || "-"}</td>
                   <td>{renderSizes(p.sizes)}</td>
                   <td>{p.stock}</td>
@@ -791,16 +779,6 @@ const AdminProducts: React.FC = () => {
             </label>
 
             <label>
-              <span>Color</span>
-              <input
-                value={editing.color || ""}
-                onChange={(e) =>
-                  setEditing({ ...editing, color: e.target.value })
-                }
-              />
-            </label>
-
-            <label>
               <span>Categoría</span>
               <select
                 value={editing.category}
@@ -828,8 +806,8 @@ const AdminProducts: React.FC = () => {
               />
             </label>
 
-            <label className="col-2">
-              <span>Talles</span>
+            <div className="sizes">
+              <span className="span-admin">Talles</span>
               <div className="sizes-container">
                 {SIZE_OPTIONS.map((size) => (
                   <label key={size} className="checkbox">
@@ -851,7 +829,7 @@ const AdminProducts: React.FC = () => {
                   </label>
                 ))}
               </div>
-            </label>
+            </div>
 
             <label>
               <span>Stock</span>

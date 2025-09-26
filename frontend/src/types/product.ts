@@ -8,7 +8,6 @@ export interface FrontendProduct {
   sizes: string[];
   stock: number;
   category?: string;
-  color?: string;
 }
 
 export interface Product {

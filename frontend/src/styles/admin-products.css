@@ -113,10 +113,26 @@
 
 /* Form grid */
 .form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 16px;
 }
+
+.form-grid > label,
+.form-grid > div,
+.form-grid > textarea,
+.form-grid > select {
+  flex: 1 1 48%;
+  min-width: 220px;
+  max-width: 48%;
+  box-sizing: border-box;
+}
+
+.form-grid .col-2 {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
+
 
 .form-grid .col-2 {
   grid-column: span 2;
@@ -159,11 +175,20 @@
 }
 
 /* Sizes checkboxes */
+.sizes {
+  font-size: 14px;
+  color: #bdbdbd;
+  display: flex;
+  align-items: flex-start;
+  font-weight: 500;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .sizes-container {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 8px;
 }
 
 .checkbox {
