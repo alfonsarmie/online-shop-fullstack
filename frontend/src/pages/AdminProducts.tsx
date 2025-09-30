@@ -178,19 +178,29 @@ const AdminProducts: React.FC = () => {
 
   // Function to create a new product
   const create = async () => {
-    if (!creating.name.trim()) setErrorMessage("Nombre requerido");
-    setTimeout(() => setErrorMessage(""), 3000);
-    if (creating.price <= 0) setErrorMessage("Precio inválido");
-    setTimeout(() => setErrorMessage(""), 3000);
-    if (!creating.category) setErrorMessage("Categoría requerida");
-    setTimeout(() => setErrorMessage(""), 3000);
+    // Validación de campos requeridos
+    const errores: string[] = [];
+    if (!creating.name.trim()) errores.push("nombre");
+    if (creating.price <= 0) errores.push("precio");
+    if (!creating.category) errores.push("categoría");
+    if (!creating.description.trim()) errores.push("descripción");
+    if (creating.sizes.length === 0) errores.push("talles");
+    if (creating.stock <= 0) errores.push("stock");
+    // Puedes agregar validación de imágenes si son obligatorias
+
+    if (errores.length > 0) {
+      setErrorMessage(
+        `Error en la creación del producto: completa todos los campos requeridos (${errores.join(", ")})`
+      );
+      setTimeout(() => setErrorMessage(""), 4000);
+      return;
+    }
 
     try {
       setUploading(true);
-
+      // ...existing code...
       // Convert sizes to IDs
       const sizeIds = creating.sizes.map(mapSizeNameToId);
-
       // 1. Create the basic product
       const productData = {
         name: creating.name.trim(),
@@ -200,35 +210,18 @@ const AdminProducts: React.FC = () => {
         initialPrice: creating.price,
         sizes: sizeIds.filter((id) => id !== 0),
       };
-
-      // DEBUG: Check the data being sent
-      console.log("Enviando datos del producto:", productData);
-      console.log(
-        "idCategory type:",
-        typeof productData.idCategory,
-        productData.idCategory
-      );
-
-      // productService.createProduct returns the product directly
+      // ...existing code...
       const newProduct = await productService.createProduct(productData);
-
       if (!newProduct || !newProduct.idProduct) {
         throw new Error("Respuesta inválida del backend");
       }
-
-      // 2. Get the new product ID
+      // ...existing code...
       const productId = newProduct.idProduct;
-
-      // Debug: Check the created product
-      console.log("Producto creado:", newProduct);
-
-      // 3. Upload images if there are files
+      // ...existing code...
       const imageFiles = [
         { file: creating.imgFile, description: "Imagen principal" },
         { file: creating.img2File, description: "Imagen secundaria" },
       ].filter((img) => img.file);
-
-      // Upload each image and associate it with the product
       for (const image of imageFiles) {
         if (image.file) {
           try {
@@ -242,24 +235,20 @@ const AdminProducts: React.FC = () => {
           }
         }
       }
-
-      // 4. Refill the full product details
+      // ...existing code...
       const completeProduct = await api.get(`/products/${productId}`);
       const mappedProduct = mapProductToFrontend(completeProduct.data.product);
-
-      setProducts((prev) => [mappedProduct, ...prev]); // Add new product to the top
-      setCreating(emptyDraft); // Reset creation form
-
+      setProducts((prev) => [mappedProduct, ...prev]);
+      setCreating(emptyDraft);
       setMessage("Producto creado exitosamente!");
       setTimeout(() => {
         setMessage("");
       }, 1000);
     } catch (error: any) {
       console.error("Error creating product:", error);
-      const errorMessage =
-        error.response?.data?.message || error.message || "Error desconocido";
-      setErrorMessage(`Error al crear el producto: ${errorMessage}`);
-      setTimeout(() => setErrorMessage(""), 3000);
+      const detalle = error.response?.data?.message || error.message || "Error desconocido";
+      setErrorMessage(`Error en la creación del producto: ${detalle}`);
+      setTimeout(() => setErrorMessage(""), 4000);
     } finally {
       setUploading(false);
     }
@@ -343,12 +332,23 @@ const AdminProducts: React.FC = () => {
   // Function to apply edits to a product
   const applyEdit = async () => {
     if (editingId === null) return;
-    if (!editing.name.trim()) return setErrorMessage("Nombre requerido");
-    setTimeout(() => setErrorMessage(""), 3000);
-    if (editing.price <= 0) return setErrorMessage("Precio inválido");
-    setTimeout(() => setErrorMessage(""), 3000);
-    if (!editing.category) return setErrorMessage("Categoría requerida");
-    setTimeout(() => setErrorMessage(""), 3000);
+    // Validación de campos requeridos
+    const errores: string[] = [];
+    if (!editing.name.trim()) errores.push("nombre");
+    if (editing.price <= 0) errores.push("precio");
+    if (!editing.category) errores.push("categoría");
+    if (!editing.description.trim()) errores.push("descripción");
+    if ((editing.sizes || []).length === 0) errores.push("talles");
+    if (editing.stock <= 0) errores.push("stock");
+    // Puedes agregar validación de imágenes si son obligatorias
+
+    if (errores.length > 0) {
+      setErrorMessage(
+        `Error en la edición del producto: completa todos los campos requeridos (${errores.join(", ")})`
+      );
+      setTimeout(() => setErrorMessage(""), 4000);
+      return;
+    }
 
     try {
       setUploading(true);
@@ -382,7 +382,7 @@ const AdminProducts: React.FC = () => {
         name: editing.name.trim(),
         description: editing.description.trim(),
         stock: editing.stock,
-        idCategory: parseInt(editing.category),
+        idCategory: parseInt(editing.category || ""),
         initialPrice: editing.price,
         sizes: sizeIds.filter((id) => id !== 0),
         images: newImages.length > 0 ? newImages : undefined,
