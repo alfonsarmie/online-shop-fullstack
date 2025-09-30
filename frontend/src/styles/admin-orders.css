@@ -236,7 +236,7 @@ label .span-admin {
 .btn-close {
   background: none;
   border: none;
-  color: #e6e6e6;
+  color: #1a1a1a;
   font-size: 24px;
   cursor: pointer;
   padding: 0;
@@ -257,12 +257,7 @@ label .span-admin {
   font-weight: 500;
 }
 
-/* Ensure readable text inside modal tables */
-.modal-content .data-table th,
-.modal-content .data-table td {
-  color: #1a1a1a;
-  border-bottom: 1px solid #e6eaee;
-}
+
 
 .modal-content .text-muted { color: #60666b; }
 

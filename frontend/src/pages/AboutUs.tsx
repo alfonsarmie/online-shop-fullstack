@@ -7,7 +7,7 @@ import "../styles/footer.css";
 import remo from "../assets/img/travesia1.jpg";
 import rio from "../assets/img/rio.jpg";
 import WhatsAppButton from "../components/WhatsAppButton";
-import RotatingText from "../components/RotatingTextRef ";
+import RotatingText from "../components/RotatingTextRef";
 
 // icon imports
 import { FaHeart, FaHandsHelping, FaHistory } from "react-icons/fa";

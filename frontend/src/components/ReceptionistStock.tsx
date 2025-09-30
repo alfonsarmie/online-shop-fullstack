@@ -171,7 +171,7 @@ const ReceptionistStock: React.FC = () => {
         <div className="panel-body">
           <div className="filters-grid">
             <label>
-              <span className="span-admin">Buscar producto</span>
+              <span className="span-rec">Buscar producto</span>
               <input
                 className="input-admin"
                 placeholder="Buscar por nombre o categoría"
@@ -181,7 +181,7 @@ const ReceptionistStock: React.FC = () => {
             </label>
 
             <label>
-              <span className="span-admin">Categoría</span>
+              <span className="span-rec">Categoría</span>
               <select
                 className="input-admin"
                 value={categoryFilter}
@@ -196,13 +196,13 @@ const ReceptionistStock: React.FC = () => {
               </select>
             </label>
 
-            <label className="checkbox-label">
+            <label className="checkbox">
               <input
                 type="checkbox"
                 checked={lowStockOnly}
                 onChange={(e) => setLowStockOnly(e.target.checked)}
               />
-              <span>Mostrar solo stock bajo</span>
+              <span className="span-rec">Mostrar solo stock bajo</span>
             </label>
           </div>
         </div>

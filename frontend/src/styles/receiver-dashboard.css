@@ -77,11 +77,11 @@
   align-items: end;
 }
 
-label .span-admin {
-  display: block;
+label .span-rec {
+  display: flex;
+  align-items: center;
   color: #bdbdbd;
   font-size: 12px;
-  margin-bottom: 6px;
 }
 
 .input-admin, select {
@@ -102,6 +102,11 @@ label .span-admin {
 
 .checkbox-label input[type="checkbox"] {
   width: auto;
+}
+
+.checkbox input[type="checkbox"]::after {
+  left: 5px;
+  top: 0;
 }
 
 .data-table {
