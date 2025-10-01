@@ -29,6 +29,8 @@ function Navbar({ user, setUser }: NavbarProps) {
   const [successMessage, setSuccessMessage] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
@@ -86,6 +88,17 @@ function Navbar({ user, setUser }: NavbarProps) {
       document.removeEventListener("keydown", handleEscape);
     };
   }, [isSearchOpen]);
+
+  // Abrir/cerrar menú lateral mobile
+  const handleMobileMenuToggle = () => {
+    setIsMobileMenuOpen((prev) => !prev);
+    setIsMobileDropdownOpen(false);
+  };
+
+  // Abrir/cerrar dropdown de productos en mobile
+  const handleMobileDropdownToggle = () => {
+    setIsMobileDropdownOpen((prev) => !prev);
+  };
 
   // Toggle sidebar function
   const toggleSidebar = () => {
@@ -152,7 +165,7 @@ function Navbar({ user, setUser }: NavbarProps) {
       />
 
       <nav>
-        <div className="nav-toggle" id="navToggle">
+        <div className="nav-toggle" id="navToggle" onClick={handleMobileMenuToggle}>
           <FontAwesomeIcon icon={faBars} />
         </div>
 
@@ -162,6 +175,37 @@ function Navbar({ user, setUser }: NavbarProps) {
           </Link>
         </div>
 
+        {/* Menú lateral mobile */}
+        <div className={`mobile-menu${isMobileMenuOpen ? " open" : ""}`}>
+          <button className="nav-toggle close" onClick={handleMobileMenuToggle} aria-label="Cerrar menú">
+            &times;
+          </button>
+          {!isMobileDropdownOpen ? (
+            <ul className="mobile-menu-links">
+              <li onClick={handleHomeClick}><Link to="/">INICIO</Link></li>
+              <li>
+                <button className="mobile-dropdown-btn" onClick={handleMobileDropdownToggle}>
+                  PRODUCTOS
+                  <span className={`mobile-dropdown-caret${isMobileDropdownOpen ? " open" : ""}`}>▶</span>
+                </button>
+              </li>
+              <li><Link to="/about-us">ACERCA DE NOSOTROS</Link></li>
+              <li><Link to="/delivery">FORMAS DE ENTREGA</Link></li>
+            </ul>
+          ) : (
+            <div className="dropdown-mobile">
+              <DropdownMenu mobile={true} isOpen={isMobileDropdownOpen} onClose={handleMobileMenuToggle} />
+            </div>
+          )}
+          <div className="mobile-menu-cart">
+            <button onClick={openCart} className="cart-icon cart-btn">
+              <FontAwesomeIcon icon={faCartShopping} />
+              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+            </button>
+          </div>
+        </div>
+
+        {/* Menú desktop normal */}
         <div className="nav-links" id="navLinks">
           <ul>
             <li onClick={handleHomeClick}>

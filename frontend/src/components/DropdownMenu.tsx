@@ -7,7 +7,13 @@ interface Category {
   name: string;
 }
 
-function DropdownMenu() {
+interface DropdownMenuProps {
+  mobile?: boolean;
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+function DropdownMenu({ mobile = false, isOpen: mobileOpen, onClose }: DropdownMenuProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const closeTimer = useRef<number | null>(null);
@@ -46,11 +52,12 @@ function DropdownMenu() {
   const openMenu = () => {
     clearCloseTimer();
     setIsOpen(true);
-  };
+  } 
 
   const scheduleClose = () => {
     clearCloseTimer();
     closeTimer.current = window.setTimeout(() => setIsOpen(false), 140);
+    if (onClose) onClose();
   };
 
   const handleToggle = () => {
@@ -82,6 +89,30 @@ function DropdownMenu() {
     }
   };
 
+  // MOBILE SIDEBAR MODE
+  if (mobile) {
+    return (
+      <div className={`dropdown-mobile${mobileOpen ? " is-open" : ""}`}>
+        {mobileOpen && (
+          <ul className="dropdown-menu-mobile" aria-label="Categorias de productos">
+            {categories.map((cat) => (
+              <li className="dropdown-item" key={cat.idCategory}>
+                <Link
+                  to={`/catalog/${cat.name.toLowerCase()}`}
+                  className="category-title"
+                  onClick={onClose}
+                >
+                  {cat.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  }
+
+  // DESKTOP DROPDOWN
   return (
     <div
       className={`dropdown${isOpen ? " is-open" : ""}`}
@@ -102,28 +133,28 @@ function DropdownMenu() {
         onKeyDown={handleKeyDown}
       >
         PRODUCTOS
-
       </span>
-
-      <ul
-        className="dropdown-menu"
-        id={menuId}
-        aria-label="Categorias de productos"
-        onMouseEnter={openMenu}
-        onMouseLeave={scheduleClose}
-      >
-        {categories.map((cat) => (
-          <li className="dropdown-item" key={cat.idCategory}>
-            <Link
-              to={`/catalog/${cat.name.toLowerCase()}`}
-              className="category-title"
-              onClick={scheduleClose}
-            >
-              {cat.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {isOpen && (
+        <ul
+          className="dropdown-menu"
+          id={menuId}
+          aria-label="Categorias de productos"
+          onMouseEnter={openMenu}
+          onMouseLeave={scheduleClose}
+        >
+          {categories.map((cat) => (
+            <li className="dropdown-item" key={cat.idCategory}>
+              <Link
+                to={`/catalog/${cat.name.toLowerCase()}`}
+                className="category-title"
+                onClick={scheduleClose}
+              >
+                {cat.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
