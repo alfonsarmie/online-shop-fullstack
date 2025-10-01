@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import '../styles/dinamicsImgContainer.css';
-import hinchadaImg from '../assets/img/hinchada.png';
+import futsal from '../assets/img/futsal.jpg';
 import { useState, useEffect } from 'react';
 import { productService } from '../services/productService';
 import { FrontendProduct } from '../types/product';
@@ -81,7 +81,7 @@ function DinamicsImgContainer() {
   return (
     <div className="img-dinamicas-container">
       <div className="banner-section reveal">
-        <img src={hinchadaImg} alt="Hinchada del Rosario Rowing Club" className="background-img" />
+        <img src={futsal} alt="Hinchada del Rosario Rowing Club" className="background-img" />
         <h3>Explotá tu pasión <br />por Rowing</h3>
       </div>
 
