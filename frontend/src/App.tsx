@@ -84,6 +84,7 @@ function App() {
           <Route path="/checkout/failure" element={<CheckoutFailure />} />
           <Route path="/checkout/pending" element={<CheckoutPending />} />
           <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/catalog" element={<Catalog />} />
           <Route path="/catalog/:category" element={<Catalog />} />
           <Route path="/my-orders" element={<MyOrders />} />
           {/* Admin protected routes */}

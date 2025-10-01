@@ -5,7 +5,7 @@ import { useCart } from "../components/CartContext";
 import ProductFilter from "../components/ProductFilter";
 import { ProductWithSize } from "../types/product";
 import WhatsAppButton from "../components/WhatsAppButton";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { productService } from "../services/productService";
 
 // Define filter types
@@ -21,6 +21,10 @@ const Catalog = () => {
 
   // Obtener parámetro de categoría de la URL
   const { category } = useParams<{ category?: string }>();
+  const [searchParams] = useSearchParams();
+  const searchQuery = (searchParams.get("search") || "").trim();
+  const normalizedSearchQuery = searchQuery.toLowerCase();
+  const hasSearch = normalizedSearchQuery.length > 0;
 
   // Cargar productos
   useEffect(() => {
@@ -41,33 +45,54 @@ const Catalog = () => {
 
   // Filtrar productos cuando cambian los parámetros o los productos
   useEffect(() => {
-    if (products.length > 0) {
-      let filtered = [...products];
-
-      // Filtrar por categoría si está presente
-      if (category) {
-        // Mapeo de categorías en plural a singular
-        const categoryMap: { [key: string]: string } = {
-          remeras: "remera",
-          buzos: "buzo",
-          pantalones: "pantalón",
-          camperas: "campera",
-          tops: "top",
-          shorts: "short",
-        };
-
-        // Obtener la categoría en singular
-        const singularCategory = categoryMap[category] || category;
-
-        filtered = filtered.filter(
-          (product) =>
-            product.category?.toLowerCase() === singularCategory.toLowerCase()
-        );
-      }
-
-      setFilteredProducts(filtered);
+    if (products.length === 0) {
+      setFilteredProducts([]);
+      return;
     }
-  }, [products, category]);
+
+    let filtered = [...products];
+
+    // Filtrar por categoria si est� presente
+    if (category) {
+      // Mapeo de categorias en plural a singular
+      const categoryMap: { [key: string]: string } = {
+        remeras: "remera",
+        buzos: "buzo",
+        pantalones: "pantal�n",
+        camperas: "campera",
+        tops: "top",
+        shorts: "short",
+      };
+
+      // Obtener la categoria en singular
+      const singularCategory = categoryMap[category] || category;
+
+      filtered = filtered.filter(
+        (product) =>
+          product.category?.toLowerCase() === singularCategory.toLowerCase()
+      );
+    }
+
+    if (normalizedSearchQuery) {
+      const query = normalizedSearchQuery;
+      filtered = filtered.filter((product) => {
+        const searchableText = [
+          product.name,
+          product.description,
+          product.color,
+          product.category,
+          Array.isArray(product.tags) ? product.tags.join(" ") : "",
+        ]
+          .filter((value): value is string => typeof value === "string")
+          .join(" ")
+          .toLowerCase();
+
+        return searchableText.includes(query);
+      });
+    }
+
+    setFilteredProducts(filtered);
+  }, [products, category, normalizedSearchQuery]);
 
   // useEffect para animaciones de scroll
   useEffect(() => {
@@ -108,14 +133,25 @@ const Catalog = () => {
 
   // Función para obtener el título de la página
   const getHeaderTitle = () => {
+    if (hasSearch) {
+      const baseTitle = `Resultados para "${searchQuery}"`;
+
+      if (category) {
+        const formattedCategory =
+          category.charAt(0).toUpperCase() + category.slice(1);
+        return `${baseTitle} en ${formattedCategory}`;
+      }
+
+      return baseTitle;
+    }
+
     if (category) {
-      // Capitalizar primera letra
       const formattedCategory =
         category.charAt(0).toUpperCase() + category.slice(1);
       return formattedCategory;
-    } else {
-      return "Todos los productos";
     }
+
+    return "Todos los productos";
   };
 
   if (loading) {
@@ -127,19 +163,45 @@ const Catalog = () => {
       {/* Category Header */}
       <div className="categoria-header">
         <div className="breadcrumb">
-          <Link to="/"><span className="no-active">Inicio</span></Link> /
-          <Link to={`/catalog/${category}`}><span className="active"> {category}</span></Link>
+          <Link to="/"><span className="no-active">Inicio</span></Link>
+          {category ? (
+            <>
+              <span> / </span>
+              <Link to={`/catalog/${category}`}><span className="active"> {category}</span></Link>
+              {hasSearch && (
+                <>
+                  <span> / </span>
+                  <span className="active"> Busqueda</span>
+                </>
+              )}
+            </>
+          ) : hasSearch ? (
+            <>
+              <span> / </span>
+              <span className="active"> Busqueda</span>
+            </>
+          ) : (
+            <>
+              <span> / </span>
+              <span className="active"> Catalogo</span>
+            </>
+          )}
         </div>
         <h1>{getHeaderTitle()}</h1>
-        <p>Explorá nuestra indumentaria</p>
+        <p>Explora nuestra indumentaria</p>
       </div>
 
       {/* Filters and Sorting */}
       <div className="filtros-ordenamiento">
         <div className="resultados-count">
           <span>
-            {filteredProducts.length} producto
+            {filteredProducts.length} resultado
             {filteredProducts.length !== 1 ? "s" : ""}
+            {hasSearch
+              ? ` para "${searchQuery}"`
+              : category
+                ? ' en esta categoria'
+                : ' disponibles'}
           </span>
         </div>
 
@@ -163,7 +225,13 @@ const Catalog = () => {
           ))
         ) : (
           <div className="no-products">
-            <p>No se encontraron productos para esta categoría.</p>
+            <p>
+              {hasSearch
+                ? `No encontramos productos que coincidan con "${searchQuery}".`
+                : category
+                  ? 'No se encontraron productos para esta categoria.'
+                  : 'No hay productos disponibles en este momento.'}
+            </p>
           </div>
         )}
       </div>
