@@ -196,7 +196,7 @@ const ReceptionistStock: React.FC = () => {
               </select>
             </label>
 
-            <label className="checkbox">
+            <label className="checkbox-rec">
               <input
                 type="checkbox"
                 checked={lowStockOnly}

@@ -6,12 +6,12 @@
   color: #f0f0f0;
   background: #121212;
   min-height: calc(100vh - 100px);
-  font-family: 'Afacad', sans-serif;
+  font-family: "Afacad", sans-serif;
 }
 
 .receiver-dashboard h1 {
   margin: 0;
-  font-family: 'Anton', sans-serif;
+  font-family: "Anton", sans-serif;
 }
 
 .subtitle {
@@ -21,12 +21,16 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .panel {
-  background: #1D1D1D;
+  background: #1d1d1d;
   border: 1px solid #2a2a2a;
   border-radius: 12px;
   margin-bottom: 16px;
@@ -59,11 +63,11 @@
 }
 
 .summary-item strong.warn {
-  color: #E6B800;
+  color: #e6b800;
 }
 
 .summary-item strong.danger {
-  color: #C0392B;
+  color: #c0392b;
 }
 
 .panel-body {
@@ -84,7 +88,8 @@ label .span-rec {
   font-size: 12px;
 }
 
-.input-admin, select {
+.input-admin,
+select {
   width: 100%;
   padding: 10px 12px;
   color: #e6e6e6;
@@ -104,9 +109,57 @@ label .span-rec {
   width: auto;
 }
 
-.checkbox input[type="checkbox"]::after {
+.checkbox-rec {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  user-select: none;
+  gap: 4px;
+}
+
+.checkbox-rec input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #333;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.checkbox-rec input[type="checkbox"]:hover {
+  border-color: #555;
+}
+
+.checkbox-rec input[type="checkbox"]:checked {
+  background-color: #22a341;
+  border-color: #22a341;
+}
+
+.checkbox-rec input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
   left: 5px;
-  top: 0;
+  width: 6px;
+  height: 12px;
+  border-right: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: scale(0) rotate(45deg);
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.checkbox-rec input[type="checkbox"]:checked::after {
+  transform: scale(1) rotate(45deg);
+  opacity: 1;
+}
+
+.checkbox-rec .span-rec {
+  margin-left: 6px;
 }
 
 .data-table {
@@ -114,7 +167,8 @@ label .span-rec {
   border-collapse: collapse;
 }
 
-.data-table th, .data-table td {
+.data-table th,
+.data-table td {
   text-align: left;
   padding: 12px 8px;
   border-bottom: 1px solid #2a2a2a;
@@ -152,22 +206,22 @@ tr.stock-low {
 }
 
 .status-out-of-stock {
-  background-color: #C0392B;
+  background-color: #c0392b;
   color: #fff;
 }
 
 .status-critical {
-  background-color: #E6B800;
+  background-color: #e6b800;
   color: #000;
 }
 
 .status-low {
-  background-color: #F39C12;
+  background-color: #f39c12;
   color: #000;
 }
 
 .status-normal {
-  background-color: #1E7335;
+  background-color: #1e7335;
   color: #fff;
 }
 
@@ -225,10 +279,20 @@ tr.stock-low {
   cursor: pointer;
 }
 
-.btn:hover { background: #343434; }
-.btn.primary { background: #1E7335; border-color: #1E7335; }
-.btn.primary:hover { background: #16572A; }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn:hover {
+  background: #343434;
+}
+.btn.primary {
+  background: #1e7335;
+  border-color: #1e7335;
+}
+.btn.primary:hover {
+  background: #16572a;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 .alerts-list {
   display: flex;
@@ -242,7 +306,7 @@ tr.stock-low {
   justify-content: space-between;
   padding: 12px;
   background: rgba(192, 57, 43, 0.1);
-  border: 1px solid #C0392B;
+  border: 1px solid #c0392b;
   border-radius: 8px;
 }
 
@@ -265,7 +329,7 @@ tr.stock-low {
 .alert-stock .stock-indicator {
   padding: 4px 8px;
   border-radius: 999px;
-  background: #C0392B;
+  background: #c0392b;
   color: #fff;
   font-size: 14px;
 }
@@ -280,31 +344,31 @@ tr.stock-low {
   .filters-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .panel-header {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .summary {
     width: 100%;
     justify-content: space-between;
   }
-  
+
   .alert-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
   }
-  
+
   .alert-actions {
     align-self: stretch;
   }
-  
+
   .alert-actions .btn {
     width: 100%;
   }
-  
+
   .data-table {
     display: block;
     overflow-x: auto;

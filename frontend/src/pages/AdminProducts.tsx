@@ -562,7 +562,6 @@ const AdminProducts: React.FC = () => {
               className="input-admin"
               type="number"
               step="0.01"
-              placeholder="Precio"
               value={creating.price === 0 ? "" : creating.price}
               onChange={(e) => {
                 const val = e.target.value;
@@ -607,7 +606,7 @@ const AdminProducts: React.FC = () => {
             <span className="span-admin">Talles</span>
             <div className="sizes-container">
               {SIZE_OPTIONS.map((size) => (
-                <label key={size} className="checkbox">
+                <label key={size} className="checkbox-admin">
                   <input
                   type="checkbox"
                   checked={(creating.sizes || []).includes(size)}
@@ -633,7 +632,6 @@ const AdminProducts: React.FC = () => {
             <input
               className="input-admin"
               type="number"
-              placeholder="Stock"
               value={creating.stock === 0 ? "" : creating.stock}
               onChange={(e) => {
                 const val = e.target.value;
@@ -766,7 +764,6 @@ const AdminProducts: React.FC = () => {
               <input
                 type="number"
                 step="0.01"
-                placeholder="Precio"
                 value={editing.price === 0 ? "" : editing.price}
                 onChange={(e) => {
                   const val = e.target.value;
@@ -810,7 +807,7 @@ const AdminProducts: React.FC = () => {
               <span className="span-admin">Talles</span>
               <div className="sizes-container">
                 {SIZE_OPTIONS.map((size) => (
-                  <label key={size} className="checkbox">
+                  <label key={size} className="checkbox-admin">
                     <input
                       type="checkbox"
                       checked={(editing.sizes || []).includes(size)}
@@ -835,7 +832,6 @@ const AdminProducts: React.FC = () => {
               <span>Stock</span>
               <input
                 type="number"
-                placeholder="Stock"
                 value={editing.stock === 0 ? "" : editing.stock}
                 onChange={(e) => {
                   const val = e.target.value;
