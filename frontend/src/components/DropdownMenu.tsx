@@ -92,22 +92,35 @@ function DropdownMenu({ mobile = false, isOpen: mobileOpen, onClose }: DropdownM
   // MOBILE SIDEBAR MODE
   if (mobile) {
     return (
-      <div className={`dropdown-mobile${mobileOpen ? " is-open" : ""}`}>
-        {mobileOpen && (
-          <ul className="dropdown-menu-mobile" aria-label="Categorias de productos">
-            {categories.map((cat) => (
-              <li className="dropdown-item" key={cat.idCategory}>
-                <Link
-                  to={`/catalog/${cat.name.toLowerCase()}`}
-                  className="category-title"
-                  onClick={onClose}
-                >
-                  {cat.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
+      <div className={`dropdown-mobile${mobileOpen ? " is-open" : ""}`}> 
+        <button
+          className="back-arrow-mobile"
+          onClick={onClose}
+        >
+          ← Volver
+        </button>
+        <ul
+          className={`dropdown-menu-mobile${mobileOpen ? " animate-mobile-dropdown" : ""}`}
+          aria-label="Categorias de productos"
+          style={{
+            maxHeight: mobileOpen ? "500px" : "0px",
+            opacity: mobileOpen ? 1 : 0,
+            overflow: "hidden",
+            transition: "max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s"
+          }}
+        >
+          {categories.map((cat) => (
+            <li className="dropdown-item" key={cat.idCategory}>
+              <Link
+                to={`/catalog/${cat.name.toLowerCase()}`}
+                className="category-title"
+                onClick={onClose}
+              >
+                {cat.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }

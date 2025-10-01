@@ -186,7 +186,7 @@ function Navbar({ user, setUser }: NavbarProps) {
               <li>
                 <button className="mobile-dropdown-btn" onClick={handleMobileDropdownToggle}>
                   PRODUCTOS
-                  <span className={`mobile-dropdown-caret${isMobileDropdownOpen ? " open" : ""}`}>▶</span>
+                  <span className={`mobile-dropdown-caret${isMobileDropdownOpen ? " open" : ""}`}>{isMobileDropdownOpen ? "↓" : "→"}</span>
                 </button>
               </li>
               <li><Link to="/about-us">ACERCA DE NOSOTROS</Link></li>

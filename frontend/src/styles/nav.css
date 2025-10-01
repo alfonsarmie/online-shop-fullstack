@@ -1,3 +1,131 @@
+.back-arrow-mobile {
+  background: none;
+  border: none;
+  color: #1e7335;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-family: "Anton", sans-serif;
+  margin-bottom: 0.5rem;
+  transition: color 0.2s;
+}
+.back-arrow-mobile:hover {
+  color: #0f6823;
+}
+
+/* Estilo para links de categorías en el menú móvil igual a los links principales */
+.mobile-category-link {
+  text-decoration: none;
+  padding: 7px 0;
+  position: relative;
+  margin: 0 30px;
+  color: #1e7335;
+  font-family: "Anton", sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  background: none;
+  border: none;
+  display: block;
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+
+.mobile-category-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2.5px;
+  background-color: #0f6823;
+  transition: width 0.3s ease;
+}
+
+.mobile-category-link:hover::after {
+  width: 100%;
+}
+/* Estilo para links de categorías en el menú móvil igual a los links principales */
+.mobile-category-link {
+  text-decoration: none;
+  padding: 7px 0;
+  position: relative;
+  margin: 0 30px;
+  color: #1e7335;
+  font-family: "Anton", sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  background: none;
+  border: none;
+  display: block;
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+
+.mobile-category-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2.5px;
+  background-color: #0f6823;
+  transition: width 0.3s ease;
+}
+
+.mobile-category-link:hover::after {
+  width: 100%;
+}
+/* Estilo para links de categorías en el menú móvil igual a los links principales */
+.dropdown-menu-mobile .category-title {
+  text-decoration: none;
+  padding: 7px 0;
+  position: relative;
+  margin: 0 30px;
+  color: #1e7335;
+  font-family: "Anton", sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  background: none;
+  border: none;
+  display: block;
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+
+.dropdown-menu-mobile .category-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2.5px;
+  background-color: #0f6823;
+  transition: width 0.3s ease;
+}
+
+.dropdown-menu-mobile .category-title:hover::after {
+  width: 100%;
+}
+/* Animación para el dropdown de categorías en mobile */
+.animate-mobile-dropdown {
+  animation: mobileDropdownSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes mobileDropdownSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 @import url("https://fonts.googleapis.com/css2?family=Afacad&display=swap");
 
 nav {
@@ -235,7 +363,7 @@ nav li {
   background: rgba(30, 115, 53, 0.08);
   border-radius: 999px;
   padding: 8px 16px;
-  font-family: 'Afacad', sans-serif;
+  font-family: "Afacad", sans-serif;
   font-size: 15px;
   color: #0f401c;
   min-width: 0;
@@ -288,7 +416,6 @@ nav li {
   gap: 12px;
 }
 
-
 .cart-icon {
   background: transparent;
   border: none;
@@ -323,7 +450,7 @@ nav li {
   justify-content: center;
   align-items: center;
   font-size: 12px;
-  font-family: 'Afacad', sans-serif;
+  font-family: "Afacad", sans-serif;
   border: 2px solid #1d1d1d;
   font-weight: bold;
 }
@@ -559,15 +686,15 @@ nav li {
 .mobile-menu {
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0;
   width: 80vw;
   max-width: 340px;
   height: 100vh;
   background: #181818;
-  box-shadow: -2px 0 18px rgba(0,0,0,0.25);
+  box-shadow: 2px 0 18px rgba(0, 0, 0, 0.25);
   z-index: 9999;
-  transform: translateX(100%);
-  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   padding: 2.5rem 1.5rem 1.5rem 1.5rem;
@@ -609,7 +736,9 @@ nav li {
   font-weight: 600;
   padding: 0.5rem 0.2rem;
   border-radius: 8px;
-  transition: background 0.18s, color 0.18s;
+  transition:
+    background 0.18s,
+    color 0.18s;
   display: block;
 }
 
@@ -632,16 +761,18 @@ nav li {
   background: #232323;
   border-radius: 50%;
   padding: 0.5rem;
-  transition: background 0.18s, color 0.18s;
+  transition:
+    background 0.18s,
+    color 0.18s;
 }
 
 .mobile-menu-cart .cart-icon:hover {
-  background: #1E7335;
+  background: #1e7335;
   color: #fff;
 }
 
 .mobile-dropdown-btn {
-  font-family: 'Anton', sans-serif;
+  font-family: "Anton", sans-serif;
   background-color: transparent;
   border: none;
   color: #22a341;
@@ -649,21 +780,31 @@ nav li {
   font-weight: 600;
   padding: 0.5rem 0.2rem;
   border-radius: 8px;
-  transition: background 0.18s, color 0.18s;
-  display: block;
+  transition:
+    background 0.18s,
+    color 0.18s;
+  display: flex;
   letter-spacing: 0.5px;
   text-align: left;
   position: relative;
-  display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100vw;
+  max-width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .mobile-dropdown-caret {
-  display: inline-block;
-  margin-left: 8px;
+  margin-left: auto;
   font-size: 1.1em;
   transition: transform 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  align-self: center;
+  bottom: 3px;
+  position: relative;
 }
 
 .mobile-dropdown-btn:hover,
@@ -698,7 +839,7 @@ nav li {
   margin-bottom: 0.5rem;
 }
 .mobile-menu-links .dropdown-item:hover {
-  background: #1E7335;
+  background: #1e7335;
   color: #fff;
 }
 
@@ -723,41 +864,41 @@ nav li {
     display: none;
   }
 
-    /* Estilos para el menú de categorías en el sidebar móvil */
-    .dropdown-mobile {
-      width: 100%;
-      margin-top: 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
+  /* Estilos para el menú de categorías en el sidebar móvil */
+  .dropdown-mobile {
+    width: 100%;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-    .dropdown-menu-mobile {
-      width: 100%;
-      background: #232323;
-      border-radius: 10px;
-      padding: 1rem 0.5rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
+  .dropdown-menu-mobile {
+    width: 100%;
+    background: #232323;
+    border-radius: 10px;
+    padding: 1rem 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 
-    .dropdown-menu-mobile .dropdown-item {
-      background: none;
-      border: none;
-      text-align: left;
-      padding: 0.7rem 0.5rem;
-      color: #e6e6e6;
-      border-radius: 6px;
-      margin-bottom: 0.2rem;
-      font-size: 1rem;
-    }
+  .dropdown-menu-mobile .dropdown-item {
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 0.7rem 0.5rem;
+    color: #e6e6e6;
+    border-radius: 6px;
+    margin-bottom: 0.2rem;
+    font-size: 1rem;
+  }
 
-    .dropdown-menu-mobile .dropdown-item:hover {
-      background: #1E7335;
-      color: #fff;
-    }
+  .dropdown-menu-mobile .dropdown-item:hover {
+    background: #1e7335;
+    color: #fff;
+  }
 
   .nav-toggle {
     display: flex;
@@ -782,7 +923,6 @@ nav li {
 }
 
 @media (max-width: 900px) {
-
   .mobile-menu {
     display: flex;
   }
