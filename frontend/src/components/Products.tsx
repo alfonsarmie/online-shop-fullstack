@@ -126,31 +126,7 @@ function Products() {
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}
         />
-
-        <form
-          className={`products-search${searchTerm ? " has-value" : ""}`}
-          role="search"
-          onSubmit={(event) => event.preventDefault()}
-        >
-          <FontAwesomeIcon icon={faMagnifyingGlass} className="products-search__icon" />
-          <input
-            type="search"
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Buscar productos..."
-            aria-label="Buscar productos"
-          />
-          {searchTerm && (
-            <button
-              type="button"
-              className="products-search__clear"
-              onClick={() => setSearchTerm("")}
-              aria-label="Limpiar busqueda"
-            >
-              <FontAwesomeIcon icon={faXmark} />
-            </button>
-          )}
-        </form>
+        
       </div>
       <div className="contenedorProd">
         {sortedProducts.map((product) => (
