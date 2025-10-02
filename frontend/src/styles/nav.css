@@ -276,6 +276,7 @@ nav li {
 .user-name {
   position: relative;
   z-index: 1;
+  cursor: pointer;
 }
 
 .nav-search {
@@ -913,12 +914,25 @@ nav li {
     display: none;
   }
 
-  .cart-icon {
-    display: none;
-  }
-
   .btnLogIn {
     margin-right: 0;
+  }
+  .userOptions {
+    font-size: 15px;
+    height: 40px;
+    width: 40px;
+    padding: 12px;
+    margin-right: 6px;
+    border-radius: 50%;
+    min-width: unset;
+    max-width: 120px;
+  }
+  .user-icon {
+    font-size: 18px;
+    margin-right: 0px;
+  }
+  .user-name {
+    display: none;
   }
 }
 

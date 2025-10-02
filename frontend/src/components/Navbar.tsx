@@ -197,12 +197,6 @@ function Navbar({ user, setUser }: NavbarProps) {
               <DropdownMenu mobile={true} isOpen={isMobileDropdownOpen} onClose={handleMobileMenuToggle} />
             </div>
           )}
-          <div className="mobile-menu-cart">
-            <button onClick={openCart} className="cart-icon cart-btn">
-              <FontAwesomeIcon icon={faCartShopping} />
-              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-            </button>
-          </div>
         </div>
 
         {/* Menú desktop normal */}
