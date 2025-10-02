@@ -35,3 +35,9 @@
 .progress-line.line-filled {
   background-color: #1e7335; /* Color when the line is "filled" */
 }
+
+@media (max-width: 600px) {
+  .progress-container {
+    width: 90%;
+  }
+}
