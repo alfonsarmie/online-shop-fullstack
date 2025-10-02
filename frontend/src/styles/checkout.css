@@ -2,7 +2,7 @@
 .deportes-label {
   font-weight: 700;
   font-size: 17px;
-  color: #1E7335;
+  color: #1e7335;
   margin-bottom: 10px;
   letter-spacing: 0.1px;
 }
@@ -14,7 +14,7 @@
   font-weight: 700;
   border-radius: 8px;
   padding: 1px 10px 1px 10px;
-  box-shadow: 0 1px 4px rgba(30,115,53,0.07);
+  box-shadow: 0 1px 4px rgba(30, 115, 53, 0.07);
   transition: background 0.2s;
 }
 /* Deportes checkboxes en checkout */
@@ -47,7 +47,9 @@
   position: relative;
   cursor: pointer;
   background: #fff;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   margin-right: 4px;
 }
 .deporte-checkbox input[type="checkbox"]:hover {
@@ -81,10 +83,10 @@
   background: #f3fdf7;
 }
 main {
-    display: flex;
-    flex-direction: row;
-    font-family: 'Afacad';
-    margin-bottom: 50px;
+  display: flex;
+  flex-direction: row;
+  font-family: "Afacad";
+  margin-bottom: 50px;
 }
 
 /* DATA */
@@ -97,12 +99,11 @@ main {
   justify-content: center;
 }
 
-
 .data-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 70%;
 }
 
 .checkout-form {
@@ -114,7 +115,7 @@ main {
   background-color: #fff;
   border-radius: 8px;
   padding: 28px 40px 28px 40px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   margin: 0 auto;
 }
 
@@ -139,7 +140,7 @@ main {
   padding: 7px 0;
   background: transparent;
   transition: border-color 0.2s;
-  font-family: 'Afacad';
+  font-family: "Afacad";
   margin: 0;
 }
 
@@ -167,7 +168,7 @@ main {
   padding-bottom: 6px;
   font-weight: 700;
   border-width: 3px;
-  border-image: linear-gradient(to right, #1E7335, #5bc477);
+  border-image: linear-gradient(to right, #1e7335, #5bc477);
   border-image-slice: 1;
 }
 
@@ -177,35 +178,36 @@ main {
   display: block;
   transition: 0.2s;
   font-size: 17px;
-  color: #1E7335;
+  color: #1e7335;
   font-weight: 700;
 }
 
 /* reset input */
-.form__field:required, .form__field:invalid {
+.form__field:required,
+.form__field:invalid {
   box-shadow: none;
 }
 
 .form-container button {
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 30px;
-    border: none;
-    font-family: "Afacad";
-    font-weight: 700;
-    font-size: 20px;
-    color: white;
-    width: 300px;
-    transition: all .1s ease;
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 30px;
+  border: none;
+  font-family: "Afacad";
+  font-weight: 700;
+  font-size: 20px;
+  color: white;
+  width: 300px;
+  transition: all 0.1s ease;
 }
 
 .form-container h3 {
-    font-size: 25px;
-    margin-bottom: 30px;
+  font-size: 25px;
+  margin-bottom: 30px;
 }
 
 .nameInput {
-    width: 100%;
+  width: 100%;
 }
 
 .email-phone-container {
@@ -224,44 +226,46 @@ main {
 /* CART */
 
 .cart-container {
-    display: flex;
-    flex-direction: column;
-    width: 30%;
-    border-radius: 8px;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    margin-right: 30px;
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-right: 30px;
 }
 
 .allow {
-    margin: 40px 10px 10px 10px;
-    font-family: "Afacad", sans-serif !important;
-    font-size: 20px;
-    font-weight: 700;
-    color: white;
-    border: none;
-    padding: 10px;
-    width: 100%;
-    border-radius: 30px;
-    background-color: #1E7335;
-    cursor: pointer;
-    transition: background-color 0.1s ease, transform 0.1s ease;
+  margin: 40px 10px 10px 10px;
+  font-family: "Afacad", sans-serif !important;
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  border-radius: 30px;
+  background-color: #1e7335;
+  cursor: pointer;
+  transition:
+    background-color 0.1s ease,
+    transform 0.1s ease;
 }
 
 .disabled {
-    margin: 40px 10px 10px 10px;
-    font-family: "Afacad", sans-serif !important;
-    font-size: 20px;
-    font-weight: 700;
-    color: white;
-    border: none;
-    padding: 10px;
-    width: 100%;
-    border-radius: 30px;
-    background-color: gray;
-    cursor: not-allowed;
-    transition: all 0.3s ease;
+  margin: 40px 10px 10px 10px;
+  font-family: "Afacad", sans-serif !important;
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  border-radius: 30px;
+  background-color: gray;
+  cursor: not-allowed;
+  transition: all 0.3s ease;
 }
 
 .notesInput {

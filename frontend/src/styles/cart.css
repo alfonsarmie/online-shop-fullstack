@@ -45,7 +45,7 @@
 }
 
 .cart-header button:hover {
-  color: #1E7335;
+  color: #1e7335;
 }
 
 .cart-items {
@@ -92,7 +92,7 @@
 }
 
 .cart-footer button {
-  background-color: #1E7335;
+  background-color: #1e7335;
   padding: 10px 20px;
   border: none;
   border-radius: 30px;
@@ -148,7 +148,7 @@
 }
 
 .cart-items::-webkit-scrollbar-thumb {
-  background: #1E7335;
+  background: #1e7335;
   border-radius: 10px;
 }
 
@@ -184,13 +184,17 @@
     margin-right: 10px;
   }
   .cart-footer {
+    padding: 1rem 0;
+  }
+  .cart.open .cart-footer {
     position: fixed;
     left: 0;
     bottom: 0;
-    width: 100vw;
+    width: 100%;
     background: #fff;
-    box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
     z-index: 3000;
     padding: 1rem 1rem 1.2rem 1rem;
+    border-radius: 8px 8px 0 0;
   }
 }
