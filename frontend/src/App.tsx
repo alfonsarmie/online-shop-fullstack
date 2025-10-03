@@ -1,4 +1,4 @@
-// App.tsx (actualizado)
+﻿// App.tsx (actualizado)
 /**
  * App router and layout
  * - Decides which navbar to render based on route prefix
@@ -33,6 +33,7 @@ import ProfileEdit from './pages/ProfileEdit';
 import Delivery from './pages/Delivery';
 import AdminOrders from './pages/AdminOrders';
 import AdminCategories from './pages/AdminCategories';
+import AdminUsers from './pages/AdminUsers';
 import ReceptionistOrders from './pages/ReceptionistOrders';
 import ReceptionistStock from './components/ReceptionistStock';
 import MyOrders from './pages/MyOrders';
@@ -108,6 +109,11 @@ function App() {
               <AdminCategories />
             </PrivateRoute>
           } />
+          <Route path="/admin-users" element={
+            <PrivateRoute user={user} requiredRole="admin">
+              <AdminUsers />
+            </PrivateRoute>
+          } />
           {/* Backwards compatibility redirects */}
           <Route path="/admindashboard" element={<Navigate to="/admin-dashboard" replace />} />
           <Route path="/adminproducts" element={<Navigate to="/admin-products" replace />} />
@@ -139,3 +145,4 @@ function App() {
 }
 
 export default App;
+
