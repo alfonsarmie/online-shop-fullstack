@@ -1,7 +1,7 @@
 ﻿import { useEffect, useMemo } from 'react';
 import { useCart } from '../components/CartContext';
 import { useCheckoutQuery } from '../utils/useCheckoutQuery';
-import '../styles/checkout-success.css';
+import '../styles/checkout-status.css';
 
 export default function CheckoutSuccess() {
   const info = useCheckoutQuery();
@@ -16,7 +16,7 @@ export default function CheckoutSuccess() {
   ), [info.collection_id, info.external_reference, info.payment_id]);
 
   return (
-    <section className="checkout-success-page">
+    <section className="checkout-status-page is-success">
       <div className="checkout-ticket">
         <div className="ticket-status">
           <span className="ticket-icon" aria-hidden="true">
