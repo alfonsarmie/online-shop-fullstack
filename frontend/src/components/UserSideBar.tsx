@@ -90,8 +90,8 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
             </button>
           )}
 
-          {/* Editar Perfil - Oculto para recepcionistas */}
-          {role !== 'receptionist' && (
+          {/* Editar Perfil - Solo clientes */}
+          {role === 'client' && (
             <button 
               className="option-btn edit-profile"
               onClick={handleEditProfile}
@@ -114,3 +114,4 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
 };
 
 export default UserSidebar;
+
