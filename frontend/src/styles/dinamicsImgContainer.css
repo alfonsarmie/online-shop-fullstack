@@ -5,6 +5,7 @@
   background-color: #1D1D1D;
   color: white;
   font-family: "Afacad";
+  min-height: 430px; /* Altura mínima para mantener el diseño */
 }
 
 /* Efecto reveal */
@@ -25,6 +26,7 @@
   width: 100%;
   height: 430px;
   overflow: hidden;
+  flex: 1;
 }
 
 .background-img {
@@ -50,6 +52,7 @@
 /* Galería de productos */
 .gallery-section {
   width: 100%;
+  flex: 1;
 }
 
 .gallery-container {
@@ -137,4 +140,73 @@
 .gallery-item {
   display: block;
   cursor: pointer;
+}
+
+/* Estados de carga y error */
+.loading-container, .error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 430px;
+}
+
+.loading, .error-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .img-dinamicas-container {
+    flex-direction: column;
+  }
+  
+  .banner-section h3 {
+    font-size: 50px;
+    left: 40px;
+  }
+  
+  .gallery-container {
+    flex-wrap: wrap;
+    height: auto;
+  }
+  
+  .gallery-item {
+    flex: 1 0 33.333%;
+    height: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .banner-section h3 {
+    font-size: 36px;
+    left: 20px;
+  }
+  
+  .gallery-item {
+    flex: 1 0 50%;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-section {
+    height: 300px;
+  }
+  
+  .banner-section h3 {
+    font-size: 28px;
+    left: 15px;
+  }
+  
+  .gallery-item {
+    flex: 1 0 100%;
+    height: 150px;
+  }
+  
+  .buy-button {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
 }

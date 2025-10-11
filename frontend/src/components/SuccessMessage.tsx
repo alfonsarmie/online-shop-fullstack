@@ -13,7 +13,7 @@ function SuccessMessage({ message, onClose }: SuccessMessageProps) {
     <div className='success-message'>
       {message}
       {onClose && (
-        <button className='close-btn' onClick={onClose}>×</button>
+        <button className='close-btn-success' onClick={onClose}>×</button>
       )}
     </div>
   );

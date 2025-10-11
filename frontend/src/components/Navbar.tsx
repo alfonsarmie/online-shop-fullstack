@@ -7,11 +7,12 @@ import {
   faUser,
   faCartShopping,
   faBars,
+  faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import { useCart } from "./CartContext";
 import DropdownMenu from "./DropdownMenu";
 import { User } from "../types/user";
-import { useState, useEffect } from "react"; // Importar useEffect
+import { useState, useEffect, useRef, type ChangeEvent, type FormEvent } from "react";
 import UserSidebar from "./UserSideBar";
 import SuccessMessage from "./SuccessMessage";
 
@@ -26,6 +27,12 @@ function Navbar({ user, setUser }: NavbarProps) {
   const { openCart, cartCount } = useCart();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
   // Efecto para limpiar automáticamente el mensaje después de 3 segundos
   useEffect(() => {
@@ -39,6 +46,60 @@ function Navbar({ user, setUser }: NavbarProps) {
     }
   }, [successMessage]);
 
+  useEffect(() => {
+    if (!isSearchOpen) {
+      return;
+    }
+
+    const focusTimer = window.setTimeout(() => {
+      searchInputRef.current?.focus();
+    }, 0);
+
+    return () => window.clearTimeout(focusTimer);
+  }, [isSearchOpen]);
+
+  useEffect(() => {
+    if (!isSearchOpen) {
+      return;
+    }
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target as Node)
+      ) {
+        setIsSearchOpen(false);
+        setSearchTerm("");
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsSearchOpen(false);
+        setSearchTerm("");
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isSearchOpen]);
+
+  // Abrir/cerrar menú lateral mobile
+  const handleMobileMenuToggle = () => {
+    setIsMobileMenuOpen((prev) => !prev);
+    setIsMobileDropdownOpen(false);
+  };
+
+  // Abrir/cerrar dropdown de productos en mobile
+  const handleMobileDropdownToggle = () => {
+    setIsMobileDropdownOpen((prev) => !prev);
+  };
+
   // Toggle sidebar function
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -47,6 +108,33 @@ function Navbar({ user, setUser }: NavbarProps) {
   // Navigate to home and scroll to top
   const handleHomeClick = () => {
     navigate("/");
+    window.scrollTo(0, 0);
+  };
+
+  const handleSearchToggle = () => {
+    setIsSearchOpen((prev) => {
+      if (prev) {
+        setSearchTerm("");
+      }
+      return !prev;
+    });
+  };
+
+  const handleSearchInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const trimmedQuery = searchTerm.trim();
+
+    if (!trimmedQuery) {
+      return;
+    }
+
+    navigate(`/catalog?search=${encodeURIComponent(trimmedQuery)}`);
+    setIsSearchOpen(false);
+    setSearchTerm("");
     window.scrollTo(0, 0);
   };
 
@@ -77,7 +165,7 @@ function Navbar({ user, setUser }: NavbarProps) {
       />
 
       <nav>
-        <div className="nav-toggle" id="navToggle">
+        <div className="nav-toggle" id="navToggle" onClick={handleMobileMenuToggle}>
           <FontAwesomeIcon icon={faBars} />
         </div>
 
@@ -87,6 +175,31 @@ function Navbar({ user, setUser }: NavbarProps) {
           </Link>
         </div>
 
+        {/* Menú lateral mobile */}
+        <div className={`mobile-menu${isMobileMenuOpen ? " open" : ""}`}>
+          <button className="nav-toggle close" onClick={handleMobileMenuToggle} aria-label="Cerrar menú">
+            &times;
+          </button>
+          {!isMobileDropdownOpen ? (
+            <ul className="mobile-menu-links">
+              <li onClick={handleHomeClick}><Link to="/">INICIO</Link></li>
+              <li>
+                <button className="mobile-dropdown-btn" onClick={handleMobileDropdownToggle}>
+                  PRODUCTOS
+                  <span className={`mobile-dropdown-caret${isMobileDropdownOpen ? " open" : ""}`}>{isMobileDropdownOpen ? "↓" : "→"}</span>
+                </button>
+              </li>
+              <li><Link to="/about-us">ACERCA DE NOSOTROS</Link></li>
+              <li><Link to="/delivery">FORMAS DE ENTREGA</Link></li>
+            </ul>
+          ) : (
+            <div className="dropdown-mobile">
+              <DropdownMenu mobile={true} isOpen={isMobileDropdownOpen} onClose={handleMobileMenuToggle} />
+            </div>
+          )}
+        </div>
+
+        {/* Menú desktop normal */}
         <div className="nav-links" id="navLinks">
           <ul>
             <li onClick={handleHomeClick}>
@@ -105,6 +218,48 @@ function Navbar({ user, setUser }: NavbarProps) {
         </div>
 
         <div className="btnsRight">
+          <div
+            ref={searchContainerRef}
+            className={`nav-search${isSearchOpen ? " open" : ""}`}
+          >
+            <button
+              type="button"
+              className="nav-search__toggle"
+              onClick={handleSearchToggle}
+              aria-expanded={isSearchOpen}
+              aria-controls="nav-search-form"
+              aria-label={isSearchOpen ? "Cerrar buscador" : "Abrir buscador"}
+            >
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </button>
+
+            <form
+              id="nav-search-form"
+              className="nav-search__form"
+              role="search"
+              aria-hidden={!isSearchOpen}
+              onSubmit={handleSearchSubmit}
+            >
+              <input
+                ref={searchInputRef}
+                type="search"
+                value={searchTerm}
+                onChange={handleSearchInputChange}
+                placeholder="Buscar productos..."
+                aria-label="Buscar productos"
+                tabIndex={isSearchOpen ? 0 : -1}
+              />
+              <button
+                type="submit"
+                className="nav-search__submit"
+                aria-label="Buscar"
+                tabIndex={isSearchOpen ? 0 : -1}
+              >
+                <FontAwesomeIcon icon={faMagnifyingGlass} />
+              </button>
+            </form>
+          </div>
+
           {/* conditional rendering */}
           {user ? (
             <>
@@ -142,3 +297,4 @@ function Navbar({ user, setUser }: NavbarProps) {
 }
 
 export default Navbar;
+

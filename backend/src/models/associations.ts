@@ -43,6 +43,7 @@ export const defineAssociations = () => {
     otherKey: 'idSize',
     as: 'sizes'
   });
+  
   Size.belongsToMany(Product, {
     through: ProductSize,
     foreignKey: 'idSize',

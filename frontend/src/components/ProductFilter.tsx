@@ -35,7 +35,7 @@ const ProductFilter = ({ activeFilter, onFilterChange }: ProductFilterProps) => 
           <FontAwesomeIcon icon={faFilter} className='icon-filter'/> 
           {activeFilter === 'price_asc' ? 'Precio: menor a mayor' :
            activeFilter === 'price_desc' ? 'Precio: mayor a menor' :
-           activeFilter === 'name_asc' ? 'A - Z' : 'Filtrar por'}
+           activeFilter === 'name_asc' ? 'A - Z' : 'Ordenar por'}
           <FontAwesomeIcon icon={faCaretDown} className='icon-filter' />
         </button>
         

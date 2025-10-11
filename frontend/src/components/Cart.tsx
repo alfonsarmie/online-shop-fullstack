@@ -70,7 +70,7 @@ function Cart() {
                 {/* Remove item button */}
                 <button 
                   onClick={() => removeFromCart(item.name, item.size)} 
-                  className='remove-btn'>                
+                  className='remove-btn-cart'>                
                   ✖
                 </button>
               </div>

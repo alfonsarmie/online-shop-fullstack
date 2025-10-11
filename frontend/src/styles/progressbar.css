@@ -1,0 +1,43 @@
+.progress-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 500px;
+  margin: 100px auto 30px auto;
+  font-family: "Afacad";
+}
+
+.step {
+  padding: 10px 30px;
+  border-radius: 50px;
+  border: 1px solid #1e7335;
+  background-color: white;
+  color: #1e7335;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.step.active {
+  background-color: #edfdf1;
+  box-shadow: 0 0 5px #63b377;
+  font-weight: 700;
+}
+
+.progress-line {
+  flex-grow: 1;
+  height: 5px;
+  background-color: #bcd4c2;
+  border-radius: 3px;
+  transition: background-color 0.4s ease; /* Add transition for a smooth fill */
+}
+
+.progress-line.line-filled {
+  background-color: #1e7335; /* Color when the line is "filled" */
+}
+
+@media (max-width: 600px) {
+  .progress-container {
+    width: 90%;
+  }
+}

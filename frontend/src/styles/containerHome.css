@@ -64,3 +64,26 @@
         transform: translateY(-5px); /* Rebota un poco menos */
     }
 }
+
+@media (max-width: 600px) {
+    .contenedorInicio h1 {
+        font-size: 30px;
+    }
+
+    .contenedorInicio h2 {
+        font-size: 40px;
+    }
+
+    .contenedorInicio {
+        height: 70vh;
+    }
+
+    .opaco {
+        height: 70vh;
+    }
+
+    .scroll-down-indicator {
+        font-size: 1.5rem; /* Tamaño más pequeño para pantallas pequeñas */
+        bottom: 200px; /* Ajusta la distancia desde la parte inferior */
+    }
+}

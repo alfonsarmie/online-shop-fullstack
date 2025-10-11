@@ -1,63 +1,179 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { useEffect, useRef, useState, type FocusEvent, type KeyboardEvent } from "react";
+import api from "../services/api";
 
-// Interface for category items
 interface Category {
-  title: string;
-  items: string[];
-  basePath: string;
+  idCategory: number;
+  name: string;
 }
 
-// Component to display a dropdown menu with product categories and subcategories
-function DropdownMenu() {
-  const categories: Category[] = [
-    {
-      title: 'Hombre',
-      items: ['Remeras', 'Pantalones', 'Shorts', 'Buzos', 'Accesorios'],
-      basePath: 'hombre'
-    },
-    {
-      title: 'Mujer',
-      items: ['Remeras', 'Pantalones', 'Shorts', 'Buzos', 'Accesorios'],
-      basePath: 'mujer'
-    },
-    {
-      title: 'Niño',
-      items: ['Remeras', 'Pantalones', 'Shorts', 'Buzos', 'Accesorios'],
-      basePath: 'nino'
+interface DropdownMenuProps {
+  mobile?: boolean;
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+function DropdownMenu({ mobile = false, isOpen: mobileOpen, onClose }: DropdownMenuProps) {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const closeTimer = useRef<number | null>(null);
+  const menuId = "products-menu";
+
+  useEffect(() => {
+    api
+      .get("/categories")
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setCategories(res.data);
+        } else if (res.data && Array.isArray(res.data.categories)) {
+          setCategories(res.data.categories);
+        } else {
+          setCategories([]);
+        }
+      })
+      .catch(() => setCategories([]));
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimer.current !== null) {
+        window.clearTimeout(closeTimer.current);
+      }
+    };
+  }, []);
+
+  const clearCloseTimer = () => {
+    if (closeTimer.current !== null) {
+      window.clearTimeout(closeTimer.current);
+      closeTimer.current = null;
     }
-  ];
+  };
 
-  return (
-    <div className="dropdown">
-      <span>PRODUCTOS</span>
-      <ul className="dropdown-menu">
+  const openMenu = () => {
+    clearCloseTimer();
+    setIsOpen(true);
+  } 
 
-        {/* Render category items */}
-        {categories.map(cat => (
-        <li className="dropdown-item" key={cat.title}>
-          <span className="category-title">{cat.title}</span> 
-          <ul className="submenu">
+  const scheduleClose = () => {
+    clearCloseTimer();
+    closeTimer.current = window.setTimeout(() => setIsOpen(false), 140);
+    if (onClose) onClose();
+  };
 
-            {/* Render subcategory items */}
-            {cat.items.map(subcat => (
-              <li key={subcat}>
-                <Link to={`/catalog`}>
-                  {subcat}
-                </Link>
-              </li>
-            ))} 
-            <li>
-              {/* Link to view all products in the category */}
-              <Link to={`/catalog/${cat.basePath}`} className="view-all">
-                Ver todos
+  const handleToggle = () => {
+    if (isOpen) {
+      scheduleClose();
+    } else {
+      openMenu();
+    }
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLSpanElement>) => {
+    if (event.key === "Escape") {
+      event.stopPropagation();
+      scheduleClose();
+      return;
+    }
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleToggle();
+    }
+  };
+
+  const handleBlur = (event: FocusEvent<HTMLDivElement>) => {
+    const nextTarget = event.relatedTarget as Node | null;
+
+    if (!event.currentTarget.contains(nextTarget)) {
+      scheduleClose();
+    }
+  };
+
+  // MOBILE SIDEBAR MODE
+  if (mobile) {
+    return (
+      <div className={`dropdown-mobile${mobileOpen ? " is-open" : ""}`}> 
+        <button
+          className="back-arrow-mobile"
+          onClick={onClose}
+        >
+          ← Volver
+        </button>
+        <ul
+          className={`dropdown-menu-mobile${mobileOpen ? " animate-mobile-dropdown" : ""}`}
+          aria-label="Categorias de productos"
+          style={{
+            maxHeight: mobileOpen ? "500px" : "0px",
+            opacity: mobileOpen ? 1 : 0,
+            overflow: "hidden",
+            transition: "max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s"
+          }}
+        >
+          {categories.map((cat) => (
+            <li className="dropdown-item" key={cat.idCategory}>
+              <Link
+                to={`/catalog/${cat.name.toLowerCase()}`}
+                className="category-title"
+                onClick={onClose}
+              >
+                {cat.name}
               </Link>
             </li>
-          </ul>
-        </li>
-        ))}
-      </ul>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  // DESKTOP DROPDOWN
+  return (
+    <div
+      className={`dropdown${isOpen ? " is-open" : ""}`}
+      role="navigation"
+      onMouseEnter={openMenu}
+      onMouseLeave={scheduleClose}
+      onFocusCapture={openMenu}
+      onBlurCapture={handleBlur}
+    >
+      <span
+        className="dropdown-trigger"
+        tabIndex={0}
+        role="button"
+        aria-haspopup="true"
+        aria-expanded={isOpen}
+        aria-controls={menuId}
+        onClick={handleToggle}
+        onKeyDown={handleKeyDown}
+      >
+        PRODUCTOS
+      </span>
+      {isOpen && (
+        <ul
+          className="dropdown-menu"
+          id={menuId}
+          aria-label="Categorias de productos"
+          onMouseEnter={openMenu}
+          onMouseLeave={scheduleClose}
+        >
+          {categories.map((cat) => (
+            <li className="dropdown-item" key={cat.idCategory}>
+              <Link
+                to={`/catalog/${cat.name.toLowerCase()}`}
+                className="category-title"
+                onClick={scheduleClose}
+              >
+                {cat.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
 
 export default DropdownMenu;
+
+
+
+

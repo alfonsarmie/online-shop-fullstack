@@ -8,7 +8,6 @@ export interface FrontendProduct {
   sizes: string[];
   stock: number;
   category?: string;
-  color?: string;
 }
 
 export interface Product {
@@ -34,6 +33,7 @@ export interface Category {
 export interface Size {
   idSize: number;
   name: string;
+  sizeDesc: string;
 }
 
 export interface Price {

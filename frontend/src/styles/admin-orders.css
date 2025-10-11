@@ -69,13 +69,42 @@ label .span-admin {
 .data-table {
   width: 100%;
   border-collapse: collapse;
+  background: #181818;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
 }
 
-.data-table th, .data-table td {
-  text-align: left;
-  padding: 10px 8px;
-  border-bottom: 1px solid #2a2a2a;
+.data-table th {
+  background: #232323;
+  color: #22a341;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 12px 10px;
+  border-bottom: 2px solid #1E7335;
 }
+
+.data-table td {
+  font-size: 15px;
+  color: #f0f0f0;
+  padding: 10px 10px;
+  border-bottom: 1px solid #232323;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tr:hover {
+  background: #232323;
+}
+
+.data-table .row-actions {
+  display: flex;
+  gap: 8px;
+}
+
+
 
 .text-muted {
   color: #8f8f8f;
@@ -207,7 +236,7 @@ label .span-admin {
 .btn-close {
   background: none;
   border: none;
-  color: #e6e6e6;
+  color: #1a1a1a;
   font-size: 24px;
   cursor: pointer;
   padding: 0;
@@ -228,12 +257,7 @@ label .span-admin {
   font-weight: 500;
 }
 
-/* Ensure readable text inside modal tables */
-.modal-content .data-table th,
-.modal-content .data-table td {
-  color: #1a1a1a;
-  border-bottom: 1px solid #e6eaee;
-}
+
 
 .modal-content .text-muted { color: #60666b; }
 
@@ -257,6 +281,13 @@ label .span-admin {
   .order-details-grid { grid-template-columns: 1fr; }
   .row-actions { flex-direction: column; align-items: flex-start; }
   .status-select { width: 100%; min-width: auto; }
+}
+
+@media (max-width: 700px) {
+  .data-table th, .data-table td {
+    font-size: 13px;
+    padding: 8px 4px;
+  }
 }
 
 /* Delivered section muted styling */

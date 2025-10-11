@@ -50,7 +50,7 @@ const Footer = () => {
             </div>
 
             <ul className="footerLinks">
-            <li><Link to="/">Inicio</Link></li>
+            <li><a href="#top" onClick={e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Inicio</a></li>
             <li><Link to="/catalog">Productos</Link></li>
             </ul>
 

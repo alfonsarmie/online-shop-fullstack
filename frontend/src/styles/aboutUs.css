@@ -1,14 +1,46 @@
-/* aboutUs.css - Versión Mejorada y Profesional */
-.aboutUs-bg {
-    background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
-    padding-top: 50px;
-    padding-bottom: 80px;
-    min-height: 100vh;
+/* Nueva fila para h2 y RotatingText */
+.sports-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin: 38px 0 24px 0;
+}
+
+.sports-title {
+    font-size: 2.5rem !important;
+    font-weight: 800;
+    color: #1e7335;
+    margin: 0;
+    letter-spacing: 0.5px;
+    line-height: 1.1;
+}
+
+.rotating-text-main {
+    font-size: 2.2rem !important;
+    font-weight: 700;
+    background: #1E7335;
+    color: white;
+    border-radius: 12px;
+    padding: 0.2em 0.8em;
+    margin-left: 0.2em;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 12px rgba(34,211,238,0.08);
     position: relative;
+    overflow: visible;
+    width: fit-content;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Only hide overflow and set height for the animated text, not the container */
+.rotating-text-main .text-rotate {
     overflow: hidden;
-    /* Nuevo fondo radial animado */
-    background: radial-gradient(circle at 10% 20%, rgba(246, 252, 248, 0.5) 0%, rgba(220, 240, 225, 0.5) 100%);
-    animation: backgroundPulse 8s ease-in-out infinite;
+    height: 1.7em;
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes backgroundPulse {
@@ -63,6 +95,7 @@
     
     background: linear-gradient(90deg, #1E7335, #4CAF50, #1E7335);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     
     text-shadow: 2px 2px 5px rgba(0,0,0,0.1);

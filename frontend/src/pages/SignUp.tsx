@@ -1,4 +1,5 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import logo from '../assets/img/logo.png';
 import FormContainer from '../components/FormContainer';
 import Input from '../components/Input';
@@ -26,6 +27,8 @@ interface PasswordStrength {
 }
 
 export default function SignUp() {
+  // Navigate programmatically to confirmation pages
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     surname: '',
@@ -118,9 +121,10 @@ export default function SignUp() {
         password: formData.password
       };
 
-      const response = await axios.post("http://localhost:3000/api/users/create", userData);
-      console.log("Registro exitoso:", response.data);
-      setSuccessMessage('Registro exitoso. Redirigiendo al login...');
+      // Preserve the email before resetting the form
+      const emailForNotice = formData.email;
+      await axios.post("http://localhost:3000/api/users/create", userData);
+      setSuccessMessage('');
       setErrorMessage('');
 
       // Clear form
@@ -132,11 +136,10 @@ export default function SignUp() {
         password: '',
         confirmPassword: ''
       });
-      
-      // Redirigir después de 2 segundos
-      setTimeout(() => {
-        window.location.href = '/login';
-      }, 2000);
+
+      // Send the user to the intermediate email verification notice
+      navigate('/verify-email', { state: { email: emailForNotice } });
+
       
     } catch (error: any) {
       if (error.response) {

@@ -16,7 +16,7 @@
   font-weight: bold;
 }
 
-.close-btn {
+.close-btn-success {
   position: absolute;
   top: 8px;
   right: 8px;
@@ -34,7 +34,7 @@
   border-radius: 50%;
 }
 
-.close-btn:hover {
+.close-btn-.close-btn-success:hover {
   background-color: rgba(46, 125, 50, 0.1);
 }
 

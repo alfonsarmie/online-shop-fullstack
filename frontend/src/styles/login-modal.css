@@ -1,72 +1,161 @@
+/*
+    Colores Principales:
+    - Verde Oscuro: #0C3F19
+    - Verde Botón: #1E7335
+    - Verde Hover: #072e11
+    - Gris de Texto: #5f5f5f
+    - Blanco: #fff
+*/
+
+/* Overlay del modal  */
 .lr-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 3000; /* Above cart panel */
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    transition: background 0.3s ease;
 }
 
+/* Contenido del modal  */
 .lr-modal-content {
-  background: #fff;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 420px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  overflow: hidden;
+    background: #fff;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    overflow: hidden;
+    font-family: 'Raleway', sans-serif;
+    animation: fadeInScale 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+/* Animación de entrada  */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Encabezado del modal  */
 .lr-modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 25px;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .lr-modal-header h2 {
-  margin: 0;
-  font-size: 18px;
-  font-family: "Afacad", sans-serif; /* Use site font */
+    margin: 0;
+    font-size: 1.5rem;
+    color: #0c3f19;
+    font-family: 'Afacad', sans-serif;
+    font-weight: 700;
 }
 
 .lr-close {
-  background: transparent;
-  border: none;
-  font-size: 22px;
-  cursor: pointer;
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #888;
+    line-height: 1;
+    transition: color 0.2s ease;
 }
 
+.lr-close:hover {
+    color: #0c3f19;
+}
+
+/* Cuerpo del modal  */
 .lr-modal-body {
-  padding: 18px 20px;
-  color: #333;
-  font-family: "Afacad", sans-serif;
+    padding: 25px;
+    color: #5f5f5f;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
+/* Pie de página del modal  */
 .lr-modal-footer {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  padding: 14px 20px 18px;
-  border-top: 1px solid #eee;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding: 15px 25px 20px;
+    border-top: 1px solid #e0e0e0;
 }
 
+/* Botones  */
 .lr-btn {
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  font-family: "Afacad", sans-serif;
+    padding: 12px 20px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: 'Afacad', sans-serif;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
 }
 
 .lr-btn.primary {
-  background: #111;
-  color: #fff;
+    background: #1E7335;
+    color: #fff;
+}
+
+.lr-btn.primary:hover {
+    background: #072e11;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(7, 46, 17, 0.3);
 }
 
 .lr-btn.secondary {
-  background: #f2f2f2;
-  color: #111;
+    background: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.lr-btn.secondary:hover {
+    background: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+/* Responsive  */
+@media (max-width: 480px) {
+    .lr-modal-content {
+        margin: 20px;
+    }
+
+    .lr-modal-header {
+        padding: 15px;
+    }
+
+    .lr-modal-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .lr-close {
+        font-size: 1.8rem;
+    }
+
+    .lr-modal-body {
+        padding: 15px;
+        font-size: 0.9rem;
+    }
+
+    .lr-modal-footer {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        padding: 15px;
+    }
+
+    .lr-btn {
+        width: 100%;
+        text-align: center;
+    }
 }

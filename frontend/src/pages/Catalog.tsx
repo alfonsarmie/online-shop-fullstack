@@ -1,110 +1,243 @@
-import React, { useState, useEffect } from 'react';
-import '../styles/catalog.css';
-import products from '../data/products';
-import Product from '../components/Product';
-import { useCart } from '../components/CartContext';
-import ProductFilter from '../components/ProductFilter';
-import { ProductWithSize } from '../types/product';
-import WhatsAppButton from '../components/WhatsAppButton';
+import React, { useState, useEffect } from "react";
+import "../styles/catalog.css";
+import Product from "../components/Product";
+import { useCart } from "../components/CartContext";
+import ProductFilter from "../components/ProductFilter";
+import { ProductWithSize } from "../types/product";
+import WhatsAppButton from "../components/WhatsAppButton";
+import { Link, useParams, useSearchParams } from "react-router-dom";
+import { productService } from "../services/productService";
 
 // Define filter types
-type FilterType = 'price_asc' | 'price_desc' | 'name_asc' | '';
+type FilterType = "price_asc" | "price_desc" | "name_asc" | "";
 
 // Page for displaying product catalog with filtering and sorting
 const Catalog = () => {
+  const { addToCart } = useCart();
+  const [products, setProducts] = useState<any[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState<FilterType>("");
 
-    const { addToCart } = useCart();
+  // Obtener parámetro de categoría de la URL
+  const { category } = useParams<{ category?: string }>();
+  const [searchParams] = useSearchParams();
+  const searchQuery = (searchParams.get("search") || "").trim();
+  const normalizedSearchQuery = searchQuery.toLowerCase();
+  const hasSearch = normalizedSearchQuery.length > 0;
 
-    // useEffect to handle reveal animations on scroll
-    useEffect(() => {
-    const reveals = document.querySelectorAll('.reveal');
+  // Cargar productos
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const productsData = await productService.getAllProducts();
+        setProducts(productsData);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
+    fetchProducts();
+  }, []);
+
+  // Filtrar productos cuando cambian los parámetros o los productos
+  useEffect(() => {
+    if (products.length === 0) {
+      setFilteredProducts([]);
+      return;
+    }
+
+    let filtered = [...products];
+
+    // Filtrar por categoria si est� presente
+    if (category) {
+      // Mapeo de categorias en plural a singular
+      const categoryMap: { [key: string]: string } = {
+        remeras: "remera",
+        buzos: "buzo",
+        pantalones: "pantal�n",
+        camperas: "campera",
+        tops: "top",
+        shorts: "short",
+      };
+
+      // Obtener la categoria en singular
+      const singularCategory = categoryMap[category] || category;
+
+      filtered = filtered.filter(
+        (product) =>
+          product.category?.toLowerCase() === singularCategory.toLowerCase()
+      );
+    }
+
+    if (normalizedSearchQuery) {
+      const query = normalizedSearchQuery;
+      filtered = filtered.filter((product) => {
+        const searchableText = [
+          product.name,
+          product.description,
+          product.color,
+          product.category,
+          Array.isArray(product.tags) ? product.tags.join(" ") : "",
+        ]
+          .filter((value): value is string => typeof value === "string")
+          .join(" ")
+          .toLowerCase();
+
+        return searchableText.includes(query);
+      });
+    }
+
+    setFilteredProducts(filtered);
+  }, [products, category, normalizedSearchQuery]);
+
+  // useEffect para animaciones de scroll
+  useEffect(() => {
+    const reveals = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
+          entry.target.classList.add("visible");
         }
       });
     });
-    
 
-    reveals.forEach(el => observer.observe(el));
-
-    // Cleanup: disconnect observer on component unmount
+    reveals.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
+  }, [filteredProducts]);
 
-  // State for active filter
-  const [activeFilter, setActiveFilter] = useState<FilterType>('');
-
-  // Function to get sorted products based on active filter
+  // Función para obtener productos ordenados
   const getSortedProducts = () => {
-    if (!activeFilter) return products;
-    
-    const productsCopy = [...products];
-    
-    switch(activeFilter) {
-      case 'price_asc':
+    if (!activeFilter) return filteredProducts;
+
+    const productsCopy = [...filteredProducts];
+
+    switch (activeFilter) {
+      case "price_asc":
         return productsCopy.sort((a, b) => a.price - b.price);
-      case 'price_desc':
+      case "price_desc":
         return productsCopy.sort((a, b) => b.price - a.price);
-      case 'name_asc':
-        return productsCopy.sort((a, b) => 
-          a.name.localeCompare(b.name, 'es', { sensitivity: 'base' })
+      case "name_asc":
+        return productsCopy.sort((a, b) =>
+          a.name.localeCompare(b.name, "es", { sensitivity: "base" })
         );
       default:
-        return products;
+        return filteredProducts;
     }
   };
 
   const sortedProducts = getSortedProducts();
 
+  // Función para obtener el título de la página
+  const getHeaderTitle = () => {
+    if (hasSearch) {
+      const baseTitle = `Resultados para "${searchQuery}"`;
+
+      if (category) {
+        const formattedCategory =
+          category.charAt(0).toUpperCase() + category.slice(1);
+        return `${baseTitle} en ${formattedCategory}`;
+      }
+
+      return baseTitle;
+    }
+
+    if (category) {
+      const formattedCategory =
+        category.charAt(0).toUpperCase() + category.slice(1);
+      return formattedCategory;
+    }
+
+    return "Todos los productos";
+  };
+
+  if (loading) {
+    return <div className="loading">Cargando productos...</div>;
+  }
+
   return (
-    
     <div className="catalogo-productos">
       {/* Category Header */}
       <div className="categoria-header">
         <div className="breadcrumb">
-          <span>Inicio</span> / <span>Hombre</span> / <span className="active">Remeras</span> {/* Replace with real link */}
+          <Link to="/"><span className="no-active">Inicio</span></Link>
+          {category ? (
+            <>
+              <span> / </span>
+              <Link to={`/catalog/${category}`}><span className="active"> {category}</span></Link>
+              {hasSearch && (
+                <>
+                  <span> / </span>
+                  <span className="active"> Busqueda</span>
+                </>
+              )}
+            </>
+          ) : hasSearch ? (
+            <>
+              <span> / </span>
+              <span className="active"> Busqueda</span>
+            </>
+          ) : (
+            <>
+              <span> / </span>
+              <span className="active"> Catalogo</span>
+            </>
+          )}
         </div>
-        <h1>Remeras de Hombre</h1>
-        <p>Explorá nuestra indumentaria</p>
+        <h1>{getHeaderTitle()}</h1>
+        <p>Explora nuestra indumentaria</p>
       </div>
 
       {/* Filters and Sorting */}
       <div className="filtros-ordenamiento">
         <div className="resultados-count">
-          <span>{products.length} products</span>
+          <span>
+            {filteredProducts.length} resultado
+            {filteredProducts.length !== 1 ? "s" : ""}
+            {hasSearch
+              ? ` para "${searchQuery}"`
+              : category
+                ? ' en esta categoria'
+                : ' disponibles'}
+          </span>
         </div>
 
-        <ProductFilter 
-            activeFilter={activeFilter}
-            onFilterChange={setActiveFilter}
+        <ProductFilter
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
         />
-
       </div>
 
-    {/* Product Grid */}
-        <div className="products-grid">
-          {sortedProducts.map(product => (
-            <Product 
-            key={product.id}
-            {...product}
-            onAddToCart={(productWithSize: ProductWithSize) => addToCart(productWithSize)}
+      {/* Product Grid */}
+      <div className="products-grid">
+        {sortedProducts.length > 0 ? (
+          sortedProducts.map((product) => (
+            <Product
+              key={product.id}
+              {...product}
+              onAddToCart={(productWithSize: ProductWithSize) =>
+                addToCart(productWithSize)
+              }
             />
-          ))}
-        </div>
-
-        {/* Pagination */}
-      <div className="pagination">
-        <button className="current-page">1</button>
-        <button>2</button>
-        <button>3</button>
-        <button>Siguiente →</button>
+          ))
+        ) : (
+          <div className="no-products">
+            <p>
+              {hasSearch
+                ? `No encontramos productos que coincidan con "${searchQuery}".`
+                : category
+                  ? 'No se encontraron productos para esta categoria.'
+                  : 'No hay productos disponibles en este momento.'}
+            </p>
+          </div>
+        )}
       </div>
+
       <WhatsAppButton />
     </div>
-    
   );
 };
 

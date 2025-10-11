@@ -8,7 +8,7 @@ import {
   getProduct 
 } from '../controllers/product-controller';
 import { validateFields } from '../middlewares/validate-fields';
-import { validateJWT } from '../middlewares/validate-jwt';
+import { validateJWT, allowAdminOrReceptionist } from '../middlewares/validate-jwt';
 
 const router = Router();
 
@@ -32,9 +32,9 @@ router.post("/create", [
   validateFields
 ], createProduct);
 
-// PUT - Actualizar producto (solo admin)
+// PUT - Actualizar producto (admin o recepcionista)
 router.put("/update/:id", [
-  validateJWT,
+  allowAdminOrReceptionist,
   check('id', 'ID must be a number').isNumeric(),
   check('name', 'Product name must be at most 150 characters').optional().isLength({ max: 150 }),
   check('description', 'Product description must be at most 500 characters').optional().isLength({ max: 500 }),
