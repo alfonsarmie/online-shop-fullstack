@@ -3,34 +3,31 @@ import jwt from "jsonwebtoken";
 import User from "../models/user-model";
 
 // Basic auth: verifies JWT and attaches userId to request. Accepts 'x-token' or 'Authorization: Bearer ...'
-export const requireAuth = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
+export const requireAuth = (req: Request,res: Response,next: NextFunction): void => {
   try {
     const token = req.header("x-token"); 
+    
     if (!token) {
       res.status(401).json({ message: "No token provided" });
       return;
     }
+    
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET || "default_secret"
     ) as { userId: number };
+    
     (req as any).userId = decoded.userId;
     next();
+  
   } catch (error) {
     res.status(401).json({ message: "Invalid token" });
   }
+
 };
 
 // Admin/self delete validator previously used for delete operations
-export const validateJWT = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+export const validateJWT = async (req: Request,res: Response,next: NextFunction): Promise<void> => {
   const token = req.header("x-token"); //This is the name of the header frontend will send the token
 
   if (!token) {
@@ -61,6 +58,7 @@ export const validateJWT = async (
       res.status(403).json({
         message: "You do not have permission to perform this action",
       });
+      
       return;
     }
 
@@ -69,14 +67,13 @@ export const validateJWT = async (
       res.status(404).json({
         message: "User not found or already deleted",
       });
+      
       return;
+
     }
 
     // Only admin can delete any user, non-admin can only delete themselves
-    if (
-      userId !== parseInt(idToDelete, 10) &&
-      userToValidate.role !== "admin"
-    ) {
+    if (userId !== parseInt(idToDelete, 10) && userToValidate.role !== "admin") {
       res.status(403).json({
         message: "You do not have permission to perform this action",
       });
@@ -89,5 +86,8 @@ export const validateJWT = async (
     res.status(401).json({
       message: "Invalid token",
     });
+
+    return;
+
   }
 };
