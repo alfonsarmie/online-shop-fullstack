@@ -48,8 +48,7 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
       accountStatus = "active";
     }
 
-        // Encrypt the password
-
+    // Encrypt the password
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 

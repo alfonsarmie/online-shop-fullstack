@@ -14,6 +14,8 @@ interface UserAttributes {
   isMember: boolean;
   registrationDate: Date;
   status: string;
+  activationToken?: string | null;           
+  activationTokenExpires?: Date | null; 
 }
 interface UserCreationAttributes extends Optional<UserAttributes, 'idUser' | 'dni' | 'role' > {}
 
@@ -28,6 +30,8 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public isMember!: boolean;
   public registrationDate!: Date;
   public status!: string;
+  public activationToken?: string | null;           
+  public activationTokenExpires?: Date | null;   
   //public phone?: string; // ← Agregar esto
 
   toJSON(): Omit<UserAttributes, 'password'> {
@@ -83,6 +87,16 @@ User.init({
     type: DataTypes.STRING(150),
     allowNull: false,
     defaultValue: 'pending'
+  },
+  activationToken: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+    defaultValue: null,
+  },
+  activationTokenExpires: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    defaultValue: null,
   },
   //phone: {
   //  type: DataTypes.STRING(20),
