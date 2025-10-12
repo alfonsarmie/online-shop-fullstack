@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
+import nodemailer from "nodemailer";
 
 import User from "../models/user-model";
 
@@ -84,6 +85,24 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
     const userCreated = await User.create(newUser);
 
 
+    /*
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const activationUrl = `http://localhost:3000/api/users/activate/${userCreated.activationToken}`;
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: userCreated.email,
+      subject: "Activa tu cuenta",
+      html: `<p>Haz click <a href="${activationUrl}">aquí</a> para activar tu cuenta.</p>`,
+    });
+    */
 
     
 
