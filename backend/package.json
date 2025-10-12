@@ -19,7 +19,8 @@
     "mercadopago": "^2.9.0",
     "multer": "^2.0.2",
     "mysql2": "^3.14.3",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.7",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
 
 import User from "../models/user-model";
 
@@ -9,6 +10,13 @@ const STAFF_ROLES = ["admin", "receptionist"];
 export const createUser = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { dni, email, name, surname, password, role } = req.body;
+    
+    let assignedRole = "client";
+    let accountStatus = "pending";
+    let activationToken: string | null = null;
+    let activationTokenExpires: Date | null = null;
+
+
 
     const normalizedRole = typeof role === "string" ? role.toLowerCase().trim() : undefined;
     const normalizedDni =
@@ -20,8 +28,6 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
       return res.status(400).json({ message: "Invalid DNI value" });
     }
 
-    let assignedRole = "client";
-    let accountStatus = "pending";
 
     if (normalizedRole && normalizedRole !== "client") {
       if (!STAFF_ROLES.includes(normalizedRole)) {
@@ -54,6 +60,13 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
 
     // Create a new user
 
+
+    if (accountStatus === "pending") {
+      activationToken = uuidv4(); //Creates uuid token
+      activationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 horas desde ahora
+    }
+
+
     const newUser = {
       dni: normalizedDni,
       email,
@@ -64,6 +77,8 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
       isMember: false,
       registrationDate: new Date(),
       status: accountStatus,
+      activationToken,       
+      activationTokenExpires,  
     };
 
     const userCreated = await User.create(newUser);
