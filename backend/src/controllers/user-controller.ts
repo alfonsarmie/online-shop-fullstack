@@ -81,30 +81,39 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
       activationToken,       
       activationTokenExpires,  
     };
+    
+
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "rowingtienda@gmail.com",
+          pass: "enzy qfpe gxkq dtdl",
+        },
+      });
+  
+      const activationUrl = `http://localhost:3000/api/users/activate/${newUser.activationToken}`;
+  
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: newUser.email,
+        subject: "Activa tu cuenta",
+        html: `<p>Haz click <a href="${activationUrl}">aquí</a> para activar tu cuenta.</p>`,
+      });
+      
+    } catch (error: any) {
+        return res.status(500).json({
+          message: "Error sending activation email",
+          error: error.message,
+        });
+    }
 
     const userCreated = await User.create(newUser);
 
 
-    /*
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    const activationUrl = `http://localhost:3000/api/users/activate/${userCreated.activationToken}`;
-
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: userCreated.email,
-      subject: "Activa tu cuenta",
-      html: `<p>Haz click <a href="${activationUrl}">aquí</a> para activar tu cuenta.</p>`,
-    });
-    */
-
     
+    
+
 
 
     return res.status(201).json({
