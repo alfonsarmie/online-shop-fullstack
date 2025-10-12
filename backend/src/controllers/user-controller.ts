@@ -87,8 +87,8 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: "rowingtienda@gmail.com",
-          pass: "enzy qfpe gxkq dtdl",
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
         },
       });
   
@@ -111,10 +111,7 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
     const userCreated = await User.create(newUser);
 
 
-    
-    
-
-
+   
 
     return res.status(201).json({
       message: "User created successfully",
@@ -127,6 +124,34 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
     });
   }
 };
+
+
+
+export const activateUser = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const { token } = req.params;
+    const user = await User.findOne({ where: { activationToken: token } });
+
+    if (!user || !user.activationTokenExpires || user.activationTokenExpires < new Date()) {
+      return res.status(400).json({ message: "Token inválido o expirado" });
+    }
+
+    user.status = "active";
+    user.activationToken = null;
+    user.activationTokenExpires = null;
+    await user.save();
+
+    return res.status(200).json({ message: "Cuenta activada correctamente" });
+  } catch (error: any) {
+    return res.status(500).json({ message: "Error al activar la cuenta", error: error.message });
+  }
+};
+
+
+
+
+
+
 
 export const deleteUser = async (req: Request, res: Response): Promise<Response> => {
   const { id } = req.params;

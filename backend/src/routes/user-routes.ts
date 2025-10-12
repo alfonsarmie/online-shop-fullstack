@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { check } from "express-validator";
-import { changePassword, createUser, deleteUser, updateUser } from "../controllers/user-controller";
+import { changePassword, createUser, deleteUser, updateUser, activateUser } from "../controllers/user-controller";
 import { existsEmail, existsDni, existsUserById } from "../helpers/db-validator-helper";
 import { validateFields } from "../middlewares/validate-fields";
 import { validateJWT, requireAuth } from "../middlewares/validate-jwt";
@@ -30,6 +30,13 @@ router.post(
   ],
   createUser
 );
+
+
+
+
+router.get("/activate/:token", activateUser);
+
+
 
 router.delete(
   "/delete/:id",
