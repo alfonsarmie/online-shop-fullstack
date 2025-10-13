@@ -4,6 +4,11 @@ import Price from './price-model';
 import Image from './image-model';
 import Size from './size-model';
 import ProductSize from './size-product-model';
+import Order from './order-model';
+import OrderLine from './order-line-model';
+import Status from './status-model';
+import PaymentMethod from './payment-method-model';
+import User from './user-model';
 
 export const defineAssociations = () => {
   // Product - Category
@@ -59,5 +64,55 @@ export const defineAssociations = () => {
   ProductSize.belongsTo(Size, { 
     foreignKey: 'idSize', 
     as: 'size' 
+  });
+
+  // Order - User
+  Order.belongsTo(User, { 
+    foreignKey: 'idUser', 
+    as: 'user' 
+  });
+  User.hasMany(Order, { 
+    foreignKey: 'idUser', 
+    as: 'orders' 
+  });
+
+  // Order - PaymentMethod
+  Order.belongsTo(PaymentMethod, { 
+    foreignKey: 'idPaymentMethod', 
+    as: 'paymentMethod' 
+  });
+  PaymentMethod.hasMany(Order, { 
+    foreignKey: 'idPaymentMethod', 
+    as: 'orders' 
+  });
+
+  // Order - Status (historial)
+  Order.hasMany(Status, { 
+    foreignKey: 'idOrder', 
+    as: 'statusHistory' 
+  });
+  Status.belongsTo(Order, { 
+    foreignKey: 'idOrder', 
+    as: 'order' 
+  });
+
+  // Order - OrderLine
+  Order.hasMany(OrderLine, { 
+    foreignKey: 'idOrder', 
+    as: 'orderLines' 
+  });
+  OrderLine.belongsTo(Order, { 
+    foreignKey: 'idOrder', 
+    as: 'order' 
+  });
+
+  // OrderLine - Product
+  OrderLine.belongsTo(Product, { 
+    foreignKey: 'idProduct', 
+    as: 'product' 
+  });
+  Product.hasMany(OrderLine, { 
+    foreignKey: 'idProduct', 
+    as: 'orderLines' 
   });
 };
