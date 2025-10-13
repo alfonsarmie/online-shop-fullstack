@@ -23,6 +23,7 @@ function NavBarReceiver({ user, setUser }: NavbarProps) {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     if (successMessage) {
@@ -31,9 +32,38 @@ function NavBarReceiver({ user, setUser }: NavbarProps) {
     }
   }, [successMessage]);
 
+  // Effect to close mobile menu when clicking outside
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const mobileMenu = document.querySelector('.mobile-menu') as HTMLElement;
+      const navToggle = document.querySelector('.nav-toggle') as HTMLElement;
+      
+      if (mobileMenu && navToggle && 
+          !mobileMenu.contains(event.target as Node) && 
+          !navToggle.contains(event.target as Node)) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMobileMenuOpen]);
+
   const handleHomeClick = () => {
     navigate('/receptionist-orders');
     window.scrollTo(0, 0);
+  };
+
+  // Toggle mobile menu function
+  const handleMobileMenuToggle = () => {
+    setIsMobileMenuOpen((prev) => !prev);
+  };
+
+  // Close mobile menu when clicking on a link
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
   };
 
   const openUserSidebar = () => setIsSidebarOpen(true);
@@ -43,8 +73,19 @@ function NavBarReceiver({ user, setUser }: NavbarProps) {
     <div>
       <SuccessMessage message={successMessage} onClose={() => setSuccessMessage('')} />
       <nav>
-        <div className="nav-toggle" id="navToggle">
+        <div className="nav-toggle" id="navToggle" onClick={handleMobileMenuToggle}>
           <FontAwesomeIcon icon={faBars} />
+        </div>
+
+        {/* Mobile menu */}
+        <div className={`mobile-menu${isMobileMenuOpen ? " open" : ""}`}>
+          <button className="nav-toggle close" onClick={handleMobileMenuToggle} aria-label="Cerrar menú">
+            &times;
+          </button>
+          <ul className="mobile-menu-links">
+            <li onClick={closeMobileMenu}><Link to="/receptionist-orders">PEDIDOS PENDIENTES</Link></li>
+            <li onClick={closeMobileMenu}><Link to="/receptionist-stock">GESTIÓN DE STOCK</Link></li>
+          </ul>
         </div>
 
         <div className="nav-left" onClick={handleHomeClick}>

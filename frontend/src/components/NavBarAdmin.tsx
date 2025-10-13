@@ -24,6 +24,7 @@ interface NavbarProps {
 function NavBarAdmin({ user, setUser }: NavbarProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Effect to auto-clear success messages after 3 seconds
   useEffect(() => {
@@ -37,21 +38,33 @@ function NavBarAdmin({ user, setUser }: NavbarProps) {
     }
   }, [successMessage]);
 
-  // Toggle sidebar function
-  // se borra?
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+  // Effect to close mobile menu when clicking outside
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const mobileMenu = document.querySelector('.mobile-menu') as HTMLElement;
+      const navToggle = document.querySelector('.nav-toggle') as HTMLElement;
+      
+      if (mobileMenu && navToggle && 
+          !mobileMenu.contains(event.target as Node) && 
+          !navToggle.contains(event.target as Node)) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMobileMenuOpen]);
+
+  // Toggle mobile menu function
+  const handleMobileMenuToggle = () => {
+    setIsMobileMenuOpen((prev) => !prev);
   };
 
-  // Removed custom home click; logo link handles navigation
-
-  // Toggle options menu
-  // se borra?
-  const openOptions = () => {
-    const optionsMenu = document.getElementById("optionsMenu");
-    if (optionsMenu) {
-      optionsMenu.classList.toggle("show");
-    }
+  // Close mobile menu when clicking on a link
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
   };
 
   // Open user sidebar
@@ -73,8 +86,22 @@ function NavBarAdmin({ user, setUser }: NavbarProps) {
       />
 
       <nav>
-        <div className="nav-toggle" id="navToggle">
+        <div className="nav-toggle" id="navToggle" onClick={handleMobileMenuToggle}>
           <FontAwesomeIcon icon={faBars} />
+        </div>
+
+        {/* Mobile menu */}
+        <div className={`mobile-menu${isMobileMenuOpen ? " open" : ""}`}>
+          <button className="nav-toggle close" onClick={handleMobileMenuToggle} aria-label="Cerrar menú">
+            &times;
+          </button>
+          <ul className="mobile-menu-links">
+            <li onClick={closeMobileMenu}><Link to="/admin-dashboard">ESTADÍSTICAS</Link></li>
+            <li onClick={closeMobileMenu}><Link to="/admin-orders">PEDIDOS</Link></li>
+            <li onClick={closeMobileMenu}><Link to="/admin-products">PRODUCTOS</Link></li>
+            <li onClick={closeMobileMenu}><Link to="/admin-categories">CATEGORÍAS</Link></li>
+            <li onClick={closeMobileMenu}><Link to="/admin-users">USUARIOS</Link></li>
+          </ul>
         </div>
 
         <div className="nav-left">
