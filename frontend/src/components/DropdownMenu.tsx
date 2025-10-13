@@ -11,9 +11,10 @@ interface DropdownMenuProps {
   mobile?: boolean;
   isOpen?: boolean;
   onClose?: () => void;
+  onBackToMenu?: () => void;
 }
 
-function DropdownMenu({ mobile = false, isOpen: mobileOpen, onClose }: DropdownMenuProps) {
+function DropdownMenu({ mobile = false, isOpen: mobileOpen, onClose, onBackToMenu }: DropdownMenuProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const closeTimer = useRef<number | null>(null);
@@ -95,19 +96,13 @@ function DropdownMenu({ mobile = false, isOpen: mobileOpen, onClose }: DropdownM
       <div className={`dropdown-mobile${mobileOpen ? " is-open" : ""}`}> 
         <button
           className="back-arrow-mobile"
-          onClick={onClose}
+          onClick={onBackToMenu || onClose}
         >
           ← Volver
         </button>
         <ul
           className={`dropdown-menu-mobile${mobileOpen ? " animate-mobile-dropdown" : ""}`}
           aria-label="Categorias de productos"
-          style={{
-            maxHeight: mobileOpen ? "500px" : "0px",
-            opacity: mobileOpen ? 1 : 0,
-            overflow: "hidden",
-            transition: "max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s"
-          }}
         >
           {categories.map((cat) => (
             <li className="dropdown-item" key={cat.idCategory}>

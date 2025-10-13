@@ -52,13 +52,13 @@ const Catalog = () => {
 
     let filtered = [...products];
 
-    // Filtrar por categoria si está presente
+    // Filtrar por categoria si estï¿½ presente
     if (category) {
       // Mapeo de categorias en plural a singular
       const categoryMap: { [key: string]: string } = {
         remeras: "remera",
         buzos: "buzo",
-        pantalones: "pantalón",
+        pantalones: "pantalï¿½n",
         camperas: "campera",
         tops: "top",
         shorts: "short",

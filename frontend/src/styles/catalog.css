@@ -5,17 +5,12 @@
   box-sizing: border-box;
 }
 
-body {
-  background-color: #f9f9f9;
-  color: #333;
-  margin-top: 80px;
-}
-
 .catalogo-productos {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   font-family: "Afacad";
+  margin-top: 80px;
 }
 
 /* Encabezado de categoría */

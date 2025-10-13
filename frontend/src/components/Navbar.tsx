@@ -31,6 +31,7 @@ function Navbar({ user, setUser }: NavbarProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
+  const [isMainMenuAnimating, setIsMainMenuAnimating] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
@@ -95,9 +96,27 @@ function Navbar({ user, setUser }: NavbarProps) {
     setIsMobileDropdownOpen(false);
   };
 
+  // Cerrar menú móvil al hacer clic en un enlace
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+    setIsMobileDropdownOpen(false);
+  };
+
   // Abrir/cerrar dropdown de productos en mobile
   const handleMobileDropdownToggle = () => {
     setIsMobileDropdownOpen((prev) => !prev);
+  };
+
+  // Función para volver al menú principal desde las categorías
+  const handleBackToMainMenu = () => {
+    setIsMobileDropdownOpen(false);
+    setIsMainMenuAnimating(true);
+    // Mantener abierto el menú principal (isMobileMenuOpen permanece true)
+    
+    // Remover la clase de animación después de que termine
+    setTimeout(() => {
+      setIsMainMenuAnimating(false);
+    }, 400); // Duración de la animación
   };
 
   // Toggle sidebar function
@@ -109,6 +128,7 @@ function Navbar({ user, setUser }: NavbarProps) {
   const handleHomeClick = () => {
     navigate("/");
     window.scrollTo(0, 0);
+    closeMobileMenu(); // Cerrar menú móvil al ir a inicio
   };
 
   const handleSearchToggle = () => {
@@ -181,7 +201,7 @@ function Navbar({ user, setUser }: NavbarProps) {
             &times;
           </button>
           {!isMobileDropdownOpen ? (
-            <ul className="mobile-menu-links">
+            <ul className={`mobile-menu-links${isMainMenuAnimating ? " animate-main-menu" : ""}`}>
               <li onClick={handleHomeClick}><Link to="/">INICIO</Link></li>
               <li>
                 <button className="mobile-dropdown-btn" onClick={handleMobileDropdownToggle}>
@@ -189,12 +209,17 @@ function Navbar({ user, setUser }: NavbarProps) {
                   <span className={`mobile-dropdown-caret${isMobileDropdownOpen ? " open" : ""}`}>{isMobileDropdownOpen ? "↓" : "→"}</span>
                 </button>
               </li>
-              <li><Link to="/about-us">ACERCA DE NOSOTROS</Link></li>
-              <li><Link to="/delivery">FORMAS DE ENTREGA</Link></li>
+              <li onClick={closeMobileMenu}><Link to="/about-us">ACERCA DE NOSOTROS</Link></li>
+              <li onClick={closeMobileMenu}><Link to="/delivery">FORMAS DE ENTREGA</Link></li>
             </ul>
           ) : (
             <div className="dropdown-mobile">
-              <DropdownMenu mobile={true} isOpen={isMobileDropdownOpen} onClose={handleMobileMenuToggle} />
+              <DropdownMenu 
+                mobile={true} 
+                isOpen={isMobileDropdownOpen} 
+                onClose={closeMobileMenu}
+                onBackToMenu={handleBackToMainMenu}
+              />
             </div>
           )}
         </div>
