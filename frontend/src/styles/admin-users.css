@@ -252,4 +252,9 @@
     padding-top: 30px;
     margin-top: 40px;
   }
+
+  .admin-users h1 {
+    font-size: 24px;
+    text-align: center;
+  }
 }
