@@ -159,8 +159,8 @@ const Catalog = () => {
   }
 
   return (
-    <div className="catalogo-productos">
-      {/* Category Header */}
+      <div className="catalogo-productos">
+        {/* Category Header */}
       <div className="categoria-header">
         <div className="breadcrumb">
           <Link to="/"><span className="no-active">Inicio</span></Link>
@@ -237,7 +237,7 @@ const Catalog = () => {
       </div>
 
       <WhatsAppButton />
-    </div>
+      </div>
   );
 };
 

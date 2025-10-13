@@ -108,7 +108,7 @@ const Checkout = () => {
   return (
     <>
       <ProgressBar currentStep="Información" />
-      <main>
+      <main className="page-with-nav-spacing">
         <div className="data-container">
           <div className="form-container">
             <form onSubmit={handleSubmit} className="checkout-form">

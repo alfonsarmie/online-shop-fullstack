@@ -77,8 +77,9 @@ const AdminDashboard: React.FC = () => {
     .join(' ');
 
   return (
-    <div className="admin-dashboard">
-      <h1>Dashboard estadísticas</h1>
+    <div className="page-with-nav-spacing">
+      <div className="admin-dashboard">
+        <h1>Dashboard estadísticas</h1>
       <p className="subtitle">Resumen ejecutivo del e‑commerce del club: ventas, pedidos, conversión y stock con señales accionables y actualización diaria</p>
 
       {/* KPI summary tiles */}
@@ -214,6 +215,7 @@ const AdminDashboard: React.FC = () => {
           </div>
         </div>
       </section>
+      </div>
     </div>
   );
 };

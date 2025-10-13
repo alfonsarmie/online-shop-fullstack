@@ -11,7 +11,8 @@ export default function CheckoutPending() {
   ), [info.collection_id, info.external_reference, info.payment_id]);
 
   return (
-    <section className="checkout-status-page is-pending">
+    <div className="page-with-nav-spacing">
+      <section className="checkout-status-page is-pending">
       <div className="checkout-ticket">
         <div className="ticket-status">
           <span className="ticket-icon" aria-hidden="true">
@@ -44,5 +45,6 @@ export default function CheckoutPending() {
         </div>
       </div>
     </section>
+    </div>
   );
 }

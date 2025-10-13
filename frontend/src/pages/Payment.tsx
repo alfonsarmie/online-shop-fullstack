@@ -49,7 +49,7 @@ const Payment = () => {
   return (
     <>
       <ProgressBar currentStep="Pago" />
-      <div className="payment-container">
+      <div className="payment-container page-with-nav-spacing">
         <div className="form-left">
           <div className="payment-summary">
             <h2>Resumen de tu compra</h2>

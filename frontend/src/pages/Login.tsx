@@ -142,9 +142,10 @@ export default function LoginForm({ setUser }: LoginFormProps) {
   };
 
   return (
-    <div className="login-container">
-      <SuccessMessage message={message} onClose={() => setMessage("")} />
-      <ErrorMessage message={errorMessage} onClose={() => setErrorMessage("")} />
+    <div className="form-page">
+      <div className="login-container">
+        <SuccessMessage message={message} onClose={() => setMessage("")} />
+        <ErrorMessage message={errorMessage} onClose={() => setErrorMessage("")} />
       <FormContainer
         logo={logo}
         title="Introduce tus datos para iniciar sesión"
@@ -214,6 +215,7 @@ export default function LoginForm({ setUser }: LoginFormProps) {
           </a>
         </p>
       </FormContainer>
+      </div>
     </div>
   );
 }

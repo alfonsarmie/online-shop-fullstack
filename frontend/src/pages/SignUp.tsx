@@ -243,8 +243,9 @@ export default function SignUp() {
   };
 
   return (
-    <div className="signup-page-container">
-      {/* Loading overlay */}
+    <div className="form-page">
+      <div className="signup-page-container">
+        {/* Loading overlay */}
       {isLoading && (
         <div className="loading-overlay">
           <div className="loading-content">
@@ -305,6 +306,7 @@ export default function SignUp() {
 
         <p className="msjreg">¿Ya tenés cuenta? <a className="msjreg login_link" href="/login">Inicia sesión</a></p>
       </FormContainer>
+      </div>
     </div>
   );
 }

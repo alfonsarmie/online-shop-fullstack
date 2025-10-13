@@ -85,7 +85,7 @@ export default function AccountActivated() {
   }
 
   return (
-    <div className="account-activated-page">
+    <div className="account-activated-page form-page">
       <div className="account-activated-card success">
         <img src={logo} alt="Logo de la tienda" className="account-activated-logo" />
         <div className="success-icon">✓</div>

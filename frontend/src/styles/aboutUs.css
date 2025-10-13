@@ -79,6 +79,7 @@
     opacity: 0;
     transform: translateY(20px);
     animation: fadeInUp 0.8s ease forwards;
+    margin-top: 40px;
 }
 
 .aboutUs-header {

@@ -507,8 +507,9 @@ const AdminProducts: React.FC = () => {
   }
 
   return (
-    <div className="admin-products">
-      {/* DELETE CONFIRMATION MODAL */}
+    <div className="page-with-nav-spacing">
+      <div className="admin-products">
+        {/* DELETE CONFIRMATION MODAL */}
       {deleteModal.open && (
         <div className="modal-overlay">
           <div className="modal">
@@ -880,6 +881,7 @@ const AdminProducts: React.FC = () => {
           </div>
         </section>
       )}
+      </div>
     </div>
   );
 };

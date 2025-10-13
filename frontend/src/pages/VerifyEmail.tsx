@@ -16,7 +16,7 @@ export default function VerifyEmail() {
 
   // Provide guidance and shortcuts back to login or home
   return (
-    <div className="verify-email-page">
+    <div className="verify-email-page form-page">
       <div className="verify-email-card">
         <img src={logo} alt="Logo de la tienda" className="verify-email-logo" />
         <h1>Revisa tu correo</h1>

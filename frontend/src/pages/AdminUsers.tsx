@@ -173,7 +173,8 @@ const AdminUsers = () => {
   };
 
   return (
-    <div className="admin-users">
+    <div className="page-with-nav-spacing">
+      <div className="admin-users">
       <header className="admin-users__header">
         <h1>Gestionar usuarios internos</h1>
         <p>Genera credenciales para nuevos administradores o recepcionistas.</p>
@@ -292,6 +293,7 @@ const AdminUsers = () => {
           </div>
         </section>
       )}
+      </div>
     </div>
   );
 };

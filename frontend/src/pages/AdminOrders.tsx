@@ -224,7 +224,8 @@ const AdminOrders: React.FC = () => {
     n.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
 
   return (
-    <div className="admin-orders">
+    <div className="page-with-nav-spacing">
+      <div className="admin-orders">
       <h1>Gestión de pedidos</h1>
       <p className="subtitle">Visualizar, actualizar estado y gestionar pedidos</p>
 
@@ -433,6 +434,7 @@ const AdminOrders: React.FC = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

@@ -178,7 +178,7 @@ const MyOrders: React.FC = () => {
   }
 
   return (
-    <div className="my-orders-container">
+    <div className="my-orders-container page-with-nav-spacing">
       <SuccessMessage message={successMessage} onClose={() => setSuccessMessage('')} />
       {/* Header */}
       <div className="orders-header">

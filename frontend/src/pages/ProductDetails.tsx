@@ -127,7 +127,7 @@ function ProductDetails() {
   );
 
   return (
-      
+    <div className="page-with-nav-spacing">
       <div className="product-details-container">
         <SuccessMessage message={successMessage} onClose={() => setSuccessMessage("")} />
         <ErrorMessage message={errorMessage} onClose={() => setErrorMessage("")} />
@@ -172,6 +172,7 @@ function ProductDetails() {
         >
           {product.stock ? 'AÑADIR AL CARRITO' : 'SIN STOCK'}
         </button>
+      </div>
       </div>
     </div>
   );

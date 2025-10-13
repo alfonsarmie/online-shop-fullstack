@@ -49,8 +49,8 @@ const Delivery = ({ user, setUser }: { user: User | null, setUser: (user: User |
   return (
     <>
       <Navbar user={user} setUser={setUser} />
-
-      <div className="delivery-bg">
+      <div className="page-with-nav-spacing">
+        <div className="delivery-bg">
         <div className="delivery-container">
           <header className="delivery-header">
             <h1 className="delivery-title">Formas de Entrega</h1>
@@ -230,6 +230,7 @@ const Delivery = ({ user, setUser }: { user: User | null, setUser: (user: User |
 
         </div>
         <WhatsAppButton />
+        </div>
       </div>
 
     </>

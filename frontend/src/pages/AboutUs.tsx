@@ -43,8 +43,8 @@ const AboutUs = () => {
   return (
     <>
       <Navbar user={user} setUser={setUser} />
-
-      <div className="aboutUs-bg">
+      <div className="page-with-nav-spacing">
+        <div className="aboutUs-bg">
         <div className="aboutUs-container">
           <header className="aboutUs-header">
             <h1 className="aboutUs-title">¿Quiénes Somos?</h1>
@@ -178,6 +178,7 @@ const AboutUs = () => {
           </section>
         </div>
         <WhatsAppButton />
+        </div>
       </div>
     </>
   );

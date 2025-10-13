@@ -16,7 +16,8 @@ export default function CheckoutSuccess() {
   ), [info.collection_id, info.external_reference, info.payment_id]);
 
   return (
-    <section className="checkout-status-page is-success">
+    <div className="page-with-nav-spacing">
+      <section className="checkout-status-page is-success">
       <div className="checkout-ticket">
         <div className="ticket-status">
           <span className="ticket-icon" aria-hidden="true">
@@ -44,5 +45,6 @@ export default function CheckoutSuccess() {
         </div>
       </div>
     </section>
+    </div>
   );
 }

@@ -4,7 +4,7 @@
  * Uses localStorage key 'adminOrders' shared with admin pages. Seeds mock orders if missing.
  */
 import React, { useEffect, useMemo, useState } from 'react';
-import '../styles/admin-orders.css';
+import '../styles/receptionist-orders.css';
 
 type OrderStatus =
   | 'pending'
@@ -230,7 +230,7 @@ const ReceptionistOrders: React.FC = () => {
   };
 
   return (
-    <div className="admin-orders">
+    <div className="receiver-dashboard">
       <h1>Pedidos pendientes a entregar</h1>
       <p className="subtitle">Visualiza los pedidos pendientes y márcalos como entregados</p>
 

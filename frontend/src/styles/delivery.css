@@ -37,6 +37,7 @@
     line-height: 1.8;
     position: relative;
     z-index: 1;
+    margin-top: 40px;
 }
 
 .delivery-header {
@@ -52,6 +53,7 @@
     letter-spacing: 2px;
     background: linear-gradient(90deg, #1E7335, #4CAF50, #1E7335);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
     margin-bottom: 20px;
