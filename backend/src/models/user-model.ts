@@ -54,7 +54,8 @@ User.init({
   },
   email: {
     type: DataTypes.STRING(255),
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
   name: {
     type: DataTypes.STRING(255),

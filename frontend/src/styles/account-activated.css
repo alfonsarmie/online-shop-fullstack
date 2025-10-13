@@ -1,0 +1,195 @@
+/* Estilos para la página de activación de cuenta */
+
+.account-activated-page {
+  min-height: calc(100vh - 200px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f7fa, #e8ecf4);
+}
+
+.account-activated-card {
+  max-width: 480px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.account-activated-card.success {
+  border-top: 4px solid #22c55e;
+}
+
+.account-activated-card.error {
+  border-top: 4px solid #ef4444;
+}
+
+.account-activated-logo {
+  width: 120px;
+  margin-bottom: 1.5rem;
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+  background-color: #22c55e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: white;
+  margin: 0 auto 1.5rem;
+  animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.activation-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #1E7335;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1.5rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.account-activated-card h1 {
+  font-size: 2rem;
+  font-family: 'Afacad', sans-serif;
+  margin-bottom: 1rem;
+  color: #0c3f19;
+}
+
+.account-activated-card.error h1 {
+  color: #dc2626;
+}
+
+.account-activated-card p {
+  color: #555555;
+  margin-bottom: 1.2rem;
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+.error-message {
+  color: #dc2626 !important;
+  font-weight: 500;
+}
+
+.account-activated-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.account-activated-primary-button,
+.account-activated-secondary-button {
+  padding: 0.875rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-family: 'Afacad', sans-serif;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.account-activated-primary-button {
+  background-color: #1E7335;
+  color: #ffffff;
+  box-shadow: 0 10px 30px rgba(30, 115, 53, 0.3);
+}
+
+.account-activated-primary-button:hover {
+  background-color: #0c3f19;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(12, 63, 25, 0.4);
+}
+
+.account-activated-secondary-button {
+  background-color: #f0f3f8;
+  color: #1f2937;
+  border: 2px solid #e5e7eb;
+}
+
+.account-activated-secondary-button:hover {
+  background-color: #e5e7eb;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+}
+
+/* Estados de carga y error */
+.account-activated-card.loading {
+  border-top: 4px solid #3b82f6;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .account-activated-page {
+    padding: 1rem;
+  }
+
+  .account-activated-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .account-activated-card h1 {
+    font-size: 1.7rem;
+  }
+
+  .success-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  }
+
+  .account-activated-actions {
+    gap: 0.5rem;
+  }
+
+  .account-activated-primary-button,
+  .account-activated-secondary-button {
+    font-size: 1rem;
+    padding: 0.75rem 1.25rem;
+  }
+}
+
+@media (min-width: 481px) {
+  .account-activated-actions {
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .account-activated-primary-button,
+  .account-activated-secondary-button {
+    flex: 1;
+    max-width: 200px;
+  }
+}

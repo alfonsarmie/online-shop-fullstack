@@ -67,10 +67,28 @@ export default function LoginForm({ setUser }: LoginFormProps) {
       }, 1000);
     } catch (error: any) {
       console.error("Login failed:", error.response?.data || error.message);
-      setErrorMessage("Error al iniciar sesión");
+      
+      // Handle specific error messages from backend
+      let errorMsg = "Error al iniciar sesión";
+      
+      if (error.response && error.response.data) {
+        // Try both 'message' and 'msg' fields for backward compatibility
+        const backendMsg = error.response.data.message || error.response.data.msg;
+        
+        if (backendMsg) {
+          // Use the backend message directly since we improved them
+          errorMsg = backendMsg;
+        }
+      } else if (error.code === 'NETWORK_ERROR' || !error.response) {
+        errorMsg = "Error de conexión. Verifica tu internet e intenta nuevamente";
+      } else if (error.response?.status === 500) {
+        errorMsg = "Error del servidor. Por favor intenta nuevamente";
+      }
+      
+      setErrorMessage(errorMsg);
       setTimeout(() => {
         setErrorMessage("");
-      }, 3000);
+      }, 5000); // Increased timeout for longer messages
     }
   };
 
@@ -101,10 +119,25 @@ export default function LoginForm({ setUser }: LoginFormProps) {
         }
       }, 1000);
     } catch (error: any) {
-      setErrorMessage("Error al iniciar sesión con Google");
+      console.error("Google login failed:", error.response?.data || error.message);
+      
+      let errorMsg = "Error al iniciar sesión con Google";
+      
+      if (error.response && error.response.data) {
+        // Try both 'message' and 'msg' fields for backward compatibility
+        const backendMsg = error.response.data.message || error.response.data.msg;
+        
+        if (backendMsg) {
+          errorMsg = backendMsg;
+        }
+      } else if (error.code === 'NETWORK_ERROR' || !error.response) {
+        errorMsg = "Error de conexión. Verifica tu internet e intenta nuevamente";
+      }
+      
+      setErrorMessage(errorMsg);
       setTimeout(() => {
         setErrorMessage("");
-      }, 3000);
+      }, 5000);
     }
   };
 

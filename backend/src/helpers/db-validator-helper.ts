@@ -4,7 +4,7 @@ import User from "../models/user-model";
 export const existsEmail = async (email: string): Promise<void> => {
   const existingUser = await User.findOne({ where: { email } });
   if (existingUser) {
-    throw new Error(`Email already exists`);
+    throw new Error(`Ya existe una cuenta con este correo electrónico`);
   }
 };
 

@@ -17,14 +17,14 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     const userFound = await User.findOne({ where: { email } });
     if (!userFound) {
       return res.status(400).json({
-        msg: 'Invalid email or password - email'
+        message: 'No existe una cuenta con este correo electrónico'
       });
     }
 
     // Check if user is active
     if (userFound.status !== 'active') {
       return res.status(400).json({
-        msg: 'User is not active. Please contact the administrator.'
+        message: 'Tu cuenta no está activada. Revisa tu correo para activarla'
       });
     }
 
@@ -32,7 +32,7 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     const validPassword = bcrypt.compareSync(password, userFound.password);
     if (!validPassword) {
       return res.status(400).json({
-        msg: 'Invalid email or password - password'
+        message: 'La contraseña es incorrecta'
       });
     }
 
@@ -48,7 +48,7 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
   } catch (error) {
     console.log(error);
     return res.status(500).json({
-      msg: 'Auth server error. Please contact the administrator.'
+      message: 'Error del servidor. Por favor intenta nuevamente'
     });
   }
 };
@@ -89,7 +89,7 @@ export const googleSignIn = async (req: Request, res: Response): Promise<Respons
 
     if (user.status !== 'active') {
       return res.status(401).json({
-        msg: 'User is not active. Please contact the administrator.'
+        message: 'Tu cuenta no está activada. Contacta al administrador'
       });
     }
 
@@ -110,8 +110,7 @@ export const googleSignIn = async (req: Request, res: Response): Promise<Respons
     
     console.log(error);
     return res.status(400).json({
-      ok: false,
-      msg: 'Invalid Google token'
+      message: 'Token de Google inválido. Por favor intenta nuevamente'
     });
 
   }

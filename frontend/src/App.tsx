@@ -19,6 +19,8 @@ import CartProvider from './components/CartContext';
 import SignUp from './pages/SignUp';
 // Intermediate screen prompting users to verify their email
 import VerifyEmail from './pages/VerifyEmail';
+// Screen shown after successful account activation
+import AccountActivated from './pages/AccountActivated';
 import ProductDetails from './pages/ProductDetails';
 import Checkout from './pages/Checkout';
 import Payment from './pages/Payment';
@@ -78,6 +80,8 @@ function App() {
           <Route path="/SignUp" element={<SignUp />} />
           {/* Remind newly registered users to confirm their email */}
           <Route path="/verify-email" element={<VerifyEmail />} />
+          {/* Show success message after account activation */}
+          <Route path="/activate/:token" element={<AccountActivated />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/payment" element={<Payment />} />

@@ -83,32 +83,54 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
     };
     
 
-    try {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-  
-      const activationUrl = `http://localhost:3000/api/users/activate/${newUser.activationToken}`;
-  
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: newUser.email,
-        subject: "Activa tu cuenta",
-        html: `<p>Haz click <a href="${activationUrl}">aquí</a> para activar tu cuenta.</p>`,
-      });
-      
-    } catch (error: any) {
-        return res.status(500).json({
-          message: "Error sending activation email",
-          error: error.message,
-        });
-    }
-
+    // Create the user first
     const userCreated = await User.create(newUser);
+
+    // Send activation email only if account status is pending
+    if (accountStatus === "pending" && activationToken) {
+      try {
+        // Verify environment variables
+        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+          console.error('Email credentials not found in environment variables');
+          return res.status(500).json({
+            message: "Email configuration error",
+            error: "Missing email credentials",
+          });
+        }
+
+        console.log('Creating email transporter...');
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          host: "smtp.gmail.com",
+          port: 587,
+          secure: false,
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+          },
+        });
+
+        // Verify the transporter configuration
+        await transporter.verify();
+        console.log('Email transporter verified successfully');
+    
+        const activationUrl = `http://localhost:3000/api/users/activate/${activationToken}`;
+    
+        await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: userCreated.email,
+          subject: "Activa tu cuenta",
+          html: `<p>Haz click <a href="${activationUrl}">aquí</a> para activar tu cuenta.</p>`,
+        });
+        
+      } catch (error: any) {
+          console.error('Email sending error:', error);
+          return res.status(500).json({
+            message: "Error sending activation email",
+            error: error.message,
+          });
+      }
+    }
 
 
    
@@ -127,13 +149,14 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
 
 
 
-export const activateUser = async (req: Request, res: Response): Promise<Response> => {
+export const activateUser = async (req: Request, res: Response): Promise<Response | void> => {
   try {
     const { token } = req.params;
     const user = await User.findOne({ where: { activationToken: token } });
 
     if (!user || !user.activationTokenExpires || user.activationTokenExpires < new Date()) {
-      return res.status(400).json({ message: "Token inválido o expirado" });
+      // Redirect to frontend with error parameter
+      return res.redirect(`http://localhost:5173/activate/${token}?error=invalid_token`);
     }
 
     user.status = "active";
@@ -141,9 +164,11 @@ export const activateUser = async (req: Request, res: Response): Promise<Respons
     user.activationTokenExpires = null;
     await user.save();
 
-    return res.status(200).json({ message: "Cuenta activada correctamente" });
+    // Redirect to frontend activation success page
+    return res.redirect(`http://localhost:5173/activate/${token}`);
   } catch (error: any) {
-    return res.status(500).json({ message: "Error al activar la cuenta", error: error.message });
+    // Redirect to frontend with error parameter
+    return res.redirect(`http://localhost:5173/activate/${req.params.token}?error=server_error`);
   }
 };
 
