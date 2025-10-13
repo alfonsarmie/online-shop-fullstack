@@ -241,3 +241,15 @@
     width: 100%;
   }
 }
+
+@media (max-width: 600px) {
+  .form-columns {
+    flex-direction: column;
+  }
+
+  .admin-users {
+    padding: 16px 12px;
+    padding-top: 30px;
+    margin-top: 40px;
+  }
+}

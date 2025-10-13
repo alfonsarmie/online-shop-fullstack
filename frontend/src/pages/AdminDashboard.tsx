@@ -1,11 +1,3 @@
-// AdminDashboard: Executive overview for the store performance.
-// - Displays high-level KPIs (revenue, orders, conversion, AOV)
-// - Lightweight charts without external libraries (SVG sparkline, stacked bars)
-// - Mock data placeholders to be replaced by real backend data
-// How to wire real data:
-//   - Replace the mock constants with API calls (e.g., useEffect + fetch)
-//   - Map responses to the KPI shape and chart series expected here
-//   - Keep presentational code (labels/titles) separate from data wiring
 import React, { useEffect } from 'react';
 import '../styles/admin-dashboard.css';
 

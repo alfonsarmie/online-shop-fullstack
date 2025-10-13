@@ -469,6 +469,22 @@
   }
 }
 
+@media (max-width: 600px) {
+  .admin-products {
+    padding: 12px;
+    padding-top: 30px;
+    margin-top: 40px;
+  }
+  
+  .form-grid > label,
+  .form-grid > div,
+  .form-grid > textarea,
+  .form-grid > select {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}
+
 /* Modal styles (for consistency) */
 .section-divider {
   height: 1px;
