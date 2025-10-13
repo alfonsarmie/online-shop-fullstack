@@ -224,11 +224,15 @@ nav li {
   margin-right: 8px;
   font-size: 18px;
   transition: transform 0.3s ease;
+  color: inherit;
+  opacity: 0.9;
 }
 
 .userOptions:hover .user-icon {
   transform: scale(1.1);
+  opacity: 1;
 }
+
 
 .user-name {
   position: relative;
@@ -820,6 +824,17 @@ nav li {
 
   .dropdown {
     display: none;
+  }
+
+  /* Adjust user icon for mobile */
+  .user-icon {
+    font-size: 16px;
+    margin-right: 6px;
+  }
+
+  .userOptions {
+    padding: 6px 12px;
+    font-size: 14px;
   }
 
   /* Estilos para el menú de categorías en el sidebar móvil */
