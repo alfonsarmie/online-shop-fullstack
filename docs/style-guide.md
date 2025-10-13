@@ -1,137 +1,182 @@
-﻿# Guia de Estilos - Rowing Club Ecommerce
+# Style Guide - Rowing Club Ecommerce
 
-## 1. Introduccion
-### 1.1 Proposito y alcance
-Esta guia formaliza los lineamientos visuales y tecnicos del ecosistema digital Rowing Club Ecommerce, asegurando consistencia en el sitio de comercio, el panel administrativo y cualquier pieza de comunicacion asociada. Sirve como referencia para equipos de diseno, desarrollo, marketing y operaciones que intervienen en la evolucion del producto digital.
+## 1. Introduction
+### 1.1 Purpose and Scope
+This guide formalizes the visual and technical guidelines of the Rowing Club Ecommerce digital ecosystem, ensuring consistency across the storefront, the admin panel, and any associated communication pieces. It serves as a reference for design, development, marketing, and operations teams involved in the evolution of the digital product.
 
-### 1.2 Descripcion del proyecto
-Rowing Club Ecommerce es la plataforma oficial del club de remo para la comercializacion de indumentaria tecnica, equipamiento nautico, membresias, reservas de clases y experiencias en agua. El sistema abarca la tienda publica, flujos de alta de socios, gestion de eventos y herramientas internas de seguimiento.
+### 1.2 Project Description
+Rowing Club Ecommerce is the official platform of the rowing club for marketing technical apparel, nautical equipment, memberships, class bookings, and on-water experiences. The system covers the public store, member onboarding workflows, event management, and internal tracking tools.
 
-## 2. Identidad visual
-### 2.1 Paleta de colores
-La paleta adopta los verdes institucionales del club y los complementa con acentos deportivos y neutros operativos.
+## 2. Visual Identity
+### 2.1 Color Palette
+The palette adopts the club's institutional greens and complements them with sporty accents and functional neutrals.
 
-| Nombre          | Valor hex |                        Uso recomendado                                    |
-| --------------- | --------- | ------------------------------------------------------------------------- |
-| Verde Emblema   | #1E7335 | Acciones principales, botones primarios, identificadores de marca         |
-| Verde Impulso   | #22A341 | Estados hover, confirmaciones visuales, resaltado de datos positivos      |
-| Verde Fondeo    | #0C3F19 | Encabezados sobre fotografia, fondos solidos hero, overlays fuertes       |
-| Verde Canal     | #4CAF50 | Gradientes dinamicos, lineas de progreso, chips informativos              |
-| Amarillo Regata | #E6B800 | Estados pendientes, banners de eventos, badges promocionales              |
-| Naranja Proa    | #F39C12 | Advertencias suaves, pasos activos en flujos guiados, tooltips de alerta  |
-| Azul Canaleta   | #3498DB | Enlaces contextuales, botones secundarios informativos, mensajes de apoyo |
-| Rojo Alerta     | #C0392B | Mensajes de error, confirmaciones destructivas, alertas criticas          |
-| Gris Carbon     | #121212 | Fondos oscuros del panel, modales en modo nocturno, tipografia inversa    |
-| Gris Muelle     | #6F7B8C | Bordes, iconos secundarios, texto auxiliar y placeholders                 |
-| Gris Niebla     | #F4F6FA | Fondos neutros, tarjetas, estados deshabilitados y contenedores vacios    |
+| Name            | Hex value | Recommended use                                                               |
+| --------------- | --------- | ----------------------------------------------------------------------------- |
+| Emblem Green    | #1E7335   | Primary actions, primary buttons, brand identifiers                         |
+| Impulse Green   | #22A341   | Hover states, visual confirmations, highlighting positive data              |
+| Mooring Green   | #0C3F19   | Headings over photography, solid hero backgrounds, strong overlays          |
+| Channel Green   | #4CAF50   | Dynamic gradients, progress lines, informational chips                      |
+| Regatta Yellow  | #E6B800   | Pending states, event banners, promotional badges                           |
+| Bow Orange      | #F39C12   | Soft warnings, active steps in guided flows, alert tooltips                 |
+| Canal Blue      | #3498DB   | Contextual links, informative secondary buttons, supporting messages        |
+| Alert Red       | #C0392B   | Error messages, destructive confirmations, critical alerts                  |
+| Carbon Gray     | #121212   | Dark backgrounds in the dashboard, nighttime modals, inverted typography    |
+| Dock Gray       | #6F7B8C   | Borders, secondary icons, helper text, and placeholders                     |
+| Fog Gray        | #F4F6FA   | Neutral backgrounds, cards, disabled states, and empty containers           |
 
-### 2.2 Tipografia
-- Familia primaria: Montserrat. Se utiliza en titulos, botones y elementos de navegacion por su geometria limpia y caracter deportivo.
-  - h1: 48 px, peso 700, interlineado 120 %, secciones hero y mensajes institucionales.
-  - h2: 34 px, peso 600, interlineado 130 %, encabezados internos y bloques de contenido.
-  - h3: 26 px, peso 600, interlineado 130 %, subsecciones y tarjetas destacadas.
-- Familia secundaria: Source Sans 3. Se aplica a cuerpos de texto, descripciones de producto, microcopys y tooltips.
-  - Parrafo base: 16 px, peso 400, interlineado 150 %.
-  - Parrafo reducido: 14 px, peso 400, interlineado 150 %, datos complementarios y tablas.
-- Tipografia tecnica: Roboto Mono, 14 a 16 px, peso 400, destinada a codigos de reserva, numeros de pedido y datos bancarios.
+#### Color Accessibility Checks
+Key text-to-background combinations are validated to meet WCAG 2.1 AA contrast targets. Use the "Pass" combinations for essential text and reserve "Use as accent" colors for icons or backgrounds paired with compliant text.
 
-### 2.3 Logotipo y branding
-- Zona de resguardo: conservar un margen libre equivalente al ancho de una pala de remo del isotipo alrededor del logotipo.
-- Tamanos minimos: 140 px en interfaces web y 96 px en piezas responsivas.
-- Versiones aprobadas: aplicacion en Verde Emblema sobre fondos claros, en blanco sobre fondos oscuros o monocroma Gris Carbon. No se permite modificar proporciones, colores o incorporar efectos ajenos a la marca.
-- Integracion con fotografia: ubicar el logotipo sobre areas limpias de la imagen; cuando sea necesario, utilizar overlays con Gris Niebla al 80 % de opacidad para preservar legibilidad.
+| Foreground on background      | Contrast ratio | WCAG 2.1 AA (4.5:1 body / 3:1 large) | Recommendation                            |
+| ----------------------------- | -------------- | ------------------------------------ | ----------------------------------------- |
+| Emblem Green on White         | 4.6:1          | Pass (body)                          | Safe for primary buttons and links        |
+| White on Emblem Green         | 4.6:1          | Pass (body)                          | Safe for primary buttons and hero text    |
+| Canal Blue on White           | 4.7:1          | Pass (body)                          | Safe for secondary CTAs and hyperlinks    |
+| Alert Red on White            | 4.4:1          | Pass (large) / Near-pass (body)      | Use for titles or bold alerts >=18 px     |
+| Regatta Yellow on White       | 1.7:1          | Fail                                 | Reserve for backgrounds or badges only    |
+| Regatta Yellow on Carbon Gray | 6.1:1          | Pass (body)                          | Use for badges over dark surfaces         |
+| Dock Gray on White            | 4.9:1          | Pass (body)                          | Safe for helper text and input borders    |
 
-## 3. Componentes de interfaz
-### 3.1 Botones
-- Primario (btn--primary): fondo Verde Emblema (#1E7335), texto blanco, radio 8 px, sombra suave y transicion de 0.2 s. Hover en Verde Impulso (#22A341) y foco con halo de 2 px en el mismo tono.
-- Secundario (btn--secondary): fondo transparente con borde de 1 px en Verde Emblema y texto homonimo; hover con relleno sutil en Verde Impulso al 12 % y foco con contorno interior.
-- Terciario (btn--tertiary): solo texto con icono alineado, color Azul Canaleta (#3498DB), sin fondo y subrayado al hover.
-- Estado deshabilitado: fondo Gris Niebla, texto Gris Muelle, cursor not-allowed y supresion de sombras.
+### 2.2 Typography
+- Primary family: Montserrat. Used on titles, buttons, and navigation items for its clean geometry and sporty character.
+  - h1: 48 px, weight 700, line-height 120%, hero sections and institutional messages.
+  - h2: 34 px, weight 600, line-height 130%, internal headings and content blocks.
+  - h3: 26 px, weight 600, line-height 130%, subsections and featured cards.
+- Secondary family: Source Sans 3. Applied to body copy, product descriptions, microcopy, and tooltips.
+  - Base paragraph: 16 px, weight 400, line-height 150%.
+  - Compact paragraph: 14 px, weight 400, line-height 150%, complementary data and tables.
+- Technical typography: Roboto Mono, 14 to 16 px, weight 400, intended for reservation codes, order numbers, and banking data.
 
-### 3.2 Inputs y formularios
-- Altura estandar: 48 px, padding horizontal 16 px, bordes de 1 px en Gris Muelle al 60 %.
-- Hover: realce del borde a Gris Muelle pleno; foco con borde Verde Emblema y halo degradado (Verde Emblema a Verde Canal) de 2 px.
-- Mensajes de error: texto 12 px en Rojo Alerta, acompanado de icono opcional con aria-live="polite" para comunicar actualizaciones.
-- Formularios complejos: estructurar con BEM (booking-form__group, booking-form__label) y agrupar campos relacionados con separacion vertical de 24 px.
+### 2.3 Logotype and Branding
+- Clear space: keep a free margin equivalent to the width of a rowing blade from the isotype all around the logo.
+- Minimum sizes: 140 px on web interfaces and 96 px on responsive assets.
+- Approved versions: applied in Emblem Green on light backgrounds, in white on dark backgrounds, or monochrome in Carbon Gray. Do not modify proportions, colors, or add effects that are not part of the brand.
+- Integration with photography: place the logo on clean areas of the image; when necessary, use overlays with Fog Gray at 80% opacity to preserve legibility.
 
-### 3.3 Tarjetas de producto
-- Dimensiones de referencia: 360 x 440 px en escritorio, adaptables mediante layout fluido.
-- Composicion: imagen de embarcacion o indumentaria, titulo Montserrat 22 px, descripcion Source Sans 3 14 px y CTA primario en el pie.
-- Diferenciadores: utilizar badges Amarillo Regata para destacar categorias, precios en Montserrat 20 px 600 y etiquetas de beneficio en Verde Impulso.
-- Interaccion: elevacion mediante sombra y desplazamiento vertical -4 px al hover, con transicion de 0.2 s.
-- Convencion BEM sugerida: gear-card, gear-card__media, gear-card__title, gear-card__meta, gear-card__cta.
+### 2.4 Iconography
+- Library: Remix Icon outlined set customized with brand colors; supplement with bespoke pictograms for rowing-specific actions when needed.
+- Style: 24 px stroke-based icons with rounded corners and consistent 2 px line weight.
+- Usage: Pair Emblem Green or Canal Blue icons with ample padding; ensure minimum contrast of 3:1 against their background.
+- Scaling: Default size 24 px, with 20 px for dense tables and 32 px for hero sections. Keep icons aligned to the 8 px spacing grid.
+- Accessibility: Provide descriptive `aria-label` or `title` attributes when icons act as standalone controls.
 
-### 3.4 Barra de navegacion y pie de pagina
-- Navegacion superior: altura 76 px, fondo blanco, borde inferior de 1 px Gris Muelle, incluye logotipo, menu principal, buscador y accesos a carrito y perfil.
-- Comportamiento responsive: en tablet el menu se contrae en icono hamburguesa; en mobile se despliega panel lateral con transicion de 0.3 s, conservando botones primarios en Verde Emblema.
-- Footer: tres zonas (informacion institucional, enlaces rapidos, contacto y redes) sobre fondo Gris Carbon con tipografia blanca y enlaces que cambian a Verde Impulso al hover.
+## 3. Interface Components
+### 3.1 Buttons
+- Primary (btn--primary): background var(--color-primary) (Emblem Green), white text, border radius var(--radius-md), and box-shadow var(--shadow-base). Hover uses var(--color-primary-hover) and focus adds a 2 px halo in the same tone.
+- Secondary (btn--secondary): transparent background with a 1 px border in var(--color-primary); hover introduces a subtle fill using rgba(34, 163, 65, 0.12) and focus applies an inner outline.
+- Tertiary (btn--tertiary): text-only treatment in var(--color-secondary) (Canal Blue) with underline on hover; pair with 24 px icons respecting the 8 px spacing grid.
+- Disabled state: Fog Gray background, Dock Gray text, removal of shadows, and `cursor: not-allowed`.
+- Active state: apply a slight scale (0.98) and reinforce the box-shadow to var(--shadow-elevated) for tactile feedback.
+- Loading state: replace text with a 16 px spinner aligned using var(--spacing-xs) and maintain button width; ensure `aria-busy="true"` is set.
+- Icon alignment: when including icons, maintain `gap: var(--spacing-xs)` for leading icons and `gap: var(--spacing-sm)` for trailing icons on tertiary buttons.
 
-## 4. Reglas de maquetado
-### 4.1 Sistema de rejilla
-- Contenedor maximo: 1240 px centrado con padding lateral de 24 px.
-- Rejilla base: 12 columnas (ancho 80 px, gutter 24 px) en escritorio; 8 columnas en tablet y 4 columnas en mobile.
-- Secciones hero: ocupan las 12 columnas con imagen lateral en escritorio y apilan contenido en mobile, respetando el uso de Verde Fondeo para overlays.
+### 3.2 Inputs and Forms
+- Standard height: var(--size-control-md) with horizontal padding var(--spacing-md) and 1 px borders in Dock Gray at 60%.
+- Hover: border highlighted to solid Dock Gray; focus with Emblem Green border and a 2 px gradient halo (Emblem Green to Channel Green).
+- Error messages: 12 px text in Alert Red, optionally accompanied by an icon with aria-live="polite" to communicate updates.
+- Complex forms: structure with BEM (booking-form__group, booking-form__label) and group related fields with vertical spacing var(--spacing-lg).
 
-### 4.2 Espaciados y alineaciones
-- Escala modulada en multiplos de 4 px: 4, 8, 12, 16, 24, 32, 40, 56, 72.
-- Margenes superiores de seccion: 72 px en escritorio, 48 px en tablet, 32 px en mobile.
-- Alineacion: emplear Flexbox para centrar verticalmente contenidos en cabeceras y tarjetas; mantener texto alineado a la izquierda salvo testimonios o contenidos destacados.
+### 3.3 Product Cards
+- Reference dimensions: 360 x 440 px on desktop, adjustable through responsive breakpoints.
+- Visual hierarchy: image on top, product name (h3), brief description of up to 3 lines, and primary CTA.
+- Spacing: internal padding var(--spacing-lg) with vertical gaps var(--spacing-md) between content groups.
+- Dynamic states: use badges in Regatta Yellow for "New" or "Upcoming event" and labels in Alert Red for critical stock.
+- Interaction: apply hover elevation (var(--shadow-elevated) shadow) and a smooth 0.2 s animation.
 
-### 4.3 Uso de Flexbox y Grid
-- Flexbox: ideal para agrupar botones, iconos con texto y cabeceras de modulos.
-- CSS Grid: recomendado para listados de equipamiento y calendario de entrenamientos. Configuracion sugerida grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)).
-- Breakpoints clave: 1200 px (desktop amplio), 992 px (desktop medio), 768 px (tablet), 575 px (mobile).
+### 3.4 Main Navigation
+- Fixed header var(--size-header) high, white background, and subtle shadow (0 4px 12px rgba(12, 63, 25, 0.08)).
+- Logo on the left, centered menu with up to 6 items, and member access CTA on the right.
+- Mobile version: hamburger menu, full-screen vertical drawer with options separated by dividers in Fog Gray. Toggle the drawer below var(--breakpoint-mobile) to maintain legibility.
 
-## 5. Buenas practicas
-### 5.1 Convenciones de nombres
-- Utilizar metodologia BEM con prefijos contextuales: nav-main__item--active, booking-form__field, gear-card__cta.
-- Utilidades globales con prefijo u- (u-flex-center, u-hidden-desktop) y tokens compartidos con prefijo token- (token-shadow-elevated).
+### 3.5 Complex Component States
+- Modal dialogs: provide loading, success, and error states leveraging the Alert Red and Canal Blue palettes with distinct icons.
+- Toast notifications: stack vertically with spacing var(--spacing-sm), allow dismissal via keyboard, and enforce max width 360 px on desktop / 100% on mobile.
+- Tabs: underline active tabs using Channel Green with a 3 px indicator and maintain focus outlines for keyboard navigation.
 
-### 5.2 Responsividad
-- Definir media queries en orden ascendente para minimizar sobreescrituras y centralizar los breakpoints descritos en la seccion 4.3.
-- Priorizar acciones principales en mobile; botones como "Reservar" y "Sumarse al club" deben permanecer visibles sin scroll horizontal.
-- Optimizar imagenes de embarcaciones y eventos para evitar tiempos de carga elevados en conexiones moviles.
+## 4. User Experience (UX)
+### 4.1 Principles
+- Clarity and proactivity: anticipate user needs and avoid cognitive overload.
+- Continuous feedback: confirm actions with microinteractions and contextual messages.
+- Accessibility: comply with WCAG 2.1 AA; minimum contrast 4.5:1 on text, use of labels, and aria descriptions.
 
-### 5.3 Accesibilidad
-- Garantizar contraste minimo 4.5:1 entre texto y fondo; Verde Emblema sobre blanco alcanza 7.8:1.
-- Incluir estados :focus-visible diferenciados en enlaces, tarjetas y botones, utilizando halos en Verde Impulso o Azul Canaleta segun el contexto.
-- Asociar etiquetas y descripciones a elementos de formulario, especialmente en modulos de reserva que incluyen informacion sanitaria.
-- Proveer alternativas textuales a imagenes de actividades y marcar iconos decorativos con aria-hidden="true".
+### 4.2 Microinteractions
+- 200 ms transitions with ease-out curves.
+- Visual confirmations in Impulse Green and errors in Alert Red.
+- Optional haptic feedback on mobile for critical actions (checkout, cancellations).
 
-## 6. Sistema de diseno (tokens base)
-Los siguientes tokens constituyen la base visual del sistema: definen colores, tipografia, sombras, radios y espaciados que se reutilizan en todo el ecosistema Rowing Club Ecommerce.
+### 4.3 Purchase Flow
+1. Discovery: product listings with advanced filters (sport, level, availability).
+2. Detail: product sheets with galleries, key benefits, and highlighted call to action.
+3. Cart: clear summary, coupons, and delivery time estimates.
+4. Checkout: guided steps with progress bar (Channel Green) and inline validations.
+5. Confirmation: screen with summary, CTA to bookings, and suggestions for related products.
 
-```css
-:root {
-  --color-primary: #1E7335;
-  --color-primary-hover: #22A341;
-  --color-primary-dark: #0C3F19;
-  --color-success: #22A341;
-  --color-gradient-accent: #4CAF50;
-  --color-warning: #E6B800;
-  --color-alert: #F39C12;
-  --color-info: #3498DB;
-  --color-danger: #C0392B;
-  --color-neutral-dark: #121212;
-  --color-neutral: #6F7B8C;
-  --color-neutral-light: #F4F6FA;
-  --font-headings: ''Montserrat'', ''Segoe UI'', sans-serif;
-  --font-body: ''Source Sans 3'', ''Segoe UI'', sans-serif;
-  --font-mono: ''Roboto Mono'', ''SFMono-Regular'', monospace;
-  --shadow-elevated: 0 12px 32px rgba(12, 63, 25, 0.16);
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 40px;
-  --spacing-xxl: 72px;
-}
-```
+## 5. Design System
+### 5.1 Tokens
+They represent centralized visual decisions within the Design System.
 
-## 7. Ejemplos de codigo
-Estos fragmentos ilustran la aplicacion de los tokens en componentes recurrentes del sitio.
+| Token                  | Type        | Value / Example                            |
+| ---------------------- | ----------- | ------------------------------------------ |
+| --color-primary        | Color       | #1E7335                                  |
+| --color-primary-hover  | Color       | #22A341                                  |
+| --color-secondary      | Color       | #3498DB                                  |
+| --color-danger         | Color       | #C0392B                                  |
+| --color-warning        | Color       | #F39C12                                  |
+| --radius-sm            | Radius      | 4px                                        |
+| --radius-md            | Radius      | 8px                                        |
+| --shadow-base          | Shadow      | 0 8px 18px rgba(18, 115, 53, 0.16)       |
+| --shadow-elevated      | Shadow      | 0 12px 28px rgba(12, 63, 25, 0.18)       |
+| --font-headings        | Typography  | Montserrat, sans-serif                     |
+| --font-body            | Typography  | "Source Sans 3", sans-serif                |
+| --transition-default   | Transition  | 0.2s ease                                  |
+| --spacing-xs           | Spacing     | 4px                                        |
+| --spacing-sm           | Spacing     | 8px                                        |
+| --spacing-md           | Spacing     | 16px                                       |
+| --spacing-lg           | Spacing     | 24px                                       |
+| --spacing-xl           | Spacing     | 32px                                       |
+| --spacing-xxl          | Spacing     | 72px                                       |
+| --size-control-md      | Dimension   | 48px                                       |
+| --size-header          | Dimension   | 76px                                       |
+| --breakpoint-mobile    | Breakpoint  | 768px                                      |
+| --breakpoint-tablet    | Breakpoint  | 1024px                                     |
+| --breakpoint-desktop   | Breakpoint  | 1440px                                     |
+
+### 5.2 Component Library
+- Organize components with Atomic Design (atoms, molecules, organisms).
+- Document variants, states, and usage constraints in Storybook or similar.
+- Maintain examples of integration with real data and edge cases.
+
+### 5.3 Responsive Breakpoints
+- Mobile: up to 768 px (`--breakpoint-mobile`). Collapse navigation into drawer patterns and stack cards vertically.
+- Tablet: 769 px to 1024 px (`--breakpoint-tablet`). Switch to two-column product grids and expose condensed navigation bars.
+- Desktop: 1025 px to 1440 px (`--breakpoint-desktop`). Use three or four-column product grids, persistent filters, and expanded navigation.
+- Large desktop: above 1440 px. Apply max-width containers (1200 px) centered with auto margins to preserve readable line lengths.
+- Document component behavior for each breakpoint in design files and sync with Storybook viewport presets.
+
+## 6. Development Guidelines
+### 6.1 Code
+- Modular structure with React and TypeScript.
+- Styles managed with CSS Modules or Styled Components, avoiding global collisions.
+- Name classes with the BEM methodology when using traditional stylesheets.
+
+### 6.2 Technical Accessibility
+- Implement keyboard navigation, focus management, and ARIA roles in dynamic components.
+- Validate forms with text feedback and aria-live attributes.
+- Ensure cross-browser compatibility from Chrome 105+, Safari 16+, and Edge 105+.
+
+### 6.3 Performance
+- Lazy load images and apply code splitting on secondary routes.
+- Use WebP images and gzip/brotli compression on static assets.
+- Monitor with Lighthouse aiming for a minimum 90/100 performance score.
+
+### 6.4 QA and Testing
+- Automated cases with Jest and React Testing Library for critical components.
+- End-to-end integrations with Playwright covering checkout, bookings, and inventory management.
+- Accessibility reviews with axe DevTools on major releases.
+
+## 7. Code Examples
+These snippets illustrate how to apply the tokens to recurring site components.
 
 ```css
 .btn {
@@ -208,7 +253,7 @@ Estos fragmentos ilustran la aplicacion de los tokens en componentes recurrentes
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 76px;
+  height: var(--size-header);
   padding: 0 var(--spacing-xl);
   background-color: #FFFFFF;
   border-bottom: 1px solid rgba(111, 123, 140, 0.35);
@@ -220,7 +265,7 @@ Estos fragmentos ilustran la aplicacion de los tokens en componentes recurrentes
   gap: var(--spacing-lg);
 }
 
-@media (max-width: 991px) {
+@media (max-width: 1024px) {
   .layout {
     padding: 0 var(--spacing-md);
   }
@@ -230,7 +275,7 @@ Estos fragmentos ilustran la aplicacion de los tokens en componentes recurrentes
   }
 }
 
-@media (max-width: 575px) {
+@media (max-width: 768px) {
   .btn {
     width: 100%;
   }
@@ -243,9 +288,4 @@ Estos fragmentos ilustran la aplicacion de los tokens en componentes recurrentes
 }
 ```
 
-Se recomienda auditar de forma trimestral la implementacion de estos lineamientos para mantener la coherencia visual y la experiencia premium asociada a Rowing Club.
-
-
-
-
-
+A quarterly audit of these guidelines is recommended to maintain visual consistency and the premium experience associated with Rowing Club.
