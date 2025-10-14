@@ -16,6 +16,9 @@ CREATE TABLE `user` (
   `status` varchar(150) NOT NULL,
   `activationToken` varchar(255) NULL,
   `activationTokenExpires` datetime NULL,
+  `passwordResetTokenHash` varchar(255) NULL,
+  `passwordResetTokenExpiresAt` datetime NULL,
+  `passwordResetTokenUsedAt` datetime NULL,
   PRIMARY KEY(`idUser`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*El collate ai_ci nos indica que es indiferente las mayusculas de minusculas*/
