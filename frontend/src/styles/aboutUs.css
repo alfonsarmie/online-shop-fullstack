@@ -373,6 +373,12 @@
     .aboutUs-container {
         padding: 0 20px;
     }
+
+    .aboutUs-container h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0px;
+        margin-top: 35px;
+    }
     
     .aboutUs-title {
         font-size: 2.4rem;

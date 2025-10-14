@@ -1,5 +1,5 @@
 // The folder test was added to tsconfig.json "exclude" to avoid including test files in the build
-import { describe, it, expect, beforeEach, afterAll } from "@jest/globals";
+import { describe, it, expect, beforeEach, afterAll, jest } from "@jest/globals";
 import { generateJWT } from "../src/helpers/generate-jwt-helper";
 import jwt from "jsonwebtoken";
 
@@ -32,6 +32,7 @@ describe("generateJWT (simple)", () => {
 		const decoded = jwt.verify(token, "test_secret") as jwt.JwtPayload;
 		expect(decoded.userId).toBe(userId);
 	});
+
 });
 
 

@@ -24,3 +24,4 @@ export const existsUserById = async (id: number): Promise<void> => {
     throw new Error(`User with ID ${id} does not exist`);
   }
 };
+

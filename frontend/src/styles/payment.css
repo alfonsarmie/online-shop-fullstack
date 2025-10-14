@@ -96,8 +96,21 @@
   background: #45a049;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
   .payment-container {
     flex-direction: column;
+  }
+  
+  .form-left {
+    flex: none; 
+  }
+  
+  .payment-methods {
+    height: auto;
+    flex: none;
+  }
+  
+  .payment-summary {
+    margin-bottom: 1rem;
   }
 }
