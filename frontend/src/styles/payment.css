@@ -102,12 +102,12 @@
   }
   
   .form-left {
-    flex: none; /* Quitar flex: 1 para que no ocupe espacio extra */
+    flex: none; 
   }
   
   .payment-methods {
     height: auto;
-    flex: none; /* También quitar flex: 1 de payment-methods */
+    flex: none;
   }
   
   .payment-summary {
