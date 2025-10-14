@@ -5,7 +5,7 @@ interface OrderLineAttributes {
   idOrder: number;
   idProduct: number;
   quantity: number;
-  unit_price: number;
+  subtotal: number;
   size?: string;
   product_name: string;
 }
@@ -14,7 +14,7 @@ class OrderLine extends Model<OrderLineAttributes> implements OrderLineAttribute
   public idOrder!: number;
   public idProduct!: number;
   public quantity!: number;
-  public unit_price!: number;
+  public subtotal!: number;
   public size?: string;
   public product_name!: string;
 }
@@ -35,7 +35,7 @@ OrderLine.init(
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
-    unit_price: {
+    subtotal: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
