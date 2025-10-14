@@ -4,6 +4,7 @@ import type { PreferenceCreateData } from 'mercadopago/dist/clients/preference/c
 import type { BackUrls } from 'mercadopago/dist/clients/preference/commonTypes';
 import type { Items } from 'mercadopago/dist/clients/commonTypes';
 import { getPreferenceClient } from '../services/mercadopago';
+import { v4 as uuidv4 } from 'uuid';
 
 type Nullable<T> = T | null | undefined;
 
@@ -33,6 +34,12 @@ interface CreatePreferenceBody {
 // Helper to keep URLs compatible with Mercado Pago validation
 function ensureTrailingSlashRemoved(url: string): string {
   return url.endsWith('/') ? url.slice(0, -1) : url;
+}
+
+function generateExternalReference(): string {
+  const uuidPart = uuidv4().replace(/-/g, '').slice(0, 16);
+
+  return `ORD-${uuidPart}`;
 }
 
 // POST /api/payments/create-preference
@@ -79,7 +86,7 @@ export async function createPreference(req: Request, res: Response) {
 
     const preferencePayload: PreferenceCreateData['body'] = {
       items: sanitizedItems,
-      external_reference: body.orderId ?? `order-${Date.now()}`,
+      external_reference: generateExternalReference(),
       payer: body.payer?.email ? {
         email: body.payer.email,
         name: body.payer?.name,
