@@ -3,6 +3,9 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import nodemailer from "nodemailer";
+import { Op } from "sequelize"
+
+
 
 import User from "../models/user-model";
 
@@ -166,6 +169,7 @@ export const activateUser = async (req: Request, res: Response): Promise<Respons
 
     // Redirect to frontend activation success page
     return res.redirect(`http://localhost:5173/activate/${token}`);
+
   } catch (error: any) {
     // Redirect to frontend with error parameter
     return res.redirect(`http://localhost:5173/activate/${req.params.token}?error=server_error`);
@@ -278,6 +282,97 @@ export const changePassword = async (req: Request, res: Response): Promise<Respo
     await user.save();
 
     return res.status(200).json({ message: "Password updated successfully" });
+  } catch (error: any) {
+    return res.status(500).json({ message: "Error updating password", error: error.message });
+  }
+};
+
+
+
+
+
+
+
+export const resetPassword = async (req: Request, res: Response): Promise<Response> => {
+ 
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ where: { email } });
+
+    // Check if user exists and is active
+    if (!user || user.status !== "active") {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+
+
+    // Generate password reset token using UUID
+    const resetToken = uuidv4();
+    user.passwordResetTokenHash = resetToken;
+    user.passwordResetTokenExpiresAt = new Date(Date.now() + 3600000); // 1 hour
+    user.passwordResetTokenUsedAt = null;
+    await user.save();
+
+
+
+    // Send email with password reset link
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+    
+    await transporter.verify();
+
+    
+  const resetUrl = `http://localhost:3000/api/users/reset/${resetToken}`;
+    
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Restablecer contraseña",
+      html: `<p>Haz click <a href="${resetUrl}">aquí</a> para restablecer tu contraseña.</p>`,
+    });
+
+
+
+    return res.status(200).json({ message: "Password reset email sent" });
+  
+  
+  } catch (error: any) {
+    return res.status(500).json({ message: "Error resetting password", error: error.message });
+  }
+}
+
+
+
+
+export const updateForgottenPassword = async (req: Request, res: Response): Promise<Response> => {
+  
+  try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+    const user = await User.findOne({ where: { passwordResetTokenHash: token } });
+
+    if (!user || !user.passwordResetTokenExpiresAt || user.passwordResetTokenExpiresAt < new Date()) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    const salt = bcrypt.genSaltSync(10);
+    const hashed = bcrypt.hashSync(newPassword, salt);
+    user.password = hashed;
+    user.passwordResetTokenHash = null;
+    user.passwordResetTokenExpiresAt = null;
+    user.passwordResetTokenUsedAt = new Date();
+    await user.save();
+
+    return res.status(200).json({ message: "Password updated successfully" });
+  
   } catch (error: any) {
     return res.status(500).json({ message: "Error updating password", error: error.message });
   }

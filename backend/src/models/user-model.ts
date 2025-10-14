@@ -15,7 +15,11 @@ interface UserAttributes {
   registrationDate: Date;
   status: string;
   activationToken?: string | null;           
-  activationTokenExpires?: Date | null; 
+  activationTokenExpires?: Date | null;
+  // Password reset fields
+  passwordResetTokenHash?: string | null;
+  passwordResetTokenExpiresAt?: Date | null;
+  passwordResetTokenUsedAt?: Date | null; 
 }
 interface UserCreationAttributes extends Optional<UserAttributes, 'idUser' | 'dni' | 'role' > {}
 
@@ -31,7 +35,11 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public registrationDate!: Date;
   public status!: string;
   public activationToken?: string | null;           
-  public activationTokenExpires?: Date | null;   
+  public activationTokenExpires?: Date | null;  
+  // Password reset fields
+  public passwordResetTokenHash?: string | null;
+  public passwordResetTokenExpiresAt?: Date | null;
+  public passwordResetTokenUsedAt?: Date | null;  
   //public phone?: string; // ← Agregar esto
 
   toJSON(): Omit<UserAttributes, 'password'> {
@@ -95,6 +103,22 @@ User.init({
     defaultValue: null,
   },
   activationTokenExpires: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    defaultValue: null,
+  },
+  // Password reset fields
+  passwordResetTokenHash: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+    defaultValue: null,
+  },
+  passwordResetTokenExpiresAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    defaultValue: null,
+  },
+  passwordResetTokenUsedAt: {
     type: DataTypes.DATE,
     allowNull: true,
     defaultValue: null,

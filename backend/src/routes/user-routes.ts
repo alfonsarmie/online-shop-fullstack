@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { check } from "express-validator";
-import { changePassword, createUser, deleteUser, updateUser, activateUser } from "../controllers/user-controller";
+import { changePassword, createUser, deleteUser, updateUser, activateUser, resetPassword, updateForgottenPassword } from "../controllers/user-controller";
 import { existsEmail, existsDni, existsUserById } from "../helpers/db-validator-helper";
 import { validateFields } from "../middlewares/validate-fields";
 import { validateJWT, requireAuth } from "../middlewares/validate-jwt";
@@ -72,6 +72,35 @@ router.put(
     validateFields,
   ],
   changePassword
+);
+
+
+//Password reset request
+router.post(
+  "/reset-password",
+  [
+    check("email", "Email must be valid").isEmail(),
+    check("email", "Email is required").notEmpty(),
+    validateFields,
+  ],
+  resetPassword
+);
+
+
+router.get("/reset/:token", (req, res) => {
+  res.send("Reset password page - token: " + req.params.token);
+});
+
+
+router.put(
+  "/reset/:token",
+  [
+    check("newPassword", "New password must be at least 6 characters").isLength({ min: 6 }),
+    check("newPassword", "Password must be at most 200 characters").isLength({ max: 200 }),
+    check("newPassword", "Password must contain at least one uppercase letter and one number").matches(/^(?=.*[A-Z])(?=.*\d).+$/),
+    validateFields,
+  ], 
+  updateForgottenPassword
 );
 
 export default router;

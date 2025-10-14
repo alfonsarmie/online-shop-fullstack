@@ -13,7 +13,7 @@ jest.mock('../src/models/user-model', () => {
 });
 
 
-// Tipar el mock de forma laxa para permitir null / objeto
+// Type the mock in a lax way to allow null / object
 const mockedUserModel: any = User;
 
 describe('existsEmail helper', () => {
