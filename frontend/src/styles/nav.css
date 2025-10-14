@@ -279,11 +279,13 @@ nav li {
 .nav-search__form {
   position: absolute;
   top: calc(100% + 18px);
-  right: 0;
+  right: -30px;
+  transform: translateY(-12px);
   display: flex;
   align-items: center;
   gap: 12px;
-  width: clamp(240px, 28vw, 380px);
+  width: 500px;
+  min-width: 500px;
   padding: 14px 18px;
   background: #ffffff;
   border: 1px solid rgba(13, 69, 29, 0.12);
@@ -291,7 +293,7 @@ nav li {
   box-shadow: 0 28px 40px -24px rgba(0, 0, 0, 0.42);
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-12px) scale(0.96);
+  transform: translateY(-12px);
   transform-origin: top right;
   transition:
     opacity 0.25s ease,
@@ -303,7 +305,7 @@ nav li {
   content: "";
   position: absolute;
   top: -8px;
-  right: 32px;
+  right: 42px;
   width: 16px;
   height: 16px;
   background: #ffffff;
@@ -316,7 +318,7 @@ nav li {
 .nav-search.open .nav-search__form {
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
 }
 
 .nav-search__form input {
@@ -328,10 +330,28 @@ nav li {
   font-family: "Afacad", sans-serif;
   font-size: 15px;
   color: #0f401c;
-  min-width: 0;
+  min-width: 200px;
   transition:
     background-color 0.2s ease,
     color 0.2s ease;
+}
+
+/* Estilos para la X nativa del input search */
+.nav-search__form input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231e7335'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px 16px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.nav-search__form input::-webkit-search-cancel-button:hover {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23145225'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E");
 }
 
 .nav-search__form input::placeholder {
@@ -897,7 +917,13 @@ nav li {
   }
 
   .nav-search {
-    display: none;
+    display: flex;
+    margin-right: 12px;
+  }
+
+  .nav-search__toggle {
+    width: 38px;
+    height: 38px;
   }
 
   .btnLogIn {
@@ -919,6 +945,39 @@ nav li {
   }
   .user-name {
     display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-search {
+    margin-right: 8px;
+  }
+
+  .nav-search__form {
+    width: clamp(180px, 80vw, 280px);
+    top: calc(100% + 12px);
+    right: -20px;
+    padding: 10px 14px;
+    gap: 8px;
+  }
+
+  .nav-search__form::before {
+    right: 24px;
+  }
+
+  .nav-search__form input {
+    font-size: 14px;
+    padding: 6px 14px;
+  }
+
+  .nav-search__submit {
+    width: 34px;
+    height: 34px;
+  }
+
+  .nav-search__toggle {
+    width: 36px;
+    height: 36px;
   }
 }
 

@@ -140,11 +140,14 @@
     overflow: hidden;
 }
 
+.password-input-container .form__group.field {
+    margin-top: 0;
+}
+
 .password-toggle {
     position: absolute;
     right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 24px;
     background: none;
     border: none;
     cursor: pointer;
@@ -152,6 +155,7 @@
     font-size: 1.2rem;
     padding: 5px;
     z-index: 2;
+    margin-top: 0;
 }
 
 .password-toggle:hover {
@@ -173,6 +177,7 @@
     text-align: right;
     width: 100%;
     max-width: 420px;
+    margin-right: 70px;
 }
 
 /* Responsive Design */
@@ -259,6 +264,7 @@
     .forgot-password {
         max-width: 100%;
         margin-top: 12px;
+        margin-right: 0;
     }
 }
 
@@ -334,6 +340,7 @@
 
     .password-toggle {
         right: 8px;
+        top: 22px;
         font-size: 1.1rem;
         padding: 3px;
     }
@@ -363,6 +370,7 @@
         margin-top: 10px;
         font-size: 0.95rem;
         word-wrap: break-word;
+        margin-right: 0;
     }
 }
 
@@ -402,6 +410,7 @@
 
     .password-toggle {
         right: 6px;
+        top: 18px;
         font-size: 1rem;
     }
 
@@ -420,6 +429,7 @@
     .forgot-password {
         margin-top: 8px;
         font-size: 0.9rem;
+        margin-right: 0;
     }
 }
 
@@ -466,5 +476,6 @@
     .forgot-password {
         margin-top: 6px;
         font-size: 0.85rem;
+        margin-right: 0;
     }
 }
