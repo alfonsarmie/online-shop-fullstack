@@ -12,8 +12,13 @@
     "sourceMap": true,               
     "declaration": true,             
     "declarationMap": true,
-    "types": ["node"]
-  }
+    "types": ["node", "jest"]
+  },
+  "exclude": [
+    "dist",
+    "node_modules",
+    "tests"
+  ]
   
   
   /*
