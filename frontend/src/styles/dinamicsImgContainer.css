@@ -241,6 +241,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 20%;
   opacity: 0.8;
   transition: all 0.5s ease;
 }
@@ -325,6 +326,10 @@
     height: 350px;
   }
   
+  .gallery-item img {
+    object-position: center 25%;
+  }
+  
   .carousel-dots {
     bottom: 15px;
   }
@@ -364,6 +369,10 @@
   
   .gallery-container {
     height: 300px;
+  }
+  
+  .gallery-item img {
+    object-position: center 30%;
   }
   
   .buy-button {

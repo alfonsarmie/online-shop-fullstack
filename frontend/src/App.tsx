@@ -142,7 +142,8 @@ function App() {
           <Route path="/receptionist/stock" element={<Navigate to="/receptionist-stock" replace />} />
         </Routes>
         <Footer />
-        <Cart />
+        {/* Carrito solo para usuarios que no sean admin ni recepcionista */}
+        {(!user || (user.role !== "admin" && user.role !== "receptionist")) && <Cart />}
       </div>
     </CartProvider>
   );

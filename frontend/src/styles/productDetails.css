@@ -162,6 +162,19 @@
 
 /* RESPONSIVE */
 
+@media (max-width: 900px) {
+    .product-details-container {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 70px;
+    }
+
+    .product-info {
+        max-width: 100%;
+        padding: 10px 20px;
+    }
+}
+
 @media (max-width: 600px) {
 
     .product-info h1 {

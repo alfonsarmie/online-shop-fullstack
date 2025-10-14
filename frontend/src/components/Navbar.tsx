@@ -311,10 +311,13 @@ function Navbar({ user, setUser }: NavbarProps) {
             </Link>
           )}
 
-          <button onClick={openCart} className="cart-icon cart-btn">
-            <FontAwesomeIcon icon={faCartShopping} />
-            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-          </button>
+          {/* Carrito solo para usuarios que no sean admin ni recepcionista */}
+          {(!user || (user.role !== "admin" && user.role !== "receptionist")) && (
+            <button onClick={openCart} className="cart-icon cart-btn">
+              <FontAwesomeIcon icon={faCartShopping} />
+              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+            </button>
+          )}
         </div>
       </nav>
     </div>
