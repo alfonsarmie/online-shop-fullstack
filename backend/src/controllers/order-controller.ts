@@ -6,7 +6,18 @@ import Product from '../models/product-model';
 import Price from '../models/price-model';
 import User from '../models/user-model';
 import PaymentMethod from '../models/payment-method-model';
-import { Sequelize , Op } from 'sequelize';
+import { Sequelize, Op } from 'sequelize';
+
+// MercadoPago status enum for better type safety
+export enum MercadoPagoStatus {
+  PENDING = 'pending',
+  APPROVED = 'approved', 
+  IN_PROCESS = 'in_process',
+  REJECTED = 'rejected',
+  CANCELLED = 'cancelled',
+  REFUNDED = 'refunded',
+  CHARGED_BACK = 'charged_back'
+}
 
 /**
  * Create a new order with transaction safety
@@ -120,7 +131,7 @@ export const createOrder = async (req: Request, res: Response) => {
       currencyId,
       total_amount,
       orderDate: new Date(),
-      statusMp: 'pending' // Default status for new orders
+      statusMp: MercadoPagoStatus.PENDING // Use enum for consistency
     }, { transaction });
 
     // Create order lines
@@ -331,7 +342,16 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
     // Update Mercado Pago fields if provided
     const updateData: any = {};
     if (payment_id) updateData.payment_id = payment_id;
-    if (statusMp) updateData.statusMp = statusMp;
+    if (statusMp) {
+      // Validate statusMp against our enum
+      if (!Object.values(MercadoPagoStatus).includes(statusMp)) {
+        await transaction.rollback();
+        return res.status(400).json({ 
+          error: `Invalid statusMp value. Must be one of: ${Object.values(MercadoPagoStatus).join(', ')}` 
+        });
+      }
+      updateData.statusMp = statusMp;
+    }
 
     await order.update(updateData, { transaction });
 
@@ -374,10 +394,18 @@ export const updateOrderMpStatus = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { payment_id, statusMp, external_reference } = req.body;
 
+    // Validate statusMp
+    if (statusMp && !Object.values(MercadoPagoStatus).includes(statusMp)) {
+      await transaction.rollback();
+      return res.status(400).json({ 
+        error: `Invalid statusMp value. Must be one of: ${Object.values(MercadoPagoStatus).join(', ')}` 
+      });
+    }
+
     // Find order by multiple identifiers for flexibility
     const order = await Order.findOne({
       where: {
-        [Op.or]: [  // ✅ FIXED: Use Op directly, not Sequelize.Op
+        [Op.or]: [
           { idOrder: id },
           { external_reference: external_reference },
           { payment_id: payment_id }
@@ -400,20 +428,33 @@ export const updateOrderMpStatus = async (req: Request, res: Response) => {
     // Create appropriate status history based on Mercado Pago status
     let statusDescription = '';
     switch (statusMp) {
-      case 'approved':
+      case MercadoPagoStatus.APPROVED:
         statusDescription = 'Payment approved - Order confirmed';
         break;
-      case 'pending':
+      case MercadoPagoStatus.PENDING:
         statusDescription = 'Payment pending - Awaiting confirmation';
         break;
-      case 'rejected':
+      case MercadoPagoStatus.IN_PROCESS:
+        statusDescription = 'Payment under review - Processing';
+        break;
+      case MercadoPagoStatus.REJECTED:
         statusDescription = 'Payment rejected - Please try again';
         break;
-      case 'cancelled':
+      case MercadoPagoStatus.CANCELLED:
         statusDescription = 'Payment cancelled by user';
         break;
+      case MercadoPagoStatus.REFUNDED:
+        statusDescription = 'Payment refunded to customer';
+        // Restore stock when payment is refunded
+        await restoreOrderStock(order.idOrder, transaction);
+        break;
+      case MercadoPagoStatus.CHARGED_BACK:
+        statusDescription = 'Chargeback initiated on payment card';
+        // Restore stock when chargeback occurs
+        await restoreOrderStock(order.idOrder, transaction);
+        break;
       default:
-        statusDescription = `Payment status updated: ${statusMp}`;
+        statusDescription = `Payment status: ${statusMp}`;
     }
 
     await Status.create({
@@ -434,6 +475,25 @@ export const updateOrderMpStatus = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal server error while updating Mercado Pago status' });
   }
 };
+
+/**
+ * Helper function to restore stock when order is refunded or charged back
+ */
+const restoreOrderStock = async (orderId: number, transaction: any) => {
+  const orderLines = await OrderLine.findAll({
+    where: { idOrder: orderId },
+    transaction
+  });
+
+  for (const line of orderLines) {
+    await Product.increment('stock', {
+      by: line.quantity,
+      where: { idProduct: line.idProduct },
+      transaction
+    });
+  }
+};
+
 /**
  * Get all orders for a specific user
  */
@@ -491,18 +551,7 @@ export const deleteOrder = async (req: Request, res: Response) => {
     }
 
     // Restore product stock before deleting order lines
-    const orderLines = await OrderLine.findAll({
-      where: { idOrder: id },
-      transaction
-    });
-
-    for (const line of orderLines) {
-      await Product.increment('stock', {
-        by: line.quantity,
-        where: { idProduct: line.idProduct },
-        transaction
-      });
-    }
+    await restoreOrderStock(parseInt(id), transaction);
 
     // Delete order lines and status history
     await OrderLine.destroy({ where: { idOrder: id }, transaction });
@@ -525,11 +574,12 @@ export const deleteOrder = async (req: Request, res: Response) => {
 export const getOrderStatistics = async (req: Request, res: Response) => {
   try {
     const totalOrders = await Order.count();
-    const pendingOrders = await Order.count({ where: { statusMp: 'pending' } });
-    const completedOrders = await Order.count({ where: { statusMp: 'approved' } });
+    const pendingOrders = await Order.count({ where: { statusMp: MercadoPagoStatus.PENDING } });
+    const completedOrders = await Order.count({ where: { statusMp: MercadoPagoStatus.APPROVED } });
+    const refundedOrders = await Order.count({ where: { statusMp: MercadoPagoStatus.REFUNDED } });
     
     const totalRevenue = await Order.sum('total_amount', {
-      where: { statusMp: 'approved' }
+      where: { statusMp: MercadoPagoStatus.APPROVED }
     });
 
     // Get monthly statistics
@@ -540,7 +590,7 @@ export const getOrderStatistics = async (req: Request, res: Response) => {
         [Sequelize.fn('COUNT', Sequelize.col('idOrder')), 'orderCount'],
         [Sequelize.fn('SUM', Sequelize.col('total_amount')), 'totalRevenue']
       ],
-      where: { statusMp: 'approved' },
+      where: { statusMp: MercadoPagoStatus.APPROVED },
       group: ['year', 'month'],
       order: [['year', 'DESC'], ['month', 'DESC']],
       limit: 6
@@ -550,6 +600,7 @@ export const getOrderStatistics = async (req: Request, res: Response) => {
       totalOrders,
       pendingOrders,
       completedOrders,
+      refundedOrders,
       totalRevenue: totalRevenue || 0,
       monthlyStats
     });
