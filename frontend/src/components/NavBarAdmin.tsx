@@ -137,6 +137,7 @@ function NavBarAdmin({ user, setUser }: NavbarProps) {
             <>
               {/* Button to open user sidebar */}
               <button onClick={openUserSidebar} className="userOptions">
+                <FontAwesomeIcon icon={faUser} className="user-icon" />
                 <span className="user-name">Hola, {user.name}!</span>
               </button>
 

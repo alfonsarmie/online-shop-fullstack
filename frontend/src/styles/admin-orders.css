@@ -7,6 +7,15 @@
   background: #121212;
   min-height: calc(100vh - 100px);
   font-family: 'Afacad', sans-serif;
+  box-sizing: border-box;
+  /* Remove overflow-x hidden to allow horizontal scrolling */
+}
+
+/* Ensure all child elements use border-box */
+.admin-orders *,
+.admin-orders *::before,
+.admin-orders *::after {
+  box-sizing: border-box;
 }
 
 .admin-orders h1 {
@@ -68,27 +77,153 @@ label .span-admin {
 
 .data-table {
   width: 100%;
+  min-width: 1000px; /* Increased to force horizontal scroll */
   border-collapse: collapse;
   background: #181818;
   border-radius: 10px;
-  overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  table-layout: auto;
+}
+
+/* Direct scroll on the panel body */
+.panel-body {
+  padding: 14px 16px 18px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  /* Force scroll capability */
+  max-width: 100%;
+}
+
+/* Better scrollbar for panel body */
+.panel-body::-webkit-scrollbar {
+  height: 12px;
+}
+
+.panel-body::-webkit-scrollbar-track {
+  background: #2a2a2a;
+  border-radius: 6px;
+}
+
+.panel-body::-webkit-scrollbar-thumb {
+  background: #22a341;
+  border-radius: 6px;
+}
+
+.panel-body::-webkit-scrollbar-thumb:hover {
+  background: #1E7335;
+}
+
+/* Table wrapper for better mobile scrolling */
+.table-container {
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  width: 100%;
+  /* Force scroll to show */
+  max-width: 100%;
+  position: relative;
+  /* Improve scroll bar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #22a341 #1D1D1D;
+}
+
+/* Force horizontal scroll when needed */
+.table-container.force-scroll {
+  overflow-x: scroll;
+}
+
+/* Scroll hint indicator */
+.table-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 100%;
+  background: linear-gradient(to left, rgba(34, 163, 65, 0.3), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.table-container::-webkit-scrollbar {
+  height: 12px;
+  background: transparent;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #1D1D1D;
+  border-radius: 6px;
+  margin: 0 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #22a341;
+  border-radius: 6px;
+  border: 2px solid #1D1D1D;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #1E7335;
 }
 
 .data-table th {
   background: #232323;
   color: #22a341;
   font-weight: 700;
-  font-size: 15px;
-  padding: 12px 10px;
+  font-size: 16px;
+  padding: 16px 14px;
   border-bottom: 2px solid #1E7335;
+  text-align: left;
+  min-width: 140px;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .data-table td {
   font-size: 15px;
   color: #f0f0f0;
-  padding: 10px 10px;
+  padding: 14px 14px;
   border-bottom: 1px solid #232323;
+  min-width: 140px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* Specific column widths for better layout */
+.data-table th:first-child,
+.data-table td:first-child {
+  min-width: 120px; /* Order ID */
+  max-width: 120px;
+}
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+  min-width: 180px; /* Customer */
+}
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+  min-width: 100px; /* Total */
+}
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) {
+  min-width: 140px; /* Status - increased for better badge display */
+  text-align: center; /* Center align status badges */
+}
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) {
+  min-width: 140px; /* Date */
+}
+
+.data-table th:last-child,
+.data-table td:last-child {
+  min-width: 160px; /* Actions */
 }
 
 .data-table tr:last-child td {
@@ -128,46 +263,142 @@ label .span-admin {
 }
 
 .status-badge {
-  padding: 4px 8px;
-  border-radius: 999px;
+  padding: 6px 12px;
+  border-radius: 20px;
   font-size: 12px;
+  font-weight: 600;
   display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  min-width: 80px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
+  box-sizing: border-box;
 }
 
 .status-pending {
   background-color: #E6B800;
   color: #000;
+  border-color: #D4A800;
 }
 
 .status-confirmed {
   background-color: #3498DB;
   color: #fff;
+  border-color: #2E86C1;
 }
 
 .status-processing {
   background-color: #9B59B6;
   color: #fff;
+  border-color: #8E44AD;
 }
 
 .status-shipped {
   background-color: #F39C12;
   color: #000;
+  border-color: #E67E22;
 }
 
 .status-delivered {
   background-color: #1E7335;
   color: #fff;
+  border-color: #27AE60;
 }
 
 .status-cancelled {
   background-color: #C0392B;
   color: #fff;
+  border-color: #E74C3C;
 }
 
 .row-actions {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Add scroll hint after table */
+.scroll-hint {
+  text-align: center;
+  font-size: 12px;
+  color: #22a341;
+  font-weight: 500;
+  padding: 8px;
+  background: #1D1D1D;
+  border-radius: 8px;
+  margin-top: -16px;
+  margin-bottom: 16px;
+  border: 1px solid #2a2a2a;
+}
+
+.scroll-hint::before {
+  content: "👈";
+  margin-right: 8px;
+}
+
+.scroll-hint::after {
+  content: "👉";
+  margin-left: 8px;
+}
+.order-card {
+  display: none;
+  background: #1D1D1D;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.order-card-id {
+  font-weight: bold;
+  color: #22a341;
+  font-size: 16px;
+}
+
+.order-card-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+  margin-bottom: 12px;
+}
+
+.order-card-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.order-card-label {
+  font-size: 12px;
+  color: #bdbdbd;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.order-card-value {
+  font-size: 14px;
+  color: #f0f0f0;
+}
+
+.order-card-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px solid #2a2a2a;
 }
 
 .status-select {
@@ -276,26 +507,525 @@ label .span-admin {
   font-size: 16px;
 }
 
-@media (max-width: 1000px) {
-  .filters-grid { grid-template-columns: 1fr; }
-  .order-details-grid { grid-template-columns: 1fr; }
-  .row-actions { flex-direction: column; align-items: flex-start; }
-  .status-select { width: 100%; min-width: auto; }
+/* Responsive breakpoints with comprehensive improvements */
+
+/* Large tablets and small desktops (1200px and down) */
+@media (max-width: 1200px) {
+  .admin-orders {
+    padding: 20px 24px;
+    padding-top: 50px;
+  }
+  
+  .filters-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 14px;
+  }
+  
+  .data-table th, .data-table td {
+    padding: 10px 8px;
+    font-size: 14px;
+  }
 }
 
-@media (max-width: 600px) {
-  .data-table th, .data-table td {
+/* Tablets (1000px and down) */
+@media (max-width: 1000px) {
+  .admin-orders {
+    padding: 18px 20px;
+    padding-top: 48px;
+  }
+  
+  .filters-grid { 
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .order-details-grid { 
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  
+  .row-actions { 
+    flex-direction: column; 
+    align-items: flex-start;
+    gap: 6px;
+  }
+  
+  .status-select { 
+    width: 100%; 
+    min-width: auto;
+  }
+  
+  /* Keep table but make it more compact */
+  .data-table {
+    min-width: 700px;
+  }
+  
+  .data-table th {
+    font-size: 14px;
+    padding: 12px 10px;
+    min-width: 110px;
+  }
+  
+  .data-table td {
+    font-size: 14px;
+    padding: 10px 10px;
+    min-width: 110px;
+  }
+  
+  .panel-header {
+    padding: 12px 14px;
+  }
+  
+  .panel-body {
+    padding: 12px 14px 16px;
+  }
+}
+
+/* Small tablets (768px and down) */
+@media (max-width: 768px) {
+  .admin-orders {
+    padding: 16px 16px;
+    padding-top: 45px;
+  }
+  
+  .admin-orders h1 {
+    font-size: 24px;
+    text-align: center;
+  }
+  
+  .subtitle {
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  /* Keep table but make it more compact */
+  .data-table {
+    min-width: 600px;
     font-size: 13px;
-    padding: 8px 4px;
+  }
+  
+  .data-table th {
+    font-size: 13px;
+    padding: 10px 8px;
+    min-width: 90px;
+  }
+  
+  .data-table td {
+    font-size: 13px;
+    padding: 8px 8px;
+    min-width: 90px;
+  }
+  
+  .status-badge {
+    font-size: 11px;
+    padding: 4px 8px;
+    min-width: 70px;
+    border-radius: 16px;
+  }
+  
+  .btn {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+  
+  .panel-header h2 {
+    font-size: 16px;
+  }
+  
+  /* Add scroll hint */
+  .table-container::after {
+    content: "← Desliza para ver más →";
+    display: block;
+    text-align: center;
+    font-size: 12px;
+    color: #8f8f8f;
+    padding: 8px;
+    background: #1D1D1D;
+    border-top: 1px solid #2a2a2a;
+  }
+}
+
+/* Mobile landscape and small tablets (600px and down) - Keep table with better scroll */
+@media (max-width: 600px) {
+  .admin-orders {
+    padding: 16px 14px;
+    padding-top: 42px;
+  }
+  
+  .admin-orders h1 {
+    font-size: 24px !important;
+    text-align: center;
+    margin-top: 40px;
+  }
+  
+  .subtitle {
+    text-align: center;
+    font-size: 13px;
+  }
+  
+  /* Keep table but make it more mobile-friendly */
+  .data-table {
+    min-width: 500px;
+    font-size: 12px;
+  }
+  
+  .data-table th {
+    font-size: 12px;
+    padding: 8px 6px;
+    min-width: 80px;
+  }
+  
+  .data-table td {
+    font-size: 12px;
+    padding: 8px 6px;
+    min-width: 80px;
+  }
+  
+  .status-badge {
+    font-size: 10px;
+    padding: 2px 5px;
+  }
+  
+  .btn {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+  
+  /* Enhanced scroll hint for mobile */
+  .table-container::after {
+    content: "⬅ Desliza horizontalmente para ver más columnas ➡";
+    font-size: 11px;
+    color: #22a341;
+    font-weight: 500;
+    padding: 6px;
+  }
+  
+  .panel-header {
+    padding: 10px 12px;
+  }
+  
+  .panel-body {
+    padding: 10px 12px 14px;
+  }
+  
+  .filters-grid {
+    gap: 10px;
+  }
+  
+  .input-admin, textarea, select {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+}
+
+/* Mobile phones (480px and down) - Switch to card layout */
+@media (max-width: 480px) {
+  .admin-orders {
+    padding: 14px 12px;
+    padding-top: 40px;
+  }
+  
+  .admin-orders h1 {
+    font-size: 22px;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  
+  .subtitle {
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  
+  /* Hide table, show cards only on very small screens */
+  .data-table {
+    display: none;
+  }
+  
+  .order-card {
+    display: block;
+  }
+  
+  .table-container::after {
+    display: none;
+  }
+  
+  /* Toggle visibility utility classes */
+  .hide-mobile {
+    display: none;
+  }
+  
+  .show-mobile {
+    display: block;
+  }
+  
+  .hide-desktop {
+    display: block;
+  }
+  
+  .show-desktop {
+    display: none;
+  }
+  
+  .panel-header {
+    padding: 10px 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .panel-header h2 {
+    font-size: 15px;
+  }
+  
+  .panel-body {
+    padding: 10px 12px 14px;
+  }
+  
+  .filters-grid {
+    gap: 10px;
+  }
+  
+  .input-admin, textarea, select {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+  
+  label .span-admin {
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+  
+  .btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    width: 100%;
+    margin-bottom: 4px;
+  }
+  
+  .btn-group {
+    flex-direction: column;
+  }
+  
+  .modal-content {
+    width: 95%;
+    margin: 10px;
+  }
+  
+  .order-card-body {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* Mobile landscape and small tablets (600px and down) - Keep table with better scroll */
+@media (max-width: 600px) {
+  .admin-orders {
+    padding: 16px 14px;
+    padding-top: 42px;
+  }
+  
+  .admin-orders h1 {
+    font-size: 20px;
+    text-align: center;
+  }
+  
+  .subtitle {
+    text-align: center;
+    font-size: 13px;
+  }
+  
+  /* Keep table but make it more mobile-friendly */
+  .data-table {
+    min-width: 500px;
+    font-size: 12px;
+  }
+  
+  .data-table th {
+    font-size: 12px;
+    padding: 8px 6px;
+    min-width: 80px;
+  }
+  
+  .data-table td {
+    font-size: 12px;
+    padding: 8px 6px;
+    min-width: 80px;
+  }
+  
+  .status-badge {
+    font-size: 10px;
+    padding: 2px 5px;
+  }
+  
+  .btn {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+  
+  /* Enhanced scroll hint */
+  .table-container::after {
+    content: "⬅ Desliza horizontalmente para ver más columnas ➡";
+    font-size: 11px;
+    color: #22a341;
+    font-weight: 500;
+  }
+  
+  .panel-header {
+    padding: 10px 12px;
+  }
+  
+  .panel-body {
+    padding: 10px 12px 14px;
   }
   .admin-orders {
-    padding: 16px 20px;
-    padding-top: 40px;
-    margin-top: 30px;
+    padding: 12px 8px;
+    padding-top: 35px;
   }
+  
+  .admin-orders h1 {
+    font-size: 20px;
+  }
+  
+  .subtitle {
+    font-size: 12px;
+  }
+  
+  .order-card {
+    padding: 12px;
+  }
+  
+  .order-card-id {
+    font-size: 14px;
+  }
+  
+  .order-card-label {
+    font-size: 11px;
+  }
+  
+  .order-card-value {
+    font-size: 13px;
+  }
+  
+  .panel-header {
+    padding: 8px 10px;
+  }
+  
+  .panel-body {
+    padding: 8px 10px 12px;
+  }
+  
+  .btn {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+  
+  .status-badge {
+    font-size: 10px;
+    padding: 2px 5px;
+  }
+}
+
+/* End of 480px breakpoint */
+
+/* Landscape orientation adjustments for mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .admin-orders {
+    padding-top: 25px;
+  }
+  
+  .admin-orders h1 {
+    font-size: 18px;
+  }
+  
+  .subtitle {
+    margin-bottom: 8px;
+  }
+  
+  .order-card {
+    padding: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .order-card-body {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px 12px;
+  }
+}
+
+/* Utility classes for responsive visibility */
+.hide-mobile {
+  display: block;
+}
+
+.show-mobile {
+  display: none;
+}
+
+.hide-desktop {
+  display: none;
+}
+
+.show-desktop {
+  display: block;
+}
+
+/* Smooth transitions for responsive changes */
+.panel,
+.order-card,
+.admin-orders,
+.data-table {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Better button styling for mobile */
+.btn-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Improved form styling */
+.form-row {
+  display: flex;
+  gap: 12px;
+  align-items: end;
 }
 
 /* Delivered section muted styling */
 .delivered-panel .panel-header h2 { color: #bdbdbd; }
 .delivered-table tbody tr.delivered-row td { color: #a0a0a0; }
 .delivered-table tbody tr.delivered-row { background: #181818; }
+
+/* Status badge responsive overrides to ensure proper display */
+@media (max-width: 768px) {
+  .status-badge {
+    font-size: 10px !important;
+    padding: 3px 7px !important;
+    min-width: 65px !important;
+    border-radius: 15px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .status-badge {
+    font-size: 9px !important;
+    padding: 3px 6px !important;
+    min-width: 55px !important;
+    border-radius: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .status-badge {
+    font-size: 8px !important;
+    padding: 2px 5px !important;
+    min-width: 50px !important;
+    border-radius: 10px !important;
+  }
+}

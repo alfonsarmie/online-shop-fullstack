@@ -475,6 +475,11 @@
     padding-top: 30px;
     margin-top: 40px;
   }
+
+  .admin-products h1 {
+    font-size: 24px;
+    text-align: center;
+  }
   
   .form-grid > label,
   .form-grid > div,

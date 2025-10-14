@@ -105,6 +105,7 @@ function NavBarReceiver({ user, setUser }: NavbarProps) {
           {user ? (
             <>
               <button onClick={openUserSidebar} className="userOptions">
+                <FontAwesomeIcon icon={faUser} className="user-icon" />
                 <span className="user-name">Hola, {user.name}!</span>
               </button>
               <UserSidebar

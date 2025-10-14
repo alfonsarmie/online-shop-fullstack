@@ -5,7 +5,11 @@
   background-color: #1D1D1D;
   color: white;
   font-family: "Afacad";
-  min-height: 430px; /* Altura mínima para mantener el diseño */
+  height: 430px; /* Altura exacta para desktop */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 /* Efecto reveal */
@@ -27,12 +31,16 @@
   height: 430px;
   overflow: hidden;
   flex: 1;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .background-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 15%;
   opacity: 0.4;
   position: absolute;
   top: 0;
@@ -47,17 +55,25 @@
   transform: translateY(-50%);
   z-index: 1;
   pointer-events: none;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  line-height: 1.1;
+  font-weight: 700;
 }
 
 /* Galería de productos */
 .gallery-section {
   width: 100%;
   flex: 1;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .gallery-container {
   display: flex;
   height: 430px;
+  overflow: hidden;
+  position: relative;
 }
 
 .gallery-item {
@@ -66,6 +82,118 @@
   overflow: hidden;
   position: relative;
   transition: flex 0.5s ease;
+  cursor: pointer;
+}
+
+/* Desktop hover effects */
+@media (hover: hover) and (pointer: fine) {
+  .gallery-item:hover {
+    flex: 3;
+  }
+  
+  .gallery-item:hover img {
+    opacity: 1;
+    filter: contrast(120%);
+    transform: scale(1.05);
+  }
+  
+  .gallery-item:hover .hover-overlay {
+    height: 100%;
+    opacity: 1;
+    z-index: 10;
+  }
+  
+  .gallery-item:hover .buy-button {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Mobile carousel styles - activate on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .gallery-container {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .gallery-item {
+    min-width: 100%;
+    flex: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .gallery-item.active {
+    opacity: 1;
+    transform: translateX(0);
+    z-index: 2;
+  }
+  
+  .gallery-item.prev {
+    opacity: 0;
+    transform: translateX(-100%);
+    z-index: 1;
+  }
+  
+  .gallery-item.next {
+    opacity: 0;
+    transform: translateX(100%);
+    z-index: 1;
+  }
+  
+  /* Show buy button always on active slide in mobile */
+  .gallery-item.active .hover-overlay {
+    height: 100%;
+    opacity: 1;
+    z-index: 10;
+  }
+  
+  .gallery-item.active .buy-button {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  /* Carousel navigation dots */
+  .carousel-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 20;
+  }
+  
+  .carousel-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    border: 2px solid white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .carousel-dot.active {
+    background: #1E7335;
+    border-color: #1E7335;
+    transform: scale(1.2);
+  }
+  
+  /* Carousel progress bar */
+  .carousel-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: #1E7335;
+    transition: width 0.1s linear;
+    z-index: 20;
+  }
 }
 
 .hover-overlay {
@@ -84,12 +212,6 @@
   z-index: 10;
 }
 
-.gallery-item:hover .hover-overlay {
-  height: 100%;
-  opacity: 1;
-  z-index: 10;
-}
-
 .buy-button {
   font-family: 'Afacad';
   background-color: white;
@@ -104,11 +226,8 @@
   transition: all 0.3s ease;
   opacity: 0;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.gallery-item:hover .buy-button {
-  transform: translateY(0);
-  opacity: 1;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .buy-button:hover {
@@ -126,20 +245,10 @@
   transition: all 0.5s ease;
 }
 
-.gallery-item:hover {
-  flex: 3;
-}
-
-.gallery-item:hover img {
-  opacity: 1;
-  filter: contrast(120%);
-  transform: scale(1.05);
-}
-
 /* Asegurar que los enlaces sean clickeables */
 .gallery-item {
   display: block;
-  cursor: pointer;
+  text-decoration: none;
 }
 
 /* Estados de carga y error */
@@ -161,52 +270,142 @@
 @media (max-width: 1024px) {
   .img-dinamicas-container {
     flex-direction: column;
+    height: 800px; /* banner 400px + gallery 400px */
+  }
+  
+  .banner-section {
+    height: 400px;
   }
   
   .banner-section h3 {
     font-size: 50px;
     left: 40px;
+    top: 50%;
+    text-align: left;
   }
   
+  .background-img {
+    object-position: center 15%;
+  }
+  
+  /* En tablets, mantener el carrusel móvil */
   .gallery-container {
-    flex-wrap: wrap;
-    height: auto;
-  }
-  
-  .gallery-item {
-    flex: 1 0 33.333%;
-    height: 200px;
+    height: 400px;
   }
 }
 
 @media (max-width: 768px) {
-  .banner-section h3 {
-    font-size: 36px;
-    left: 20px;
+  .img-dinamicas-container {
+    height: 700px; /* banner 350px + gallery 350px */
   }
   
-  .gallery-item {
-    flex: 1 0 50%;
+  .banner-section {
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .banner-section h3 {
+    font-size: 36px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 90%;
+    line-height: 1.2;
+  }
+  
+  .background-img {
+    object-position: center 15%;
+    opacity: 0.3;
+  }
+  
+  .gallery-container {
+    height: 350px;
+  }
+  
+  .carousel-dots {
+    bottom: 15px;
+  }
+  
+  .carousel-dot {
+    width: 10px;
+    height: 10px;
   }
 }
 
 @media (max-width: 480px) {
+  .img-dinamicas-container {
+    height: 600px; /* banner 300px + gallery 300px */
+  }
+  
   .banner-section {
     height: 300px;
+    padding: 20px;
   }
   
   .banner-section h3 {
     font-size: 28px;
-    left: 15px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 85%;
+    line-height: 1.1;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   }
   
-  .gallery-item {
-    flex: 1 0 100%;
-    height: 150px;
+  .background-img {
+    object-position: center 15%;
+    opacity: 0.25;
+    filter: brightness(0.7) contrast(1.1);
+  }
+  
+  .gallery-container {
+    height: 300px;
   }
   
   .buy-button {
     padding: 8px 16px;
     font-size: 14px;
+  }
+  
+  .carousel-dots {
+    bottom: 10px;
+  }
+  
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 380px) {
+  .img-dinamicas-container {
+    height: 540px; /* banner 270px + gallery 270px */
+  }
+  
+  .banner-section {
+    height: 270px;
+    padding: 15px;
+  }
+  
+  .banner-section h3 {
+    font-size: 24px;
+    width: 90%;
+    line-height: 1.0;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
+  }
+  
+  .background-img {
+    object-position: center 15%;
+    opacity: 0.2;
+    filter: brightness(0.6) contrast(1.2);
+  }
+  
+  .gallery-container {
+    height: 270px;
   }
 }
