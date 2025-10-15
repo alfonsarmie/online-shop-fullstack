@@ -4,11 +4,10 @@ import ProductSize from "../models/size-product-model";
 
 export const createSize = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { sizeDesc, gender } = req.body;
+    const { sizeDesc } = req.body;
 
     const newSize = await Size.create({
       sizeDesc,
-      gender
     });
 
     return res.status(201).json({

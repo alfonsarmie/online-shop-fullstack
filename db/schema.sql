@@ -51,7 +51,6 @@ DROP TABLE IF EXISTS `size`;
 CREATE TABLE `size`(
   `idSize` int unsigned NOT NULL auto_increment,
   `sizeDesc` VARCHAR(255) NOT NULL,
-  `gender` VARCHAR(255) NOT NULL,
   PRIMARY KEY(`idSize`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
