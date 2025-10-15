@@ -6,15 +6,11 @@ import { CartItem } from "../types/cart";
 import WhatsAppButton from "../components/WhatsAppButton";
 import ProgressBar from "../components/ProgressBar";
 import { User } from "../types/user";
+import { checkoutService, CheckoutFormData } from "../services/checkoutService";
+import ErrorMessage from "../components/ErrorMessage";
 
 // Form data interface
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  notes: string;
-  deportes: string[];
-}
+interface FormData extends CheckoutFormData {}
 
 // Get user from localStorage (same as App.tsx)
 function getLoggedUser(): User | null {
@@ -26,9 +22,10 @@ function getLoggedUser(): User | null {
 // Page for handling checkout process
 const Checkout = () => {
   // Access cart items and navigation
-  const { cartItems } = useCart();
+  const { cartItems, clearCart } = useCart();
   const navigate = useNavigate();
   const [isFormValid, setIsFormValid] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   // Redirect to products if cart is empty
   useEffect(() => {
@@ -62,21 +59,38 @@ const Checkout = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Hlde manejar cambios en los checkboxes de deportes
-  const handleDeporteChange = (deporte: string, checked: boolean) => {
-    setFormData((prev) => {
-      if (checked) {
-        return { ...prev, deportes: [...prev.deportes, deporte] };
-      } else {
-        return { ...prev, deportes: prev.deportes.filter((d) => d !== deporte) };
-      }
-    });
+  // Handle manejar cambios en los radio buttons de deportes
+  const handleDeporteChange = (deporte: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      deportes: [deporte] // Solo un deporte en el array
+    }));
   };
 
   // Handle form submission
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Datos enviados:", formData);
+    setErrorMessage("");
+    
+    // Validate form
+    const validation = checkoutService.validateCheckoutForm(formData);
+    if (!validation.isValid) {
+      setErrorMessage(validation.errors.join(", "));
+      return;
+    }
+
+    // Get current user
+    const currentUser = getLoggedUser();
+    if (!currentUser) {
+      setErrorMessage("Debes iniciar sesión para continuar");
+      navigate("/login");
+      return;
+    }
+
+    // Store checkout data in localStorage for the payment page
+    localStorage.setItem('checkoutData', JSON.stringify(formData));
+    
+    // Navigate to payment page
     navigate("/payment");
   };
 
@@ -113,6 +127,11 @@ const Checkout = () => {
           <div className="form-container">
             <form onSubmit={handleSubmit} className="checkout-form">
               <h3>Tus detalles</h3>
+              
+              {errorMessage && (
+                <ErrorMessage message={errorMessage} />
+              )}
+              
               <div className="form__group_checkout field">
                 <input
                   type="text"
@@ -173,17 +192,29 @@ const Checkout = () => {
                 </label>
               </div>
 
-              {/* Sports checkboxes */}
+              {/* Sports radio buttons */}
               <div style={{ margin: "18px 0 10px 0" }}>
-                <span className="deportes-label">¿Qué deporte/s practicás en Rowing?</span>
+                <span className="deportes-label">¿Qué deporte practicás en Rowing?</span>
                 <span className="deportes-opcional">(opcional)</span>
                 <div className="deportes-container">
+                  <label className="deporte-checkbox">
+                    <input
+                      type="radio"
+                      name="deporte"
+                      value=""
+                      checked={formData.deportes.length === 0}
+                      onChange={() => setFormData(prev => ({ ...prev, deportes: [] }))}
+                    />
+                    Ninguno
+                  </label>
                   {['hockey', 'futbol', 'futsal', 'voley', 'remo', 'natación', 'vela', 'tenis'].map((dep) => (
                     <label key={dep} className="deporte-checkbox">
                       <input
-                        type="checkbox"
+                        type="radio"
+                        name="deporte"
+                        value={dep}
                         checked={formData.deportes.includes(dep)}
-                        onChange={e => handleDeporteChange(dep, e.target.checked)}
+                        onChange={() => handleDeporteChange(dep)}
                       />
                       {dep.charAt(0).toUpperCase() + dep.slice(1)}
                     </label>
@@ -193,7 +224,6 @@ const Checkout = () => {
 
               <button
                 type="submit"
-                onClick={() => navigate("/payment")}
                 disabled={!isFormValid}
                 className={isFormValid ? "allow" : "disabled"}
               >

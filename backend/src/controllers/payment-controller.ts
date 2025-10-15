@@ -197,6 +197,9 @@ async function createPendingOrderDraft(
 // POST /api/payments/create-preference
 export async function createPreference(req: Request, res: Response) {
   try {
+    console.log('🚀 [CREATE-PREFERENCE] Iniciando creación de preferencia...');
+    console.log('📦 [CREATE-PREFERENCE] Body recibido:', JSON.stringify(req.body, null, 2));
+    
     const body = req.body as CreatePreferenceBody;
 
     if (!body || !Array.isArray(body.items) || body.items.length === 0) {
@@ -241,6 +244,8 @@ export async function createPreference(req: Request, res: Response) {
 
     let createdOrder: Order | null = null;
     if (body.orderPayload) {
+      console.log('📋 [CREATE-PREFERENCE] Creando orden con payload:', JSON.stringify(body.orderPayload, null, 2));
+      
       const orderPayload = { ...body.orderPayload };
       if (!orderPayload.customer_email && body.payer?.email) {
         orderPayload.customer_email = body.payer.email;
@@ -248,7 +253,15 @@ export async function createPreference(req: Request, res: Response) {
       if (!orderPayload.customer_name && (body.payer?.name || body.payer?.surname)) {
         orderPayload.customer_name = `${body.payer?.name ?? ''} ${body.payer?.surname ?? ''}`.trim() || undefined;
       }
+      
+      console.log('📋 [CREATE-PREFERENCE] Payload final para orden:', JSON.stringify(orderPayload, null, 2));
       createdOrder = await createPendingOrderDraft(orderPayload, sanitizedItems);
+      console.log('✅ [CREATE-PREFERENCE] Orden creada exitosamente:', {
+        idOrder: createdOrder.idOrder,
+        customer_email: createdOrder.customer_email,
+        total_amount: createdOrder.total_amount,
+        sports: createdOrder.sports
+      });
     }
 
     const externalReference = createdOrder
@@ -285,7 +298,15 @@ export async function createPreference(req: Request, res: Response) {
     }
 
     // Delegate the REST call to Mercado Pago SDK
+    console.log('🔗 [CREATE-PREFERENCE] Creando preferencia en Mercado Pago...');
     const preference = await getPreferenceClient().create({ body: preferencePayload });
+    
+    console.log('✅ [CREATE-PREFERENCE] Preferencia creada exitosamente:', {
+      id: preference.id,
+      init_point: preference.init_point,
+      external_reference: externalReference,
+      orderId: createdOrder?.idOrder ?? null
+    });
 
     return res.status(201).json({
       id: preference.id,
@@ -294,7 +315,11 @@ export async function createPreference(req: Request, res: Response) {
       orderId: createdOrder?.idOrder ?? null,
     });
   } catch (error) {
-    console.error('Error creating Mercado Pago preference', error);
+    console.error('❌ [CREATE-PREFERENCE] Error:', error);
+    if (error instanceof Error) {
+      console.error('❌ [CREATE-PREFERENCE] Error message:', error.message);
+      console.error('❌ [CREATE-PREFERENCE] Error stack:', error.stack);
+    }
 
     if (error instanceof Error && error.message.includes('MERCADOPAGO_ACCESS_TOKEN')) {
       return res.status(500).json({ message: 'Mercado Pago credentials are not configured on the server' });
