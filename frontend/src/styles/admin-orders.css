@@ -1,17 +1,13 @@
-/* admin-orders.css */
-/* Admin Orders Styles: consistent with dark admin look */
 .admin-orders {
   padding: 24px 32px;
-  padding-top: 50px; /* keep clear of fixed navbar */
+  padding-top: 50px;
   color: #f0f0f0;
   background: #121212;
   min-height: calc(100vh - 100px);
   font-family: 'Afacad', sans-serif;
   box-sizing: border-box;
-  /* Remove overflow-x hidden to allow horizontal scrolling */
 }
 
-/* Ensure all child elements use border-box */
 .admin-orders *,
 .admin-orders *::before,
 .admin-orders *::after {
@@ -21,6 +17,7 @@
 .admin-orders h1 {
   margin: 0;
   font-family: 'Anton', sans-serif;
+  margin-top: 40px;
 }
 
 .subtitle {

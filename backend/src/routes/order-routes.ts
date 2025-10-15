@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { check } from 'express-validator';
 import {
   createOrder,
@@ -11,7 +11,8 @@ import {
   getOrderStatistics
 } from '../controllers/order-controller';
 import { validateFields } from '../middlewares/validate-fields';
-import { validateJWT, allowAdminOrReceptionist } from '../middlewares/validate-jwt';
+import { validateJWT, allowAdminOrReceptionist, requireAuth } from '../middlewares/validate-jwt';
+import Order from '../models/order-model';
 
 const router = Router();
 
@@ -47,7 +48,7 @@ router.get("/:id", [
 
 // GET - Get all orders for a specific user
 router.get("/user/:userId", [
-  validateJWT,
+  requireAuth,
   check('userId', 'User ID must be a number').isNumeric(),
   validateFields
 ], getUserOrders);

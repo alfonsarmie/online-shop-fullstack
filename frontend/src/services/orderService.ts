@@ -46,7 +46,9 @@ const parseDecimal = (value: number | string | undefined): number => {
 };
 
 export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
-  const items: FrontendOrderItem[] = order.orderLines.map((line, index) => {
+  console.log('🔄 Mapping order to frontend:', order);
+  
+  const items: FrontendOrderItem[] = (order.orderLines || []).map((line, index) => {
     const quantity = line.quantity || 0;
     const subtotal = parseDecimal(line.subtotal);
     const unitPrice = quantity > 0 ? subtotal / quantity : subtotal;
@@ -60,6 +62,8 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
       image: undefined,
     };
   });
+
+  console.log('📦 Mapped items:', items);
 
   const total = parseDecimal(order.total_amount);
   const statusMp = order.statusMp ?? 'pending';
