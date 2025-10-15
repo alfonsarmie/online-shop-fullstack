@@ -114,9 +114,9 @@ export const createOrder = async (req: Request, res: Response) => {
         product_name: item.name || product.name,
         quantity: item.quantity,
         subtotal,
-        size: item.size
       });
-    }
+
+    }// End for items
 
     // Create the order
     const order = await Order.create({
@@ -135,13 +135,18 @@ export const createOrder = async (req: Request, res: Response) => {
     }, { transaction });
 
     // Create order lines
-    const orderLines = await OrderLine.bulkCreate(
-      orderLinesData.map(line => ({
-        idOrder: order.idOrder,
-        ...line
-      })),
-      { transaction }
-    );
+    const orderLinesPayload = orderLinesData.map(({ idProduct, quantity, subtotal }) => ({
+      idOrder: order.idOrder,
+      idProduct,
+      quantity,
+      subtotal,
+    }));
+
+    await OrderLine.bulkCreate(orderLinesPayload, {
+      transaction,
+      validate: true,         // opcional: valida cada fila según el modelo
+      individualHooks: false, // ponlo en true si necesitas hooks por fila
+    });
 
     // Update product stock for each item
     for (const item of items) {
@@ -156,7 +161,7 @@ export const createOrder = async (req: Request, res: Response) => {
     await Status.create({
       idOrder: order.idOrder,
       statusDate: new Date(),
-      description: 'Order created - Pending payment'
+      description: 'pending payment'
     }, { transaction });
 
     // Commit transaction
@@ -168,6 +173,7 @@ export const createOrder = async (req: Request, res: Response) => {
         { 
           model: OrderLine, 
           as: 'orderLines',
+          attributes: ['idOrderLine', 'idProduct', 'quantity', 'subtotal'],
           include: [
             { 
               model: Product, 
@@ -179,6 +185,7 @@ export const createOrder = async (req: Request, res: Response) => {
         { 
           model: Status, 
           as: 'statusHistory',
+          attributes: ['description'],
           order: [['statusDate', 'DESC']]
         }
       ]
@@ -198,6 +205,8 @@ export const createOrder = async (req: Request, res: Response) => {
     });
   }
 };
+
+
 
 /**
  * Get orders with pagination and filtering

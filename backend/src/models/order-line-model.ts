@@ -2,6 +2,7 @@ import { DataTypes, Model } from "sequelize";
 import db from "../db/connection";
 
 interface OrderLineAttributes {
+  idOrderLine?: number;
   idOrder: number;
   idProduct: number;
   quantity: number;
@@ -9,6 +10,7 @@ interface OrderLineAttributes {
 }
 
 class OrderLine extends Model<OrderLineAttributes> implements OrderLineAttributes {
+  public idOrderLine!: number;
   public idOrder!: number;
   public idProduct!: number;
   public quantity!: number;
@@ -17,15 +19,31 @@ class OrderLine extends Model<OrderLineAttributes> implements OrderLineAttribute
 
 OrderLine.init(
   {
-    idOrder: {
+    idOrderLine: {
       type: DataTypes.INTEGER.UNSIGNED,
       primaryKey: true,
+      autoIncrement: true,
       allowNull: false,
+    },
+    idOrder: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      references: {
+        model: 'Order',     // o model: Order
+        key: 'idOrder',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     idProduct: {
       type: DataTypes.INTEGER.UNSIGNED,
-      primaryKey: true,
       allowNull: false,
+      references: {
+        model: 'Product',   // o model: Product
+        key: 'idProduct',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'RESTRICT',
     },
     quantity: {
       type: DataTypes.INTEGER.UNSIGNED,

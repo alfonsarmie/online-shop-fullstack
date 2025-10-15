@@ -19,12 +19,12 @@ const router = Router();
 // POST - Create new order (authenticated users)
 router.post("/", [
   validateJWT,
-  check('idUser', 'User ID is required').isInt({ min: 1 }),
-  check('idPaymentMethod', 'Payment method ID is required').isInt({ min: 1 }),
+  check('idUser', 'User ID is required').notEmpty(),
+  check('idPaymentMethod', 'Payment method ID is required').notEmpty,
   check('customer_name', 'Customer name is required').notEmpty(),
   check('customer_email', 'Valid customer email is required').isEmail(),
   check('items', 'Items array is required').isArray({ min: 1 }),
-  check('items.*.idProduct', 'Product ID is required for each item').isInt({ min: 1 }),
+  check('items.*.idProduct', 'Product ID is required for each item').notEmpty,
   check('items.*.quantity', 'Quantity must be a positive integer').isInt({ min: 1 }),
   validateFields
 ], createOrder);
