@@ -193,17 +193,40 @@ const AdminOrders: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  // Auto-hide success message after 3 seconds
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  // Auto-hide error message after 3 seconds
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
   const fetchOrders = useCallback(async () => {
     setLoading(true);
     try {
+      console.log('Fetching orders...');
       const { orders: backendOrders } = await orderService.getOrders({
         page: 1,
         limit: 100,
       });
+      console.log('Orders received:', backendOrders);
       setOrders(backendOrders.map(mapBackendOrder));
       setErrorMessage('');
     } catch (error: unknown) {
       console.error('Error fetching orders:', error);
+      console.error('Error details:', (error as any)?.response);
       const msg =
         (error as any)?.response?.data?.message ||
         (error as any)?.response?.data?.error ||

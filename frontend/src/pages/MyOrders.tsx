@@ -1,4 +1,4 @@
-import React, {
+﻿import React, {
   useCallback,
   useEffect,
   useMemo,
@@ -67,8 +67,11 @@ const MyOrders: React.FC = () => {
     async (id: number) => {
       setLoading(true);
       try {
+        console.log('🔄 Fetching orders for user:', id);
         const backendOrders = await orderService.getUserOrders(id);
+        console.log('📦 Backend orders received:', backendOrders);
         const normalized = backendOrders.map(mapOrderToFrontend);
+        console.log('✅ Normalized orders:', normalized);
         setOrders(normalized);
         setErrorMessage('');
       } catch (error: unknown) {
@@ -88,6 +91,7 @@ const MyOrders: React.FC = () => {
   );
 
   useEffect(() => {
+    console.log('🎯 MyOrders useEffect triggered');
     const savedUser = localStorage.getItem('user');
     if (!savedUser) {
       setLoading(false);
@@ -97,9 +101,36 @@ const MyOrders: React.FC = () => {
     try {
       const parsedUser: User = JSON.parse(savedUser);
       if (parsedUser?.idUser) {
+        console.log('👤 User found:', parsedUser.idUser);
         setUserId(parsedUser.idUser);
         setUserRole(parsedUser.role ?? null);
-        fetchOrders(parsedUser.idUser);
+        
+        // Call fetchOrders directly here instead of storing in state
+        const loadOrders = async () => {
+          setLoading(true);
+          try {
+            console.log('🔄 Loading orders directly...');
+            const backendOrders = await orderService.getUserOrders(parsedUser.idUser);
+            console.log('📦 Backend orders received:', backendOrders);
+            const normalized = backendOrders.map(mapOrderToFrontend);
+            console.log('✅ Normalized orders:', normalized);
+            setOrders(normalized);
+            setErrorMessage('');
+          } catch (error: unknown) {
+            console.error('Error fetching orders:', error);
+            const message =
+              (error as any)?.response?.data?.message ||
+              (error as any)?.response?.data?.error;
+            setErrorMessage(
+              message ?? 'No se pudieron cargar tus pedidos. Intenta nuevamente.'
+            );
+            setOrders([]);
+          } finally {
+            setLoading(false);
+          }
+        };
+        
+        loadOrders();
       } else {
         setLoading(false);
       }
@@ -107,7 +138,7 @@ const MyOrders: React.FC = () => {
       console.error('No se pudo leer el usuario almacenado:', error);
       setLoading(false);
     }
-  }, [fetchOrders]);
+  }, []); // Remove fetchOrders dependency to avoid infinite loop
 
   const statusCounts = useMemo(() => {
     return orders.reduce(

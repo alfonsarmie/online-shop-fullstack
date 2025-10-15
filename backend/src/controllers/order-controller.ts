@@ -114,9 +114,9 @@ export const createOrder = async (req: Request, res: Response) => {
         product_name: item.name || product.name,
         quantity: item.quantity,
         subtotal,
-        size: item.size
       });
-    }
+
+    }// End for items
 
     // Create the order
     const order = await Order.create({
@@ -135,13 +135,18 @@ export const createOrder = async (req: Request, res: Response) => {
     }, { transaction });
 
     // Create order lines
-    const orderLines = await OrderLine.bulkCreate(
-      orderLinesData.map(line => ({
-        idOrder: order.idOrder,
-        ...line
-      })),
-      { transaction }
-    );
+    const orderLinesPayload = orderLinesData.map(({ idProduct, quantity, subtotal }) => ({
+      idOrder: order.idOrder,
+      idProduct,
+      quantity,
+      subtotal,
+    }));
+
+    await OrderLine.bulkCreate(orderLinesPayload, {
+      transaction,
+      validate: true,         // opcional: valida cada fila según el modelo
+      individualHooks: false, // ponlo en true si necesitas hooks por fila
+    });
 
     // Update product stock for each item
     for (const item of items) {
@@ -156,7 +161,7 @@ export const createOrder = async (req: Request, res: Response) => {
     await Status.create({
       idOrder: order.idOrder,
       statusDate: new Date(),
-      description: 'Order created - Pending payment'
+      description: 'pending payment'
     }, { transaction });
 
     // Commit transaction
@@ -168,6 +173,7 @@ export const createOrder = async (req: Request, res: Response) => {
         { 
           model: OrderLine, 
           as: 'orderLines',
+          attributes: ['idOrderLine', 'idProduct', 'quantity', 'subtotal'],
           include: [
             { 
               model: Product, 
@@ -179,6 +185,7 @@ export const createOrder = async (req: Request, res: Response) => {
         { 
           model: Status, 
           as: 'statusHistory',
+          attributes: ['description'],
           order: [['statusDate', 'DESC']]
         }
       ]
@@ -199,72 +206,52 @@ export const createOrder = async (req: Request, res: Response) => {
   }
 };
 
+
+
 /**
  * Get orders with pagination and filtering
  */
 export const getOrders = async (req: Request, res: Response) => {
   try {
-    const { status, page = 1, limit = 10, userId } = req.query;
+    console.log('=== Starting getOrders request ===');
     
-    const whereClause: any = {};
+    // Test basic database connection
+    const testCount = await Order.count();
+    console.log('Total orders in DB:', testCount);
     
-    // Filter by user if specified
-    if (userId) {
-      whereClause.idUser = userId;
+    // If we have orders, try to fetch them
+    if (testCount > 0) {
+      const basicOrders = await Order.findAll({
+        limit: 5,
+        attributes: ['idOrder', 'orderDate', 'customer_name', 'customer_email', 'total_amount']
+      });
+      console.log('Basic orders retrieved:', basicOrders.length);
+      
+      res.json({
+        orders: basicOrders,
+        total: testCount,
+        page: 1,
+        totalPages: Math.ceil(testCount / 10)
+      });
+    } else {
+      console.log('No orders found in database');
+      res.json({
+        orders: [],
+        total: 0,
+        page: 1,
+        totalPages: 0
+      });
     }
-
-    // Filter by Mercado Pago status if specified
-    if (status) {
-      whereClause.statusMp = status;
-    }
-
-    const orders = await Order.findAll({
-      where: whereClause,
-      include: [
-        { 
-          model: User, 
-          as: 'user', 
-          attributes: ['idUser', 'name', 'email'] 
-        },
-        { 
-          model: PaymentMethod, 
-          as: 'paymentMethod', 
-          attributes: ['name'] 
-        },
-        { 
-          model: OrderLine, 
-          as: 'orderLines',
-          include: [
-            { 
-              model: Product, 
-              as: 'product',
-              attributes: ['idProduct', 'name', 'description']
-            }
-          ]
-        },
-        { 
-          model: Status, 
-          as: 'statusHistory',
-          order: [['statusDate', 'DESC']],
-          limit: 1
-        }
-      ],
-      order: [['orderDate', 'DESC']],
-      limit: Number(limit),
-      offset: (Number(page) - 1) * Number(limit)
-    });
-
-    const total = await Order.count({ where: whereClause });
-
-    res.json({
-      orders,
-      total,
-      page: Number(page),
-      totalPages: Math.ceil(total / Number(limit))
-    });
+    
   } catch (error) {
-    console.error('Error fetching orders:', error);
-    res.status(500).json({ error: 'Internal server error while fetching orders' });
+    console.error('=== ERROR in getOrders ===');
+    console.error('Error message:', error instanceof Error ? error.message : 'Unknown error');
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    console.error('Error details:', error);
+    res.status(500).json({ 
+      error: 'Internal server error while fetching orders',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 };
 
@@ -498,40 +485,58 @@ const restoreOrderStock = async (orderId: number, transaction: any) => {
  * Get all orders for a specific user
  */
 export const getUserOrders = async (req: Request, res: Response) => {
+  console.log('getUserOrders called');
+  
   try {
-    const { userId } = req.params;
+    console.log('Inside try block');
     
+    const { userId } = req.params;
+    const requestingUserId = (req as any).userId;
+    
+    console.log('Parameters:', { userId, requestingUserId });
+    
+    // Security check - users can only see their own orders
+    if (requestingUserId !== parseInt(userId)) {
+      return res.status(403).json({ 
+        message: "You can only view your own orders" 
+      });
+    }
+    
+    console.log('Security check passed, will query database');
+    
+    // Query with orderLines and product information
     const orders = await Order.findAll({
       where: { idUser: userId },
       include: [
-        { 
-          model: OrderLine, 
+        {
+          model: OrderLine,
           as: 'orderLines',
+          attributes: ['idProduct', 'quantity', 'subtotal', 'product_name', 'size'],
           include: [
-            { 
-              model: Product, 
+            {
+              model: Product,
               as: 'product',
               attributes: ['idProduct', 'name', 'description']
             }
           ]
-        },
-        { 
-          model: Status, 
-          as: 'statusHistory',
-          order: [['statusDate', 'DESC']],
-          limit: 1
         }
       ],
-      order: [['orderDate', 'DESC']]
+      attributes: ['idOrder', 'orderDate', 'customer_name', 'customer_email'],
+      order: [['orderDate', 'DESC']],
+      limit: 10
     });
-
-    res.json({
+    
+    console.log('Database query successful. Orders found:', orders.length);
+    
+    res.status(200).json({
       message: 'User orders retrieved successfully',
-      orders
+      orders: orders
     });
   } catch (error) {
-    console.error('Error fetching user orders:', error);
-    res.status(500).json({ error: 'Internal server error while fetching user orders' });
+    console.error('Error in getUserOrders:', error);
+    res.status(500).json({ 
+      error: 'Internal server error while fetching user orders'
+    });
   }
 };
 

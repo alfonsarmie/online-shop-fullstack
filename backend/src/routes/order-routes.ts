@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { check } from 'express-validator';
 import {
   createOrder,
@@ -11,19 +11,20 @@ import {
   getOrderStatistics
 } from '../controllers/order-controller';
 import { validateFields } from '../middlewares/validate-fields';
-import { validateJWT, allowAdminOrReceptionist } from '../middlewares/validate-jwt';
+import { validateJWT, allowAdminOrReceptionist, requireAuth } from '../middlewares/validate-jwt';
+import Order from '../models/order-model';
 
 const router = Router();
 
 // POST - Create new order (authenticated users)
 router.post("/", [
   validateJWT,
-  check('idUser', 'User ID is required').isInt({ min: 1 }),
-  check('idPaymentMethod', 'Payment method ID is required').isInt({ min: 1 }),
+  check('idUser', 'User ID is required').notEmpty(),
+  check('idPaymentMethod', 'Payment method ID is required').notEmpty,
   check('customer_name', 'Customer name is required').notEmpty(),
   check('customer_email', 'Valid customer email is required').isEmail(),
   check('items', 'Items array is required').isArray({ min: 1 }),
-  check('items.*.idProduct', 'Product ID is required for each item').isInt({ min: 1 }),
+  check('items.*.idProduct', 'Product ID is required for each item').notEmpty,
   check('items.*.quantity', 'Quantity must be a positive integer').isInt({ min: 1 }),
   validateFields
 ], createOrder);
@@ -47,7 +48,7 @@ router.get("/:id", [
 
 // GET - Get all orders for a specific user
 router.get("/user/:userId", [
-  validateJWT,
+  requireAuth,
   check('userId', 'User ID must be a number').isNumeric(),
   validateFields
 ], getUserOrders);

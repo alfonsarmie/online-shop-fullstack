@@ -2,30 +2,52 @@ import { DataTypes, Model } from "sequelize";
 import db from "../db/connection";
 
 interface OrderLineAttributes {
+  idOrderLine?: number;
   idOrder: number;
   idProduct: number;
   quantity: number;
   subtotal: number;
+  size?: string;
+  product_name: string;
 }
 
 class OrderLine extends Model<OrderLineAttributes> implements OrderLineAttributes {
+  public idOrderLine!: number;
   public idOrder!: number;
   public idProduct!: number;
   public quantity!: number;
   public subtotal!: number;
+  public size?: string;
+  public product_name!: string;
 }
 
 OrderLine.init(
   {
-    idOrder: {
+    idOrderLine: {
       type: DataTypes.INTEGER.UNSIGNED,
       primaryKey: true,
+      autoIncrement: true,
       allowNull: false,
+    },
+    idOrder: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      references: {
+        model: 'Order',     // o model: Order
+        key: 'idOrder',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     idProduct: {
       type: DataTypes.INTEGER.UNSIGNED,
-      primaryKey: true,
       allowNull: false,
+      references: {
+        model: 'Product',   // o model: Product
+        key: 'idProduct',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'RESTRICT',
     },
     quantity: {
       type: DataTypes.INTEGER.UNSIGNED,
@@ -33,6 +55,14 @@ OrderLine.init(
     },
     subtotal: {
       type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+    },
+    size: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+    product_name: {
+      type: DataTypes.STRING(255),
       allowNull: false,
     }
   },
