@@ -92,9 +92,15 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
     // Send activation email only if account status is pending
     if (accountStatus === "pending" && activationToken) {
       try {
+        // Debug: Log environment variables (without revealing the password)
+        console.log('EMAIL_USER:', process.env.EMAIL_USER ? 'SET' : 'NOT SET');
+        console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? 'SET' : 'NOT SET');
+        
         // Verify environment variables
         if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
           console.error('Email credentials not found in environment variables');
+          console.error('EMAIL_USER value:', process.env.EMAIL_USER);
+          console.error('EMAIL_PASS length:', process.env.EMAIL_PASS ? process.env.EMAIL_PASS.length : 'undefined');
           return res.status(500).json({
             message: "Email configuration error",
             error: "Missing email credentials",
