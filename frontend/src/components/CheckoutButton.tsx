@@ -1,5 +1,6 @@
-﻿import { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import type { CartItem } from '../types/cart';
+import type { User } from '../types/user';
 
 interface CheckoutButtonProps {
   cartItems: CartItem[];
@@ -8,6 +9,7 @@ interface CheckoutButtonProps {
   disabled?: boolean;
   className?: string;
   label?: string;
+  user?: User | null;
 }
 
 type PreferenceItemPayload = {
@@ -19,6 +21,22 @@ type PreferenceItemPayload = {
   description?: string;
   picture_url?: string;
 };
+
+interface OrderDraftItemPayload {
+  idProduct: number;
+  quantity: number;
+  size?: string;
+  unitPrice: number;
+  name: string;
+}
+
+interface OrderDraftPayload {
+  idUser: number;
+  customer_name: string;
+  customer_email: string;
+  customer_phone?: string;
+  items: OrderDraftItemPayload[];
+}
 
 // Normalize trailing slash so we do not produce URLs like ...//api
 function normaliseApiUrl(rawUrl: string | undefined): string | null {
@@ -39,10 +57,62 @@ function mapCartItems(cartItems: CartItem[]): PreferenceItemPayload[] {
   }));
 }
 
+function parseProductId(rawId: string | undefined, index: number): number {
+  const parsed = Number(rawId);
+  if (!parsed || Number.isNaN(parsed)) {
+    throw new Error(`Producto inválido en el carrito (posición ${index + 1}).`);
+  }
+  return parsed;
+}
+
+function mapOrderDraftItems(cartItems: CartItem[]): OrderDraftItemPayload[] {
+  return cartItems.map((item, index) => ({
+    idProduct: parseProductId(item.id, index),
+    quantity: item.quantity,
+    size: item.size,
+    unitPrice: Number(item.price),
+    name: item.name,
+  }));
+}
+
+function buildOrderDraft(
+  cartItems: CartItem[],
+  user: User | null | undefined,
+  email?: string,
+): OrderDraftPayload {
+  if (!user?.idUser) {
+    throw new Error('Debes iniciar sesión para completar la compra.');
+  }
+
+  const effectiveEmail = email ?? user.email;
+  if (!effectiveEmail) {
+    throw new Error('No encontramos un correo para asociar al pedido.');
+  }
+
+  const displayName = `${user.name ?? ''} ${user.surname ?? ''}`.trim() || user.name || 'Cliente ecommerce';
+
+  return {
+    idUser: user.idUser,
+    customer_name: displayName,
+    customer_email: effectiveEmail,
+    customer_phone: user.phone,
+    items: mapOrderDraftItems(cartItems),
+  };
+}
+
 // Button that requests a Checkout Pro preference and redirects the shopper
-export default function CheckoutButton({ cartItems, orderId, email, disabled, className, label }: CheckoutButtonProps) {
+export default function CheckoutButton({
+  cartItems,
+  orderId,
+  email,
+  disabled,
+  className,
+  label,
+  user,
+}: CheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
   const apiBaseUrl = useMemo(() => normaliseApiUrl(import.meta.env.VITE_API_URL), []);
+  const effectiveEmail = email ?? user?.email ?? undefined;
 
   const handleCheckout = async () => {
     if (!apiBaseUrl) {
@@ -56,15 +126,35 @@ export default function CheckoutButton({ cartItems, orderId, email, disabled, cl
       return;
     }
 
+    let orderPayload: OrderDraftPayload;
+    try {
+      orderPayload = buildOrderDraft(cartItems, user, effectiveEmail);
+    } catch (error) {
+      console.error('No se pudo preparar el pedido', error);
+      const message = error instanceof Error ? error.message : 'No se pudo preparar el pedido';
+      alert(message);
+      return;
+    }
+
     try {
       setLoading(true);
+      const preferenceItems = mapCartItems(cartItems);
+      const payerData = effectiveEmail
+        ? {
+            email: effectiveEmail,
+            name: user?.name,
+            surname: user?.surname,
+          }
+        : undefined;
+
       const response = await fetch(`${apiBaseUrl}/api/payments/create-preference`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          items: mapCartItems(cartItems),
+          items: preferenceItems,
           orderId,
-          payer: email ? { email } : undefined,
+          payer: payerData,
+          orderPayload,
         }),
       });
 
@@ -77,6 +167,7 @@ export default function CheckoutButton({ cartItems, orderId, email, disabled, cl
       const data = await response.json() as {
         init_point?: string;
         sandbox_init_point?: string;
+        orderId?: number | null;
       };
 
       // Prefer production URL but fallback to sandbox for test accounts

@@ -43,8 +43,9 @@ const Payment = () => {
     [],
   );
 
+  const storedUser = useMemo(() => getStoredUser(), []);
   // Mercado Pago prefers to receive the payer email when possible
-  const payerEmail = useMemo(() => getStoredUser()?.email, []);
+  const payerEmail = storedUser?.email;
 
   return (
     <>
@@ -100,6 +101,7 @@ const Payment = () => {
             email={payerEmail ?? undefined}
             className="pay-button"
             label="CONFIRMAR Y PAGAR"
+            user={storedUser}
           />
         </div>
       </div>

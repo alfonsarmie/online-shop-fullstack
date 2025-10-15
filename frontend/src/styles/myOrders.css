@@ -44,6 +44,54 @@
   font-size: 1.1rem;
 }
 
+.status-filters {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.status-pill {
+  background: white;
+  border: 1px solid #d1d8de;
+  border-radius: 999px;
+  padding: 0.6rem 1.4rem;
+  font-weight: 600;
+  color: #1E7335;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.status-pill:hover {
+  border-color: #1E7335;
+  transform: translateY(-1px);
+}
+
+.status-pill.active {
+  background: #1E7335;
+  color: white;
+  border-color: #1E7335;
+  box-shadow: 0 10px 20px rgba(30, 115, 53, 0.18);
+}
+
+.status-pill.active .status-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+}
+
+.status-count {
+  background: rgba(30, 115, 53, 0.1);
+  color: #1E7335;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+}
+
 /* Loading */
 .loading-spinner {
   display: flex;
@@ -170,6 +218,48 @@
   gap: 0.5rem;
 }
 
+.orders-list .order-items {
+  flex-direction: column;
+  gap: 0;
+  margin-top: 1rem;
+}
+
+.order-item {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.order-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid #e9ecef;
+}
+
+.item-details h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #323232;
+}
+
+.item-details p {
+  margin: 0.2rem 0;
+  color: #6c757d;
+}
+
+.item-price {
+  color: #1E7335;
+  font-weight: 600;
+}
+
 .order-item-preview {
   position: relative;
   width: 60px;
@@ -209,6 +299,15 @@
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
+}
+
+.order-footer {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 1.2rem;
 }
 
 .view-details-btn,
@@ -427,6 +526,24 @@
 
 .cancel-order-btn:hover {
   background-color: #bd2130;
+  transform: translateY(-1px);
+}
+
+.details-button {
+  background-color: transparent;
+  color: #1E7335;
+  padding: 0.8rem 1.6rem;
+  border: 2px solid #1E7335;
+  border-radius: 8px;
+  font-family: 'Afacad', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.details-button:hover {
+  background-color: #1E7335;
+  color: white;
   transform: translateY(-1px);
 }
 

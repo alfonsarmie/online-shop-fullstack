@@ -12,9 +12,6 @@ type Draft = Omit<FrontendProduct, "id"> & {
   img2File?: File;
 };
 
-// Opciones de categorías cargadas dinámicamente
-const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL", "Único"];
-
 // Empty draft template
 const emptyDraft: Draft = {
   name: "",
@@ -26,21 +23,6 @@ const emptyDraft: Draft = {
   img: "",
   img2: "",
 };
-
-// Mock products for fallback
-const MOCK_PRODUCTS: FrontendProduct[] = [
-  {
-    id: "101",
-    name: "Camiseta Titular 24/25",
-    price: 25000,
-    description: "Camiseta oficial temporada 24/25",
-    sizes: ["S", "M", "L", "XL"],
-    stock: 12,
-    category: "Remera",
-    img: "",
-    img2: "",
-  },
-];
 
 const AdminProducts: React.FC = () => {
   const [products, setProducts] = useState<FrontendProduct[]>([]);
@@ -54,6 +36,9 @@ const AdminProducts: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [categoryOptions, setCategoryOptions] = useState<
     { id: string; name: string }[]
+  >([]);
+  const [sizeOptions, setSizeOptions] = useState<
+    { id: number; label: string; gender: string }[]
   >([]);
 
   // Function to upload images
@@ -88,18 +73,43 @@ const AdminProducts: React.FC = () => {
     }
   };
 
-  // Implement logic to get size ID by name
+  // Load sizes from the backend so we work with valid IDs
+  useEffect(() => {
+    api
+      .get("/sizes/all")
+      .then((res) => {
+        if (Array.isArray(res.data?.sizes)) {
+          setSizeOptions(
+            res.data.sizes.map((size: any) => ({
+              id: Number(size.idSize),
+              label: size.sizeDesc,
+              gender: size.gender,
+            }))
+          );
+        } else {
+          setSizeOptions([]);
+        }
+      })
+      .catch((error) => {
+        console.error("Error cargando talles:", error);
+        setSizeOptions([]);
+      });
+  }, []);
+
+  const sizeNameToIdMap = useMemo(() => {
+    const map: Record<string, number> = {};
+    sizeOptions.forEach((size) => {
+      const key = (size.label || "").trim().toLowerCase();
+      if (key) {
+        map[key] = size.id;
+      }
+    });
+    return map;
+  }, [sizeOptions]);
+
   const mapSizeNameToId = (sizeName: string): number => {
-    const sizeMap: { [key: string]: number } = {
-      XS: 1,
-      S: 2,
-      M: 3,
-      L: 4,
-      XL: 5,
-      XXL: 6,
-      Único: 7,
-    };
-    return sizeMap[sizeName] || 0;
+    const key = (sizeName || "").trim().toLowerCase();
+    return sizeNameToIdMap[key] || 0;
   };
 
   // Load products from the backend
@@ -119,16 +129,13 @@ const AdminProducts: React.FC = () => {
             console.log(`Talles:`, product.sizes);
             console.log(`Categoría:`, product.category);
           });
-
-          setProducts(productsData);
-        } else {
-          setProducts(MOCK_PRODUCTS);
         }
+        setProducts(Array.isArray(productsData) ? productsData : []);
       } catch (err) {
-        setErrorMessage("Error cargando productos. Usando datos de prueba.");
+        setErrorMessage("Error cargando productos.");
         setTimeout(() => setErrorMessage(""), 3000);
         console.error("Error loading products:", err);
-        setProducts(MOCK_PRODUCTS);
+        setProducts([]);
       } finally {
         setLoading(false);
       }
@@ -197,10 +204,25 @@ const AdminProducts: React.FC = () => {
     }
 
     try {
+      const mappedSizes = creating.sizes.map((label) => ({
+        label,
+        id: mapSizeNameToId(label),
+      }));
+      const invalidSizes = mappedSizes
+        .filter((entry) => entry.id === 0)
+        .map((entry) => entry.label);
+
+      if (invalidSizes.length > 0) {
+        setErrorMessage(
+          `No se encontraron talles válidos para: ${invalidSizes.join(", ")}`
+        );
+        setTimeout(() => setErrorMessage(""), 4000);
+        return;
+      }
+
       setUploading(true);
-      // ...existing code...
       // Convert sizes to IDs
-      const sizeIds = creating.sizes.map(mapSizeNameToId);
+      const sizeIds = mappedSizes.map((entry) => entry.id);
       // 1. Create the basic product
       const productData = {
         name: creating.name.trim(),
@@ -208,7 +230,7 @@ const AdminProducts: React.FC = () => {
         stock: creating.stock,
         idCategory: parseInt(creating.category || ""),
         initialPrice: creating.price,
-        sizes: sizeIds.filter((id) => id !== 0),
+        sizes: sizeIds,
       };
       // ...existing code...
       const newProduct = await productService.createProduct(productData);
@@ -351,10 +373,26 @@ const AdminProducts: React.FC = () => {
     }
 
     try {
+      const mappedSizes = editing.sizes.map((label) => ({
+        label,
+        id: mapSizeNameToId(label),
+      }));
+      const invalidSizes = mappedSizes
+        .filter((entry) => entry.id === 0)
+        .map((entry) => entry.label);
+
+      if (invalidSizes.length > 0) {
+        setErrorMessage(
+          `No se encontraron talles válidos para: ${invalidSizes.join(", ")}`
+        );
+        setTimeout(() => setErrorMessage(""), 4000);
+        return;
+      }
+
       setUploading(true);
 
       // Convert sizes to IDs
-      const sizeIds = editing.sizes.map(mapSizeNameToId);
+      const sizeIds = mappedSizes.map((entry) => entry.id);
 
       // 1. Upload new images if any
       const newImages: { url: string; description: string }[] = [];
@@ -384,7 +422,7 @@ const AdminProducts: React.FC = () => {
         stock: editing.stock,
         idCategory: parseInt(editing.category || ""),
         initialPrice: editing.price,
-        sizes: sizeIds.filter((id) => id !== 0),
+        sizes: sizeIds,
         images: newImages.length > 0 ? newImages : undefined,
       };
 
@@ -605,27 +643,33 @@ const AdminProducts: React.FC = () => {
 
           <div className="sizes">
             <span className="span-admin">Talles</span>
-            <div className="sizes-container">
-              {SIZE_OPTIONS.map((size) => (
-                <label key={size} className="checkbox-admin">
-                  <input
-                  type="checkbox"
-                  checked={(creating.sizes || []).includes(size)}
-                  onChange={(e) =>
-                    setCreating({
-                      ...creating,
-                      sizes: handleSizeChange(
-                        creating.sizes,
-                        size,
-                        e.target.checked
-                      ),
-                    })
-                  }
-                />
-                {size}
-              </label>
-            ))}
-          </div>
+            {sizeOptions.length === 0 ? (
+              <p style={{ marginTop: "0.5rem", color: "#bdbdbd" }}>
+                No hay talles disponibles. Crea talles antes de asignarlos.
+              </p>
+            ) : (
+              <div className="sizes-container">
+                {sizeOptions.map((size) => (
+                  <label key={size.id} className="checkbox-admin">
+                    <input
+                      type="checkbox"
+                      checked={(creating.sizes || []).includes(size.label)}
+                      onChange={(e) =>
+                        setCreating({
+                          ...creating,
+                          sizes: handleSizeChange(
+                            creating.sizes,
+                            size.label,
+                            e.target.checked
+                          ),
+                        })
+                      }
+                    />
+                    {size.label}
+                  </label>
+                ))}
+              </div>
+            )}
           </div>
 
           <label>
@@ -806,27 +850,33 @@ const AdminProducts: React.FC = () => {
 
             <div className="sizes">
               <span className="span-admin">Talles</span>
-              <div className="sizes-container">
-                {SIZE_OPTIONS.map((size) => (
-                  <label key={size} className="checkbox-admin">
-                    <input
-                      type="checkbox"
-                      checked={(editing.sizes || []).includes(size)}
-                      onChange={(e) =>
-                        setEditing({
-                          ...editing,
-                          sizes: handleSizeChange(
-                            editing.sizes,
-                            size,
-                            e.target.checked
-                          ),
-                        })
-                      }
-                    />
-                    {size}
-                  </label>
-                ))}
-              </div>
+              {sizeOptions.length === 0 ? (
+                <p style={{ marginTop: "0.5rem", color: "#bdbdbd" }}>
+                  No hay talles disponibles para seleccionar.
+                </p>
+              ) : (
+                <div className="sizes-container">
+                  {sizeOptions.map((size) => (
+                    <label key={size.id} className="checkbox-admin">
+                      <input
+                        type="checkbox"
+                        checked={(editing.sizes || []).includes(size.label)}
+                        onChange={(e) =>
+                          setEditing({
+                            ...editing,
+                            sizes: handleSizeChange(
+                              editing.sizes,
+                              size.label,
+                              e.target.checked
+                            ),
+                          })
+                        }
+                      />
+                      {size.label}
+                    </label>
+                  ))}
+                </div>
+              )}
             </div>
 
             <label>
