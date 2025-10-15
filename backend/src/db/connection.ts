@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize';
 
-const db = new Sequelize(
+export const db = new Sequelize(
   process.env.DB_NAME || 'online_shop_fullstack_rowing',
   process.env.DB_USERNAME || '',
   process.env.DB_PASSWORD || '',
@@ -22,3 +22,4 @@ export const connectDB = async () => {
 };
 
 export default db;
+
