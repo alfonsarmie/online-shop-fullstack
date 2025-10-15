@@ -3,7 +3,7 @@ import "../styles/catalog.css";
 import Product from "../components/Product";
 import { useCart } from "../components/CartContext";
 import ProductFilter from "../components/ProductFilter";
-import { ProductWithSize } from "../types/product";
+import { FrontendProduct, ProductWithSize } from "../types/product";
 import WhatsAppButton from "../components/WhatsAppButton";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { productService } from "../services/productService";
@@ -14,8 +14,8 @@ type FilterType = "price_asc" | "price_desc" | "name_asc" | "";
 // Page for displaying product catalog with filtering and sorting
 const Catalog = () => {
   const { addToCart } = useCart();
-  const [products, setProducts] = useState<any[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<FrontendProduct[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<FrontendProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<FilterType>("");
 
@@ -31,17 +31,19 @@ const Catalog = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const productsData = await productService.getAllProducts();
+        const effectiveSearch = searchQuery.length > 0 ? searchQuery : undefined;
+        const productsData = await productService.getAllProducts(effectiveSearch);
         setProducts(productsData);
       } catch (error) {
         console.error("Error fetching products:", error);
+        setProducts([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
-  }, []);
+  }, [searchQuery]);
 
   // Filtrar productos cuando cambian los parámetros o los productos
   useEffect(() => {
@@ -73,26 +75,8 @@ const Catalog = () => {
       );
     }
 
-    if (normalizedSearchQuery) {
-      const query = normalizedSearchQuery;
-      filtered = filtered.filter((product) => {
-        const searchableText = [
-          product.name,
-          product.description,
-          product.color,
-          product.category,
-          Array.isArray(product.tags) ? product.tags.join(" ") : "",
-        ]
-          .filter((value): value is string => typeof value === "string")
-          .join(" ")
-          .toLowerCase();
-
-        return searchableText.includes(query);
-      });
-    }
-
     setFilteredProducts(filtered);
-  }, [products, category, normalizedSearchQuery]);
+  }, [products, category]);
 
   // useEffect para animaciones de scroll
   useEffect(() => {

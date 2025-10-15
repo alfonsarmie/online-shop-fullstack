@@ -6,6 +6,7 @@ import Image from "../models/image-model";
 import db from "../db/connection";
 import ProductSize from "../models/size-product-model";
 import Size from "../models/size-model";
+import { FindOptions, Op, WhereOptions } from "sequelize";
 
 export const createProduct = async (
   req: Request,
@@ -380,7 +381,25 @@ export const getAllProducts = async (
   res: Response
 ): Promise<Response> => {
   try {
-    const products = await Product.findAll({
+    const { search } = req.query;
+
+    let whereClause: WhereOptions | null = null;
+    if (typeof search === "string") {
+      const trimmedSearch = search.trim();
+      if (trimmedSearch.length > 0) {
+        const escapedSearch = trimmedSearch.replace(/[%_\\]/g, "\\$&");
+        const likePattern = `%${escapedSearch}%`;
+
+        whereClause = {
+          [Op.or]: [
+            { name: { [Op.like]: likePattern } },
+            { description: { [Op.like]: likePattern } },
+          ],
+        };
+      }
+    }
+
+    const findOptions: FindOptions = {
       include: [
         {
           model: Price,
@@ -403,7 +422,15 @@ export const getAllProducts = async (
           through: { attributes: [] },
         },
       ],
-    });
+    };
+
+    if (whereClause) {
+      findOptions.where = whereClause;
+      // Ensure the escape character is respected in LIKE queries
+      findOptions.escape = "\\";
+    }
+
+    const products = await Product.findAll(findOptions);
 
     return res.status(200).json({
       products,

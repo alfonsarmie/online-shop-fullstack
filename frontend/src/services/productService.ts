@@ -3,9 +3,18 @@ import { Product, FrontendProduct } from "../types/product";
 
 export const productService = {
   // Get all products
-  getAllProducts: async (): Promise<FrontendProduct[]> => {
+  getAllProducts: async (search?: string): Promise<FrontendProduct[]> => {
     try {
-      const response = await api.get<{ products: Product[] }>("/products");
+      const trimmedSearch =
+        typeof search === "string" ? search.trim() : undefined;
+      const params =
+        trimmedSearch && trimmedSearch.length > 0
+          ? { search: trimmedSearch }
+          : undefined;
+
+      const response = await api.get<{ products: Product[] }>("/products", {
+        params,
+      });
       return response.data.products.map((product) => ({
         id: product.idProduct.toString(),
         name: product.name,
