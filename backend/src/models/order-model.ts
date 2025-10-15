@@ -72,48 +72,48 @@ Order.init({
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false,
   },
-  external_reference: {
+  external_reference: { //Id that any payment method will refer to the order
     type: DataTypes.STRING(255),
     allowNull: true,
   },
-  payment_id: {
+  payment_id: { // Id returned by the payment method (e.g., Mercado Pago payment id)
     type: DataTypes.STRING(255),
     allowNull: true,
   },
-  total_amount: {
+  total_amount: { // Total amount of the order
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
     defaultValue: 0,
   },
-  customer_name: {
+  customer_name: { // Name of the person that will retire the order
     type: DataTypes.STRING(255),
     allowNull: false,
   },
-  customer_email: {
+  customer_email: { // Email of the person that will retire the order
     type: DataTypes.STRING(255),
     allowNull: false,
   },
-  customer_phone: {
+  customer_phone: { // Phone number of the person that will retire the order
     type: DataTypes.STRING(50),
     allowNull: true,
   },
-  customer_notes: {
+  customer_notes: { // Additional notes for the order
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  sports: {
+  sports: { // Sports data related to the order, stored as JSON !
     type: DataTypes.JSON,
     allowNull: true,
   },
-  statusMp: {
+  statusMp: { // Status of the payment returned by Mercado Pago 
     type: DataTypes.STRING(50),
     allowNull: true,
   },
-  currencyId: {
+  currencyId: { // Currency code, default to 'ARS'
     type: DataTypes.STRING(10),
     allowNull: true,
     defaultValue: 'ARS',
-  }
+  },
 }, {
   sequelize: db,
   tableName: "order",

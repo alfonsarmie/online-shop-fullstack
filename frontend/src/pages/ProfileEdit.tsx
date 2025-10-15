@@ -270,7 +270,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            "x-token": token,
           },
         }
       );

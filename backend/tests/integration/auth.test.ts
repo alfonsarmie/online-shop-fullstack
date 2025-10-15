@@ -10,25 +10,25 @@ import { connectDB, db } from '../../src/db/connection';
 import User from '../../src/models/user-model';
 import bcrypt from 'bcryptjs';
 
-// Conectarse a la base de datos antes de que se ejecuten todas las pruebas
+// Connect to the database before any tests are run
 beforeAll(async () => {
   await connectDB();
 });
 
-// Limpiar la base de datos antes de cada prueba
+// BE CAREFUL: This will delete all users before each test to ensure a clean state
 beforeEach(async () => {
   await User.destroy({ where: {} });
 });
 
-// Desconectarse de la base de datos después de que se completen todas las pruebas
+// Disconnect from the database after all tests have run
 afterAll(async () => {
   await db.close();
 });
 
 describe('POST /api/auth/login', () => {
 
-  it('debería autenticar a un usuario con credenciales válidas y devolver un token', async () => {
-    // 1. Preparación: Crear un usuario de prueba en la base de datos
+  it('should authenticate a user with valid credentials and return a token', async () => {
+    
     const hashedPassword = await bcrypt.hash('password123', 10);
     await User.create({
       name: 'Test',
@@ -40,7 +40,6 @@ describe('POST /api/auth/login', () => {
       registrationDate: new Date()
     });
 
-    // 2. Ejecución: Enviar una petición POST al endpoint de login
     const response = await request(app)
       .post('/api/auth/login')
       .send({
@@ -48,13 +47,13 @@ describe('POST /api/auth/login', () => {
         password: 'password123'
       });
 
-    // 3. Afirmación: Verificar que la respuesta es la esperada
+    
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('token');
     expect(response.body.userFound.email).toBe('test@example.com');
   });
 
-  it('debería devolver un error 400 si la contraseña es incorrecta', async () => {
+  it('should return a 400 error if the password is incorrect', async () => {
     const hashedPassword = await bcrypt.hash('password123', 10);
     await User.create({
       name: 'Test',
@@ -77,7 +76,7 @@ describe('POST /api/auth/login', () => {
     expect(response.body.message).toBe('La contraseña es incorrecta');
   });
 
-  it('debería devolver un error 400 si el usuario no existe', async () => {
+  it('should return a 400 error if the user does not exist', async () => {
     const response = await request(app)
       .post('/api/auth/login')
       .send({
@@ -89,7 +88,7 @@ describe('POST /api/auth/login', () => {
     expect(response.body.message).toBe('No existe una cuenta con este correo electrónico');
   });
 
-  it('debería devolver un error 400 si la cuenta del usuario no está activa', async () => {
+  it('should return a 400 error if the user account is not active', async () => {
     const hashedPassword = await bcrypt.hash('password123', 10);
     await User.create({
       name: 'Inactive',
