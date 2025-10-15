@@ -88,7 +88,12 @@ router.post(
 
 
 router.get("/reset/:token", (req, res) => {
-  res.send("Reset password page - token: " + req.params.token);
+  const baseUrl =
+    process.env.FRONTEND_BASE_URL && process.env.FRONTEND_BASE_URL.trim().length > 0
+      ? process.env.FRONTEND_BASE_URL.trim().replace(/\/$/, "")
+      : "http://localhost:5173";
+  const redirectUrl = `${baseUrl}/reset-password/${req.params.token}`;
+  return res.redirect(302, redirectUrl);
 });
 
 

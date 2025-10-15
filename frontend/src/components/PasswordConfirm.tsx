@@ -18,7 +18,7 @@ export default function PasswordConfirm({
   match, 
   color, 
   name, 
-  onClick // ← Agregar esta prop
+  onClick 
 }: PasswordConfirmProps) {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -37,7 +37,7 @@ export default function PasswordConfirm({
                 placeholder="Confirmar Contraseña"
                 value={value}
                 onChange={onChange}
-                onClick={onClick} // ← Pasar la prop
+                onClick={onClick} 
                 required
             />
             {/* Floating label for confirmation field */}
