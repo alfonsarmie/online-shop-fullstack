@@ -336,7 +336,11 @@ export const resetPassword = async (req: Request, res: Response): Promise<Respon
     await transporter.verify();
 
     
-  const resetUrl = `http://localhost:3000/api/users/reset/${resetToken}`;
+    const frontendBaseUrl =
+      process.env.FRONTEND_BASE_URL && process.env.FRONTEND_BASE_URL.trim().length > 0
+        ? process.env.FRONTEND_BASE_URL.trim().replace(/\/$/, "")
+        : "http://localhost:5173";
+    const resetUrl = `${frontendBaseUrl}/reset-password/${resetToken}`;
     
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
@@ -383,3 +387,4 @@ export const updateForgottenPassword = async (req: Request, res: Response): Prom
     return res.status(500).json({ message: "Error updating password", error: error.message });
   }
 };
+

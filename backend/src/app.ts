@@ -20,10 +20,14 @@ import paymentRoutes from './routes/payment-routes';
 import orderRoutes from './routes/order-routes';
 import webhookRoutes from './routes/webhook-routes';
 import { defineAssociations } from './models/associations';
-import { connectDB } from './db/connection';
+import { connectDB, db } from './db/connection';
 
 
 const app = express();
+
+
+
+
 
 // Allow configuring multiple frontends (local tunnels, production, etc.) via env vars
 const rawAllowedOrigins = process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://localhost:3000';
@@ -52,6 +56,7 @@ app.use(express.urlencoded({ extended: true })); //To parse URL-encoded data
 
 // Connect to the database
 connectDB().catch(error => console.error('Database connection failed:', error));
+
 
 // Define all model associations
 defineAssociations();

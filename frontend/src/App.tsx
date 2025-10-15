@@ -27,6 +27,8 @@ import Payment from './pages/Payment';
 import CheckoutSuccess from './pages/CheckoutSuccess';
 import CheckoutFailure from './pages/CheckoutFailure';
 import CheckoutPending from './pages/CheckoutPending';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import AboutUs from './pages/AboutUs';
 import Catalog from './pages/Catalog';
 import AdminDashboard from './pages/AdminDashboard';
@@ -77,6 +79,9 @@ function App() {
           <Route path="/" element={<Index />} />
           <Route path="/products" element={<Products />} />
           <Route path="/login" element={<Login setUser={setUser} />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/reset/:token" element={<ResetPassword />} />
           <Route path="/SignUp" element={<SignUp />} />
           {/* Remind newly registered users to confirm their email */}
           <Route path="/verify-email" element={<VerifyEmail />} />
