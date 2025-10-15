@@ -2,8 +2,7 @@ import api from "./api";
 import { Product, FrontendProduct } from "../types/product";
 
 export const productService = {
-  // Obtener todos los productos
-  // productService.ts - Solución definitiva
+  // Get all products
   getAllProducts: async (): Promise<FrontendProduct[]> => {
     try {
       const response = await api.get<{ products: Product[] }>("/products");
@@ -13,11 +12,11 @@ export const productService = {
         price: product.prices[0]?.value || 0,
         img:
           product.images && product.images.length > 0
-            ? `http://localhost:3000${product.images[0].url}` // ← URL completa
+            ? `http://localhost:3000${product.images[0].url}` 
             : "/placeholder-image.jpg",
         img2:
           product.images && product.images.length > 1
-            ? `http://localhost:3000${product.images[1].url}` // ← URL completa
+            ? `http://localhost:3000${product.images[1].url}` 
             : "/placeholder-image.jpg",
         description: product.description,
         sizes: product.sizes?.map(
@@ -35,13 +34,13 @@ export const productService = {
     }
   },
 
-  // Obtener un producto por ID
+  // Get a product by ID
   getProductById: async (id: string): Promise<any> => {
     try {
       const response = await api.get(`/products/${id}`);
       const productData = response.data.product || response.data;
 
-      // Procesar las imágenes para construir URLs completas
+      // Process images to have full URLs
       if (productData.images && Array.isArray(productData.images)) {
         productData.images = productData.images.map((image: any) => ({
           ...image,
@@ -56,7 +55,7 @@ export const productService = {
     }
   },
 
-  // Crear un nuevo producto
+  // Create a new product
   createProduct: async (productData: any): Promise<Product> => {
     try {
       const response = await api.post("/products/create", productData);
@@ -70,7 +69,7 @@ export const productService = {
     }
   },
 
-  // Actualizar un producto
+  // Update a product
   updateProduct: async (id: string, productData: any): Promise<Product> => {
     try {
       const response = await api.put(`/products/update/${id}`, productData);
@@ -84,7 +83,7 @@ export const productService = {
     }
   },
 
-  // Eliminar un producto
+  // Delete a product
   deleteProduct: async (id: string): Promise<void> => {
     try {
       await api.delete(`/products/delete/${id}`);

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:3000/api';
 
-// Configuración base de axios
+// Create an Axios instance with the base URL
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -10,14 +10,14 @@ const api = axios.create({
   },
 });
 
-// Interceptor para agregar el token en x-token
+// Interceptor to add the token to headers
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
-      // Cambiar de Authorization a x-token
+      // Change 'Authorization' to 'x-token'
       config.headers['x-token'] = token;
-      // Opcional: remover el header Authorization si existe
+      // Optional: remove the Authorization header if it exists
       delete config.headers.Authorization;
     }
     return config;
