@@ -2,10 +2,10 @@
 
 .admin-users {
   padding: 24px 32px;
-  padding-top: 50px;
+  padding-top: 80px;
   color: #f0f0f0;
   background: #121212;
-  min-height: calc(100vh - 100px);
+  min-height: 100%;
   font-family: 'Afacad', sans-serif;
 }
 
@@ -224,7 +224,7 @@
 @media (max-width: 900px) {
   .admin-users {
     padding: 20px 18px;
-    padding-top: 50px;
+    padding-top: 68px;
   }
 
   .panel-header {
@@ -249,8 +249,7 @@
 
   .admin-users {
     padding: 16px 12px;
-    padding-top: 30px;
-    margin-top: 40px;
+    padding-top: 54px;
   }
 
   .admin-users h1 {

@@ -182,25 +182,41 @@
 
 /* Responsive Design */
 
+@media (max-width: 900px) {
+    .login-container {
+        margin: 0 auto;
+        padding: 60px 24px;
+        min-height: calc(100vh - 140px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .login-container .container {
+        margin: 0;
+    }
+}
+
 /* Tablet grande y escritorio pequeño */
 @media (max-width: 768px) {
     .login-container {
-        margin-top: 80px;
-        margin-bottom: 40px;
+        padding: 48px 20px;
+        min-height: calc(100vh - 130px);
     }
 
-    .container {
+    .login-container .container {
         width: 95%;
-        margin: 40px auto;
+        margin: 0;
         padding: 25px;
     }
 
-    .container h1 {
+    .login-container .container h1 {
         font-size: 1.8rem;
         margin-bottom: 18px;
     }
 
-    .container img {
+    .login-container .container img {
         width: 70px;
         margin-bottom: 8px;
     }
@@ -219,27 +235,26 @@
         margin-top: 25px;
     }
 }
-
 /* Tablet pequeño */
 @media (max-width: 640px) {
     .login-container {
-        margin-top: 60px;
-        margin-bottom: 30px;
+        padding: 40px 16px;
+        min-height: calc(100vh - 120px);
     }
 
-    .container {
-        width: 95%;
-        margin: 30px auto;
+    .login-container .container {
+        width: 100%;
+        margin: 0;
         padding: 20px;
         border-radius: 10px;
     }
 
-    .container h1 {
+    .login-container .container h1 {
         font-size: 1.6rem;
         margin-bottom: 16px;
     }
 
-    .container img {
+    .login-container .container img {
         width: 65px;
         margin-bottom: 8px;
     }
@@ -267,7 +282,6 @@
         margin-right: 0;
     }
 }
-
 /* Móvil */
 @media (max-width: 480px) {
     body, html {
@@ -277,30 +291,30 @@
     }
 
     .login-container {
-        margin-top: 40px;
-        margin-bottom: 20px;
-        padding: 0 10px;
+        padding: 30px 12px;
+        min-height: calc(100vh - 110px);
+        margin: 0 auto;
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
     }
 
-    .container {
+    .login-container .container {
         width: 100%;
         max-width: calc(100vw - 20px);
-        margin: 20px auto;
+        margin: 0;
         padding: 16px;
         border-radius: 8px;
         box-shadow: rgba(100, 100, 111, 0.15) 0px 5px 20px 0px;
         box-sizing: border-box;
     }
 
-    .container img {
+    .login-container .container img {
         width: 60px;
         margin-bottom: 6px;
     }
 
-    .container h1 {
+    .login-container .container h1 {
         font-size: 1.4rem;
         margin-bottom: 15px;
     }
@@ -373,32 +387,31 @@
         margin-right: 0;
     }
 }
-
 /* Móvil pequeño */
 @media (max-width: 360px) {
     .login-container {
-        margin-top: 30px;
-        margin-bottom: 15px;
-        padding: 0 8px;
+        padding: 24px 8px;
+        min-height: calc(100vh - 100px);
+        margin: 0 auto;
         width: 100%;
         max-width: 100%;
     }
 
-    .container {
+    .login-container .container {
         width: 100%;
         max-width: calc(100vw - 16px);
-        margin: 15px auto;
+        margin: 0;
         padding: 12px;
         border-radius: 6px;
         box-sizing: border-box;
     }
 
-    .container img {
+    .login-container .container img {
         width: 50px;
         margin-bottom: 5px;
     }
 
-    .container h1 {
+    .login-container .container h1 {
         font-size: 1.2rem;
         margin-bottom: 12px;
     }
@@ -432,7 +445,6 @@
         margin-right: 0;
     }
 }
-
 /* Landscape en móvil */
 @media (max-height: 500px) and (orientation: landscape) {
     .login-container {

@@ -65,15 +65,15 @@
 /* Admin Products Styles: consistent with dark admin look */
 .admin-products {
   padding: 24px 32px;
-  padding-top: 50px;
+  padding-top: 80px;
   color: #f0f0f0;
   background: #121212;
-  min-height: calc(100vh - 100px);
+  min-height: 100%;
   font-family: "Afacad", sans-serif;
 }
 
 .admin-products h1 {
-  margin: 0;
+  margin: 12px 0 0;
   font-family: "Anton", sans-serif;
 }
 
@@ -424,7 +424,7 @@
 @media (max-width: 1000px) {
   .admin-products {
     padding: 16px;
-    padding-top: 40px;
+    padding-top: 64px;
   }
   
   .form-grid {
@@ -472,8 +472,7 @@
 @media (max-width: 600px) {
   .admin-products {
     padding: 12px;
-    padding-top: 30px;
-    margin-top: 40px;
+    padding-top: 54px;
   }
 
   .admin-products h1 {

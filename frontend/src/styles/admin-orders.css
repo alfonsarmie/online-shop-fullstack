@@ -3,7 +3,7 @@
   padding-top: 50px;
   color: #f0f0f0;
   background: #121212;
-  min-height: calc(100vh - 100px);
+  min-height: 100%;
   font-family: 'Afacad', sans-serif;
   box-sizing: border-box;
 }

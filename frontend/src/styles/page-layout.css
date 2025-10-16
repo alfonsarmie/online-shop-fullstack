@@ -40,6 +40,18 @@ body, html {
     box-sizing: border-box;
 }
 
+/* Layout para pantallas administrativas con fondo oscuro */
+.page-with-nav-spacing.admin-surface {
+    background: #121212;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-with-nav-spacing.admin-surface > * {
+    flex: 1 0 auto;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .page-with-nav-spacing {
