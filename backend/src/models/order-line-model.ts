@@ -14,6 +14,7 @@ class OrderLine extends Model<OrderLineAttributes> implements OrderLineAttribute
   public idOrderLine!: number;
   public idOrder!: number;
   public idProduct!: number;
+  public idSize!: number;
   public quantity!: number;
   public subtotal!: number;
 }

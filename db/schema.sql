@@ -9,7 +9,6 @@ CREATE TABLE `user` (
   `name` varchar(255) NOT NULL,
   `surname` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `imgProfile` varchar(255) NULL,
   `role` varchar(50),
   `isMember` BOOLEAN NOT NULL,
   `registrationDate` datetime NOT NULL,
@@ -54,15 +53,6 @@ CREATE TABLE `size`(
   PRIMARY KEY(`idSize`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-
-DROP TABLE IF EXISTS `discount`;
-CREATE TABLE `discount`(
-  `idDiscount` int unsigned NOT NULL auto_increment,
-  `description` VARCHAR(255) NOT NULL,
-  `value` int NOT NULL,
-  PRIMARY KEY(`idDiscount`)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product`(
   `idProduct` int unsigned NOT NULL auto_increment,
@@ -104,15 +94,6 @@ CREATE TABLE `product_size`(
   FOREIGN KEY(`idSize`) REFERENCES `size` (`idSize`) ON UPDATE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-DROP TABLE IF EXISTS `client_discount`;
-CREATE TABLE `client_discount`(
-  `idDiscount` int unsigned NOT NULL,
-  `idUser` int unsigned NOT NULL,
-  PRIMARY KEY(`idDiscount`, `idUser`),
-  FOREIGN KEY(`idDiscount`) REFERENCES `discount` (`idDiscount`) ON UPDATE CASCADE,
-  FOREIGN KEY(`idUser`) REFERENCES `user` (`idUser`) ON UPDATE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 DROP TABLE IF EXISTS `order`;
 CREATE TABLE `order`(
   `idOrder` int unsigned NOT NULL auto_increment,
@@ -151,9 +132,9 @@ CREATE TABLE `order_line`(
   `idProduct` int unsigned NOT NULL,
   `quantity` int unsigned NOT NULL,
   `subtotal` decimal(10,2) NOT NULL,
-  `size` varchar(50) NULL,
-  `product_name` varchar(255) NOT NULL,
+  `idSize` int unsigned NOT NULL,
   PRIMARY KEY(`idOrder`, `idProduct`),
   FOREIGN KEY(`idOrder`) REFERENCES `order` (`idOrder`) ON UPDATE CASCADE,
+  FOREIGN KEY(`idSize`) REFERENCES `size` (`idSize`) ON UPDATE CASCADE,
   FOREIGN KEY(`idProduct`) REFERENCES `product` (`idProduct`) ON UPDATE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

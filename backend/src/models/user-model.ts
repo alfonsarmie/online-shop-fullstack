@@ -8,7 +8,6 @@ interface UserAttributes {
   email: string;
   name: string;
   surname: string;
-  //phone?: string; // ← Agregar esto
   password: string;
   role?: string;
   isMember: boolean;
@@ -16,7 +15,6 @@ interface UserAttributes {
   status: string;
   activationToken?: string | null;           
   activationTokenExpires?: Date | null;
-  // Password reset fields
   passwordResetTokenHash?: string | null;
   passwordResetTokenExpiresAt?: Date | null;
   passwordResetTokenUsedAt?: Date | null; 
