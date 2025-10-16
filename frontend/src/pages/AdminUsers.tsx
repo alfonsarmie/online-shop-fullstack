@@ -173,7 +173,7 @@ const AdminUsers = () => {
   };
 
   return (
-    <div className="page-with-nav-spacing">
+    <div className="page-with-nav-spacing admin-surface">
       <div className="admin-users">
       <header className="admin-users__header">
         <h1>Gestionar usuarios internos</h1>

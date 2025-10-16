@@ -152,7 +152,7 @@ const AdminCategories: React.FC = () => {
   };
 
   return (
-    <div className="page-with-nav-spacing">
+    <div className="page-with-nav-spacing admin-surface">
       <div className="admin-orders">
       <SuccessMessage
         message={successMessage ?? ""}

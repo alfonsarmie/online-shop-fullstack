@@ -9,7 +9,8 @@
   transition: right 0.3s;
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 1.2rem;
+  gap: 1rem;
   z-index: 1000;
   font-family: "Afacad";
 }
@@ -51,9 +52,8 @@
 .cart-items {
   flex: 1;
   overflow-y: auto;
-  margin-top: 1rem;
-  padding: 10px;
-  height: 30%;
+  margin-top: 0;
+  padding: 0 0.75rem 0 0.25rem;
 }
 
 .cart-item {
@@ -75,7 +75,12 @@
 }
 
 .cart-footer {
-  padding: 1rem 0;
+  margin-top: auto;
+  padding: 1rem 0 0;
+  border-top: 1px solid #c1c1c1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .cart-footer-item {
@@ -83,6 +88,11 @@
   justify-content: space-between;
   padding: 10px 0;
   border-bottom: 1px solid #c1c1c1;
+}
+
+.cart-footer-item:last-of-type {
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
 .cart-footer-item p {
@@ -109,7 +119,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
+  width: 100%;
+  padding-top: 0.25rem;
 }
 
 .btnCompletarPedido a {
@@ -165,12 +176,35 @@
   transition: color 0.3s ease;
 }
 
+@media (max-width: 900px) {
+  .cart {
+    width: 90vw;
+    max-width: 420px;
+    right: -90vw;
+    border-radius: 16px 0 0 16px;
+    padding: 1.1rem;
+  }
+
+  .cart.open {
+    right: 0;
+    border-radius: 16px 0 0 16px;
+  }
+
+  .cart-items {
+    padding: 0 0.5rem 0 0.25rem;
+  }
+}
+
 @media (max-width: 600px) {
   .cart {
     width: 100%;
     display: flex;
     flex-direction: column;
     padding-bottom: 90px;
+    right: -100%;
+  }
+  .cart.open {
+    right: 0;
   }
   .cart-item {
     font-size: 1.05rem;
