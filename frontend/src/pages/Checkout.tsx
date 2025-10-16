@@ -1,4 +1,6 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect, ChangeEvent, FormEvent, useMemo } from "react";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import "../styles/checkout.css";
 import { useCart } from "../components/CartContext";
 import { useNavigate } from "react-router-dom";
@@ -49,7 +51,8 @@ const Checkout = () => {
       email: user?.email || "",
       phone: user?.phone || "",
       notes: "",
-      deportes: [],
+      deporte: '',
+      expectedPickupDate: undefined,
     };
   });
 
@@ -59,12 +62,19 @@ const Checkout = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleDateChange = (date: Date | null) => {
+    if (!date) {
+      setFormData((prev) => ({ ...prev, expectedPickupDate: undefined }));
+      return;
+    }
+    // store as YYYY-MM-DD
+    const iso = date.toISOString().slice(0, 10);
+    setFormData((prev) => ({ ...prev, expectedPickupDate: iso }));
+  };
+
   // Handle manejar cambios en los radio buttons de deportes
   const handleDeporteChange = (deporte: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      deportes: [deporte] // Solo un deporte en el array
-    }));
+    setFormData((prev) => ({ ...prev, deporte }));
   };
 
   // Handle form submission
@@ -117,6 +127,13 @@ const Checkout = () => {
       email: user?.email || "",
       phone: user?.phone || "",
     }));
+  }, []);
+
+  // Minimum date for pickup: tomorrow (to match validation that requires > today)
+  const minPickupDate = useMemo(() => {
+    const t = new Date();
+    t.setDate(t.getDate() + 1);
+    return t.toISOString().slice(0, 10); // YYYY-MM-DD
   }, []);
 
   return (
@@ -192,6 +209,20 @@ const Checkout = () => {
                 </label>
               </div>
 
+              <div className="form__group_checkout field">
+                <label htmlFor="expectedPickupDate" className="form__label">Fecha estimada de retiro (opcional)</label>
+                <DatePicker
+                  id="expectedPickupDate"
+                  selected={formData.expectedPickupDate ? new Date(formData.expectedPickupDate) : null}
+                  onChange={handleDateChange}
+                  dateFormat="yyyy-MM-dd"
+                  minDate={new Date(minPickupDate)}
+                  placeholderText="Seleccionar fecha"
+                  className="form__field dateInput"
+                  calendarClassName="custom-react-datepicker"
+                />
+              </div>
+
               {/* Sports radio buttons */}
               <div style={{ margin: "18px 0 10px 0" }}>
                 <span className="deportes-label">¿Qué deporte practicás en Rowing?</span>
@@ -202,8 +233,8 @@ const Checkout = () => {
                       type="radio"
                       name="deporte"
                       value=""
-                      checked={formData.deportes.length === 0}
-                      onChange={() => setFormData(prev => ({ ...prev, deportes: [] }))}
+                      checked={!formData.deporte}
+                      onChange={() => setFormData(prev => ({ ...prev, deporte: '' }))}
                     />
                     Ninguno
                   </label>
@@ -213,7 +244,7 @@ const Checkout = () => {
                         type="radio"
                         name="deporte"
                         value={dep}
-                        checked={formData.deportes.includes(dep)}
+                        checked={formData.deporte === dep}
                         onChange={() => handleDeporteChange(dep)}
                       />
                       {dep.charAt(0).toUpperCase() + dep.slice(1)}

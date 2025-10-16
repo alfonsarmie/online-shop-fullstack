@@ -1,124 +1,101 @@
 import api from './api';
-import {
-  BackendOrder,
-  FrontendOrder,
-  FrontendOrderItem,
-  FrontendOrderStatus,
-  MercadoPagoStatus,
-  PaginatedOrders,
+import type {
+	BackendOrder,
+	PaginatedOrders,
+	FrontendOrder,
+	FrontendOrderItem,
+	FrontendOrderStatus,
 } from '../types/order';
 
-export interface GetOrdersParams {
-  page?: number;
-  limit?: number;
-  userId?: number;
-  status?: MercadoPagoStatus;
-  search?: string;
-  fromDate?: string;
-  toDate?: string;
-}
+const API_URL = '';
 
-export interface UpdateOrderStatusPayload {
-  description: string;
-  status?: string;
-  statusMp?: MercadoPagoStatus;
-  payment_id?: string;
-}
-
-const FRONT_STATUSES: Record<MercadoPagoStatus, FrontendOrderStatus> = {
-  pending: 'pending',
-  in_process: 'processing',
-  approved: 'completed',
-  rejected: 'cancelled',
-  cancelled: 'cancelled',
-  refunded: 'cancelled',
-  charged_back: 'cancelled',
-};
-
-const DEFAULT_IMAGE =
-  'https://via.placeholder.com/60x60?text=Producto';
-
-const parseDecimal = (value: number | string | undefined): number => {
-  if (value === undefined) return 0;
-  if (typeof value === 'number') return value;
-  const parsed = Number(value);
-  return Number.isNaN(parsed) ? 0 : parsed;
-};
-
+// Helper to map backend order to frontend shape used in MyOrders/AdminOrders
 export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
-  console.log('🔄 Mapping order to frontend:', order);
-  
-  const items: FrontendOrderItem[] = (order.orderLines || []).map((line, index) => {
-    const quantity = line.quantity || 0;
-    const subtotal = parseDecimal(line.subtotal);
-    const unitPrice = quantity > 0 ? subtotal / quantity : subtotal;
+	const items: FrontendOrderItem[] = (order.orderLines || []).map((line) => ({
+		id: line.idProduct,
+		name: line.product?.name || line.product_name,
+		quantity: line.quantity,
+		price: typeof line.subtotal === 'number' ? line.subtotal / Math.max(1, line.quantity) : Number(line.subtotal) / Math.max(1, line.quantity),
+		size: line.size,
+		image: undefined,
+	}));
 
-    return {
-      id: line.idProduct ?? index,
-      name: line.product?.name || line.product_name,
-      quantity,
-      price: unitPrice,
-      size: line.size ?? undefined,
-      image: undefined,
-    };
-  });
+	// Determine frontend status
+	let status: FrontendOrderStatus = 'pending';
+	if (order.actualPickupDate) status = 'completed';
+	else if (order.statusMp === 'approved' || order.statusMp === 'in_process') status = 'processing';
+	else if (order.statusMp === 'cancelled' || order.statusMp === 'rejected' || order.statusMp === 'refunded' || order.statusMp === 'charged_back') status = 'cancelled';
 
-  console.log('📦 Mapped items:', items);
+	return {
+		id: order.idOrder,
+		orderNumber: `ORD-${order.idOrder.toString().padStart(4, '0')}`,
+		date: order.orderDate,
+		status,
+		total: typeof order.total_amount === 'number' ? order.total_amount : Number(order.total_amount),
+		items,
+		pickupDate: order.expectedPickupDate,
+		canCancel: !(order.actualPickupDate) && order.statusMp !== 'approved',
+		statusMp: order.statusMp,
+		history: order.statusHistory || [],
+	};
+};
 
-  const total = parseDecimal(order.total_amount);
-  const statusMp = order.statusMp ?? 'pending';
-  const status = FRONT_STATUSES[statusMp] ?? 'pending';
-  const history = [...(order.statusHistory ?? [])].sort(
-    (a, b) =>
-      new Date(b.statusDate).getTime() - new Date(a.statusDate).getTime()
-  );
+export const getItemImage = (fallback?: string) => {
+	// Return a placeholder image path used in the app if available
+	return fallback || '/placeholder-image.jpg';
+};
 
-  return {
-    id: order.idOrder,
-    orderNumber: `ORD-${order.idOrder.toString().padStart(4, '0')}`,
-    date: order.orderDate,
-    status,
-    total,
-    items,
-    pickupDate: order.expectedPickupDate ?? undefined,
-    canCancel: status === 'pending' || status === 'processing',
-    statusMp,
-    history,
-  };
+// Admin: get paginated orders
+const getOrders = async (params?: { page?: number; limit?: number }) => {
+	try {
+		const response = await api.get<PaginatedOrders>('/orders', { params });
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+};
+
+// Get orders for a user (array)
+const getUserOrders = async (userId: number) => {
+	try {
+		const response = await api.get<{ orders: BackendOrder[] } | BackendOrder[]>(`/orders/user/${userId}`);
+		const data = response.data;
+		if (Array.isArray(data)) return data;
+		return data.orders || [];
+	} catch (error) {
+		throw error;
+	}
+};
+
+// Update order status
+const updateOrderStatus = async (
+	id: number,
+	payload: { status: string; statusMp?: string; description?: string }
+) => {
+	try {
+		const response = await api.put(`/orders/${id}/status`, payload);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+};
+
+const deleteOrder = async (id: number) => {
+	try {
+		const response = await api.delete(`/orders/${id}`);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
 };
 
 export const orderService = {
-  async getOrders(params: GetOrdersParams = {}) {
-    const response = await api.get<PaginatedOrders>('/orders', { params });
-    return {
-      ...response.data,
-      orders: response.data.orders,
-    };
-  },
-
-  async getUserOrders(userId: number) {
-    const response = await api.get<{ orders: BackendOrder[] }>(
-      `/orders/user/${userId}`
-    );
-    return response.data.orders;
-  },
-
-  async getOrderById(id: number) {
-    const response = await api.get<BackendOrder>(`/orders/${id}`);
-    return response.data;
-  },
-
-  async updateOrderStatus(id: number, payload: UpdateOrderStatusPayload) {
-    const response = await api.patch<{ order: BackendOrder; message: string }>(
-      `/orders/${id}/status`,
-      payload
-    );
-    return response.data;
-  },
-
-  async deleteOrder(id: number) {
-    await api.delete(`/orders/${id}`);
-  },
+	getOrders,
+	getUserOrders,
+	updateOrderStatus,
+	deleteOrder,
+	mapOrderToFrontend,
+	getItemImage,
 };
 
-export const getItemImage = (): string => DEFAULT_IMAGE;
+export default orderService;

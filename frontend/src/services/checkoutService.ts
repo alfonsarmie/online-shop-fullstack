@@ -1,170 +1,120 @@
-import api from './api';
-import { CartItem } from '../types/cart';
-import { User } from '../types/user';
+import api from "./api";
+import type { CartItem } from "../types/cart";
 
-// Interface for checkout form data
 export interface CheckoutFormData {
   name: string;
   email: string;
   phone: string;
-  notes: string;
-  deportes: string[];
+  notes?: string;
+  deporte?: string;
+  expectedPickupDate?: string;
 }
 
-// Interface for order draft payload to send to backend
-export interface OrderDraftPayload {
-  idUser: number;
-  customer_name: string;
-  customer_email: string;
-  customer_phone?: string;
-  customer_notes?: string;
-  sports?: string[];
-  items: OrderDraftItem[];
-}
+type ValidationResult = {
+  isValid: boolean;
+  errors: string[];
+};
 
-export interface OrderDraftItem {
-  idProduct: number;
-  quantity: number;
-  size?: string;
-  unitPrice: number;
-  name: string;
-}
+const validateCheckoutForm = (data: CheckoutFormData): ValidationResult => {
+  const errors: string[] = [];
+  if (!data.name || data.name.trim().length === 0)
+    errors.push("Nombre requerido");
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!data.email || !emailRegex.test(data.email))
+    errors.push("Email inválido");
+  if (!data.phone || data.phone.trim().length === 0)
+    errors.push("Teléfono requerido");
 
-// Interface for the response from the payment preference creation
-export interface PaymentPreferenceResponse {
-  init_point?: string;
-  sandbox_init_point?: string;
-  orderId?: number;
-  external_reference?: string;
-}
-
-// Convert cart items to order draft items
-function mapCartItemsToOrderDraft(cartItems: CartItem[]): OrderDraftItem[] {
-  return cartItems.map((item) => {
-    // Parse the product ID from the cart item ID
-    const productId = parseInt(item.id);
-    if (isNaN(productId)) {
-      throw new Error(`Invalid product ID: ${item.id}`);
-    }
-
-    return {
-      idProduct: productId,
-      quantity: item.quantity,
-      size: item.size,
-      unitPrice: item.price,
-      name: item.name,
-    };
-  });
-}
-
-// Build the complete order draft payload
-export function buildOrderDraftPayload(
-  formData: CheckoutFormData,
-  cartItems: CartItem[],
-  user: User | null
-): OrderDraftPayload {
-  if (!user?.idUser) {
-    throw new Error('Usuario no autenticado');
-  }
-
-  if (!cartItems.length) {
-    throw new Error('El carrito está vacío');
-  }
-
-  const orderItems = mapCartItemsToOrderDraft(cartItems);
-
-  return {
-    idUser: user.idUser,
-    customer_name: formData.name,
-    customer_email: formData.email,
-    customer_phone: formData.phone,
-    customer_notes: formData.notes,
-    sports: formData.deportes.length > 0 ? formData.deportes : undefined,
-    items: orderItems,
-  };
-}
-
-// Service object with checkout-related API calls
-export const checkoutService = {
-  // Create a payment preference for the order
-  async createPaymentPreference(
-    formData: CheckoutFormData,
-    cartItems: CartItem[],
-    user: User | null
-  ): Promise<PaymentPreferenceResponse> {
-    console.log('🚀 [CHECKOUT-SERVICE] Iniciando creación de preferencia...');
-    console.log('👤 [CHECKOUT-SERVICE] Usuario:', { 
-      idUser: user?.idUser, 
-      email: user?.email, 
-      name: user?.name 
-    });
-    console.log('📝 [CHECKOUT-SERVICE] Datos del formulario:', formData);
-    console.log('🛒 [CHECKOUT-SERVICE] Items del carrito:', cartItems);
-    
-    const orderPayload = buildOrderDraftPayload(formData, cartItems, user);
-    console.log('📦 [CHECKOUT-SERVICE] Payload de la orden:', orderPayload);
-
-    // Map cart items to the format expected by Mercado Pago
-    const preferenceItems = cartItems.map((item) => ({
-      id: item.id,
-      title: item.name,
-      quantity: item.quantity,
-      unit_price: item.price,
-      currency_id: 'ARS',
-      description: item.name,
-      picture_url: item.img,
-    }));
-    console.log('💳 [CHECKOUT-SERVICE] Items para Mercado Pago:', preferenceItems);
-
-    const payerData = {
-      email: formData.email,
-      name: user?.name,
-      surname: user?.surname,
-    };
-
-    const requestBody = {
-      items: preferenceItems,
-      payer: payerData,
-      orderPayload,
-    };
-    console.log('📤 [CHECKOUT-SERVICE] Request body completo:', requestBody);
-
-    console.log('🌐 [CHECKOUT-SERVICE] Enviando request al backend...');
-    const response = await api.post<PaymentPreferenceResponse>(
-      '/payments/create-preference',
-      requestBody
-    );
-
-    console.log('✅ [CHECKOUT-SERVICE] Respuesta del backend:', response.data);
-    return response.data;
-  },
-
-  // Validate checkout form data
-  validateCheckoutForm(formData: CheckoutFormData): { isValid: boolean; errors: string[] } {
-    const errors: string[] = [];
-
-    if (!formData.name.trim()) {
-      errors.push('El nombre es requerido');
-    }
-
-    if (!formData.email.trim()) {
-      errors.push('El email es requerido');
-    } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        errors.push('El email no es válido');
+  // If expectedPickupDate is provided, ensure it's strictly greater than today
+  if (data.expectedPickupDate) {
+    // Expecting format 'YYYY-MM-DD' from input[type=date]
+    const parts = data.expectedPickupDate.split("-");
+    if (parts.length === 3) {
+      const [yyyy, mm, dd] = parts.map((p) => parseInt(p, 10));
+      if (
+        !Number.isFinite(yyyy) ||
+        !Number.isFinite(mm) ||
+        !Number.isFinite(dd)
+      ) {
+        errors.push("Fecha de retiro inválida");
+      } else {
+        const picked = new Date(yyyy, mm - 1, dd);
+        // Normalize today's date to local midnight
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (!(picked > today)) {
+          errors.push(
+            "La fecha estimada de retiro debe ser posterior a la fecha actual"
+          );
+        }
       }
+    } else {
+      errors.push("Formato de fecha de retiro inválido");
     }
+  }
+  return { isValid: errors.length === 0, errors };
+};
 
-    if (!formData.phone.trim()) {
-      errors.push('El teléfono es requerido');
-    }
+// Create a Stripe Checkout Session in the backend.
+// Important: we send minimal product info to the backend so the backend can
+// create the session and (after payment) create the order server-side.
+const createPaymentPreference = async (
+  checkoutData: CheckoutFormData,
+  items: CartItem[],
+  user: { idUser: number; email?: string; name?: string }
+) => {
+  try {
+    // Map items to the shape the backend expects: { idProduct, quantity }
+    const lineItems = items.map((it) => ({
+      idProduct: Number(it.id),
+      quantity: it.quantity,
+    }));
 
-    return {
-      isValid: errors.length === 0,
-      errors,
+    // Format expectedPickupDate from YYYY-MM-DD to DD-MM-YYYY (with hyphens) if provided
+    const pad = (s: string) => s.padStart(2, "0");
+    const formatToDDMMYYYY = (d?: string) => {
+      if (!d) return undefined;
+      const parts = d.split("-");
+      if (parts.length !== 3) return d.replace(/[^0-9-]/g, ""); // fallback: strip everything except digits and hyphen
+      const [yyyy, mm, dd] = parts;
+      return `${pad(dd)}-${pad(mm)}-${yyyy}`;
     };
-  },
+
+    const payload = {
+      user: { idUser: user.idUser },
+      customer: {
+        name: checkoutData.name,
+        email: checkoutData.email || user.email,
+        phone: checkoutData.phone,
+      },
+      items: lineItems,
+      notes: checkoutData.notes,
+      deporte: (checkoutData as any).deporte || "",
+      expectedPickupDate: formatToDDMMYYYY(checkoutData.expectedPickupDate),
+    };
+
+    // Call backend endpoint that creates a Stripe Checkout Session
+    const response = await api.post("/checkout/create_session", payload);
+
+    // backend may return different field names (url, sessionUrl, checkoutUrl, init_point)
+    const data = response.data || {};
+    const redirectUrl =
+      data.url || data.sessionUrl || data.checkoutUrl || data.init_point;
+
+    // Maintain compatibility with existing Payment.tsx which expects init_point or sandbox_init_point
+    return {
+      init_point: redirectUrl,
+      sandbox_init_point: redirectUrl,
+      raw: data,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const checkoutService = {
+  validateCheckoutForm,
+  createPaymentPreference,
 };
 
 export default checkoutService;
