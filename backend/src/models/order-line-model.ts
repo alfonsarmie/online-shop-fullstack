@@ -7,8 +7,6 @@ interface OrderLineAttributes {
   idProduct: number;
   quantity: number;
   subtotal: number;
-  size?: string;
-  product_name: string;
 }
 
 class OrderLine extends Model<OrderLineAttributes> implements OrderLineAttributes {
@@ -17,8 +15,6 @@ class OrderLine extends Model<OrderLineAttributes> implements OrderLineAttribute
   public idProduct!: number;
   public quantity!: number;
   public subtotal!: number;
-  public size?: string;
-  public product_name!: string;
 }
 
 OrderLine.init(
@@ -55,14 +51,6 @@ OrderLine.init(
     },
     subtotal: {
       type: DataTypes.DECIMAL(10, 2),
-      allowNull: false,
-    },
-    size: {
-      type: DataTypes.STRING(50),
-      allowNull: true,
-    },
-    product_name: {
-      type: DataTypes.STRING(255),
       allowNull: false,
     }
   },
