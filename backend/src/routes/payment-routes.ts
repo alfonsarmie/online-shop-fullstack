@@ -1,4 +1,5 @@
 ﻿// Routes for Mercado Pago preference creation
+
 import { Router } from 'express';
 import { createPreference } from '../controllers/payment-controller';
 

@@ -7,6 +7,7 @@ import Price from '../models/price-model';
 import User from '../models/user-model';
 import PaymentMethod from '../models/payment-method-model';
 import { Sequelize, Op } from 'sequelize';
+import { v4 as uuidv4 } from 'uuid';
 
 // MercadoPago status enum for better type safety
 export enum MercadoPagoStatus {
@@ -127,7 +128,7 @@ export const createOrder = async (req: Request, res: Response) => {
       customer_phone,
       customer_notes,
       sports,
-      external_reference,
+      external_reference: uuidv4(), 
       currencyId,
       total_amount,
       orderDate: new Date(),
