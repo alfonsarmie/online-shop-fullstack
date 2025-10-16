@@ -16,9 +16,6 @@ import imageRoutes from './routes/image-routes';
 import sizeRoutes from './routes/size-routes';
 import categoryRoutes from './routes/category-routes';
 import uploadRoutes from './routes/upload-routes';
-import paymentRoutes from './routes/payment-routes';
-import orderRoutes from './routes/order-routes';
-import webhookRoutes from './routes/webhook-routes';
 import { defineAssociations } from './models/associations';
 import { connectDB, db } from './db/connection';
 
@@ -70,12 +67,7 @@ app.use("/api/images", imageRoutes);
 app.use("/api/sizes", sizeRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use('/api', uploadRoutes);
-// Checkout Pro preference creation endpoints
-app.use('/api/payments', paymentRoutes);
-// Order management endpoints
-app.use('/api/orders', orderRoutes);
-// Mercado Pago webhook listener
-app.use('/webhooks', webhookRoutes);
+
 app.use('/uploads', express.static('uploads'));
 
 // Initialize the server

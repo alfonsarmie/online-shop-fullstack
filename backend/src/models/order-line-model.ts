@@ -5,6 +5,7 @@ interface OrderLineAttributes {
   idOrderLine?: number;
   idOrder: number;
   idProduct: number;
+  idSize?: number;
   quantity: number;
   subtotal: number;
 }
@@ -41,6 +42,16 @@ OrderLine.init(
       references: {
         model: 'Product',   // o model: Product
         key: 'idProduct',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'RESTRICT',
+    },
+    idSize: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      references: {
+        model: 'Size',
+        key: 'idSize',
       },
       onUpdate: 'CASCADE',
       onDelete: 'RESTRICT',
