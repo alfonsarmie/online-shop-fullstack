@@ -31,12 +31,17 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
         // Fetch product details from the database
         // Accept both shapes from frontend: { id, quantity } or { idProduct, quantity }
         const ids = items.map((it: { id?: string | number; idProduct?: string | number }) => {
+            
             const id = Number((it as any).id ?? (it as any).idProduct);
+            
             if (!Number.isFinite(id)) {
                 throw new Error('Formato de item inválido: cada item debe incluir id o idProduct numérico');
+            
             }
+            
             return id;
         });
+        
         const products = await Product.findAll({
             where: { idProduct: { [Op.in]: ids } },
             attributes: ['idProduct', 'name'],
@@ -46,25 +51,31 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 
         const priceMap = new Map<number, number>(); //Key-Value structure
         for (const id of ids) {
+            
             const latestPrice = await Price.findOne({
                 where: { idProduct: id },
                 order: [['updateDate', 'DESC']],
                 attributes: ['idProduct', 'value'],
             });
+            
             if (!latestPrice) {
                 
                 throw new Error(`No hay precio vigente para el producto ${id}`);
             }
             priceMap.set(id, latestPrice.value);
+        
         }
 
 
         const currency = (req.body.currency || 'usd').toLowerCase();
 
-        const line_items = items.map((item: { id?: string | number; idProduct?: string | number; quantity: number }) => {
+        const line_items = items.map((item: { id?: string | number; idProduct?: string | number; idSize?: string | number; quantity: number }) => {
+            
             const id = Number((item as any).id ?? (item as any).idProduct);
+            const idSize = (item as any).idSize !== undefined ? Number((item as any).idSize) : undefined;
             const product = products.find((p) => p.idProduct === id);
             const value = priceMap.get(id);
+            
             if (!Number.isFinite(value)) {
                 throw new Error(`No se pudo determinar el precio para el producto ${id}`);
             }
@@ -76,7 +87,13 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
                 quantity: item.quantity,
                 price_data: {
                 currency,
-                product_data: { name: product?.name ?? `Producto ${id}` },
+                product_data: {
+                    name: product?.name ?? `Producto ${id}`,
+                    metadata: {
+                        idProduct: String(id),
+                        ...(Number.isFinite(idSize as number) ? { idSize: String(idSize) } : {}),
+                    },
+                },
                 unit_amount,
                 },
             };
@@ -109,7 +126,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
         
         
             }, 
-            { idempotencyKey }
+            //{ idempotencyKey }
         );
 
 
@@ -122,3 +139,11 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
     }
 
 }
+
+
+
+
+
+
+
+

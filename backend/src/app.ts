@@ -13,6 +13,7 @@ import authRoutes from './routes/auth-routes';
 import productRoutes from './routes/product-routes';
 import priceRoutes from './routes/price-routes';
 import imageRoutes from './routes/image-routes';
+import webHookRoutes from './routes/webhooks-routes';
 import sizeRoutes from './routes/size-routes';
 import categoryRoutes from './routes/category-routes';
 import uploadRoutes from './routes/upload-routes';
@@ -34,6 +35,8 @@ const allowedOrigins = rawAllowedOrigins
   .map((origin) => origin.trim())
   .filter(Boolean);
 
+
+
 // Middlewares
 // Dynamically validate the request origin so Mercado Pago redirects from tunnels still work
 app.use(cors({
@@ -49,8 +52,11 @@ app.use(cors({
   },
   credentials: true,
 })); // To enable CORS with explicit origins
+
+// Mount Stripe webhook BEFORE JSON parser to keep raw body for signature verification
+app.use('/api/webhooks', webHookRoutes);
 app.use(express.json()); //To parse JSON data 
-app.use(express.urlencoded({ extended: true })); //To parse URL-encoded data
+app.use(express.urlencoded({ extended: true })); 
 
 // Connect to the database
 connectDB().catch(error => console.error('Database connection failed:', error));

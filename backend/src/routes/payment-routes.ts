@@ -1,8 +1,9 @@
-import { Router } from 'express';
+import express, { Router } from 'express';
 import { check } from 'express-validator';
 import { validateFields } from '../middlewares/validate-fields';
 import { validateJWT } from '../middlewares/validate-jwt';
 import { createCheckoutSession } from '../controllers/payment-controller';
+//import { stripeWebhookHandler } from '../services/stripe-processor';
 
 
 const router = Router();
@@ -32,6 +33,21 @@ router.post(
     ],
     createCheckoutSession
 );
+
+
+/**
+ * @route   POST /api/payment/webhook
+ * @desc    Recibe eventos y notificaciones de Stripe
+ * @access  Public
+ */
+
+/*router.post(
+    "/webhook",
+
+    express.raw({ type: 'application/json' }),
+
+    stripeWebhookHandler
+);*/
 
 
 
