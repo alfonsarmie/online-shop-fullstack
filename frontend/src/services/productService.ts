@@ -28,9 +28,11 @@ export const productService = {
             ? `http://localhost:3000${product.images[1].url}` 
             : "/placeholder-image.jpg",
         description: product.description,
-        sizes: product.sizes?.map(
-          (size) => size.sizeDesc || size.name || ""
-        ) || ["S", "M", "L", "XL"],
+        sizes: product.sizes?.map((size) => ({
+          idSize: size.idSize,
+          name: size.name || size.sizeDesc || '',
+          sizeDesc: size.sizeDesc || size.name || ''
+        })) || [],
         stock: product.stock,
         category: product.category?.name || "",
       }));

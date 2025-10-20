@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "../styles/product.css";
 import { useState } from "react";
-import { ProductWithSize, FrontendProduct } from "../types/product";
+import { ProductWithSize, Size } from "../types/product";
 
 // Props interface for Product component
 interface ProductProps {
@@ -11,7 +11,7 @@ interface ProductProps {
   img: string;
   img2: string;
   description: string;
-  sizes: string[];
+  sizes: Size[]; // Cambiado de string[] a Size[]
   stock: number;
   onAddToCart: (product: ProductWithSize) => void;
 }
@@ -27,7 +27,7 @@ function ProductComponent({
   stock,
   onAddToCart,
 }: ProductProps) {
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<Size | null>(null);
   const [showSizeSelector, setShowSizeSelector] = useState(false);
 
   // Asegurar que las URLs de imágenes sean válidas
@@ -40,10 +40,11 @@ function ProductComponent({
     setShowSizeSelector(true);
   };
 
-  const handleSizeSelection = (size: string) => {
+  const handleSizeSelection = (size: Size) => {
     setSelectedSize(size);
-    onAddToCart({
-      id: id, // Ya es string
+    
+    const productToAdd = {
+      id: id,
       name,
       price,
       img: mainImage,
@@ -51,10 +52,13 @@ function ProductComponent({
       description,
       sizes: sizes || [],
       stock,
-      size,
+      size: size.name,
+      sizeId: size.idSize,
       quantity: 1,
-    } as ProductWithSize);
-    setTimeout(() => setShowSizeSelector(false), 300);
+    };
+    
+    onAddToCart(productToAdd as ProductWithSize);
+    setShowSizeSelector(false);
   };
 
   return (
@@ -77,6 +81,14 @@ function ProductComponent({
         Añadir al carrito
       </button>
 
+      {/* Backdrop oscuro */}
+      {showSizeSelector && (
+        <div 
+          className="size-selector-backdrop"
+          onClick={() => setShowSizeSelector(false)}
+        />
+      )}
+
       <div
         className={`size-selector-popup ${showSizeSelector ? "visible" : ""}`}
       >
@@ -84,11 +96,11 @@ function ProductComponent({
         <div className="size-options">
           {sizes.map((size) => (
             <button
-              key={size}
-              className={`size-option ${selectedSize === size ? "selected" : ""}`}
+              key={size.idSize}
+              className={`size-option ${selectedSize?.idSize === size.idSize ? "selected" : ""}`}
               onClick={() => handleSizeSelection(size)}
             >
-              {size}
+              {size.name}
             </button>
           ))}
         </div>

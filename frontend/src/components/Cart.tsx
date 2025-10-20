@@ -61,9 +61,20 @@ function Cart() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <img src={item.img} alt={item.name} width="60" style={{ borderRadius: '8px' }} />
                   <div>
-                    <h3 style={{ margin: 0 }}>{item.name}</h3>
-                    <p style={{ margin: '5px 0' }}>${item.price} ARS × {item.quantity}</p>
-                    {item.size && <p style={{ margin: 0 }}>Talle: {item.size}</p>}
+                    <h3 style={{ margin: 0, fontSize: '16px' }}>{item.name}</h3>
+                    {item.size && (
+                      <p style={{ 
+                        margin: '5px 0', 
+                        fontSize: '14px', 
+                        fontWeight: 'bold',
+                        color: '#4CAF50' 
+                      }}>
+                        Talle: {item.size}
+                      </p>
+                    )}
+                    <p style={{ margin: '5px 0', fontSize: '14px' }}>
+                      ${item.price} ARS × {item.quantity}
+                    </p>
                   </div>
                 </div>
 

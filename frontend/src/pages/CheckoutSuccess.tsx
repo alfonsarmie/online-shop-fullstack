@@ -1,19 +1,75 @@
-﻿import { useEffect, useMemo } from 'react';
+﻿import { useEffect, useMemo, useState, useRef } from 'react';
 import { useCart } from '../components/CartContext';
 import { useCheckoutQuery } from '../utils/useCheckoutQuery';
 import '../styles/checkout-status.css';
+import { useSearchParams } from 'react-router-dom';
+import api from '../services/api';
 
 export default function CheckoutSuccess() {
   const info = useCheckoutQuery();
+  const [params] = useSearchParams();
+  const sessionId = params.get('session_id');
   const { clearCart } = useCart();
+  const [orderNumber, setOrderNumber] = useState<string | null>(null);
+  const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const orderCreatedRef = useRef(false); // Para evitar duplicados
 
   useEffect(() => {
-    clearCart();
-  }, [clearCart, info.external_reference]);
+    // Crear la orden si tenemos session_id de Stripe
+    const createOrder = async () => {
+      if (!sessionId) {
+        console.warn('No session_id found in URL');
+        return;
+      }
 
-  const displayOrderNumber = useMemo(() => (
-    info.external_reference ?? info.payment_id ?? info.collection_id ?? ''
-  ), [info.collection_id, info.external_reference, info.payment_id]);
+      // Evitar llamadas duplicadas usando ref
+      if (orderCreatedRef.current || isCreatingOrder) {
+        return;
+      }
+
+      orderCreatedRef.current = true;
+      setIsCreatingOrder(true);
+      setError(null);
+
+      try {
+        const response = await api.post('/orders/create-from-session', {
+          session_id: sessionId,
+        });
+        
+        setOrderNumber(String(response.data.order?.idOrder || ''));
+        clearCart(); // Limpiar carrito solo después de crear la orden
+        
+      } catch (err: any) {
+        console.error('Error creando orden:', err);
+        
+        // Si la orden ya existe, no es un error crítico
+        if (err.response?.data?.msg?.includes('ya fue creada')) {
+          setOrderNumber(String(err.response?.data?.order?.idOrder || sessionId));
+          clearCart();
+        } else {
+          setError(err.response?.data?.msg || 'Error al procesar la orden');
+        }
+      } finally {
+        setIsCreatingOrder(false);
+      }
+    };
+
+    createOrder();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId]); // Solo sessionId como dependencia
+
+  const displayOrderNumber = useMemo(() => {
+    // Preferir el número de orden obtenido del backend
+    return (
+      orderNumber ??
+      info.external_reference ??
+      sessionId ??
+      info.payment_id ??
+      info.collection_id ??
+      ''
+    );
+  }, [orderNumber, sessionId, info.collection_id, info.external_reference, info.payment_id]);
 
   return (
     <div className="page-with-nav-spacing">
@@ -29,19 +85,31 @@ export default function CheckoutSuccess() {
         </div>
 
         <h1 className="ticket-title">Gracias por tu compra</h1>
-        <p className="ticket-subtitle">Estamos preparando tu pedido.</p>
+        <p className="ticket-subtitle">
+          {isCreatingOrder ? 'Procesando tu orden...' : 'Estamos preparando tu pedido.'}
+        </p>
 
-        {displayOrderNumber && (
+        {error && (
+          <div style={{ color: '#dc2626', padding: '10px', marginBottom: '10px' }}>
+            {error}
+          </div>
+        )}
+
+        {displayOrderNumber && !isCreatingOrder && (
           <div className="ticket-order">
             <span className="ticket-order-label">Numero de orden</span>
-            <span className="ticket-order-value">{displayOrderNumber}</span>
+            <span className="ticket-order-value">#{displayOrderNumber}</span>
           </div>
         )}
 
         <div className="ticket-perforation" aria-hidden="true" />
 
         <div className="ticket-bottom">
-          <p className="ticket-note">Te avisaremos cuando este listo para retirar.</p>
+          <p className="ticket-note">
+            {isCreatingOrder 
+              ? 'Espera un momento mientras confirmamos tu orden...' 
+              : 'Te avisaremos cuando este listo para retirar.'}
+          </p>
         </div>
       </div>
     </section>

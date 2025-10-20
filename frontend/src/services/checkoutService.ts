@@ -64,10 +64,12 @@ const createPaymentPreference = async (
   user: { idUser: number; email?: string; name?: string }
 ) => {
   try {
-    // Map items to the shape the backend expects: { idProduct, quantity }
+    // Map items to the shape the backend expects: { idProduct, quantity, idSize }
     const lineItems = items.map((it) => ({
       idProduct: Number(it.id),
       quantity: it.quantity,
+      // Usar sizeId directamente si está disponible
+      idSize: it.sizeId ? Number(it.sizeId) : undefined,
     }));
 
     // Format expectedPickupDate from YYYY-MM-DD to DD-MM-YYYY (with hyphens) if provided
@@ -81,25 +83,37 @@ const createPaymentPreference = async (
     };
 
     const payload = {
-      user: { idUser: user.idUser },
-      customer: {
-        name: checkoutData.name,
-        email: checkoutData.email || user.email,
-        phone: checkoutData.phone,
-      },
+      userId: Number(user.idUser),
       items: lineItems,
-      notes: checkoutData.notes,
-      deporte: (checkoutData as any).deporte || "",
-      expectedPickupDate: formatToDDMMYYYY(checkoutData.expectedPickupDate),
+      orderDetails: {
+        customer_name: checkoutData.name,
+        customer_email: checkoutData.email || user.email || "",
+        phone: checkoutData.phone || "",
+        notes: checkoutData.notes || "",
+        deporte: checkoutData.deporte || "",
+        expected_pickup_date: formatToDDMMYYYY(checkoutData.expectedPickupDate),
+      },
+      currency: "usd",
     };
 
     // Call backend endpoint that creates a Stripe Checkout Session
-    const response = await api.post("/checkout/create_session", payload);
+    // Backend route: POST /api/payments/create-checkout-session (note the plural 'payments')
+    const response = await api.post(
+      "/payments/create-checkout-session",
+      payload
+    );
 
     // backend may return different field names (url, sessionUrl, checkoutUrl, init_point)
     const data = response.data || {};
     const redirectUrl =
       data.url || data.sessionUrl || data.checkoutUrl || data.init_point;
+
+    if (!redirectUrl) {
+      // Provide more context in the error to help debugging in the browser console
+      throw new Error(
+        `No redirect URL returned from backend: ${JSON.stringify(data)}`
+      );
+    }
 
     // Maintain compatibility with existing Payment.tsx which expects init_point or sandbox_init_point
     return {
@@ -107,7 +121,13 @@ const createPaymentPreference = async (
       sandbox_init_point: redirectUrl,
       raw: data,
     };
-  } catch (error) {
+  } catch (error: any) {
+    // If axios error, include status and response data to help debugging
+    if (error?.response) {
+      const status = error.response.status;
+      const data = error.response.data;
+      throw new Error(`Request failed (${status}): ${JSON.stringify(data)}`);
+    }
     throw error;
   }
 };

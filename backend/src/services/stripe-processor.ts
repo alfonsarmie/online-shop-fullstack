@@ -33,6 +33,23 @@ export const stripeWebhookHandler = async (req: Request, res: Response) => {
     // Handle the event
     switch (event.type) {
         case 'checkout.session.completed':
+            // DESHABILITADO: usando polling desde frontend (order-controller.ts)
+            // Para habilitar en producción: descomentar todo el código de abajo
+            // y deshabilitar el endpoint POST /api/orders/create-from-session
+            console.log('✅ Webhook checkout.session.completed recibido (deshabilitado - usando polling)');
+            return res.status(200).json({ received: true, note: 'Webhook disabled - using polling' });
+            
+        // Handle other event types as needed
+        default:
+            console.log(`Unhandled event type ${event.type}`);
+            return res.status(200).json({ received: true });
+    }
+
+}
+
+/* CÓDIGO ORIGINAL DEL WEBHOOK - COMENTADO PARA USAR POLLING
+   Descomentar esto cuando estemos en producción para usar webhooks:
+
             const session = event.data.object as Stripe.Checkout.Session;
             
             const raw = session.metadata?.orderDetails;
@@ -61,8 +78,6 @@ export const stripeWebhookHandler = async (req: Request, res: Response) => {
                 limit: 100,
             });
             
-
-        
             let totalCents = 0;
             const parsedItems: Array<{ idProduct: number; idSize?: number; quantity: number; subtotalCents: number }> = [];
 
@@ -70,34 +85,32 @@ export const stripeWebhookHandler = async (req: Request, res: Response) => {
                 const qty = li.quantity ?? 1;
                 const price = li.price!;
                 const unitAmount = price.unit_amount ?? 0;
-                const productObj = price.product as Stripe.Product; // gracias al expand
+                const productObj = price.product as Stripe.Product;
                 const idProductMeta = productObj?.metadata?.idProduct;
                 const idSizeMeta = productObj?.metadata?.idSize;
 
                 if (!idProductMeta) {
-                throw new Error('Line item missing product metadata (idProduct). Asegúrate de setear product_data.metadata al crear la sesión.');
+                    throw new Error('Line item missing product metadata (idProduct)');
                 }
 
                 const subtotalCents = unitAmount * qty;
                 totalCents += subtotalCents;
 
                 parsedItems.push({
-                idProduct: Number(idProductMeta),
-                idSize: idSizeMeta ? Number(idSizeMeta) : undefined,
-                quantity: qty,
-                subtotalCents,
+                    idProduct: Number(idProductMeta),
+                    idSize: idSizeMeta ? Number(idSizeMeta) : undefined,
+                    quantity: qty,
+                    subtotalCents,
                 });
             }
 
-
             await db.transaction(async (t: Transaction) => {
-
                 const currency = (session.currency || 'ars').toUpperCase();
 
                 const order = await Order.create({
                     orderDate: new Date(),
                     idUser: Number((session.metadata?.userId ?? 0) || 0), 
-                    idPaymentMethod: 1,                                    
+                    idPaymentMethod: 1,
                     external_reference: externalRef,
                     payment_id: paymentId ?? undefined,
                     total_amount: Number((totalCents / 100).toFixed(2)),
@@ -110,15 +123,13 @@ export const stripeWebhookHandler = async (req: Request, res: Response) => {
                     statusMp: 'approved',
                 }, { transaction: t });
 
-
                 for (const item of parsedItems) {
-                    // Bloquear fila del producto para evitar carreras
                     const product = await Product.findByPk(item.idProduct, {
                         transaction: t,
-                        lock: t.LOCK.UPDATE, // row-level lock
+                        lock: t.LOCK.UPDATE,
                     });
+                    
                     if (!product) throw new Error(`No existe el producto ${item.idProduct}`);
-
                     if (product.stock < item.quantity) {
                         throw new Error(`Stock insuficiente para producto ${product.idProduct}`);
                     }
@@ -126,27 +137,16 @@ export const stripeWebhookHandler = async (req: Request, res: Response) => {
                     product.stock = product.stock - item.quantity;
                     await product.save({ transaction: t });
 
-                    // OJO: tu OrderLine requiere idSize NOT NULL; asegúrate de tener idSize
-                    // Si tu checkout no maneja talles, cambia tu esquema o envía idSize desde el frontend
                     await OrderLine.create({
                         idOrder: order.idOrder,
                         idProduct: item.idProduct,
-                        idSize: item.idSize ?? 0, // evitaría error si la columna acepta NULL; en tu modelo no acepta null
+                        idSize: item.idSize ?? 7,
                         quantity: item.quantity,
                         subtotal: Number((item.subtotalCents / 100).toFixed(2)),
                     }, { transaction: t });
-                    
-                
                 }
 
-
                 return res.status(200).json({ order });
-            })
-            
-        // Handle other event types as needed
-        default:
-            console.log(`Unhandled event type ${event.type}`);
-    }
+            });
 
-
-}
+FIN DEL CÓDIGO COMENTADO */

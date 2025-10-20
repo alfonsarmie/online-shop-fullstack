@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../components/CartContext';
 import '../styles/productDetails.css';
 import ProductGallery from '../components/ProductGallery';
-import { FrontendProduct, ProductWithSize } from '../types/product';
+import { FrontendProduct, ProductWithSize, Size } from '../types/product';
 import { productService } from '../services/productService';
 import SuccessMessage from '../components/SuccessMessage';
 import ErrorMessage from '../components/ErrorMessage';
@@ -12,7 +12,7 @@ function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [product, setProduct] = useState<FrontendProduct | null>(null);
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<Size | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string>("");
@@ -63,13 +63,12 @@ function ProductDetails() {
             : '/placeholder-image.jpg',
           description: productData.description || 'Descripción no disponible',
           stock: productData.stock || 0,
-          // CORRECCIÓN IMPORTANTE: Manejar objetos en sizes
-          sizes: productData.sizes ? productData.sizes.map((size: any) => {
-            if (typeof size === 'object' && size !== null) {
-              return size.name || size.sizeDesc || size.idSize?.toString() || JSON.stringify(size);
-            }
-            return size.toString();
-          }) : [],
+          // Mantener los sizes como objetos Size completos
+          sizes: productData.sizes ? productData.sizes.map((size: any) => ({
+            idSize: size.idSize || size.id,
+            name: size.name || size.sizeDesc || 'Talle',
+            sizeDesc: size.sizeDesc || size.name || ''
+          })) : [],
           category: productData.category?.name
         };
         
@@ -104,7 +103,8 @@ function ProductDetails() {
       description: product.description,
       sizes: product.sizes,
       stock: product.stock,
-      size: selectedSize,
+      size: selectedSize.name, // Nombre del talle para mostrar en el carrito
+      sizeId: selectedSize.idSize, // ID del talle para enviar al backend
       quantity: 1
     } as ProductWithSize);
     
@@ -152,11 +152,11 @@ function ProductDetails() {
             {product.sizes && product.sizes.length > 0 ? (
               product.sizes.map(size => (
                 <button
-                  key={size}
-                  className={selectedSize === size ? 'selected' : ''}
+                  key={size.idSize}
+                  className={selectedSize?.idSize === size.idSize ? 'selected' : ''}
                   onClick={() => setSelectedSize(size)}
                 >
-                  {size}
+                  {size.name}
                 </button>
               ))
             ) : (

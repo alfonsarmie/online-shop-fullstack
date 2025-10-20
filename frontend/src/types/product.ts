@@ -5,7 +5,7 @@ export interface FrontendProduct {
   img: string;
   img2: string;
   description: string;
-  sizes: string[];
+  sizes: Size[]; // Cambiado de string[] a Size[] para mantener el ID
   stock: number;
   category?: string;
 }
@@ -55,11 +55,12 @@ export interface ProductWithSize {
   name: string;
   price: number;
   img: string;
-  size: string;
+  size: string; // Nombre del talle para mostrar
+  sizeId?: number; // ID del talle para enviar al backend
   quantity: number;
   img2?: string;
   description?: string;
-  sizes?: string[];
+  sizes?: Size[]; // Cambiado de string[] a Size[]
   stock?: number;
   category?: string;
 }

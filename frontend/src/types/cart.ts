@@ -4,6 +4,7 @@ export interface CartItem {
   price: number;
   quantity: number;
   size?: string;
+  sizeId?: number; // ID del talle en la base de datos
   img: string;
 }
 

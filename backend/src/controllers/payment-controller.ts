@@ -28,6 +28,8 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 
     try {
 
+        console.log('📥 Items recibidos del frontend:', JSON.stringify(items, null, 2));
+
         // Fetch product details from the database
         // Accept both shapes from frontend: { id, quantity } or { idProduct, quantity }
         const ids = items.map((it: { id?: string | number; idProduct?: string | number }) => {
@@ -139,11 +141,3 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
     }
 
 }
-
-
-
-
-
-
-
-

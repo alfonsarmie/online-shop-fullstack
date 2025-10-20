@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
 import { check } from 'express-validator';
 import { validateFields } from '../middlewares/validate-fields';
-import { validateJWT } from '../middlewares/validate-jwt';
+import { requireAuth } from '../middlewares/validate-jwt';
 import { createCheckoutSession } from '../controllers/payment-controller';
 //import { stripeWebhookHandler } from '../services/stripe-processor';
 
@@ -18,7 +18,7 @@ const router = Router();
 router.post(
     "/create-checkout-session",
     [
-        validateJWT,
+        requireAuth,
     
         check('items', 'El carrito no puede estar vacío').isArray({ min: 1 }),
         //check('items.*.id', 'Cada item debe tener un ID válido').isString().notEmpty(),
