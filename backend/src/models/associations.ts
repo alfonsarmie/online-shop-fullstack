@@ -115,4 +115,14 @@ export const defineAssociations = () => {
     foreignKey: 'idProduct', 
     as: 'orderLines' 
   });
+
+  // OrderLine - Size
+  OrderLine.belongsTo(Size, { 
+    foreignKey: 'idSize', 
+    as: 'size' 
+  });
+  Size.hasMany(OrderLine, { 
+    foreignKey: 'idSize', 
+    as: 'orderLines' 
+  });
 };

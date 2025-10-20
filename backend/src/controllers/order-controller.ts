@@ -5,6 +5,7 @@ import { db } from '../db/connection';
 import Order from '../models/order-model';
 import OrderLine from '../models/order-line-model';
 import Product from '../models/product-model';
+import Size from '../models/size-model';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -203,6 +204,69 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
         console.error('❌ Error creating order from session:', error);
         return res.status(500).json({
             msg: 'Error al crear la orden',
+            error: error.message,
+        });
+    }
+};
+
+/**
+ * @desc    Obtiene todas las órdenes de un usuario
+ * @route   GET /api/orders/user/:userId
+ * @access  Private (el usuario debe estar autenticado)
+ */
+export const getUserOrders = async (req: Request, res: Response) => {
+    const { userId } = req.params;
+
+    if (!userId) {
+        return res.status(400).json({ msg: 'userId es requerido' });
+    }
+
+    try {
+        const orders = await Order.findAll({
+            where: { idUser: Number(userId) },
+            include: [
+                {
+                    model: OrderLine,
+                    as: 'orderLines',
+                    include: [
+                        {
+                            model: Product,
+                            as: 'product',
+                            attributes: ['idProduct', 'name'],
+                        },
+                        {
+                            model: Size,
+                            as: 'size',
+                            attributes: ['idSize', 'sizeDesc'],
+                        },
+                    ],
+                },
+            ],
+            order: [['orderDate', 'DESC']], // Más recientes primero
+        });
+
+        // Mapear las órdenes al formato que espera el frontend
+        const mappedOrders = orders.map((order) => {
+            const plainOrder = order.toJSON() as any;
+            
+            // Mapear orderLines para incluir el nombre del talle
+            if (plainOrder.orderLines) {
+                plainOrder.orderLines = plainOrder.orderLines.map((line: any) => ({
+                    ...line,
+                    size: line.size?.sizeDesc || null,
+                    product_name: line.product?.name || null,
+                }));
+            }
+
+            return plainOrder;
+        });
+
+        return res.status(200).json({ orders: mappedOrders });
+
+    } catch (error: any) {
+        console.error('❌ Error fetching user orders:', error);
+        return res.status(500).json({
+            msg: 'Error al obtener las órdenes',
             error: error.message,
         });
     }

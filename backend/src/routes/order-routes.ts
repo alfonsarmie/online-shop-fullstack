@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 import { validateFields } from '../middlewares/validate-fields';
-import { createOrderFromSession } from '../controllers/order-controller';
+import { createOrderFromSession, getUserOrders } from '../controllers/order-controller';
 
 const router = Router();
 
@@ -17,6 +17,16 @@ router.post(
         validateFields
     ],
     createOrderFromSession
+);
+
+/**
+ * @route   GET /api/orders/user/:userId
+ * @desc    Obtiene todas las órdenes de un usuario
+ * @access  Public (idealmente debería ser Private con JWT)
+ */
+router.get(
+    '/user/:userId',
+    getUserOrders
 );
 
 export default router;

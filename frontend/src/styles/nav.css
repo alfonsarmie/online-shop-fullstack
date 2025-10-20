@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Afacad&display=swap");
+
 .back-arrow-mobile {
   background: none;
   border: none;
@@ -83,7 +85,6 @@
     transform: translateX(0);
   }
 }
-@import url("https://fonts.googleapis.com/css2?family=Afacad&display=swap");
 
 nav {
   font-family: "Anton";
