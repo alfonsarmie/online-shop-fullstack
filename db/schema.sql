@@ -53,6 +53,9 @@ CREATE TABLE `size`(
   PRIMARY KEY(`idSize`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+INSERT INTO `size` (`sizeDesc`)
+VALUES ('XS'), ('S'), ('M'), ('L'), ('XL'), ('XXL'), ('Único');
+
 DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product`(
   `idProduct` int unsigned NOT NULL auto_increment,
