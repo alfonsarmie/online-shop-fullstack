@@ -44,7 +44,16 @@ export default function PasswordInput({
         onChange={onChange}
         onClick={onClick}
         required
-      />
+      >
+        <button
+          type="button"
+          className="password-toggle"
+          onClick={togglePasswordVisibility}
+          aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+        >
+          {showPassword ? <FaEyeSlash /> : <FaEye />}
+        </button>
+      </Input>
 
       {hasStrength && (
         <>
@@ -63,14 +72,7 @@ export default function PasswordInput({
         </>
       )}
 
-      <button
-        type="button"
-        className="password-toggle"
-        onClick={togglePasswordVisibility}
-        aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-      >
-        {showPassword ? <FaEyeSlash /> : <FaEye />}
-      </button>
+      {/* toggle is rendered as a child of Input so it sits inside .form__group for proper centering */}
     </div>
   );
 }

@@ -185,7 +185,7 @@ input::-webkit-inner-spin-button {
 .password-toggle {
   position: absolute;
   right: 10px;
-  top: 50%;
+  top: 58%;
   transform: translateY(-50%);
   background: none;
   border: none;

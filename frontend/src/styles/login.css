@@ -147,7 +147,8 @@
 .password-toggle {
     position: absolute;
     right: 10px;
-    top: 24px;
+    top: 58%;
+    transform: translateY(-50%);
     background: none;
     border: none;
     cursor: pointer;
@@ -354,7 +355,8 @@
 
     .password-toggle {
         right: 8px;
-        top: 22px;
+        top: 58%;
+        transform: translateY(-50%);
         font-size: 1.1rem;
         padding: 3px;
     }
@@ -423,7 +425,8 @@
 
     .password-toggle {
         right: 6px;
-        top: 18px;
+        top: 58%;
+        transform: translateY(-50%);
         font-size: 1rem;
     }
 
