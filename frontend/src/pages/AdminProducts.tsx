@@ -7,13 +7,14 @@ import SuccessMessage from "../components/SuccessMessage";
 import ErrorMessage from "../components/ErrorMessage";
 import LoadingSpinner from "../components/LoadingSpinner";
 
-type Draft = Omit<FrontendProduct, "id"> & {
+// Draft type for create/edit forms: sizes are labels (string[])
+type DraftLocal = Omit<FrontendProduct, "id" | "sizes"> & {
   imgFile?: File;
   img2File?: File;
+  sizes: string[];
 };
 
-// Empty draft template
-const emptyDraft: Draft = {
+const emptyDraft: DraftLocal = {
   name: "",
   price: 0,
   description: "",
@@ -27,9 +28,9 @@ const emptyDraft: Draft = {
 const AdminProducts: React.FC = () => {
   const [products, setProducts] = useState<FrontendProduct[]>([]);
   const [filter, setFilter] = useState("");
-  const [creating, setCreating] = useState<Draft>(emptyDraft); // State for new product
+  const [creating, setCreating] = useState<DraftLocal>(emptyDraft); // State for new product (sizes as string[])
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editing, setEditing] = useState<Draft>(emptyDraft); // State for editing product
+  const [editing, setEditing] = useState<DraftLocal>(emptyDraft); // State for editing product (sizes as string[])
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
@@ -112,25 +113,30 @@ const AdminProducts: React.FC = () => {
     return sizeNameToIdMap[key] || 0;
   };
 
-  // Load products from the backend
+  // Load products from the backend and normalize sizes to string labels for this admin UI
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
         const productsData = await productService.getAllProducts();
 
-        // DEBUG: See what the backend returns
-        console.log("Productos desde backend:", productsData);
+        // Products loaded from backend (normalized below)
+        // Normalize sizes to objects matching the Size interface used across the frontend
+        const normalized = Array.isArray(productsData)
+          ? productsData.map((p) => ({
+              ...p,
+              sizes:
+                p.sizes && p.sizes.length
+                  ? p.sizes.map((s: any) => ({
+                      idSize: s.idSize || s.id || s.idSize || 0,
+                      name: s.name || s.sizeDesc || s.label || "",
+                      sizeDesc: s.sizeDesc || s.name || s.label || "",
+                    }))
+                  : [],
+            }))
+          : [];
 
-        if (Array.isArray(productsData) && productsData.length > 0) {
-          // DEBUG: See the structure of each product
-          productsData.forEach((product, index) => {
-            console.log(`Producto ${index}:`, product);
-            console.log(`Talles:`, product.sizes);
-            console.log(`Categoría:`, product.category);
-          });
-        }
-        setProducts(Array.isArray(productsData) ? productsData : []);
+        setProducts(normalized as FrontendProduct[]);
       } catch (err) {
         setErrorMessage("Error cargando productos.");
         setTimeout(() => setErrorMessage(""), 3000);
@@ -179,9 +185,18 @@ const AdminProducts: React.FC = () => {
     return checked ? [...sizes, size] : sizes.filter((s) => s !== size);
   };
 
-  // Helper to render sizes as a string
-  const renderSizes = (sizes: string[]) =>
-    sizes.length ? sizes.join(", ") : "-";
+  // Helper to render sizes as a readable string. Accepts Size[] or string[]
+  const renderSizes = (sizes: any[] | string[]) => {
+    if (!sizes || sizes.length === 0) return "-";
+    const out = sizes
+      .map((s: any) => {
+        if (!s) return "";
+        if (typeof s === "string") return s;
+        return s.sizeDesc || s.name || s.label || String(s);
+      })
+      .filter(Boolean);
+    return out.length ? out.join(", ") : "-";
+  };
 
   // Function to create a new product
   const create = async () => {
@@ -303,11 +318,15 @@ const AdminProducts: React.FC = () => {
       latestPrice = sortedPrices[0]?.value || 0;
     }
 
-    // Extract sizes
+    // Extract sizes as Size[] objects
     const sizes =
       product.sizes
-        ?.map((size: any) => size.sizeDesc || size.name || "")
-        .filter(Boolean) || [];
+        ?.map((size: any) => ({
+          idSize: size.idSize || size.id || 0,
+          name: size.name || size.sizeDesc || "",
+          sizeDesc: size.sizeDesc || size.name || "",
+        }))
+        .filter((s: any) => s.name || s.sizeDesc) || [];
 
     // Extract category
     let category = "";
@@ -426,7 +445,7 @@ const AdminProducts: React.FC = () => {
         images: newImages.length > 0 ? newImages : undefined,
       };
 
-      console.log("Enviando datos de actualización:", productData);
+  // updating product: productData prepared
 
       // 3. Update product
       const response = await api.put(
@@ -446,14 +465,8 @@ const AdminProducts: React.FC = () => {
         completeProduct = updatedProductFromBackend;
       }
 
-      // Debug: Check what the backend returns
-      console.log("Producto completo desde backend:", completeProduct);
-      console.log("Precios:", completeProduct.prices);
-      console.log("Imágenes:", completeProduct.images);
-
-      // 5. Map correctly and update state
-      const mappedProduct = mapProductToFrontend(completeProduct);
-      console.log("Producto mapeado:", mappedProduct);
+  // 5. Map correctly and update state
+  const mappedProduct = mapProductToFrontend(completeProduct);
 
       // 6. Update state correctly
       setProducts((prev) =>
@@ -484,11 +497,16 @@ const AdminProducts: React.FC = () => {
     const categoryObj = categoryOptions.find((cat) => cat.name === p.category);
     const categoryId = categoryObj ? categoryObj.id : "";
 
+    // Ensure editing.sizes is an array of string labels
+    const sizeLabels = (p.sizes || []).map((s: any) =>
+      typeof s === "string" ? s : s.sizeDesc || s.name || s.label || ""
+    );
+
     setEditing({
       name: p.name,
       price: p.price,
       description: p.description,
-      sizes: p.sizes,
+      sizes: sizeLabels,
       stock: p.stock,
       category: categoryId, // Save the ID, not the name
       img: p.img || "",
@@ -714,8 +732,6 @@ const AdminProducts: React.FC = () => {
             <button
               className="btn primary"
               onClick={() => {
-                console.log("Estado completo de creating:", creating);
-                console.log("categoryOptions:", categoryOptions);
                 create();
               }}
               disabled={uploading}
