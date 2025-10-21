@@ -1,5 +1,5 @@
 -- you can use this line to drop the database if you want to start from scratch
---DROP DATABASE IF EXISTS online_shop_fullstack_rowing;
+-- DROP DATABASE IF EXISTS online_shop_fullstack_rowing;
 
 CREATE DATABASE online_shop_fullstack_rowing;
 USE online_shop_fullstack_rowing;
