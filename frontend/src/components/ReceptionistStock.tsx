@@ -1,23 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../styles/receiver-dashboard.css";
-import { Product, FrontendProduct } from "../types/product";
+import { FrontendProduct } from "../types/product";
 import { productService } from "../services/productService";
 import SuccessMessage from "./SuccessMessage";
-
-// Helper: map backend Product to flat FrontendProduct for UI
-function mapProductToFrontend(p: Product): FrontendProduct {
-  return {
-    id: p.idProduct.toString(),
-    name: p.name,
-    price: p.prices && p.prices.length > 0 ? p.prices[0].value : 0,
-    img: p.images && p.images[0] ? p.images[0].url : "",
-    img2: p.images && p.images[1] ? p.images[1].url : "",
-    description: p.description,
-    sizes: p.sizes ? p.sizes.map((s) => s.sizeDesc || s.name) : [],
-    stock: p.stock,
-    category: p.category ? p.category.name : "",
-  };
-}
 
 const ReceptionistStock: React.FC = () => {
   const [products, setProducts] = useState<FrontendProduct[]>([]);
@@ -133,6 +118,19 @@ const ReceptionistStock: React.FC = () => {
       setDraft(null);
       setLoading(false);
     }
+  };
+
+  // Helper to render sizes (accepts Size[] or string[])
+  const renderSizes = (sizes: any[] | undefined) => {
+    if (!sizes || sizes.length === 0) return "-";
+    const out = sizes
+      .map((s: any) => {
+        if (!s) return "";
+        if (typeof s === "string") return s;
+        return s.sizeDesc || s.name || s.label || String(s);
+      })
+      .filter(Boolean);
+    return out.length ? out.join(", ") : "-";
   };
 
   return (
@@ -265,11 +263,7 @@ const ReceptionistStock: React.FC = () => {
                     </div>
                   </td>
                   <td>{product.category || "-"}</td>
-                  <td>
-                    {product.sizes && product.sizes.length
-                      ? product.sizes.join(", ")
-                      : "-"}
-                  </td>
+                  <td>{renderSizes(product.sizes)}</td>
                   <td>
                     <span
                       className={`status-badge status-${getStockStatus(product.stock)}`}

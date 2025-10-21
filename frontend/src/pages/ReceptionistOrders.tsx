@@ -5,6 +5,9 @@
  */
 import React, { useEffect, useMemo, useState } from 'react';
 import '../styles/receptionist-orders.css';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { orderService } from '../services/orderService';
+import type { BackendOrder, BackendOrderLine } from '../types/order';
 
 type OrderStatus =
   | 'pending'
@@ -35,148 +38,72 @@ type Order = {
   deliveredAt?: string; // ISO datetime when marked delivered
 };
 
-const STORAGE_KEY = 'adminOrders';
-
 const todayIsoDate = () => new Date().toISOString().slice(0, 10);
 const nowIso = () => new Date().toISOString();
-
-// Seed examples: 2 pending + 1 delivered today
-const initialOrders: Order[] = [
-  {
-    id: 3001,
-    customerName: 'Juan Perez',
-    customerEmail: 'juan.perez@example.com',
-    items: [
-      { productId: 1, productName: 'Camiseta Titular 24/25', quantity: 1, price: 25000, size: 'M' },
-      { productId: 4, productName: 'Medias Oficiales', quantity: 2, price: 5000, size: 'Unico' }
-    ],
-    total: 35000,
-    status: 'pending',
-    date: todayIsoDate(),
-    address: 'Av. Corrientes 1234, CABA',
-    paymentMethod: 'MercadoPago'
-  },
-  {
-    id: 3002,
-    customerName: 'Maria Garcia',
-    customerEmail: 'maria.garcia@example.com',
-    items: [
-      { productId: 2, productName: 'Buzo Entrenamiento', quantity: 1, price: 31000, size: 'S' }
-    ],
-    total: 31000,
-    status: 'pending',
-    date: todayIsoDate(),
-    address: 'Lavalle 567, CABA',
-    paymentMethod: 'Tarjeta de credito'
-  },
-  {
-    id: 3003,
-    customerName: 'Carlos Lopez',
-    customerEmail: 'carlos.lopez@example.com',
-    items: [
-      { productId: 9, productName: 'Llavero Oficial', quantity: 1, price: 3000, size: 'Unico' }
-    ],
-    total: 3000,
-    status: 'delivered',
-    date: todayIsoDate(),
-    deliveredAt: nowIso(),
-    address: 'Cabildo 2345, CABA',
-    paymentMethod: 'Efectivo'
-  }
-];
 
 const sameDay = (a: Date, b: Date) =>
   a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 
-function loadOrders(): Order[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      const data: Order[] = Array.isArray(parsed) ? parsed : [];
-
-      // Nothing stored: seed all
-      if (data.length === 0) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(initialOrders));
-        return initialOrders;
-      }
-
-      // Ensure we always have at least one pending and one delivered today for demo
-      const today = new Date();
-      const hasPending = data.some(o => o.status === 'pending');
-      const hasDeliveredToday = data.some(o => o.status === 'delivered' && o.deliveredAt && sameDay(new Date(o.deliveredAt), today));
-
-      let merged = data.slice();
-      const existingIds = new Set(merged.map(o => o.id));
-
-      if (!hasPending) {
-        const pendingExample = initialOrders.find(o => o.status === 'pending');
-        if (pendingExample && !existingIds.has(pendingExample.id)) {
-          merged.push(pendingExample);
-        } else {
-          merged.push({
-            id: 3991,
-            customerName: 'Ejemplo Pendiente',
-            customerEmail: 'pending@example.com',
-            items: [{ productId: 5, productName: 'Gorra Oficial', quantity: 1, price: 12000, size: 'Unico' }],
-            total: 12000,
-            status: 'pending',
-            date: todayIsoDate(),
-            address: 'Demostracion',
-            paymentMethod: 'Efectivo'
-          });
-        }
-      }
-
-      if (!hasDeliveredToday) {
-        const deliveredExample = initialOrders.find(o => o.status === 'delivered');
-        const example = deliveredExample || {
-          id: 3992,
-          customerName: 'Ejemplo Entregado',
-          customerEmail: 'delivered@example.com',
-          items: [{ productId: 10, productName: 'Sticker Oficial', quantity: 2, price: 800, size: 'Unico' }],
-          total: 1600,
-          status: 'delivered',
-          date: todayIsoDate(),
-          deliveredAt: nowIso(),
-          address: 'Demostracion',
-          paymentMethod: 'Efectivo'
-        } as Order;
-        if (!existingIds.has(example.id)) merged.push(example);
-      }
-
-      if (merged.length !== data.length) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-      }
-      return merged;
-    }
-  } catch (_) {}
-  // No key: seed
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(initialOrders));
-  return initialOrders;
-}
-
-function saveOrders(data: Order[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
+const parseDecimal = (v: number | string | undefined) => {
+  if (typeof v === 'number') return v;
+  if (!v) return 0;
+  const n = Number(v);
+  return Number.isNaN(n) ? 0 : n;
+};
 
 const ReceptionistOrders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [filter, setFilter] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
+  // Fetch paginated orders from backend (admin list). We only need a page with many items
   useEffect(() => {
-    setOrders(loadOrders());
+    let mounted = true;
+    const fetch = async () => {
+      setLoading(true);
+      try {
+        const data = await orderService.getOrders({ page: 1, limit: 200 });
+        // data.orders is BackendOrder[] mapped on backend; map to local Order shape
+        const mapped: Order[] = (data.orders || []).map((o: BackendOrder) => ({
+          id: o.idOrder,
+          customerName: o.customer_name,
+          customerEmail: o.customer_email,
+          items: (o.orderLines || []).map((ln: BackendOrderLine) => ({
+            productId: ln.idProduct,
+            productName: ln.product?.name || ln.product_name,
+            quantity: ln.quantity,
+            price: typeof ln.subtotal === 'number' ? ln.subtotal / Math.max(1, ln.quantity) : Number(ln.subtotal) / Math.max(1, ln.quantity),
+            size: ln.size || 'Unico',
+          })),
+          total: parseDecimal(o.total_amount),
+          status: (o.actualPickupDate ? 'delivered' : (o.statusMp === 'in_process' ? 'processing' : (o.statusMp === 'approved' ? 'confirmed' : (o.statusMp === 'cancelled' ? 'cancelled' : 'pending')))) as Order['status'],
+          date: o.orderDate,
+          address: o.customer_notes || 'Retiro en Rowing Club',
+          paymentMethod: o.paymentMethod?.name || 'Sin datos',
+          deliveredAt: o.actualPickupDate || undefined,
+        }));
+        if (!mounted) return;
+        setOrders(mapped);
+        setError('');
+      } catch (err: any) {
+        console.error('Error fetching orders for receptionist:', err);
+        setError((err as any)?.response?.data?.message || err.message || 'Error cargando pedidos');
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+    fetch();
+    return () => { mounted = false; };
   }, []);
-
-  useEffect(() => {
-    if (orders.length) saveOrders(orders);
-  }, [orders]);
 
   const pendingOrders = useMemo(() => {
     const lower = filter.trim().toLowerCase();
+    // Treat orders that still need delivery as pending: pending, confirmed, processing
+    const desired = new Set<OrderStatus>(['pending', 'confirmed', 'processing']);
     return orders
-      .filter(o => o.status === 'pending')
+      .filter(o => desired.has(o.status))
       .filter(o => {
         if (!lower) return true;
         return (
@@ -233,6 +160,17 @@ const ReceptionistOrders: React.FC = () => {
     <div className="receiver-dashboard">
       <h1>Pedidos pendientes a entregar</h1>
       <p className="subtitle">Visualiza los pedidos pendientes y márcalos como entregados</p>
+
+      {loading && (
+        <div className="loading" style={{ textAlign: 'center', margin: '1rem 0' }}>
+          <LoadingSpinner />
+          <p style={{ marginTop: 8 }}>Cargando pedidos...</p>
+        </div>
+      )}
+
+      {error && (
+        <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>
+      )}
 
       <section className="panel">
         <div className="panel-header">
