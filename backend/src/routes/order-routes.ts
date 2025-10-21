@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 import { validateFields } from '../middlewares/validate-fields';
+import { allowAdminOrReceptionist } from '../middlewares/validate-jwt';
 import { createOrderFromSession, getUserOrders, updateOrderStatusMp } from '../controllers/order-controller';
 
 const router = Router();
@@ -48,9 +49,10 @@ router.get('/',
 /**
  * @route   PUT /api/orders/status-mp/:idOrder
  * @desc    Actualiza el statusMp de una orden
- * @access  Private/Admin
+ * @access  Private/Admin/Receptionist
  */
 router.put('/status-mp/:idOrder',
+    allowAdminOrReceptionist,
     updateOrderStatusMp
 );
 
