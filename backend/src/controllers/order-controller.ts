@@ -383,9 +383,9 @@ export const updateOrderStatusMp = async (req: Request, res: Response) => {
             });
         }
 
-        if (status !== "a retirar" && status !== "retirado") {
+        if (status !== "a retirar" && status !== "retirado" && status !== "confirmado") {
             return res.status(400).json({
-                msg: "Status inválido, debe ser 'a retirar' o 'retirado'",
+                msg: "Status inválido, debe ser 'a retirar' o 'retirado' o 'confirmado'",
             });
         }
 
