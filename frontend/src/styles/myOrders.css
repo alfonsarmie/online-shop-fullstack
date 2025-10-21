@@ -514,22 +514,7 @@
 }
 
 /* Botones de acción */
-.cancel-order-btn {
-  background-color: #dc3545;
-  color: white;
-  padding: 0.8rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  font-family: 'Afacad', sans-serif;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.cancel-order-btn:hover {
-  background-color: #bd2130;
-  transform: translateY(-1px);
-}
+.cancel-order-btn { display: none; }
 
 .details-button {
   background-color: transparent;
