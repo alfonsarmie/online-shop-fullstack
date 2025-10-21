@@ -8,6 +8,15 @@ import WhatsAppButton from "../components/WhatsAppButton";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { productService } from "../services/productService";
 
+const normalizeText = (value?: string | null) =>
+  value
+    ? value
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim()
+    : "";
+
 // Define filter types
 type FilterType = "price_asc" | "price_desc" | "name_asc" | "";
 
@@ -23,7 +32,7 @@ const Catalog = () => {
   const { category } = useParams<{ category?: string }>();
   const [searchParams] = useSearchParams();
   const searchQuery = (searchParams.get("search") || "").trim();
-  const normalizedSearchQuery = searchQuery.toLowerCase();
+  const normalizedSearchQuery = normalizeText(searchQuery);
   const hasSearch = normalizedSearchQuery.length > 0;
 
   // Cargar productos
@@ -54,25 +63,25 @@ const Catalog = () => {
 
     let filtered = [...products];
 
-    // Filtrar por categoria si est� presente
-    if (category) {
-      // Mapeo de categorias en plural a singular
-      const categoryMap: { [key: string]: string } = {
-        remeras: "remera",
-        buzos: "buzo",
-        pantalones: "pantal�n",
-        camperas: "campera",
-        tops: "top",
-        shorts: "short",
-      };
 
-      // Obtener la categoria en singular
-      const singularCategory = categoryMap[category] || category;
+    if (category) {
+      const normalizedCategory = normalizeText(category);
 
       filtered = filtered.filter(
-        (product) =>
-          product.category?.toLowerCase() === singularCategory.toLowerCase()
+        (product) => normalizeText(product.category) === normalizedCategory
       );
+    }
+
+    if (hasSearch) {
+      filtered = filtered.filter((product) => {
+        const normalizedName = normalizeText(product.name);
+        const normalizedDescription = normalizeText(product.description);
+
+        return (
+          normalizedName.includes(normalizedSearchQuery) ||
+          normalizedDescription.includes(normalizedSearchQuery)
+        );
+      });
     }
 
     setFilteredProducts(filtered);
