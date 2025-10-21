@@ -132,19 +132,17 @@
 
 .delivery-info {
   text-align: left;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  max-height: 300px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 25px 40px;
 }
 
 .info-item {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
-  margin-bottom: 25px;
+  margin: 0;
   gap: 15px;
-  padding-left: 50px;
 }
 
 .info-icon {
@@ -392,6 +390,10 @@
   }
   .map-container {
     grid-template-columns: 1fr;
+  }
+  .delivery-info {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 }
 

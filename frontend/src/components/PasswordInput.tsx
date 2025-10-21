@@ -39,7 +39,7 @@ export default function PasswordInput({
         type={showPassword ? "text" : "password"}
         id={name}
         name={name}
-        placeholder={placeholder || "Contraseña"}
+        placeholder={placeholder || "ContraseÃ±a"}
         value={value}
         onChange={onChange}
         onClick={onClick}
@@ -67,7 +67,7 @@ export default function PasswordInput({
         type="button"
         className="password-toggle"
         onClick={togglePasswordVisibility}
-        aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+        aria-label={showPassword ? "Ocultar contraseï¿½a" : "Mostrar contraseï¿½a"}
       >
         {showPassword ? <FaEyeSlash /> : <FaEye />}
       </button>
