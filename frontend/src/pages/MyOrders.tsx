@@ -254,14 +254,7 @@ const MyOrders: React.FC = () => {
                   >
                     Ver detalles
                   </button>
-                  {order.canCancel && (
-                    <button
-                      className="cancel-order-btn"
-                      onClick={() => handleCancelOrder(order.id)}
-                    >
-                      Cancelar pedido
-                    </button>
-                  )}
+                  {/* Cancel button removed per request */}
                   {/* buy again button removed per request */}
                 </div>
               </div>

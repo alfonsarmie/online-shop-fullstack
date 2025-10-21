@@ -300,3 +300,74 @@ export const getUserOrders = async (req: Request, res: Response) => {
         });
     }
 };
+
+/**
+ * @desc    Obtiene órdenes paginadas (para admin)
+ * @route   GET /api/orders
+ */
+export const getOrders = async (req: Request, res: Response) => {
+    const page = Number(req.query.page || 1);
+    const limit = Number(req.query.limit || 20);
+    const offset = (page - 1) * limit;
+
+    try {
+        const { count, rows } = await Order.findAndCountAll({
+            include: [
+                {
+                    model: OrderLine,
+                    as: 'orderLines',
+                    include: [
+                        {
+                            model: Product,
+                            as: 'product',
+                            attributes: ['idProduct', 'name'],
+                            include: [
+                                {
+                                    model: (await import('../models/image-model')).default,
+                                    as: 'images',
+                                    attributes: ['url'],
+                                },
+                            ],
+                        },
+                        {
+                            model: Size,
+                            as: 'size',
+                            attributes: ['idSize', 'sizeDesc'],
+                        },
+                    ],
+                },
+            ],
+            order: [['orderDate', 'DESC']],
+            limit,
+            offset,
+        });
+
+        const mappedOrders = rows.map((order) => {
+            const plainOrder = (order as any).toJSON();
+            if (plainOrder.orderLines) {
+                plainOrder.orderLines = plainOrder.orderLines.map((line: any) => ({
+                    ...line,
+                    size: line.size?.sizeDesc || null,
+                    product_name: line.product?.name || null,
+                    product_image: (line.product?.images && line.product.images.length > 0) ? line.product.images[0].url : null,
+                }));
+            }
+            return plainOrder;
+        });
+
+        const totalPages = Math.max(1, Math.ceil(count / limit));
+
+        return res.status(200).json({
+            orders: mappedOrders,
+            total: count,
+            page,
+            totalPages,
+        });
+    } catch (error: any) {
+        console.error('❌ Error fetching orders (admin):', error);
+        return res.status(500).json({
+            msg: 'Error al obtener las órdenes',
+            error: error.message,
+        });
+    }
+};
