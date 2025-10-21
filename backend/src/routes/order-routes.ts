@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 import { validateFields } from '../middlewares/validate-fields';
-import { createOrderFromSession, getUserOrders } from '../controllers/order-controller';
+import { createOrderFromSession, getUserOrders, updateOrderStatusMp } from '../controllers/order-controller';
 
 const router = Router();
 
@@ -43,6 +43,15 @@ router.get('/',
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     require('../controllers/order-controller').getOrders
+);
+
+/**
+ * @route   PUT /api/orders/status-mp/:idOrder
+ * @desc    Actualiza el statusMp de una orden
+ * @access  Private/Admin
+ */
+router.put('/status-mp/:idOrder',
+    updateOrderStatusMp
 );
 
 export default router;
