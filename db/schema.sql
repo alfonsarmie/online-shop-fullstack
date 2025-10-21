@@ -101,7 +101,7 @@ CREATE TABLE `order` (
   `customer_email` varchar(255) NOT NULL,
   `customer_phone` varchar(50) DEFAULT NULL,
   `customer_notes` text,
-  `sports` json DEFAULT NULL,
+  `sport` varchar(255) DEFAULT NULL,
   `statusMp` varchar(50) DEFAULT NULL COMMENT 'Estado del pago en Mercado Pago: approved, pending, rejected, etc.',
   `currencyId` varchar(10) DEFAULT 'ARS' COMMENT 'Código de moneda: ARS, USD, etc.',
   `external_reference` varchar(255) DEFAULT NULL,

@@ -36,6 +36,7 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
     id: order.idOrder,
     orderNumber: `ORD-${String(order.idOrder || 0).padStart(4, '0')}`,
     date: order.orderDate,
+    sport: typeof order.sport === 'string' ? order.sport : undefined,
     status,
     total: typeof order.total_amount === 'number' ? order.total_amount : Number(order.total_amount || 0),
     items,

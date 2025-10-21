@@ -76,17 +76,15 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
         const customerPhone = session.customer_details?.phone || orderDetailsParsed?.phone || undefined;
         const customerNotes = orderDetailsParsed?.notes || undefined;
         
-        // El campo sports en DB es JSON, necesita un objeto válido o null
-        let sports: any = null;
-        if (orderDetailsParsed?.deporte) {
-            const deporteValue = orderDetailsParsed.deporte;
-            if (typeof deporteValue === 'string') {
-                // Convertir string a objeto JSON válido
-                sports = { deporte: deporteValue };
-            } else if (typeof deporteValue === 'object') {
-                sports = deporteValue;
-            }
-        }
+        // El deporte ahora se almacena como texto plano
+        const rawSport =
+            orderDetailsParsed?.sport ??
+            session.metadata?.sport ??
+            undefined;
+        const sport =
+            typeof rawSport === 'string'
+                ? rawSport.trim() || undefined
+                : undefined;
         
         const paymentId = typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id;
 
@@ -176,7 +174,7 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
                 customer_phone: customerPhone,
                 customer_notes: customerNotes,
                 currencyId: currency,
-                sports: sports,
+                sport: sport,
                 statusMp: detectedStatusMp, // Mapeado desde Stripe (p. ej. 'approved' si payment_status === 'paid')
             }, { transaction: t });
 

@@ -51,7 +51,7 @@ const Checkout = () => {
       email: user?.email || "",
       phone: user?.phone || "",
       notes: "",
-      deporte: '',
+      sport: '',
       expectedPickupDate: undefined,
     };
   });
@@ -73,8 +73,8 @@ const Checkout = () => {
   };
 
   // Handle manejar cambios en los radio buttons de deportes
-  const handleDeporteChange = (deporte: string) => {
-    setFormData((prev) => ({ ...prev, deporte }));
+  const handleSportChange = (sport: string) => {
+    setFormData((prev) => ({ ...prev, sport }));
   };
 
   // Handle form submission
@@ -231,10 +231,10 @@ const Checkout = () => {
                   <label className="deporte-checkbox">
                     <input
                       type="radio"
-                      name="deporte"
+                      name="sport"
                       value=""
-                      checked={!formData.deporte}
-                      onChange={() => setFormData(prev => ({ ...prev, deporte: '' }))}
+                      checked={!formData.sport}
+                      onChange={() => setFormData(prev => ({ ...prev, sport: '' }))}
                     />
                     Ninguno
                   </label>
@@ -242,10 +242,10 @@ const Checkout = () => {
                     <label key={dep} className="deporte-checkbox">
                       <input
                         type="radio"
-                        name="deporte"
+                        name="sport"
                         value={dep}
-                        checked={formData.deporte === dep}
-                        onChange={() => handleDeporteChange(dep)}
+                        checked={formData.sport === dep}
+                        onChange={() => handleSportChange(dep)}
                       />
                       {dep.charAt(0).toUpperCase() + dep.slice(1)}
                     </label>

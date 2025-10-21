@@ -42,7 +42,7 @@ export interface BackendOrder {
   customer_email: string;
   customer_phone?: string;
   customer_notes?: string;
-  sports?: unknown;
+  sport?: string | undefined;
   statusMp?: MercadoPagoStatus;
   currencyId?: string;
   paymentMethod?: {
@@ -84,6 +84,7 @@ export interface FrontendOrder {
   id: number;
   orderNumber: string;
   date: string;
+  sport?: string | undefined;
   status: FrontendOrderStatus;
   total: number;
   items: FrontendOrderItem[];

@@ -15,14 +15,14 @@ interface OrderAttributes {
   customer_email: string;
   customer_phone?: string;
   customer_notes?: string;
-  sports?: any;
+  sport?: string;
   statusMp?: string; 
   currencyId?: string; 
 }
 
 interface OrderCreationAttributes extends Optional<OrderAttributes, 
   "idOrder" | "expectedPickupDate" | "actualPickupDate" | "external_reference" | 
-  "payment_id" | "customer_phone" | "customer_notes" | "sports" | "statusMp" | "currencyId"> {}
+  "payment_id" | "customer_phone" | "customer_notes" | "sport" | "statusMp" | "currencyId"> {}
 
 class Order extends Model<OrderAttributes, OrderCreationAttributes> 
   implements OrderAttributes {
@@ -40,7 +40,7 @@ class Order extends Model<OrderAttributes, OrderCreationAttributes>
   public customer_email!: string;
   public customer_phone?: string;
   public customer_notes?: string;
-  public sports?: any;
+  public sport?: string;
   public statusMp?: string;
   public currencyId?: string;
 }
@@ -101,8 +101,8 @@ Order.init({
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  sports: { // Sports data related to the order, stored as JSON !
-    type: DataTypes.JSON,
+  sport: { // Sport selected for the order, stored as plain text
+    type: DataTypes.STRING(100),
     allowNull: true,
   },
   statusMp: { // Status of the payment returned by Mercado Pago 

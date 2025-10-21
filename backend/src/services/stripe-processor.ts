@@ -67,7 +67,8 @@ export const stripeWebhookHandler = async (req: Request, res: Response) => {
             const customerEmail = session.customer_details?.email || orderDetailsParsed?.customer_email || 'no-reply@example.com';
             const customerPhone = session.customer_details?.phone || orderDetailsParsed?.customer_phone || undefined;
             const customerNotes = orderDetailsParsed?.customer_notes || undefined;
-            const sports = session.metadata?.deporte || orderDetailsParsed?.deporte || '';
+            const rawSport = session.metadata?.sport || orderDetailsParsed?.sport || '';
+            const sport = typeof rawSport === 'string' ? rawSport.trim() : '';
 
     
             const externalRef = session.id; 
@@ -119,7 +120,7 @@ export const stripeWebhookHandler = async (req: Request, res: Response) => {
                     customer_phone: customerPhone,
                     customer_notes: customerNotes,
                     currencyId: currency,
-                    sports: sports,
+                    sport: sport,
                     statusMp: 'approved',
                 }, { transaction: t });
 

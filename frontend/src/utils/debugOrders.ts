@@ -38,7 +38,7 @@ window.debugOrders = async () => {
       Total: `$${order.total_amount}`,
       Estado: order.statusMp,
       Fecha: new Date(order.orderDate).toLocaleString(),
-      Deportes: order.sports || 'N/A'
+      Deporte: order.sport || 'N/A'
     })));
     
     console.log('📦 DATOS COMPLETOS:', data);
@@ -84,7 +84,7 @@ window.debugLastOrder = async () => {
       Total: `$${lastOrder.total_amount}`,
       Estado: lastOrder.statusMp,
       Fecha: new Date(lastOrder.orderDate).toLocaleString(),
-      Deportes: lastOrder.sports,
+      Deporte: lastOrder.sport,
       Notas: lastOrder.customer_notes || 'N/A'
     });
     

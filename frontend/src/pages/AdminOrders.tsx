@@ -32,6 +32,7 @@ type AdminOrder = {
   customerName: string;
   customerEmail: string;
   customerPhone?: string;
+  sport?: string | undefined;
   items: OrderItem[];
   total: number;
   status: OrderStatus;
@@ -126,6 +127,7 @@ const mapBackendOrder = (order: BackendOrder): AdminOrder => {
     customerName: order.customer_name,
     customerEmail: order.customer_email,
     customerPhone: order.customer_phone ?? undefined,
+    sport: typeof order.sport === 'string' ? order.sport : undefined,
     items,
     total: parseDecimal(order.total_amount),
     status: determineStatus(order),

@@ -6,7 +6,7 @@ export interface CheckoutFormData {
   email: string;
   phone: string;
   notes?: string;
-  deporte?: string;
+  sport?: string;
   expectedPickupDate?: string;
 }
 
@@ -90,7 +90,7 @@ const createPaymentPreference = async (
         customer_email: checkoutData.email || user.email || "",
         phone: checkoutData.phone || "",
         notes: checkoutData.notes || "",
-        deporte: checkoutData.deporte || "",
+        sport: checkoutData.sport || "",
         expected_pickup_date: formatToDDMMYYYY(checkoutData.expectedPickupDate),
       },
       currency: "usd",
