@@ -64,6 +64,8 @@
   align-items: center;
   gap: 0.5rem;
   transition: all 0.2s ease;
+  font-family: 'Afacad', sans-serif;
+  font-size: 0.95rem;
 }
 
 .status-pill:hover {
@@ -162,6 +164,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  min-height: 200px;
 }
 
 .order-card {
@@ -215,13 +218,16 @@
 
 .order-items {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  align-items: center;
 }
 
 .orders-list .order-items {
-  flex-direction: column;
-  gap: 0;
+  /* show thumbnails in a row inside each order card */
+  flex-direction: row;
+  gap: 0.75rem;
   margin-top: 1rem;
+  align-items: center;
 }
 
 .order-item {
@@ -262,15 +268,16 @@
 
 .order-item-preview {
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: 90px;
+  height: 90px;
+  flex: 0 0 90px;
 }
 
 .order-item-preview img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 2px solid #e9ecef;
 }
 
@@ -395,7 +402,7 @@
 .close-modal:hover {
   background-color: #e9ecef;
   color: #323232;
-}
+}S
 
 .modal-body {
   padding: 1.5rem;
@@ -448,6 +455,14 @@
   padding: 1rem;
   background: #f8f9fa;
   border-radius: 12px;
+}
+
+.order-item-detail img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid #e9ecef;
 }
 
 /* myOrders.css - Secciones nuevas agregadas */

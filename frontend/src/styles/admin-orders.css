@@ -341,7 +341,7 @@ label .span-admin {
   content: "👉";
   margin-left: 8px;
 }
-.order-card {
+.admin-orders .order-card {
   display: none;
   background: #1D1D1D;
   border: 1px solid #2a2a2a;
@@ -350,7 +350,7 @@ label .span-admin {
   margin-bottom: 12px;
 }
 
-.order-card-header {
+.admin-orders .order-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -359,25 +359,25 @@ label .span-admin {
   border-bottom: 1px solid #2a2a2a;
 }
 
-.order-card-id {
+.admin-orders .order-card-id {
   font-weight: bold;
   color: #22a341;
   font-size: 16px;
 }
 
-.order-card-body {
+.admin-orders .order-card-body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px 16px;
   margin-bottom: 12px;
 }
 
-.order-card-field {
+.admin-orders .order-card-field {
   display: flex;
   flex-direction: column;
 }
 
-.order-card-label {
+.admin-orders .order-card-label {
   font-size: 12px;
   color: #bdbdbd;
   margin-bottom: 4px;
@@ -385,12 +385,12 @@ label .span-admin {
   letter-spacing: 0.5px;
 }
 
-.order-card-value {
+.admin-orders .order-card-value {
   font-size: 14px;
   color: #f0f0f0;
 }
 
-.order-card-actions {
+.admin-orders .order-card-actions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
