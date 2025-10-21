@@ -14,6 +14,18 @@ export default function CheckoutSuccess() {
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const orderCreatedRef = useRef(false); // Para evitar duplicados
+  const [expectedPickupDate, setExpectedPickupDate] = useState<string | null>(null);
+
+  const getFormattedPickupDate = (rawDate: string | undefined | null) => {
+    if (!rawDate) return null;
+    const parsed = new Date(rawDate);
+    if (Number.isNaN(parsed.getTime())) return rawDate;
+    return parsed.toLocaleDateString(undefined, {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+  };
 
   useEffect(() => {
     // Crear la orden si tenemos session_id de Stripe
@@ -38,6 +50,7 @@ export default function CheckoutSuccess() {
         });
         
         setOrderNumber(String(response.data.order?.idOrder || ''));
+        setExpectedPickupDate(getFormattedPickupDate(response.data.order?.expectedPickupDate));
         clearCart(); // Limpiar carrito solo después de crear la orden
         
       } catch (err: any) {
@@ -45,7 +58,9 @@ export default function CheckoutSuccess() {
         
         // Si la orden ya existe, no es un error crítico
         if (err.response?.data?.msg?.includes('ya fue creada')) {
-          setOrderNumber(String(err.response?.data?.order?.idOrder || sessionId));
+          const fallbackOrder = err.response?.data?.order;
+          setOrderNumber(String(fallbackOrder?.idOrder || sessionId));
+          setExpectedPickupDate(getFormattedPickupDate(fallbackOrder?.expectedPickupDate));
           clearCart();
         } else {
           setError(err.response?.data?.msg || 'Error al procesar la orden');
@@ -106,9 +121,11 @@ export default function CheckoutSuccess() {
 
         <div className="ticket-bottom">
           <p className="ticket-note">
-            {isCreatingOrder 
-              ? 'Espera un momento mientras confirmamos tu orden...' 
-              : 'Te avisaremos cuando este listo para retirar.'}
+            {isCreatingOrder
+              ? 'Espera un momento mientras confirmamos tu orden...'
+              : expectedPickupDate
+                ? `Te esperamos a partir del ${expectedPickupDate} para retirar tu pedido.`
+                : 'Te avisaremos cuando este listo para retirar.'}
           </p>
         </div>
       </div>
