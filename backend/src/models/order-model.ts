@@ -74,13 +74,11 @@ Order.init({
   },
   external_reference: { //Id that any payment method will refer to the order()
     type: DataTypes.STRING(255),
-    allowNull: true,
-    field: 'externalReference', // Mapeo al nombre real de la columna en la DB
+    allowNull: true, 
   },
   payment_id: { // Id returned by the payment method (e.g., Mercado Pago payment id)()
     type: DataTypes.STRING(255),
     allowNull: true,
-    field: 'paymentId', // Mapeo al nombre real de la columna en la DB
   },
   total_amount: { // Total amount of the order()
     type: DataTypes.DECIMAL(10, 2),
