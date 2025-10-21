@@ -2,7 +2,7 @@
 import { useCart } from '../components/CartContext';
 import { useNavigate } from 'react-router-dom';
 import '../styles/payment.css';
-import mpLogo from '../assets/img/mercado-pago-logo.png';
+import stripeLogo from '../assets/img/stripe-logo.png';
 import type { CartItem } from '../types/cart';
 import type { User } from '../types/user';
 import ProgressBar from '../components/ProgressBar';
@@ -169,13 +169,15 @@ const Payment = () => {
           <div className="payment-option">
             <input
               type="radio"
-              id="mercado-pago"
+              id="stripe"
               name="payment"
               defaultChecked
             />
-            <label htmlFor="mercado-pago">
-              <img src={mpLogo} alt="Mercado Pago" />
-              <span>Mercado Pago</span>
+            <label htmlFor="stripe">
+              <img src={stripeLogo} alt="Stripe" />
+              <span>
+                <strong>Stripe</strong>
+              </span>
             </label>
           </div>
 
