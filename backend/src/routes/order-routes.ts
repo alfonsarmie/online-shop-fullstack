@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { check } from 'express-validator';
 import { validateFields } from '../middlewares/validate-fields';
 import { allowAdminOrReceptionist } from '../middlewares/validate-jwt';
-import { createOrderFromSession, getUserOrders, updateOrderStatusMp } from '../controllers/order-controller';
+import { createOrderFromSession, getUserOrders, getOrders } from '../controllers/order-controller';
 
 const router = Router();
 
@@ -35,7 +35,8 @@ router.get(
  * @desc    Obtiene órdenes paginadas (admin)
  * @access  Private/Admin (no auth enforced here — add middleware if required)
  */
-router.get('/',
+router.get(
+    '/',
     // optional query params: page, limit
     (req, res, next) => next(),
     // controller will handle params
@@ -43,17 +44,8 @@ router.get('/',
     // getOrders will be exported from controller
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    require('../controllers/order-controller').getOrders
+    getOrders
 );
 
-/**
- * @route   PUT /api/orders/status-mp/:idOrder
- * @desc    Actualiza el statusMp de una orden
- * @access  Private/Admin/Receptionist
- */
-router.put('/status-mp/:idOrder',
-    allowAdminOrReceptionist,
-    updateOrderStatusMp
-);
 
 export default router;
