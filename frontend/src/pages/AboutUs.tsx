@@ -18,6 +18,18 @@ const AboutUs = () => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      try {
+        const parsed = JSON.parse(savedUser);
+        setUser(parsed);
+      } catch (e) {
+        console.warn('Could not parse saved user from localStorage', e);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     // fade in animation for sections
     const observer = new IntersectionObserver(
       (entries) => {

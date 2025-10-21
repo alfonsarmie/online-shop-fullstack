@@ -90,6 +90,27 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
         
         const paymentId = typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id;
 
+        // Map Stripe statuses to our internal provider status (statusMp)
+        const mapStripeToStatusMp = (sess: any) => {
+            // Stripe checkout.session.payment_status can be: 'paid', 'unpaid', 'no_payment_required'
+            if (sess.payment_status === 'paid') return 'approved';
+            if (sess.payment_status === 'unpaid') return 'pending';
+            if (sess.payment_status === 'no_payment_required') return 'pending';
+
+            // If a PaymentIntent object is available, use its status for finer granularity
+            const pi = typeof sess.payment_intent === 'object' ? sess.payment_intent : undefined;
+            const piStatus = pi?.status;
+            if (piStatus === 'succeeded') return 'approved';
+            if (piStatus === 'processing') return 'in_process';
+            if (piStatus === 'requires_payment_method' || piStatus === 'requires_action' || piStatus === 'requires_confirmation') return 'pending';
+            if (piStatus === 'canceled' || piStatus === 'failed') return 'cancelled';
+
+            // Default fallback
+            return 'pending';
+        };
+
+        const detectedStatusMp = mapStripeToStatusMp(session as any);
+
         // 7. Calcular total y parsear items
         let totalCents = 0;
         const parsedItems: Array<{ idProduct: number; idSize?: number; quantity: number; subtotalCents: number }> = [];
@@ -156,7 +177,7 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
                 customer_notes: customerNotes,
                 currencyId: currency,
                 sports: sports,
-                statusMp: 'approved', // Ya está pagado
+                statusMp: detectedStatusMp, // Mapeado desde Stripe (p. ej. 'approved' si payment_status === 'paid')
             }, { transaction: t });
 
             console.log(`✅ Orden #${createdOrder.idOrder} creada`);
