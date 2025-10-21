@@ -20,6 +20,7 @@ export interface BackendOrderLine {
   subtotal: number | string;
   size?: string;
   product_name: string;
+  product_image?: string;
   product?: {
     idProduct: number;
     name: string;

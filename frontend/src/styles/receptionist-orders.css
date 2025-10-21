@@ -271,8 +271,8 @@ label .span-admin {
   flex-wrap: wrap;
 }
 
-/* Mobile card layout for orders */
-.order-card {
+/* Mobile card layout for receptionist orders - scoped under .receiver-dashboard */
+.receiver-dashboard .order-card {
   display: none;
   background: #1D1D1D;
   border: 1px solid #2a2a2a;
@@ -281,7 +281,7 @@ label .span-admin {
   margin-bottom: 12px;
 }
 
-.order-card-header {
+.receiver-dashboard .order-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -290,25 +290,25 @@ label .span-admin {
   border-bottom: 1px solid #2a2a2a;
 }
 
-.order-card-id {
+.receiver-dashboard .order-card-id {
   font-weight: bold;
   color: #22a341;
   font-size: 16px;
 }
 
-.order-card-body {
+.receiver-dashboard .order-card-body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px 16px;
   margin-bottom: 12px;
 }
 
-.order-card-field {
+.receiver-dashboard .order-card-field {
   display: flex;
   flex-direction: column;
 }
 
-.order-card-label {
+.receiver-dashboard .order-card-label {
   font-size: 12px;
   color: #bdbdbd;
   margin-bottom: 4px;
@@ -316,12 +316,12 @@ label .span-admin {
   letter-spacing: 0.5px;
 }
 
-.order-card-value {
+.receiver-dashboard .order-card-value {
   font-size: 14px;
   color: #f0f0f0;
 }
 
-.order-card-actions {
+.receiver-dashboard .order-card-actions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;

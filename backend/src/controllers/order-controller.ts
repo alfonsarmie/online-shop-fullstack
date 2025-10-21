@@ -229,11 +229,18 @@ export const getUserOrders = async (req: Request, res: Response) => {
                     model: OrderLine,
                     as: 'orderLines',
                     include: [
-                        {
-                            model: Product,
-                            as: 'product',
-                            attributes: ['idProduct', 'name'],
-                        },
+                                {
+                                    model: Product,
+                                    as: 'product',
+                                    attributes: ['idProduct', 'name'],
+                                    include: [
+                                        {
+                                            model: (await import('../models/image-model')).default,
+                                            as: 'images',
+                                            attributes: ['url'],
+                                        },
+                                    ],
+                                },
                         {
                             model: Size,
                             as: 'size',
@@ -255,6 +262,7 @@ export const getUserOrders = async (req: Request, res: Response) => {
                     ...line,
                     size: line.size?.sizeDesc || null,
                     product_name: line.product?.name || null,
+                    product_image: (line.product?.images && line.product.images.length > 0) ? line.product.images[0].url : null,
                 }));
             }
 
