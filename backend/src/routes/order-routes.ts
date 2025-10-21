@@ -29,4 +29,20 @@ router.get(
     getUserOrders
 );
 
+/**
+ * @route   GET /api/orders
+ * @desc    Obtiene órdenes paginadas (admin)
+ * @access  Private/Admin (no auth enforced here — add middleware if required)
+ */
+router.get('/',
+    // optional query params: page, limit
+    (req, res, next) => next(),
+    // controller will handle params
+    // function imported from controller
+    // getOrders will be exported from controller
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    require('../controllers/order-controller').getOrders
+);
+
 export default router;
