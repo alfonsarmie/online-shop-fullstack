@@ -317,8 +317,7 @@
   margin-top: 1.2rem;
 }
 
-.view-details-btn,
-.buy-again-btn {
+.view-details-btn {
   padding: 0.8rem 1.5rem;
   border: none;
   border-radius: 8px;
@@ -326,24 +325,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-}
-
-.view-details-btn {
   background-color: #4a90e2;
   color: white;
 }
 
 .view-details-btn:hover {
   background-color: #357abd;
-}
-
-.buy-again-btn {
-  background-color: #1E7335;
-  color: white;
-}
-
-.buy-again-btn:hover {
-  background-color: #0c3f19;
 }
 
 /* Modal */

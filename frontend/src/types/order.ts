@@ -75,6 +75,7 @@ export interface FrontendOrderItem {
 
 export type FrontendOrderStatus =
   | 'pending'
+  | 'confirmed'
   | 'processing'
   | 'completed'
   | 'cancelled';

@@ -123,7 +123,7 @@
 
 .ticket-perforation {
   position: relative;
-  margin: 8px -36px;
+  margin: 8px 0x;
   border-top: 1px dashed #d1d5db;
   height: 1px;
 }

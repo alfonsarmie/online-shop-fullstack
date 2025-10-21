@@ -24,10 +24,11 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
   console.log('Mapped items:', items);
 
   // Determine frontend status
-  let status: FrontendOrderStatus = 'pending';
-  if (order.actualPickupDate) status = 'completed';
-  else if (order.statusMp === 'approved' || order.statusMp === 'in_process') status = 'processing';
-  else if (order.statusMp === 'cancelled' || order.statusMp === 'rejected' || order.statusMp === 'refunded' || order.statusMp === 'charged_back') status = 'cancelled';
+	let status: FrontendOrderStatus = 'pending';
+	if (order.actualPickupDate) status = 'completed';
+	else if (order.statusMp === 'in_process') status = 'processing';
+	else if (order.statusMp === 'approved') status = 'confirmed';
+	else if (order.statusMp === 'cancelled' || order.statusMp === 'rejected' || order.statusMp === 'refunded' || order.statusMp === 'charged_back') status = 'cancelled';
 
   console.log('Order status:', status);
 
@@ -39,7 +40,7 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
     total: typeof order.total_amount === 'number' ? order.total_amount : Number(order.total_amount || 0),
     items,
     pickupDate: order.expectedPickupDate,
-    canCancel: !(order.actualPickupDate) && order.statusMp !== 'approved',
+	canCancel: !(order.actualPickupDate) && order.statusMp !== 'approved' && order.statusMp !== 'in_process',
     statusMp: order.statusMp,
     history: order.statusHistory || [],
   };
