@@ -48,17 +48,5 @@ router.get(
     getOrders
 );
 
-// Update order status (admin/receptionist)
-router.put(
-    '/:id/status',
-    [
-        allowAdminOrReceptionist,
-        check('id', 'order id is required').isInt({ min: 1 }),
-    ],
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    updateOrderStatus
-);
-
 
 export default router;
