@@ -260,7 +260,9 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
 
 export const changePassword = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const userId = (req as any).userId as number | string | undefined;
+    // Request may be an AuthRequest injected by auth middleware
+    const authReq = req as (Request & { userId?: number });
+    const userId = authReq.userId as number | string | undefined;
     const { currentPassword, newPassword } = req.body as { currentPassword: string; newPassword: string };
 
     if (currentPassword === newPassword) {

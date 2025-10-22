@@ -42,9 +42,10 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
 
   toJSON(): Omit<UserAttributes, 'password'> {
     const values = Object.assign({}, this.get()) as UserAttributes;
-    delete (values as any).password; // Delete password from the object
-    return values;
-  }  
+    const copy: Partial<UserAttributes> = { ...values };
+    delete copy.password; // Delete password from the copy
+    return copy as Omit<UserAttributes, 'password'>;
+  }
 }
 
 User.init({

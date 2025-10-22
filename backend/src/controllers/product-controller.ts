@@ -8,6 +8,9 @@ import ProductSize from "../models/size-product-model";
 import Size from "../models/size-model";
 import { FindOptions, Op, WhereOptions } from "sequelize";
 
+// Extend FindOptions locally to include the optional `escape` property used for LIKE queries
+type FindOptionsWithEscape = FindOptions & { escape?: string };
+
 export const createProduct = async (
   req: Request,
   res: Response
@@ -399,7 +402,7 @@ export const getAllProducts = async (
       }
     }
 
-    const findOptions: FindOptions = {
+  const findOptions: FindOptionsWithEscape = {
       include: [
         {
           model: Price,
@@ -427,7 +430,7 @@ export const getAllProducts = async (
     if (whereClause) {
       findOptions.where = whereClause;
   // Ensure the escape character is respected in LIKE queries
-  (findOptions as any).escape = "\\";
+  findOptions.escape = "\\";
     }
 
     const products = await Product.findAll(findOptions);

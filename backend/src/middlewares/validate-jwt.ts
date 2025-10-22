@@ -1,4 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+
+// Local request type that includes authenticated user id
+interface AuthRequest extends Request {
+  userId?: number;
+}
 import jwt from "jsonwebtoken";
 import User from "../models/user-model";
 
@@ -19,7 +24,7 @@ export const requireAuth = (req: Request,res: Response,next: NextFunction): void
       process.env.JWT_SECRET || "default_secret"
     ) as { userId: number };
     
-    (req as any).userId = decoded.userId;
+  (req as AuthRequest).userId = decoded.userId;
     next();
   
   } catch (error) {
@@ -127,7 +132,7 @@ export const allowAdminOrReceptionist = async (
       return;
     }
     // Attach user info if needed
-    (req as any).userId = userId;
+  (req as AuthRequest).userId = userId;
     next();
   } catch (error) {
     res.status(401).json({ message: "Invalid token" });

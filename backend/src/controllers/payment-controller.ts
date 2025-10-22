@@ -11,6 +11,14 @@ import { buildIdempotencyKey } from '../helpers/idempotency-helper';
 
 const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
+// Define a narrow type for cart items accepted from the frontend
+type CartItem = {
+    id?: string | number;
+    idProduct?: string | number;
+    idSize?: string | number;
+    quantity: number;
+};
+
 export const createCheckoutSession = async (req: Request, res: Response) => {
 
 
@@ -32,15 +40,11 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 
         // Fetch product details from the database
         // Accept both shapes from frontend: { id, quantity } or { idProduct, quantity }
-        const ids = items.map((it: { id?: string | number; idProduct?: string | number }) => {
-            
-            const id = Number((it as any).id ?? (it as any).idProduct);
-            
+        const ids = (items as CartItem[]).map((it) => {
+            const id = Number(it.id ?? it.idProduct);
             if (!Number.isFinite(id)) {
                 throw new Error('Formato de item inválido: cada item debe incluir id o idProduct numérico');
-            
             }
-            
             return id;
         });
         
@@ -71,10 +75,9 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 
         const currency = (req.body.currency || 'usd').toLowerCase();
 
-        const line_items = items.map((item: { id?: string | number; idProduct?: string | number; idSize?: string | number; quantity: number }) => {
-            
-            const id = Number((item as any).id ?? (item as any).idProduct);
-            const idSize = (item as any).idSize !== undefined ? Number((item as any).idSize) : undefined;
+        const line_items = (items as CartItem[]).map((item) => {
+            const id = Number(item.id ?? item.idProduct);
+            const idSize = item.idSize !== undefined ? Number(item.idSize) : undefined;
             const product = products.find((p) => p.idProduct === id);
             const value = priceMap.get(id);
             
@@ -103,8 +106,8 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 
 
         // Normalize items for idempotency key (deterministic)
-        const normalizedForKey = items.map((it: { id?: string | number; idProduct?: string | number; quantity: number }) => ({
-            id: Number((it as any).id ?? (it as any).idProduct),
+        const normalizedForKey = (items as CartItem[]).map((it) => ({
+            id: Number(it.id ?? it.idProduct),
             quantity: Number(it.quantity),
         }));
 

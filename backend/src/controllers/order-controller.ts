@@ -10,6 +10,29 @@ import Status from '../models/status-model';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
+// Plain order shape used when serializing Sequelize instances for responses
+type PlainOrder = {
+    idOrder: number;
+    orderDate: string | Date;
+    expectedPickupDate?: string | Date | null;
+    actualPickupDate?: string | Date | null;
+    idUser?: number;
+    idPaymentMethod?: number;
+    external_reference?: string;
+    payment_id?: string;
+    total_amount?: number | string;
+    customer_name?: string;
+    customer_email?: string;
+    customer_phone?: string;
+    customer_notes?: string;
+    sport?: string;
+    statusMp?: string;
+    currencyId?: string;
+    orderLines?: any[];
+    statusHistory?: any[];
+    [key: string]: any;
+};
+
 /**
  * @desc    Verifica el pago en Stripe y crea la orden si fue exitoso
  * @route   POST /api/orders/create-from-session
@@ -108,7 +131,7 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
             return 'pending';
         };
 
-        const detectedStatusMp = mapStripeToStatusMp(session as any);
+    const detectedStatusMp = mapStripeToStatusMp(session as Stripe.Checkout.Session);
 
         // 7. Calcular total y parsear items
         let totalCents = 0;
@@ -290,7 +313,7 @@ export const getUserOrders = async (req: Request, res: Response) => {
 
         // Mapear las órdenes al formato que espera el frontend
         const mappedOrders = orders.map((order) => {
-            const plainOrder = order.toJSON() as any;
+            const plainOrder = order.get({ plain: true }) as PlainOrder;
             
             // Mapear orderLines para incluir el nombre del talle
             if (plainOrder.orderLines) {
@@ -372,7 +395,7 @@ export const getOrders = async (req: Request, res: Response) => {
         });
 
         const mappedOrders = rows.map((order) => {
-            const plainOrder = (order as any).toJSON();
+            const plainOrder = order.get({ plain: true }) as PlainOrder;
             if (plainOrder.orderLines) {
                 plainOrder.orderLines = plainOrder.orderLines.map((line: any) => ({
                     ...line,
@@ -431,15 +454,16 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
             // Update order fields if provided
             if (typeof statusMp === 'string') {
                 // Update provider/payment related status
-                (order as any).statusMp = statusMp;
+                order.statusMp = statusMp;
             }
 
             // If UI status indicates delivered, set actualPickupDate; otherwise clear it
             if (status === 'delivered' || status === 'completed') {
-                (order as any).actualPickupDate = new Date();
+                order.actualPickupDate = new Date();
             } else {
                 // clear delivered timestamp when reverting to other statuses
-                (order as any).actualPickupDate = null;
+                // use null so Sequelize will persist SQL NULL
+                order.actualPickupDate = null as any;
             }
 
             await order.save({ transaction: t });
