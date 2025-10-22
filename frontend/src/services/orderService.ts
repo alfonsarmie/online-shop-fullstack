@@ -24,11 +24,10 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
   console.log('Mapped items:', items);
 
   // Determine frontend status
-	let status: FrontendOrderStatus = 'pending';
-	if (order.actualPickupDate) status = 'completed';
-	else if (order.statusMp === 'in_process') status = 'processing';
-	else if (order.statusMp === 'approved') status = 'confirmed';
-	else if (order.statusMp === 'cancelled' || order.statusMp === 'rejected' || order.statusMp === 'refunded' || order.statusMp === 'charged_back') status = 'cancelled';
+	let status = 'pending' as FrontendOrderStatus;
+	if (order.actualPickupDate) status = 'confirmed';
+	else if (order.statusMp === 'paid') status = 'confirmed';
+	else if (order.statusMp === 'unpaid') status = 'cancelled';
 
   console.log('Order status:', status);
 
@@ -41,7 +40,7 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
     total: typeof order.total_amount === 'number' ? order.total_amount : Number(order.total_amount || 0),
     items,
     pickupDate: order.expectedPickupDate,
-	canCancel: !(order.actualPickupDate) && order.statusMp !== 'approved' && order.statusMp !== 'in_process',
+	canCancel: !(order.actualPickupDate) && order.statusMp !== 'paid',
     statusMp: order.statusMp,
     history: order.statusHistory || [],
   };
@@ -88,7 +87,8 @@ const updateOrderStatus = async (
 	payload: { status: string; statusMp?: string; description?: string }
 ) => {
 	try {
-		const response = await api.put(`/orders/${id}/status`, payload);
+		// New endpoint: PUT /api/status/:idOrder
+		const response = await api.put(`/status/${id}`, payload);
 		return response.data;
 	} catch (error) {
 		throw error;

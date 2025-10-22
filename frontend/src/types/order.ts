@@ -1,8 +1,7 @@
 export type MercadoPagoStatus =
-  | 'pending'
-  | 'approved'
-  | 'in_process'
-  | 'cancelled';
+  | 'paid'
+  | 'unpaid'
+  | 'no_payment_required';
 
 export interface OrderStatusHistory {
   idOrder: number;

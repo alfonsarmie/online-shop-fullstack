@@ -36,17 +36,25 @@ type Order = {
   withdrawnAt?: string;
 };
 
-const todayIsoDate = () => new Date().toISOString().slice(0, 10);
 const nowIso = () => new Date().toISOString();
-
-const sameDay = (a: Date, b: Date) =>
-  a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 
 const parseDecimal = (v: number | string | undefined) => {
   if (typeof v === 'number') return v;
   if (!v) return 0;
   const n = Number(v);
   return Number.isNaN(n) ? 0 : n;
+};
+
+// Map backend order fields (statusMp, actualPickupDate) to frontend OrderStatus
+const determineStatusFromBackend = (o: BackendOrder): OrderStatus => {
+  if (o.actualPickupDate) return 'withdrawn';
+  // statusMp from backend is typically 'unpaid' | 'no_payment_required' | undefined,
+  // but some environments may provide 'paid' so normalize safely.
+  const status = o.statusMp as string | undefined;
+  if (status === 'paid' || status === 'no_payment_required') return 'ready';
+  if (status === 'unpaid') return 'cancelled';
+  // fallback
+  return 'confirmed';
 };
 
 const ReceptionistOrders: React.FC = () => {
@@ -76,11 +84,11 @@ const ReceptionistOrders: React.FC = () => {
             size: ln.size || 'Unico',
           })),
           total: parseDecimal(o.total_amount),
-          status: (o.actualPickupDate ? 'delivered' : (o.statusMp === 'in_process' ? 'processing' : (o.statusMp === 'approved' ? 'confirmed' : (o.statusMp === 'cancelled' ? 'cancelled' : 'pending')))) as Order['status'],
+          status: determineStatusFromBackend(o),
           date: o.orderDate,
           address: o.customer_notes || 'Retiro en Rowing Club',
           paymentMethod: o.paymentMethod?.name || 'Sin datos',
-          deliveredAt: o.actualPickupDate || undefined,
+          withdrawnAt: o.actualPickupDate || undefined,
         }));
         if (!mounted) return;
         setOrders(mapped);
@@ -111,10 +119,8 @@ const ReceptionistOrders: React.FC = () => {
       });
   }, [orders, filter]);
 
-  const deliveredToday = useMemo(() => {
-    const today = new Date();
-    return orders.filter(o => o.status === 'withdrawn' && o.withdrawnAt && sameDay(new Date(o.withdrawnAt), today));
-  }, [orders]);
+  // Show all delivered/withdrawn orders (no filtering by date)
+  const deliveredOrders = useMemo(() => orders.filter(o => o.status === 'withdrawn'), [orders]);
 
   const formatDate = (iso: string) => new Date(iso).toLocaleDateString('es-AR');
   const currency = (n: number) => n.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
@@ -164,11 +170,11 @@ const ReceptionistOrders: React.FC = () => {
           size: ln.size || 'Unico',
         })),
         total: parseDecimal(o.total_amount),
-        status: (o.actualPickupDate ? 'withdrawn' : (o.statusMp === 'in_process' ? 'processing' : (o.statusMp === 'approved' ? 'confirmed' : (o.statusMp === 'cancelled' ? 'cancelled' : 'pending')))) as Order['status'],
+  status: determineStatusFromBackend(o),
         date: o.orderDate,
         address: o.customer_notes || 'Retiro en Rowing Club',
         paymentMethod: o.paymentMethod?.name || 'Sin datos',
-        deliveredAt: o.actualPickupDate || undefined,
+  withdrawnAt: o.actualPickupDate || undefined,
       }));
       setOrders(mapped);
     } catch (err: any) {
@@ -189,11 +195,11 @@ const ReceptionistOrders: React.FC = () => {
             size: ln.size || 'Unico',
           })),
           total: parseDecimal(o.total_amount),
-          status: (o.actualPickupDate ? 'delivered' : (o.statusMp === 'in_process' ? 'processing' : (o.statusMp === 'approved' ? 'confirmed' : (o.statusMp === 'cancelled' ? 'cancelled' : 'pending')))) as Order['status'],
+          status: determineStatusFromBackend(o),
           date: o.orderDate,
           address: o.customer_notes || 'Retiro en Rowing Club',
           paymentMethod: o.paymentMethod?.name || 'Sin datos',
-          deliveredAt: o.actualPickupDate || undefined,
+          withdrawnAt: o.actualPickupDate || undefined,
         }));
         setOrders(mapped);
       } catch (e) {
@@ -203,11 +209,11 @@ const ReceptionistOrders: React.FC = () => {
   };
 
   const revertToPending = async (id: number) => {
-    // Optimistic update
-    setOrders(prev => prev.map(o => (o.id === id ? { ...o, status: 'pending', deliveredAt: undefined } : o)));
+    // Optimistic update: mark as confirmed (not withdrawn)
+    setOrders(prev => prev.map(o => (o.id === id ? { ...o, status: 'confirmed', withdrawnAt: undefined } : o)));
     try {
       await orderService.updateOrderStatus(id, {
-        status: 'pending',
+        status: 'confirmed',
         statusMp: 'pending',
         description: 'Revertido a pendiente'
       });
@@ -225,11 +231,11 @@ const ReceptionistOrders: React.FC = () => {
           size: ln.size || 'Unico',
         })),
         total: parseDecimal(o.total_amount),
-        status: (o.actualPickupDate ? 'delivered' : (o.statusMp === 'in_process' ? 'processing' : (o.statusMp === 'approved' ? 'confirmed' : (o.statusMp === 'cancelled' ? 'cancelled' : 'pending')))) as Order['status'],
+  status: determineStatusFromBackend(o),
         date: o.orderDate,
         address: o.customer_notes || 'Retiro en Rowing Club',
         paymentMethod: o.paymentMethod?.name || 'Sin datos',
-        deliveredAt: o.actualPickupDate || undefined,
+  withdrawnAt: o.actualPickupDate || undefined,
       }));
       setOrders(mapped);
     } catch (err) {
@@ -249,11 +255,11 @@ const ReceptionistOrders: React.FC = () => {
             size: ln.size || 'Unico',
           })),
           total: parseDecimal(o.total_amount),
-          status: (o.actualPickupDate ? 'delivered' : (o.statusMp === 'in_process' ? 'processing' : (o.statusMp === 'approved' ? 'confirmed' : (o.statusMp === 'cancelled' ? 'cancelled' : 'pending')))) as Order['status'],
+          status: determineStatusFromBackend(o),
           date: o.orderDate,
           address: o.customer_notes || 'Retiro en Rowing Club',
           paymentMethod: o.paymentMethod?.name || 'Sin datos',
-          deliveredAt: o.actualPickupDate || undefined,
+          withdrawnAt: o.actualPickupDate || undefined,
         }));
         setOrders(mapped);
       } catch (e) {
@@ -354,10 +360,10 @@ const ReceptionistOrders: React.FC = () => {
         </div>
       </section>
 
-      {/* Delivered today */}
+  {/* Delivered (all withdrawn) */}
       <section className="panel delivered-panel">
         <div className="panel-header">
-          <h2>Entregados hoy ({deliveredToday.length})</h2>
+          <h2>Entregados ({deliveredOrders.length})</h2>
         </div>
         <div className="panel-body">
           <table className="data-table delivered-table">
@@ -373,7 +379,7 @@ const ReceptionistOrders: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {deliveredToday.map(order => (
+              {deliveredOrders.map(order => (
                 <tr key={order.id} className="delivered-row">
                   <td>#{order.id}</td>
                   <td>
@@ -389,7 +395,7 @@ const ReceptionistOrders: React.FC = () => {
                   </td>
                   <td>{currency(order.total)}</td>
                   <td>
-                    <span className={`status-badge ${getStatusClass('delivered')}`}>Entregado</span>
+                    <span className={`status-badge ${getStatusClass(order.status)}`}>{getStatusLabel(order.status)}</span>
                   </td>
                   <td>
                     <button className="btn" onClick={() => revertToPending(order.id)}>
@@ -398,7 +404,7 @@ const ReceptionistOrders: React.FC = () => {
                   </td>
                 </tr>
               ))}
-              {deliveredToday.length === 0 && (
+              {deliveredOrders.length === 0 && (
                 <tr>
                   <td colSpan={7} style={{ textAlign: 'center', color: '#9b9b9b' }}>
                     No hay pedidos entregados hoy

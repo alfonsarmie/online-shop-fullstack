@@ -457,8 +457,8 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
                 order.statusMp = statusMp;
             }
 
-            // If UI status indicates delivered, set actualPickupDate; otherwise clear it
-            if (status === 'delivered' || status === 'completed') {
+            // If UI status indicates delivered/withdrawn, set actualPickupDate; otherwise clear it
+            if (status === 'delivered' || status === 'completed' || status === 'withdrawn') {
                 order.actualPickupDate = new Date();
             } else {
                 // clear delivered timestamp when reverting to other statuses

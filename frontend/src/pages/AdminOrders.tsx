@@ -12,11 +12,10 @@ import { orderService } from '../services/orderService';
 import { BackendOrder, MercadoPagoStatus } from '../types/order';
 
 type OrderStatus =
-  | 'pending'
   | 'confirmed'
-  | 'processing'
-  | 'delivered'
-  | 'cancelled';
+  | 'withdrawn'
+  | 'cancelled'
+  | 'ready';
 
 type OrderItem = {
   productId: number;
@@ -44,18 +43,16 @@ type AdminOrder = {
 };
 
 const statusOptions: { value: OrderStatus; label: string }[] = [
-  { value: 'pending', label: 'Pendiente' },
   { value: 'confirmed', label: 'Confirmado' },
-  { value: 'processing', label: 'En preparación' },
-  { value: 'delivered', label: 'Entregado' },
+  { value: 'ready', label: 'Listo' },
+  { value: 'withdrawn', label: 'Entregado' },
   { value: 'cancelled', label: 'Cancelado' },
 ];
 
 const statusDescriptions: Record<OrderStatus, string> = {
-  pending: 'Pedido marcado como pendiente',
-  confirmed: 'Pago aprobado - pedido confirmado',
-  processing: 'Pedido en preparación',
-  delivered: 'Pedido entregado al socio',
+  confirmed: 'Pedido confirmado',
+  ready: 'Pedido listo para retiro',
+  withdrawn: 'Pedido entregado al socio',
   cancelled: 'Pedido cancelado',
 };
 
@@ -68,42 +65,20 @@ const parseDecimal = (value: number | string | undefined): number => {
 
 const determineStatus = (order: BackendOrder): OrderStatus => {
   if (order.actualPickupDate) {
-    return 'delivered';
+    return 'withdrawn';
   }
 
-  switch (order.statusMp) {
-    case 'pending':
-      return 'pending';
-    case 'in_process':
-      return 'processing';
-    case 'approved':
-      return 'confirmed';
-    case 'cancelled':
-    case 'rejected':
-    case 'refunded':
-    case 'charged_back':
-      return 'cancelled';
-    default:
-      return 'pending';
-  }
+  // If the provider has explicitly set the payment as cancelled
+  if (order.statusMp === 'unpaid') return 'cancelled';
+
+  // Consider 'in_process' as 'ready'
+  if (order.statusMp === 'paid') return 'confirmed';
+
+  // All other provider statuses we surface as 'confirmed' in the simplified admin view
+  return 'confirmed';
 };
 
-const uiStatusToMercadoPago = (status: OrderStatus): MercadoPagoStatus => {
-  switch (status) {
-    case 'pending':
-      return 'pending';
-    case 'processing':
-      return 'in_process';
-    case 'confirmed':
-      return 'approved';
-    case 'delivered':
-      return 'approved';
-    case 'cancelled':
-      return 'cancelled';
-    default:
-      return 'pending';
-  }
-};
+
 
 const mapBackendOrder = (order: BackendOrder): AdminOrder => {
   const items: OrderItem[] = (order.orderLines ?? []).map((line) => {
@@ -130,8 +105,8 @@ const mapBackendOrder = (order: BackendOrder): AdminOrder => {
     sport: typeof order.sport === 'string' ? order.sport : undefined,
     items,
     total: parseDecimal(order.total_amount),
-    status: determineStatus(order),
-    statusMp: order.statusMp ?? 'pending',
+  status: determineStatus(order),
+  statusMp: order.statusMp ?? 'no_payment_required',
     date: order.orderDate,
     address: order.customer_notes
       ? order.customer_notes
@@ -143,14 +118,12 @@ const mapBackendOrder = (order: BackendOrder): AdminOrder => {
 
 const getStatusClass = (status: OrderStatus) => {
   switch (status) {
-    case 'pending':
-      return 'status-pending';
     case 'confirmed':
       return 'status-confirmed';
-    case 'processing':
-      return 'status-processing';
-    case 'delivered':
-      return 'status-delivered';
+    case 'ready':
+      return 'status-ready';
+    case 'withdrawn':
+      return 'status-withdrawn';
     case 'cancelled':
       return 'status-cancelled';
     default:
@@ -313,7 +286,6 @@ const AdminOrders: React.FC = () => {
         changes.map(({ id, status }) =>
           orderService.updateOrderStatus(id, {
             status,
-            statusMp: uiStatusToMercadoPago(status),
             description: statusDescriptions[status],
           })
         )
