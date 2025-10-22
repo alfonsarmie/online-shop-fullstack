@@ -2,15 +2,12 @@ export type MercadoPagoStatus =
   | 'pending'
   | 'approved'
   | 'in_process'
-  | 'rejected'
-  | 'cancelled'
-  | 'refunded'
-  | 'charged_back';
+  | 'cancelled';
 
 export interface OrderStatusHistory {
   idOrder: number;
   statusDate: string;
-  description: string;
+  description: FrontendOrderStatus;
 }
 
 export interface BackendOrderLine {
@@ -74,11 +71,9 @@ export interface FrontendOrderItem {
 }
 
 export type FrontendOrderStatus =
-  | 'pending'
   | 'confirmed'
-  | 'processing'
-  | 'completed'
-  | 'cancelled';
+  | 'ready'
+  | 'withdrawn'
 
 export interface FrontendOrder {
   id: number;
@@ -91,5 +86,4 @@ export interface FrontendOrder {
   pickupDate?: string;
   canCancel: boolean;
   statusMp?: MercadoPagoStatus;
-  history: OrderStatusHistory[];
 }
