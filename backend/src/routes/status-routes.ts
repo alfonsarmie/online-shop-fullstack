@@ -7,11 +7,10 @@ import { check } from 'express-validator';
 const router = Router();
 
 router.post(
-  "/create",
+  "/:idOrder/create",
   [
     validateJWT,
     allowAdminOrReceptionist,
-    check('idOrder', 'Order ID is required').isInt({ min: 1 }),
     check('description', 'Description is required').notEmpty(),
     validateFields
   ],

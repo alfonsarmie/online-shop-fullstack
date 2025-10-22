@@ -74,6 +74,7 @@ export type FrontendOrderStatus =
   | 'confirmed'
   | 'ready'
   | 'withdrawn'
+  | 'cancelled';
 
 export interface FrontendOrder {
   id: number;
@@ -86,4 +87,5 @@ export interface FrontendOrder {
   pickupDate?: string;
   canCancel: boolean;
   statusMp?: MercadoPagoStatus;
+  history: OrderStatusHistory[];
 }

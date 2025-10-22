@@ -61,10 +61,9 @@ const MyOrders: React.FC = () => {
   const getStatusCounts = () => {
     const counts = {
       all: orders.length,
-      pending: 0,
       confirmed: 0,
-      processing: 0,
-      completed: 0,
+      ready: 0,
+      withdrawn: 0,
       cancelled: 0,
     };
     orders.forEach(order => {
@@ -77,11 +76,9 @@ const MyOrders: React.FC = () => {
 
   const getStatusBadgeClass = (status: FrontendOrderStatus) => {
     switch (status) {
-      case 'pending': return 'status-badge status-pending';
       case 'confirmed': return 'status-badge status-confirmed';
-      case 'processing': return 'status-badge status-processing';
-      case 'completed': return 'status-badge status-completed';
-      case 'cancelled': return 'status-badge status-cancelled';
+      case 'ready': return 'status-badge status-ready';
+      case 'withdrawn': return 'status-badge status-withdrawn';
       default: return 'status-badge';
     }
   };
@@ -148,10 +145,10 @@ const MyOrders: React.FC = () => {
           Todos <span className="status-count">{statusCounts.all}</span>
         </button>
         <button
-          className={`status-pill ${selectedStatus === 'pending' ? 'active' : ''}`}
-          onClick={() => setSelectedStatus('pending')}
+          className={`status-pill ${selectedStatus === 'ready' ? 'active' : ''}`}
+          onClick={() => setSelectedStatus('ready')}
         >
-          Pendiente <span className="status-count">{statusCounts.pending}</span>
+          Listo para retirar <span className="status-count">{statusCounts.ready}</span>
         </button>
         <button
           className={`status-pill ${selectedStatus === 'confirmed' ? 'active' : ''}`}
@@ -160,16 +157,10 @@ const MyOrders: React.FC = () => {
           Confirmado <span className="status-count">{statusCounts.confirmed}</span>
         </button>
         <button
-          className={`status-pill ${selectedStatus === 'processing' ? 'active' : ''}`}
-          onClick={() => setSelectedStatus('processing')}
+          className={`status-pill ${selectedStatus === 'withdrawn' ? 'active' : ''}`}
+          onClick={() => setSelectedStatus('withdrawn')}
         >
-          Procesando <span className="status-count">{statusCounts.processing}</span>
-        </button>
-        <button
-          className={`status-pill ${selectedStatus === 'completed' ? 'active' : ''}`}
-          onClick={() => setSelectedStatus('completed')}
-        >
-          Completado <span className="status-count">{statusCounts.completed}</span>
+          Retirado <span className="status-count">{statusCounts.withdrawn}</span>
         </button>
         <button
           className={`status-pill ${selectedStatus === 'cancelled' ? 'active' : ''}`}
@@ -196,10 +187,9 @@ const MyOrders: React.FC = () => {
                   <p className="order-date">{new Date(order.date).toLocaleDateString()}</p>
                 </div>
                 <span className={getStatusBadgeClass(order.status)}>
-                  {order.status === 'pending' ? 'Pendiente' :
-                   order.status === 'confirmed' ? 'Confirmado' :
-                   order.status === 'processing' ? 'Procesando' :
-                   order.status === 'completed' ? 'Completado' : 'Cancelado'}
+                  {order.status === 'confirmed' ? 'Confirmado' :
+                   order.status === 'ready' ? 'Listo' :
+                   order.status === 'withdrawn' ? 'Retirado' : 'Cancelado' }
                 </span>
               </div>
 
@@ -226,7 +216,7 @@ const MyOrders: React.FC = () => {
               </div>
 
               <div className="order-footer">
-                {order.status === 'completed' && (
+                {order.status === 'withdrawn' && (
                   <div className="completed-info">
                     <span>✓</span>
                     <span>Pedido completado</span>
@@ -236,15 +226,6 @@ const MyOrders: React.FC = () => {
                   <div className="cancelled-info">
                     <span>✗</span>
                     <span>Pedido cancelado</span>
-                  </div>
-                )}
-                {order.pickupDate && order.status === 'processing' && (
-                  <div className="pickup-info">
-                    <div className="pickup-time">
-                      <span className="time-icon">🕒</span>
-                      <span className="time-text">Retiro programado</span>
-                    </div>
-                    <p className="pickup-date">{new Date(order.pickupDate).toLocaleString()}</p>
                   </div>
                 )}
                 <div className="order-actions">
@@ -281,10 +262,9 @@ const MyOrders: React.FC = () => {
                   <div className="detail-item">
                     <strong>Estado:</strong>
                     <span className={getStatusBadgeClass(selectedOrder.status)}>
-                      {selectedOrder.status === 'pending' ? 'Pendiente' :
-                       selectedOrder.status === 'confirmed' ? 'Confirmado' :
-                       selectedOrder.status === 'processing' ? 'Procesando' :
-                       selectedOrder.status === 'completed' ? 'Completado' : 'Cancelado'}
+                      {selectedOrder.status === 'confirmed' ? 'Confirmado' :
+                       selectedOrder.status === 'ready' ? 'Listo' :
+                       selectedOrder.status === 'withdrawn' ? 'Retirado' : 'Cancelado'}
                     </span>
                   </div>
                   <div className="detail-item">

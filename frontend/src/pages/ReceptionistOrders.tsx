@@ -10,11 +10,9 @@ import { orderService } from '../services/orderService';
 import type { BackendOrder, BackendOrderLine } from '../types/order';
 
 type OrderStatus =
-  | 'pending'
   | 'confirmed'
-  | 'processing'
-  | 'shipped'
-  | 'delivered'
+  | 'ready'
+  | 'withdrawn'
   | 'cancelled';
 
 type OrderItem = {
@@ -35,7 +33,7 @@ type Order = {
   date: string; // ISO date when created
   address: string;
   paymentMethod: string;
-  deliveredAt?: string; // ISO datetime when marked delivered
+  withdrawnAt?: string;
 };
 
 const todayIsoDate = () => new Date().toISOString().slice(0, 10);
@@ -100,8 +98,7 @@ const ReceptionistOrders: React.FC = () => {
 
   const pendingOrders = useMemo(() => {
     const lower = filter.trim().toLowerCase();
-    // Treat orders that still need delivery as pending: pending, confirmed, processing
-    const desired = new Set<OrderStatus>(['pending', 'confirmed', 'processing']);
+    const desired = new Set<OrderStatus>(['confirmed', 'ready', 'withdrawn']);
     return orders
       .filter(o => desired.has(o.status))
       .filter(o => {
@@ -116,7 +113,7 @@ const ReceptionistOrders: React.FC = () => {
 
   const deliveredToday = useMemo(() => {
     const today = new Date();
-    return orders.filter(o => o.status === 'delivered' && o.deliveredAt && sameDay(new Date(o.deliveredAt), today));
+    return orders.filter(o => o.status === 'withdrawn' && o.withdrawnAt && sameDay(new Date(o.withdrawnAt), today));
   }, [orders]);
 
   const formatDate = (iso: string) => new Date(iso).toLocaleDateString('es-AR');
@@ -124,11 +121,9 @@ const ReceptionistOrders: React.FC = () => {
 
   const getStatusClass = (status: OrderStatus) => {
     switch (status) {
-      case 'pending': return 'status-pending';
       case 'confirmed': return 'status-confirmed';
-      case 'processing': return 'status-processing';
-      case 'shipped': return 'status-shipped';
-      case 'delivered': return 'status-delivered';
+      case 'ready': return 'status-ready';
+      case 'withdrawn': return 'status-withdrawn';
       case 'cancelled': return 'status-cancelled';
       default: return '';
     }
@@ -136,11 +131,9 @@ const ReceptionistOrders: React.FC = () => {
 
   const getStatusLabel = (status: OrderStatus) => {
     switch (status) {
-      case 'pending': return 'Pendiente';
       case 'confirmed': return 'Confirmado';
-      case 'processing': return 'Procesando';
-      case 'shipped': return 'Despachado';
-      case 'delivered': return 'Entregado';
+      case 'ready': return 'ready';
+      case 'withdrawn': return 'withdrawn';
       case 'cancelled': return 'Cancelado';
       default: return status;
     }
@@ -149,13 +142,13 @@ const ReceptionistOrders: React.FC = () => {
   const markAsDelivered = async (id: number) => {
     const now = nowIso();
     // Optimistic update
-    setOrders(prev => prev.map(o => (o.id === id ? { ...o, status: 'delivered', deliveredAt: now } : o)));
+    setOrders(prev => prev.map(o => (o.id === id ? { ...o, status: 'withdrawn', withdrawnAt: now } : o)));
     setSelectedOrder(null);
     try {
       await orderService.updateOrderStatus(id, {
-        status: 'delivered',
+        status: 'withdrawn',
         statusMp: 'approved',
-        description: 'Entregado'
+        description: 'Retirado'
       });
       // Refresh list from backend to ensure consistency
       const data = await orderService.getOrders({ page: 1, limit: 200 });
@@ -171,7 +164,7 @@ const ReceptionistOrders: React.FC = () => {
           size: ln.size || 'Unico',
         })),
         total: parseDecimal(o.total_amount),
-        status: (o.actualPickupDate ? 'delivered' : (o.statusMp === 'in_process' ? 'processing' : (o.statusMp === 'approved' ? 'confirmed' : (o.statusMp === 'cancelled' ? 'cancelled' : 'pending')))) as Order['status'],
+        status: (o.actualPickupDate ? 'withdrawn' : (o.statusMp === 'in_process' ? 'processing' : (o.statusMp === 'approved' ? 'confirmed' : (o.statusMp === 'cancelled' ? 'cancelled' : 'pending')))) as Order['status'],
         date: o.orderDate,
         address: o.customer_notes || 'Retiro en Rowing Club',
         paymentMethod: o.paymentMethod?.name || 'Sin datos',
