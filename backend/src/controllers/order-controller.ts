@@ -408,3 +408,47 @@ export const getOrders = async (req: Request, res: Response) => {
         });
     }
 };
+
+/**
+ * @desc    Actualiza el estado de una orden (crea un registro en status y actualiza campos en Order)
+ * @route   PUT /api/orders/:id/status
+ * @access  Private (admin/receptionist)
+ */
+export const updateOrderStatus = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { status, statusMp, description } = req.body;
+
+    if (!id) return res.status(400).json({ msg: 'order id is required' });
+
+    try {
+        await db.transaction(async (t: Transaction) => {
+            const order = await Order.findByPk(Number(id), { transaction: t });
+            if (!order) throw new Error('Order not found');
+
+            // Update order fields if provided
+            if (typeof statusMp === 'string') {
+                // Update provider/payment related status
+                (order as any).statusMp = statusMp;
+            }
+
+            // If UI status indicates delivered, set actualPickupDate
+            if (status === 'delivered' || status === 'completed') {
+                (order as any).actualPickupDate = new Date();
+            }
+
+            await order.save({ transaction: t });
+
+            // Create a status history record
+            await Status.create({
+                idOrder: order.idOrder,
+                statusDate: new Date(),
+                description: description || (status || statusMp) || 'estado actualizado'
+            }, { transaction: t });
+        });
+
+        return res.status(200).json({ msg: 'Order status updated' });
+    } catch (error: any) {
+        console.error('Error updating order status:', error);
+        return res.status(500).json({ msg: 'Error updating order status', error: error.message || error });
+    }
+};

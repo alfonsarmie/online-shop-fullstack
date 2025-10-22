@@ -426,8 +426,8 @@ export const getAllProducts = async (
 
     if (whereClause) {
       findOptions.where = whereClause;
-      // Ensure the escape character is respected in LIKE queries
-      findOptions.escape = "\\";
+  // Ensure the escape character is respected in LIKE queries
+  (findOptions as any).escape = "\\";
     }
 
     const products = await Product.findAll(findOptions);

@@ -3,6 +3,7 @@ import { check } from 'express-validator';
 import { validateFields } from '../middlewares/validate-fields';
 import { allowAdminOrReceptionist } from '../middlewares/validate-jwt';
 import { createOrderFromSession, getUserOrders, getOrders } from '../controllers/order-controller';
+import { updateOrderStatus } from '../controllers/order-controller';
 
 const router = Router();
 
@@ -45,6 +46,18 @@ router.get(
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     getOrders
+);
+
+// Update order status (admin/receptionist)
+router.put(
+    '/:id/status',
+    [
+        allowAdminOrReceptionist,
+        check('id', 'order id is required').isInt({ min: 1 }),
+    ],
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    updateOrderStatus
 );
 
 

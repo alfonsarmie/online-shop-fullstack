@@ -146,14 +146,127 @@ const ReceptionistOrders: React.FC = () => {
     }
   };
 
-  const markAsDelivered = (id: number) => {
+  const markAsDelivered = async (id: number) => {
     const now = nowIso();
+    // Optimistic update
     setOrders(prev => prev.map(o => (o.id === id ? { ...o, status: 'delivered', deliveredAt: now } : o)));
     setSelectedOrder(null);
+    try {
+      await orderService.updateOrderStatus(id, {
+        status: 'delivered',
+        statusMp: 'approved',
+        description: 'Entregado'
+      });
+      // Refresh list from backend to ensure consistency
+      const data = await orderService.getOrders({ page: 1, limit: 200 });
+      const mapped: Order[] = (data.orders || []).map((o: BackendOrder) => ({
+        id: o.idOrder,
+        customerName: o.customer_name,
+        customerEmail: o.customer_email,
+        items: (o.orderLines || []).map((ln: BackendOrderLine) => ({
+          productId: ln.idProduct,
+          productName: ln.product?.name || ln.product_name,
+          quantity: ln.quantity,
+          price: typeof ln.subtotal === 'number' ? ln.subtotal / Math.max(1, ln.quantity) : Number(ln.subtotal) / Math.max(1, ln.quantity),
+          size: ln.size || 'Unico',
+        })),
+        total: parseDecimal(o.total_amount),
+        status: (o.actualPickupDate ? 'delivered' : (o.statusMp === 'in_process' ? 'processing' : (o.statusMp === 'approved' ? 'confirmed' : (o.statusMp === 'cancelled' ? 'cancelled' : 'pending')))) as Order['status'],
+        date: o.orderDate,
+        address: o.customer_notes || 'Retiro en Rowing Club',
+        paymentMethod: o.paymentMethod?.name || 'Sin datos',
+        deliveredAt: o.actualPickupDate || undefined,
+      }));
+      setOrders(mapped);
+    } catch (err: any) {
+      console.error('Error marking order as delivered:', err);
+      // rollback optimistic update
+      // re-fetch to get correct state
+      try {
+        const data = await orderService.getOrders({ page: 1, limit: 200 });
+        const mapped: Order[] = (data.orders || []).map((o: BackendOrder) => ({
+          id: o.idOrder,
+          customerName: o.customer_name,
+          customerEmail: o.customer_email,
+          items: (o.orderLines || []).map((ln: BackendOrderLine) => ({
+            productId: ln.idProduct,
+            productName: ln.product?.name || ln.product_name,
+            quantity: ln.quantity,
+            price: typeof ln.subtotal === 'number' ? ln.subtotal / Math.max(1, ln.quantity) : Number(ln.subtotal) / Math.max(1, ln.quantity),
+            size: ln.size || 'Unico',
+          })),
+          total: parseDecimal(o.total_amount),
+          status: (o.actualPickupDate ? 'delivered' : (o.statusMp === 'in_process' ? 'processing' : (o.statusMp === 'approved' ? 'confirmed' : (o.statusMp === 'cancelled' ? 'cancelled' : 'pending')))) as Order['status'],
+          date: o.orderDate,
+          address: o.customer_notes || 'Retiro en Rowing Club',
+          paymentMethod: o.paymentMethod?.name || 'Sin datos',
+          deliveredAt: o.actualPickupDate || undefined,
+        }));
+        setOrders(mapped);
+      } catch (e) {
+        console.error('Error refetching orders after failed mark delivered:', e);
+      }
+    }
   };
 
-  const revertToPending = (id: number) => {
+  const revertToPending = async (id: number) => {
+    // Optimistic update
     setOrders(prev => prev.map(o => (o.id === id ? { ...o, status: 'pending', deliveredAt: undefined } : o)));
+    try {
+      await orderService.updateOrderStatus(id, {
+        status: 'pending',
+        statusMp: 'pending',
+        description: 'Revertido a pendiente'
+      });
+      // Refresh
+      const data = await orderService.getOrders({ page: 1, limit: 200 });
+      const mapped: Order[] = (data.orders || []).map((o: BackendOrder) => ({
+        id: o.idOrder,
+        customerName: o.customer_name,
+        customerEmail: o.customer_email,
+        items: (o.orderLines || []).map((ln: BackendOrderLine) => ({
+          productId: ln.idProduct,
+          productName: ln.product?.name || ln.product_name,
+          quantity: ln.quantity,
+          price: typeof ln.subtotal === 'number' ? ln.subtotal / Math.max(1, ln.quantity) : Number(ln.subtotal) / Math.max(1, ln.quantity),
+          size: ln.size || 'Unico',
+        })),
+        total: parseDecimal(o.total_amount),
+        status: (o.actualPickupDate ? 'delivered' : (o.statusMp === 'in_process' ? 'processing' : (o.statusMp === 'approved' ? 'confirmed' : (o.statusMp === 'cancelled' ? 'cancelled' : 'pending')))) as Order['status'],
+        date: o.orderDate,
+        address: o.customer_notes || 'Retiro en Rowing Club',
+        paymentMethod: o.paymentMethod?.name || 'Sin datos',
+        deliveredAt: o.actualPickupDate || undefined,
+      }));
+      setOrders(mapped);
+    } catch (err) {
+      console.error('Error reverting order to pending:', err);
+      // try refetch
+      try {
+        const data = await orderService.getOrders({ page: 1, limit: 200 });
+        const mapped: Order[] = (data.orders || []).map((o: BackendOrder) => ({
+          id: o.idOrder,
+          customerName: o.customer_name,
+          customerEmail: o.customer_email,
+          items: (o.orderLines || []).map((ln: BackendOrderLine) => ({
+            productId: ln.idProduct,
+            productName: ln.product?.name || ln.product_name,
+            quantity: ln.quantity,
+            price: typeof ln.subtotal === 'number' ? ln.subtotal / Math.max(1, ln.quantity) : Number(ln.subtotal) / Math.max(1, ln.quantity),
+            size: ln.size || 'Unico',
+          })),
+          total: parseDecimal(o.total_amount),
+          status: (o.actualPickupDate ? 'delivered' : (o.statusMp === 'in_process' ? 'processing' : (o.statusMp === 'approved' ? 'confirmed' : (o.statusMp === 'cancelled' ? 'cancelled' : 'pending')))) as Order['status'],
+          date: o.orderDate,
+          address: o.customer_notes || 'Retiro en Rowing Club',
+          paymentMethod: o.paymentMethod?.name || 'Sin datos',
+          deliveredAt: o.actualPickupDate || undefined,
+        }));
+        setOrders(mapped);
+      } catch (e) {
+        console.error('Error refetching orders after failed revert:', e);
+      }
+    }
   };
 
   return (
