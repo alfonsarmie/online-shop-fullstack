@@ -6,6 +6,7 @@ import Order from '../models/order-model';
 import OrderLine from '../models/order-line-model';
 import Product from '../models/product-model';
 import Size from '../models/size-model';
+import Status from '../models/status-model';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -180,6 +181,15 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
 
             console.log(`✅ Orden #${createdOrder.idOrder} creada`);
 
+            // Crear el status inicial "confirmado"
+            await Status.create({
+                idOrder: createdOrder.idOrder,
+                statusDate: new Date(),
+                description: 'confirmado'
+            }, { transaction: t });
+
+            console.log(`📋 Status 'confirmado' creado para orden #${createdOrder.idOrder}`);
+
             // Crear las líneas de orden y descontar stock
             for (const item of parsedItems) {
                 const product = await Product.findByPk(item.idProduct, {
@@ -267,6 +277,13 @@ export const getUserOrders = async (req: Request, res: Response) => {
                         },
                     ],
                 },
+                {
+                    model: Status,
+                    as: 'statusHistory',
+                    attributes: ['statusDate', 'description'],
+                    order: [['statusDate', 'DESC']],
+                    limit: 1, // Solo el más reciente
+                },
             ],
             order: [['orderDate', 'DESC']], // Más recientes primero
         });
@@ -283,6 +300,13 @@ export const getUserOrders = async (req: Request, res: Response) => {
                     product_name: line.product?.name || null,
                     product_image: (line.product?.images && line.product.images.length > 0) ? line.product.images[0].url : null,
                 }));
+            }
+
+            // Agregar el último status de la orden
+            if (plainOrder.statusHistory && plainOrder.statusHistory.length > 0) {
+                plainOrder.latestStatus = plainOrder.statusHistory[0]; // El primero es el más reciente
+            } else {
+                plainOrder.latestStatus = null;
             }
 
             return plainOrder;
@@ -334,6 +358,13 @@ export const getOrders = async (req: Request, res: Response) => {
                         },
                     ],
                 },
+                {
+                    model: Status,
+                    as: 'statusHistory',
+                    attributes: ['statusDate', 'description'],
+                    order: [['statusDate', 'DESC']],
+                    limit: 1, // Solo el más reciente
+                },
             ],
             order: [['orderDate', 'DESC']],
             limit,
@@ -350,6 +381,14 @@ export const getOrders = async (req: Request, res: Response) => {
                     product_image: (line.product?.images && line.product.images.length > 0) ? line.product.images[0].url : null,
                 }));
             }
+
+            // Agregar el último status de la orden
+            if (plainOrder.statusHistory && plainOrder.statusHistory.length > 0) {
+                plainOrder.latestStatus = plainOrder.statusHistory[0]; // El primero es el más reciente
+            } else {
+                plainOrder.latestStatus = null;
+            }
+
             return plainOrder;
         });
 

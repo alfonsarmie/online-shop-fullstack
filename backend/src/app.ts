@@ -21,6 +21,7 @@ import paymentRoutes from './routes/payment-routes';
 import orderRoutes from './routes/order-routes';
 import { defineAssociations } from './models/associations';
 import { connectDB, db } from './db/connection';
+import statusRoutes from './routes/status-routes';
 
 
 const app = express();
@@ -77,6 +78,7 @@ app.use("/api/categories", categoryRoutes);
 app.use('/api', uploadRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/status', statusRoutes);
 app.use('/uploads', express.static('uploads'));
 
 // Initialize the server
