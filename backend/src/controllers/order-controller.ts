@@ -423,7 +423,10 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
     try {
         await db.transaction(async (t: Transaction) => {
             const order = await Order.findByPk(Number(id), { transaction: t });
-            if (!order) throw new Error('Order not found');
+            if (!order) {
+                // If order not found, throw a specific error to be handled outside the transaction
+                throw { code: 'ORDER_NOT_FOUND' };
+            }
 
             // Update order fields if provided
             if (typeof statusMp === 'string') {
@@ -431,9 +434,12 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
                 (order as any).statusMp = statusMp;
             }
 
-            // If UI status indicates delivered, set actualPickupDate
+            // If UI status indicates delivered, set actualPickupDate; otherwise clear it
             if (status === 'delivered' || status === 'completed') {
                 (order as any).actualPickupDate = new Date();
+            } else {
+                // clear delivered timestamp when reverting to other statuses
+                (order as any).actualPickupDate = null;
             }
 
             await order.save({ transaction: t });
@@ -449,6 +455,9 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
         return res.status(200).json({ msg: 'Order status updated' });
     } catch (error: any) {
         console.error('Error updating order status:', error);
+        if (error && error.code === 'ORDER_NOT_FOUND') {
+            return res.status(404).json({ msg: 'Order not found' });
+        }
         return res.status(500).json({ msg: 'Error updating order status', error: error.message || error });
     }
 };
