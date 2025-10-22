@@ -159,8 +159,7 @@ const AdminOrders: React.FC = () => {
     useState<OrderStatus | 'all'>('all');
   const [selectedOrder, setSelectedOrder] =
     useState<AdminOrder | null>(null);
-  const [deleteTarget, setDeleteTarget] =
-    useState<AdminOrder | null>(null);
+
   const [editMode, setEditMode] = useState(false);
   const [editedOrders, setEditedOrders] = useState<AdminOrder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -306,25 +305,7 @@ const AdminOrders: React.FC = () => {
     }
   };
 
-  const confirmDelete = (order: AdminOrder) => {
-    setDeleteTarget(order);
-  };
-
-  const deleteOrder = async (id: number) => {
-    try {
-      await orderService.deleteOrder(id);
-      setSuccessMessage('Pedido eliminado correctamente');
-      setDeleteTarget(null);
-      fetchOrders();
-    } catch (error: unknown) {
-      console.error('Error deleting order:', error);
-      const msg =
-        (error as any)?.response?.data?.message ||
-        (error as any)?.response?.data?.error ||
-        'No se pudo eliminar el pedido. Intenta nuevamente.';
-      setErrorMessage(msg);
-    }
-  };
+  // deleteOrder removed to prevent deleting orders from admin UI
 
   if (loading) {
     return (
@@ -478,12 +459,7 @@ const AdminOrders: React.FC = () => {
                           </option>
                         ))}
                       </select>
-                      <button
-                        className="btn danger"
-                        onClick={() => confirmDelete(order)}
-                      >
-                        Eliminar
-                      </button>
+                      {/* Delete action removed from admin UI */}
                     </div>
                   </td>
                 </tr>
@@ -597,44 +573,7 @@ const AdminOrders: React.FC = () => {
         </div>
       )}
 
-      {deleteTarget && (
-        <div
-          className="modal-overlay"
-          onClick={() => setDeleteTarget(null)}
-        >
-          <div
-            className="modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="modal-header">
-              <h2>Eliminar pedido #{deleteTarget.orderNumber}</h2>
-              <button
-                className="btn-close"
-                onClick={() => setDeleteTarget(null)}
-              >
-                ×
-              </button>
-            </div>
-            <div className="modal-body">
-              <p className="modal-warning">
-                ¿Estás seguro de eliminar el pedido #{deleteTarget.orderNumber}{' '}
-                de {deleteTarget.customerName}? Esta acción es irreversible.
-              </p>
-              <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-                <button className="btn" onClick={() => setDeleteTarget(null)}>
-                  Cancelar
-                </button>
-                <button
-                  className="btn danger"
-                  onClick={() => deleteOrder(deleteTarget.id)}
-                >
-                  Eliminar definitivamente
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Delete modal removed */}
     </div>
   );
 };
