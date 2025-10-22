@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { createStatus } from '../controllers/status-controller';
 import { validateJWT, allowAdminOrReceptionist } from '../middlewares/validate-jwt';
-import { validateFields } from '@/middlewares/validate-fields';
+import { validateFields } from '../middlewares/validate-fields';
 import { check } from 'express-validator';
 
 const router = Router();
