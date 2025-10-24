@@ -99,7 +99,8 @@ const updateOrderStatus = async (
   payload: { description: string }
 ) => {
   try {
-    const response = await api.put(`/status/${id}`, payload);
+    // Use the createStatus endpoint (POST) to add a new status entry
+    const response = await api.post(`/status/${id}/create`, payload);
     return response.data;
   } catch (error) {
     throw error;
