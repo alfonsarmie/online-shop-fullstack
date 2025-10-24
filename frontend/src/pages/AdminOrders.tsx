@@ -64,6 +64,12 @@ const parseDecimal = (value: number | string | undefined): number => {
 };
 
 const determineStatus = (order: BackendOrder): OrderStatus => {
+  const historyStatus =
+    order.latestStatus?.description ?? order.statusHistory[0]?.description;
+  if (historyStatus) {
+    return historyStatus;
+  }
+
   if (order.actualPickupDate) {
     return 'withdrawn';
   }

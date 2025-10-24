@@ -45,15 +45,18 @@ const parseDecimal = (v: number | string | undefined) => {
   return Number.isNaN(n) ? 0 : n;
 };
 
-// Map backend order fields (statusMp, actualPickupDate) to frontend OrderStatus
+// Map backend order fields (status history, statusMp, actualPickupDate) to frontend OrderStatus
 const determineStatusFromBackend = (o: BackendOrder): OrderStatus => {
+  const historyStatus =
+    o.latestStatus?.description ?? o.statusHistory[0]?.description;
+  if (historyStatus) return historyStatus;
+
   if (o.actualPickupDate) return 'withdrawn';
-  // statusMp from backend is typically 'unpaid' | 'no_payment_required' | undefined,
-  // but some environments may provide 'paid' so normalize safely.
+
   const status = o.statusMp as string | undefined;
-  if (status === 'paid' || status === 'no_payment_required') return 'ready';
   if (status === 'unpaid') return 'cancelled';
-  // fallback
+  if (status === 'paid' || status === 'no_payment_required') return 'ready';
+
   return 'confirmed';
 };
 
