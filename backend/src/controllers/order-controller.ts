@@ -30,6 +30,10 @@ type PlainOrder = {
     currencyId?: string;
     orderLines?: any[];
     statusHistory?: any[];
+    latestStatus?: {
+        statusDate: string | Date;
+        description: string;
+    } | null;
     [key: string]: any;
 };
 
@@ -208,7 +212,7 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
             await Status.create({
                 idOrder: createdOrder.idOrder,
                 statusDate: new Date(),
-                description: 'confirmado'
+                description: 'confirmed'
             }, { transaction: t });
 
             console.log(`📋 Status 'confirmado' creado para orden #${createdOrder.idOrder}`);
@@ -443,6 +447,48 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
 
     if (!id) return res.status(400).json({ msg: 'order id is required' });
 
+    const allowedStatuses = new Set(['ready', 'confirmed', 'withdrawn', 'cancelled']);
+
+    const normalizeStatusValue = (value: any): string | undefined => {
+        if (value == null) return undefined;
+        const normalized = String(value).trim().toLowerCase();
+        const mapping: Record<string, string> = {
+            listo: 'ready',
+            listos: 'ready',
+            listo_a: 'ready',
+            ready: 'ready',
+            confirmado: 'confirmed',
+            confirmada: 'confirmed',
+            confirm: 'confirmed',
+            confirmed: 'confirmed',
+            retirado: 'withdrawn',
+            retirada: 'withdrawn',
+            entregado: 'withdrawn',
+            entregada: 'withdrawn',
+            withdrawn: 'withdrawn',
+            cancelado: 'cancelled',
+            cancelled: 'cancelled',
+            canceled: 'cancelled',
+            rejected: 'cancelled',
+            refunded: 'cancelled',
+            charged_back: 'cancelled',
+            unpaid: 'cancelled',
+            pending: 'confirmed',
+            approved: 'confirmed',
+            paid: 'confirmed',
+            authorized: 'confirmed',
+            in_process: 'ready',
+            processing: 'ready',
+            delivered: 'withdrawn',
+        };
+        const candidate = mapping[normalized] ?? normalized;
+        return allowedStatuses.has(candidate) ? candidate : undefined;
+    };
+
+    const normalizedStatus = normalizeStatusValue(status);
+    const normalizedStatusFromMp = normalizeStatusValue(statusMp);
+    const normalizedDescription = normalizeStatusValue(description);
+
     try {
         await db.transaction(async (t: Transaction) => {
             const order = await Order.findByPk(Number(id), { transaction: t });
@@ -458,7 +504,8 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
             }
 
             // If UI status indicates delivered/withdrawn, set actualPickupDate; otherwise clear it
-            if (status === 'delivered' || status === 'completed' || status === 'withdrawn') {
+            const effectiveStatus = normalizedStatus || normalizedStatusFromMp;
+            if (effectiveStatus === 'withdrawn') {
                 order.actualPickupDate = new Date();
             } else {
                 // clear delivered timestamp when reverting to other statuses
@@ -472,7 +519,7 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
             await Status.create({
                 idOrder: order.idOrder,
                 statusDate: new Date(),
-                description: description || (status || statusMp) || 'estado actualizado'
+                description: normalizedDescription || effectiveStatus || 'status updated'
             }, { transaction: t });
         });
 
