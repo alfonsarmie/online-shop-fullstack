@@ -1,8 +1,3 @@
-/**
- * ReceptionistOrders
- * Shows pending orders to deliver and a secondary list of orders delivered today.
- * Uses localStorage key 'adminOrders' shared with admin pages. Seeds mock orders if missing.
- */
 import React, { useEffect, useMemo, useState } from 'react';
 import '../styles/receptionist-orders.css';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -30,10 +25,11 @@ type Order = {
   items: OrderItem[];
   total: number;
   status: OrderStatus;
-  date: string; // ISO date when created
+  date: string; 
   address: string;
   paymentMethod: string;
   withdrawnAt?: string;
+  previousStatus?: OrderStatus;
 };
 
 const nowIso = () => new Date().toISOString();
@@ -67,6 +63,32 @@ const ReceptionistOrders: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Helper: map backend orders to local Order shape, carrying over previousStatus from current state
+  const mapBackendOrders = (backendList: BackendOrder[], carryFrom: Order[] = []): Order[] => {
+    return (backendList || []).map((o: BackendOrder) => {
+      const prev = carryFrom.find(p => p.id === o.idOrder)?.previousStatus;
+      return {
+        id: o.idOrder,
+        customerName: o.customer_name,
+        customerEmail: o.customer_email,
+        items: (o.orderLines || []).map((ln: BackendOrderLine) => ({
+          productId: ln.idProduct,
+          productName: ln.product?.name || ln.product_name,
+          quantity: ln.quantity,
+          price: typeof ln.subtotal === 'number' ? ln.subtotal / Math.max(1, ln.quantity) : Number(ln.subtotal) / Math.max(1, ln.quantity),
+          size: ln.size || 'Unico',
+        })),
+        total: parseDecimal(o.total_amount),
+        status: determineStatusFromBackend(o),
+        date: o.orderDate,
+        address: o.customer_notes || 'Retiro en Rowing Club',
+        paymentMethod: o.paymentMethod?.name || 'Sin datos',
+        withdrawnAt: o.actualPickupDate || undefined,
+        previousStatus: prev,
+      };
+    });
+  };
+
   // Fetch paginated orders from backend (admin list). We only need a page with many items
   useEffect(() => {
     let mounted = true;
@@ -74,25 +96,7 @@ const ReceptionistOrders: React.FC = () => {
       setLoading(true);
       try {
         const data = await orderService.getOrders({ page: 1, limit: 200 });
-        // data.orders is BackendOrder[] mapped on backend; map to local Order shape
-        const mapped: Order[] = (data.orders || []).map((o: BackendOrder) => ({
-          id: o.idOrder,
-          customerName: o.customer_name,
-          customerEmail: o.customer_email,
-          items: (o.orderLines || []).map((ln: BackendOrderLine) => ({
-            productId: ln.idProduct,
-            productName: ln.product?.name || ln.product_name,
-            quantity: ln.quantity,
-            price: typeof ln.subtotal === 'number' ? ln.subtotal / Math.max(1, ln.quantity) : Number(ln.subtotal) / Math.max(1, ln.quantity),
-            size: ln.size || 'Unico',
-          })),
-          total: parseDecimal(o.total_amount),
-          status: determineStatusFromBackend(o),
-          date: o.orderDate,
-          address: o.customer_notes || 'Retiro en Rowing Club',
-          paymentMethod: o.paymentMethod?.name || 'Sin datos',
-          withdrawnAt: o.actualPickupDate || undefined,
-        }));
+        const mapped: Order[] = mapBackendOrders(data.orders || [], []);
         if (!mounted) return;
         setOrders(mapped);
         setError('');
@@ -109,7 +113,7 @@ const ReceptionistOrders: React.FC = () => {
 
   const pendingOrders = useMemo(() => {
     const lower = filter.trim().toLowerCase();
-    const desired = new Set<OrderStatus>(['confirmed', 'ready', 'withdrawn']);
+    const desired = new Set<OrderStatus>(['confirmed', 'ready']);
     return orders
       .filter(o => desired.has(o.status))
       .filter(o => {
@@ -122,7 +126,6 @@ const ReceptionistOrders: React.FC = () => {
       });
   }, [orders, filter]);
 
-  // Show all delivered/withdrawn orders (no filtering by date)
   const deliveredOrders = useMemo(() => orders.filter(o => o.status === 'withdrawn'), [orders]);
 
   const formatDate = (iso: string) => new Date(iso).toLocaleDateString('es-AR');
@@ -141,8 +144,8 @@ const ReceptionistOrders: React.FC = () => {
   const getStatusLabel = (status: OrderStatus) => {
     switch (status) {
       case 'confirmed': return 'Confirmado';
-      case 'ready': return 'ready';
-      case 'withdrawn': return 'withdrawn';
+      case 'ready': return 'Listo';
+      case 'withdrawn': return 'Entregado';
       case 'cancelled': return 'Cancelado';
       default: return status;
     }
@@ -150,60 +153,22 @@ const ReceptionistOrders: React.FC = () => {
 
   const markAsDelivered = async (id: number) => {
     const now = nowIso();
-    // Optimistic update
-    setOrders(prev => prev.map(o => (o.id === id ? { ...o, status: 'withdrawn', withdrawnAt: now } : o)));
+    const optimistic = orders.map(o => (o.id === id ? { ...o, previousStatus: o.status, status: 'withdrawn' as OrderStatus, withdrawnAt: now } : o));
+    setOrders(optimistic);
     setSelectedOrder(null);
     try {
       await orderService.updateOrderStatus(id, {
-        status: 'withdrawn',
-        statusMp: 'approved',
-        description: 'Retirado'
+        description: 'withdrawn'
       });
-      // Refresh list from backend to ensure consistency
+
       const data = await orderService.getOrders({ page: 1, limit: 200 });
-      const mapped: Order[] = (data.orders || []).map((o: BackendOrder) => ({
-        id: o.idOrder,
-        customerName: o.customer_name,
-        customerEmail: o.customer_email,
-        items: (o.orderLines || []).map((ln: BackendOrderLine) => ({
-          productId: ln.idProduct,
-          productName: ln.product?.name || ln.product_name,
-          quantity: ln.quantity,
-          price: typeof ln.subtotal === 'number' ? ln.subtotal / Math.max(1, ln.quantity) : Number(ln.subtotal) / Math.max(1, ln.quantity),
-          size: ln.size || 'Unico',
-        })),
-        total: parseDecimal(o.total_amount),
-  status: determineStatusFromBackend(o),
-        date: o.orderDate,
-        address: o.customer_notes || 'Retiro en Rowing Club',
-        paymentMethod: o.paymentMethod?.name || 'Sin datos',
-  withdrawnAt: o.actualPickupDate || undefined,
-      }));
+      const mapped: Order[] = mapBackendOrders(data.orders || [], optimistic);
       setOrders(mapped);
     } catch (err: any) {
       console.error('Error marking order as delivered:', err);
-      // rollback optimistic update
-      // re-fetch to get correct state
       try {
         const data = await orderService.getOrders({ page: 1, limit: 200 });
-        const mapped: Order[] = (data.orders || []).map((o: BackendOrder) => ({
-          id: o.idOrder,
-          customerName: o.customer_name,
-          customerEmail: o.customer_email,
-          items: (o.orderLines || []).map((ln: BackendOrderLine) => ({
-            productId: ln.idProduct,
-            productName: ln.product?.name || ln.product_name,
-            quantity: ln.quantity,
-            price: typeof ln.subtotal === 'number' ? ln.subtotal / Math.max(1, ln.quantity) : Number(ln.subtotal) / Math.max(1, ln.quantity),
-            size: ln.size || 'Unico',
-          })),
-          total: parseDecimal(o.total_amount),
-          status: determineStatusFromBackend(o),
-          date: o.orderDate,
-          address: o.customer_notes || 'Retiro en Rowing Club',
-          paymentMethod: o.paymentMethod?.name || 'Sin datos',
-          withdrawnAt: o.actualPickupDate || undefined,
-        }));
+        const mapped: Order[] = mapBackendOrders(data.orders || [], optimistic);
         setOrders(mapped);
       } catch (e) {
         console.error('Error refetching orders after failed mark delivered:', e);
@@ -212,58 +177,24 @@ const ReceptionistOrders: React.FC = () => {
   };
 
   const revertToPending = async (id: number) => {
-    // Optimistic update: mark as confirmed (not withdrawn)
-    setOrders(prev => prev.map(o => (o.id === id ? { ...o, status: 'confirmed', withdrawnAt: undefined } : o)));
+
+  const current = orders.find(o => o.id === id);
+  const targetStatus = (current?.previousStatus ?? current?.status ?? 'confirmed') as OrderStatus;
+  const optimistic = orders.map(o => (o.id === id ? { ...o, status: targetStatus, withdrawnAt: undefined, previousStatus: undefined } : o));
+    setOrders(optimistic);
     try {
       await orderService.updateOrderStatus(id, {
-        status: 'confirmed',
-        statusMp: 'pending',
-        description: 'Revertido a pendiente'
+        description: targetStatus,
       });
-      // Refresh
       const data = await orderService.getOrders({ page: 1, limit: 200 });
-      const mapped: Order[] = (data.orders || []).map((o: BackendOrder) => ({
-        id: o.idOrder,
-        customerName: o.customer_name,
-        customerEmail: o.customer_email,
-        items: (o.orderLines || []).map((ln: BackendOrderLine) => ({
-          productId: ln.idProduct,
-          productName: ln.product?.name || ln.product_name,
-          quantity: ln.quantity,
-          price: typeof ln.subtotal === 'number' ? ln.subtotal / Math.max(1, ln.quantity) : Number(ln.subtotal) / Math.max(1, ln.quantity),
-          size: ln.size || 'Unico',
-        })),
-        total: parseDecimal(o.total_amount),
-  status: determineStatusFromBackend(o),
-        date: o.orderDate,
-        address: o.customer_notes || 'Retiro en Rowing Club',
-        paymentMethod: o.paymentMethod?.name || 'Sin datos',
-  withdrawnAt: o.actualPickupDate || undefined,
-      }));
-      setOrders(mapped);
+      const mapped: Order[] = mapBackendOrders(data.orders || [], optimistic);
+      setOrders(mapped.map(o => (o.id === id ? { ...o, previousStatus: undefined } : o)));
     } catch (err) {
       console.error('Error reverting order to pending:', err);
       // try refetch
       try {
         const data = await orderService.getOrders({ page: 1, limit: 200 });
-        const mapped: Order[] = (data.orders || []).map((o: BackendOrder) => ({
-          id: o.idOrder,
-          customerName: o.customer_name,
-          customerEmail: o.customer_email,
-          items: (o.orderLines || []).map((ln: BackendOrderLine) => ({
-            productId: ln.idProduct,
-            productName: ln.product?.name || ln.product_name,
-            quantity: ln.quantity,
-            price: typeof ln.subtotal === 'number' ? ln.subtotal / Math.max(1, ln.quantity) : Number(ln.subtotal) / Math.max(1, ln.quantity),
-            size: ln.size || 'Unico',
-          })),
-          total: parseDecimal(o.total_amount),
-          status: determineStatusFromBackend(o),
-          date: o.orderDate,
-          address: o.customer_notes || 'Retiro en Rowing Club',
-          paymentMethod: o.paymentMethod?.name || 'Sin datos',
-          withdrawnAt: o.actualPickupDate || undefined,
-        }));
+        const mapped: Order[] = mapBackendOrders(data.orders || [], orders);
         setOrders(mapped);
       } catch (e) {
         console.error('Error refetching orders after failed revert:', e);

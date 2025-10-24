@@ -99,7 +99,7 @@ const MyOrders: React.FC = () => {
 
   const handleCancelOrder = async (orderId: number) => {
     try {
-      await orderService.updateOrderStatus(orderId, { status: 'cancelled', statusMp: 'cancelled' });
+      await orderService.updateOrderStatus(orderId, { description: 'cancelled' });
       fetchOrders(); // Refresh orders
     } catch (error) {
       console.error('Error cancelling order:', error);

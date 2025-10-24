@@ -290,8 +290,7 @@ const AdminOrders: React.FC = () => {
       await Promise.all(
         changes.map(({ id, status }) =>
           orderService.updateOrderStatus(id, {
-            status,
-            description: statusDescriptions[status],
+            description: status,
           })
         )
       );

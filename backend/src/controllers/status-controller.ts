@@ -9,32 +9,12 @@ export const createStatus = async (req: Request, res: Response): Promise<Respons
     const { idOrder } = req.params;
     const { description } = req.body;
 
-    // Reuse update logic: accept canonical descriptions and some common synonyms
+    // Require the client to send the canonical description value.
     const allowedDescriptions = ['ready', 'confirmed', 'withdrawn', 'cancelled'];
     const normalize = (s: any) => (s == null ? '' : String(s).trim().toLowerCase());
-    const mapping: Record<string, string> = {
-      listo: 'ready',
-      listos: 'ready',
-      listo_a: 'ready',
-      confirmado: 'confirmed',
-      confirmada: 'confirmed',
-      entregado: 'withdrawn',
-      entregada: 'withdrawn',
-      retirado: 'withdrawn',
-      retirada: 'withdrawn',
-      cancelado: 'cancelled',
-      cancelled: 'cancelled',
-      // Common provider terms
-      pending: 'confirmed',
-      approved: 'confirmed',
-      in_process: 'ready',
-      processing: 'ready',
-      delivered: 'withdrawn',
-    };
-
-    const normalizedDesc = mapping[normalize(description)] ?? normalize(description);
+    const normalizedDesc = normalize(description);
     if (!allowedDescriptions.includes(normalizedDesc)) {
-      console.error('createStatus: normalized description not allowed:', normalizedDesc, 'original:', description);
+      console.error('createStatus: description not allowed:', normalizedDesc, 'original:', description);
       return res.status(400).json({
         message: "Invalid status description. It must be 'ready', 'confirmed', 'withdrawn', or 'cancelled'.",
       });
@@ -65,55 +45,27 @@ export const createStatus = async (req: Request, res: Response): Promise<Respons
 };
 
 /**
- * Update order status endpoint (moved from order-controller).
- * Accepts body: { status: 'ready'|'confirmed'|'withdrawn'|'cancelled', statusMp?: string }
+ * Update order status endpoint.
+ * Accepts body: { description: 'ready'|'confirmed'|'withdrawn'|'cancelled', statusMp?: string }
  */
 export const updateStatus = async (req: Request, res: Response): Promise<Response> => {
   const { idOrder } = req.params;
-  const { status, statusMp } = req.body;
-
-  // Debug logging to help trace 400/validation issues from the frontend
-  console.log('updateStatus called:', { idOrder, body: req.body, userId: (req as any).userId });
+  const { description } = req.body;
 
   if (!idOrder) return res.status(400).json({ msg: 'order id is required' });
 
   try {
     const allowed = ['ready', 'confirmed', 'withdrawn', 'cancelled'];
     const normalize = (s: any) => (s == null ? '' : String(s).trim().toLowerCase());
-    const mapping: Record<string, string> = {
-      listo: 'ready',
-      listos: 'ready',
-      listo_a: 'ready',
-      confirmado: 'confirmed',
-      confirmada: 'confirmed',
-      confirm: 'confirmed',
-      entregado: 'withdrawn',
-      entregada: 'withdrawn',
-      retirado: 'withdrawn',
-      retirada: 'withdrawn',
-      cancelado: 'cancelled',
-      cancelled: 'cancelled',
-      // Common provider terms
-      pending: 'confirmed',
-      approved: 'confirmed',
-      in_process: 'ready',
-      processing: 'ready',
-      delivered: 'withdrawn',
-    };
-
-    const normalized = mapping[normalize(status)] ?? normalize(status);
+    const normalized = normalize(description);
     if (!allowed.includes(normalized)) {
-      console.error('updateStatus: normalized status not allowed:', normalized, 'original:', status);
+      console.error('updateStatus: description not allowed:', normalized, 'original:', description);
       return res.status(400).json({ msg: `Invalid status. Allowed: ${allowed.join(', ')}` });
     }
 
     await db.transaction(async (t: Transaction) => {
       const order = await Order.findByPk(Number(idOrder), { transaction: t });
       if (!order) throw { code: 'ORDER_NOT_FOUND' };
-
-      if (typeof statusMp === 'string') {
-        order.statusMp = statusMp;
-      }
 
       if (normalized === 'withdrawn') {
         order.actualPickupDate = new Date();

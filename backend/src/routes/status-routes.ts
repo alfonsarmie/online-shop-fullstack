@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { createStatus, updateStatus } from '../controllers/status-controller';
-import { validateJWT, allowAdminOrReceptionist } from '../middlewares/validate-jwt';
+import { allowAdminOrReceptionist } from '../middlewares/validate-jwt';
 import { validateFields } from '../middlewares/validate-fields';
 import { check } from 'express-validator';
 
@@ -21,7 +21,8 @@ router.put(
   '/:idOrder',
   [
     allowAdminOrReceptionist,
-    check('status', 'Status is required').notEmpty(),
+    // The API expects a canonical `description` field (ready|confirmed|withdrawn|cancelled)
+    check('description', 'Description is required').notEmpty(),
     validateFields,
   ],
   updateStatus
