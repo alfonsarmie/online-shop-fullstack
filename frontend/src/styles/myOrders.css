@@ -201,12 +201,36 @@
 }
 
 .status-badge {
-  color: white !important;
+  color: #100f0f !important;
   padding: 0.4rem 1rem;
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid transparent;
+}
+
+.status-badge.status-confirmed {
+  background: #ffe733;
+  border-color: #ffd600;
+}
+
+.status-badge.status-ready {
+  background: #ff7f11;
+  border-color: #ff6f00;
+}
+
+.status-badge.status-withdrawn {
+  background: #66bb6a;
+  border-color: #43a047;
+}
+
+.status-badge.status-cancelled {
+  background: #ef5350;
+  border-color: #e53935;
 }
 
 .order-content {

@@ -79,7 +79,21 @@ const MyOrders: React.FC = () => {
       case 'confirmed': return 'status-badge status-confirmed';
       case 'ready': return 'status-badge status-ready';
       case 'withdrawn': return 'status-badge status-withdrawn';
+      case 'cancelled': return 'status-badge status-cancelled';
       default: return 'status-badge';
+    }
+  };
+
+  const getStatusLabel = (status: FrontendOrderStatus) => {
+    switch (status) {
+      case 'ready':
+        return 'Listo para retirar';
+      case 'withdrawn':
+        return 'Retirado';
+      case 'cancelled':
+        return 'Cancelado';
+      default:
+        return 'Confirmado';
     }
   };
 
@@ -187,9 +201,7 @@ const MyOrders: React.FC = () => {
                   <p className="order-date">{new Date(order.date).toLocaleDateString()}</p>
                 </div>
                 <span className={getStatusBadgeClass(order.status)}>
-                  {order.status === 'confirmed' ? 'Confirmado' :
-                   order.status === 'ready' ? 'Listo' :
-                   order.status === 'withdrawn' ? 'Retirado' : 'Cancelado' }
+                  {getStatusLabel(order.status)}
                 </span>
               </div>
 
@@ -262,9 +274,7 @@ const MyOrders: React.FC = () => {
                   <div className="detail-item">
                     <strong>Estado:</strong>
                     <span className={getStatusBadgeClass(selectedOrder.status)}>
-                      {selectedOrder.status === 'confirmed' ? 'Confirmado' :
-                       selectedOrder.status === 'ready' ? 'Listo' :
-                       selectedOrder.status === 'withdrawn' ? 'Retirado' : 'Cancelado'}
+                      {getStatusLabel(selectedOrder.status)}
                     </span>
                   </div>
                   <div className="detail-item">
@@ -307,7 +317,7 @@ const MyOrders: React.FC = () => {
                   <ul>
                     {selectedOrder.history.map((hist, index) => (
                       <li key={index}>
-                        {new Date(hist.statusDate).toLocaleString()}: {hist.description}
+                        {new Date(hist.statusDate).toLocaleString()}: {getStatusLabel(hist.description)}
                       </li>
                     ))}
                   </ul>

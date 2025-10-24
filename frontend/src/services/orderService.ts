@@ -11,7 +11,6 @@ const API_URL = '';
 
 // Helper to map backend order to frontend shape used in MyOrders/AdminOrders
 export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
-  console.log('Mapping order:', order.idOrder, 'orderLines:', order.orderLines);
   const items: FrontendOrderItem[] = (order.orderLines || []).map((line) => ({
     id: line.idProduct,
     name: line.product?.name || line.product_name,
@@ -21,15 +20,21 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
 		// Backend now includes `product_image` (first image url) when available
 		image: line.product_image || undefined,
   }));
-  console.log('Mapped items:', items);
 
-  // Determine frontend status
-	let status = 'pending' as FrontendOrderStatus;
-	if (order.actualPickupDate) status = 'confirmed';
-	else if (order.statusMp === 'paid') status = 'confirmed';
-	else if (order.statusMp === 'unpaid') status = 'cancelled';
+  const latestStatus = (order.latestStatus?.description ?? order.statusHistory?.[0]?.description) as
+    | FrontendOrderStatus
+    | undefined;
 
-  console.log('Order status:', status);
+  let status: FrontendOrderStatus;
+  if (latestStatus) {
+    status = latestStatus;
+  } else if (order.actualPickupDate) {
+    status = 'withdrawn';
+  } else if (order.statusMp === 'unpaid') {
+    status = 'cancelled';
+  } else {
+    status = 'confirmed';
+  }
 
   const mapped = {
     id: order.idOrder,
@@ -43,8 +48,8 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
 	canCancel: !(order.actualPickupDate) && order.statusMp !== 'paid',
     statusMp: order.statusMp,
     history: order.statusHistory || [],
+    latestStatus: order.latestStatus ?? order.statusHistory?.[0],
   };
-  console.log('Mapped order:', mapped);
   return mapped;
 };
 

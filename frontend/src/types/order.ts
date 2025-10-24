@@ -51,6 +51,7 @@ export interface BackendOrder {
   };
   orderLines: BackendOrderLine[];
   statusHistory: OrderStatusHistory[];
+  latestStatus?: OrderStatusHistory | null;
 }
 
 export interface PaginatedOrders {
@@ -87,4 +88,5 @@ export interface FrontendOrder {
   canCancel: boolean;
   statusMp?: MercadoPagoStatus;
   history: OrderStatusHistory[];
+  latestStatus?: OrderStatusHistory | null;
 }
