@@ -25,7 +25,6 @@ const ProductGallery = ({ img1, img2 }: ProductGalleryProps) => {
     setCurrentImage(index);
   };
 
-  // Manejo de gestos táctiles para swipe
   const handleTouchStart = (e: React.TouchEvent) => {
     setStartX(e.touches[0].clientX);
     setIsDragging(true);
@@ -37,21 +36,24 @@ const ProductGallery = ({ img1, img2 }: ProductGalleryProps) => {
     const endX = e.changedTouches[0].clientX;
     const diffX = startX - endX;
     
-    // Si el swipe es lo suficientemente largo (más de 50px)
     if (Math.abs(diffX) > 50) {
       if (diffX > 0) {
-        nextImage(); // Swipe left - siguiente imagen
+        nextImage();
       } else {
-        prevImage(); // Swipe right - imagen anterior
+        prevImage();
       }
     }
     
     setIsDragging(false);
   };
 
+  const handleTouchCancel = () => {
+    setIsDragging(false);
+  };
+
   return (
     <div className="product-gallery">
-      {/* Versión escritorio */}
+
       <div className="thumbnails">
         {images.map((img, index) => (
           <img
@@ -64,28 +66,30 @@ const ProductGallery = ({ img1, img2 }: ProductGalleryProps) => {
         ))}
       </div>
 
-      {/* Versión móvil - Carrusel con slider */}
-      <div className="main-image">
+      <div 
+        className="main-image"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchCancel}
+      >
         <div 
           ref={sliderRef}
           className="image-slider"
           style={{
             transform: `translateX(-${currentImage * 100}%)`
           }}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
+
         >
           {images.map((img, index) => (
             <img 
               key={index}
               src={img} 
               alt={`Imagen ${index + 1}`}
-              draggable={false} // Prevenir drag por defecto
+              draggable={false}
             />
           ))}
         </div>
         
-        {/* Controles del carrusel */}
         <div className="carousel-controls">
           <button className="carousel-btn prev" onClick={prevImage}>
             ‹
@@ -95,7 +99,6 @@ const ProductGallery = ({ img1, img2 }: ProductGalleryProps) => {
           </button>
         </div>
 
-        {/* Indicadores */}
         <div className="carousel-indicators">
           {images.map((_, index) => (
             <span

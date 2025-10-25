@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../components/CartContext';
-import '../styles/productDetails.css';
-import ProductGallery from '../components/ProductGallery';
-import { FrontendProduct, ProductWithSize, Size } from '../types/product';
-import { productService } from '../services/productService';
-import SuccessMessage from '../components/SuccessMessage';
-import ErrorMessage from '../components/ErrorMessage';
+import { useState, useEffect } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useCart } from "../components/CartContext";
+import "../styles/productDetails.css";
+import ProductGallery from "../components/ProductGallery";
+import { FrontendProduct, ProductWithSize, Size } from "../types/product";
+import { productService } from "../services/productService";
+import SuccessMessage from "../components/SuccessMessage";
+import ErrorMessage from "../components/ErrorMessage";
 
 function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -17,66 +17,67 @@ function ProductDetails() {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
-  
+
   const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProduct = async () => {
       if (!id) {
-        setError('ID de producto no válido');
+        setError("ID de producto no válido");
         setLoading(false);
         return;
       }
-      
+
       try {
         setLoading(true);
         const response = await productService.getProductById(id);
-        
-        // Extraer producto del response
+
         const productData = response?.product || response;
-        
+
         if (!productData) {
-          setError('Producto no encontrado');
+          setError("Producto no encontrado");
           setLoading(false);
           return;
         }
-        
-        // Verificar estructura del producto
+
         if (!productData.idProduct) {
-          setError('Datos del producto incompletos');
+          setError("Datos del producto incompletos");
           setLoading(false);
           return;
         }
-        
-        // Convertir la estructura del backend al formato frontend
+
         const frontendProduct: FrontendProduct = {
           id: productData.idProduct.toString(),
-          name: productData.name || 'Nombre no disponible',
-          price: productData.prices && productData.prices.length > 0 
-            ? productData.prices[0].value 
-            : 0,
-          img: productData.images && productData.images.length > 0 
-            ? productData.images[0].url 
-            : '/placeholder-image.jpg',
-          img2: productData.images && productData.images.length > 1 
-            ? productData.images[1].url 
-            : '/placeholder-image.jpg',
-          description: productData.description || 'Descripción no disponible',
+          name: productData.name || "Nombre no disponible",
+          price:
+            productData.prices && productData.prices.length > 0
+              ? productData.prices[0].value
+              : 0,
+          img:
+            productData.images && productData.images.length > 0
+              ? productData.images[0].url
+              : "/placeholder-image.jpg",
+          img2:
+            productData.images && productData.images.length > 1
+              ? productData.images[1].url
+              : "/placeholder-image.jpg",
+          description: productData.description || "Descripción no disponible",
           stock: productData.stock || 0,
-          // Mantener los sizes como objetos Size completos
-          sizes: productData.sizes ? productData.sizes.map((size: any) => ({
-            idSize: size.idSize || size.id,
-            name: size.name || size.sizeDesc || 'Talle',
-            sizeDesc: size.sizeDesc || size.name || ''
-          })) : [],
-          category: productData.category?.name
+          sizes: productData.sizes
+            ? productData.sizes.map((size: any) => ({
+                idSize: size.idSize || size.id,
+                name: size.name || size.sizeDesc || "Talle",
+                sizeDesc: size.sizeDesc || size.name || "",
+              }))
+            : [],
+          category: productData.category?.name,
         };
-        
+
         setProduct(frontendProduct);
         setError(null);
       } catch (err) {
-        console.error('Error loading product:', err);
-        setError('Error al cargar el producto.');
+        console.error("Error loading product:", err);
+        setError("Error al cargar el producto.");
       } finally {
         setLoading(false);
       }
@@ -87,7 +88,7 @@ function ProductDetails() {
 
   const handleAddToCart = () => {
     if (!selectedSize) {
-      setErrorMessage('Por favor, selecciona un talle.');
+      setErrorMessage("Por favor, selecciona un talle.");
       setTimeout(() => setErrorMessage(""), 1500);
       return;
     }
@@ -103,76 +104,84 @@ function ProductDetails() {
       description: product.description,
       sizes: product.sizes,
       stock: product.stock,
-      size: selectedSize.name, // Nombre del talle para mostrar en el carrito
-      sizeId: selectedSize.idSize, // ID del talle para enviar al backend
-      quantity: 1
+      size: selectedSize.name,
+      sizeId: selectedSize.idSize,
+      quantity: 1,
     } as ProductWithSize);
-    
-    setSuccessMessage('Producto añadido al carrito');
+
+    setSuccessMessage("Producto añadido al carrito");
     setTimeout(() => setSuccessMessage(""), 1500);
   };
 
   if (loading) return <div className="loading">Cargando producto...</div>;
-  
 
-  
-  if (!product) return (
-    <div className="not-found">
-      <h2>Producto no encontrado</h2>
-      <button onClick={() => navigate(-1)} className="btn-back">
-        Volver atrás
-      </button>
-      <Link to="/" className="btn-back">Volver a inicio</Link>
-    </div>
-  );
+  if (!product)
+    return (
+      <div className="not-found">
+        <h2>Producto no encontrado</h2>
+        <button onClick={() => navigate(-1)} className="btn-back">
+          Volver atrás
+        </button>
+        <Link to="/" className="btn-back">
+          Volver a inicio
+        </Link>
+      </div>
+    );
 
   return (
     <div className="page-with-nav-spacing">
       <div className="product-details-container">
-        <SuccessMessage message={successMessage} onClose={() => setSuccessMessage("")} />
-        <ErrorMessage message={errorMessage} onClose={() => setErrorMessage("")} />
-        <div className="product-gallery">
-          <ProductGallery
-            img1={product.img}
-            img2={product.img2}
+        <SuccessMessage
+          message={successMessage}
+          onClose={() => setSuccessMessage("")}
         />
-      </div>
-
-      <div className="product-info">
-        <h1>{product.name}</h1>
-        <p className="product-stock">
-          {product.stock > 0 ? `En stock (${product.stock} disponibles)` : 'Sin stock'}
-        </p>
-        <p className="price">${product.price.toLocaleString('es-AR')}</p>
-        <p className="description">{product.description}</p>
-
-        <div className="size-selector">
-          <h3>Talle:</h3>
-          <div className="size-options">
-            {product.sizes && product.sizes.length > 0 ? (
-              product.sizes.map(size => (
-                <button
-                  key={size.idSize}
-                  className={selectedSize?.idSize === size.idSize ? 'selected' : ''}
-                  onClick={() => setSelectedSize(size)}
-                >
-                  {size.name}
-                </button>
-              ))
-            ) : (
-              <p>No hay talles disponibles</p>
-            )}
-          </div>
+        <ErrorMessage
+          message={errorMessage}
+          onClose={() => setErrorMessage("")}
+        />
+        <div className="product-gallery">
+          <ProductGallery img1={product.img} img2={product.img2} />
         </div>
 
-        <button 
-          className="add-to-cart-btn"
-          onClick={handleAddToCart}
-          disabled={!product.stock || !selectedSize}
-        >
-          {product.stock ? 'AÑADIR AL CARRITO' : 'SIN STOCK'}
-        </button>
-      </div>
+        <div className="product-info">
+          <h1>{product.name}</h1>
+          <p className="product-stock">
+            {product.stock > 0
+              ? `En stock (${product.stock} disponibles)`
+              : "Sin stock"}
+          </p>
+          <p className="price">${product.price.toLocaleString("es-AR")}</p>
+          <p className="description">{product.description}</p>
+
+          <div className="size-selector">
+            <h3>Talle:</h3>
+            <div className="size-options">
+              {product.sizes && product.sizes.length > 0 ? (
+                product.sizes.map((size) => (
+                  <button
+                    key={size.idSize}
+                    className={
+                      selectedSize?.idSize === size.idSize ? "selected" : ""
+                    }
+                    onClick={() => setSelectedSize(size)}
+                  >
+                    {size.name}
+                  </button>
+                ))
+              ) : (
+                <p>No hay talles disponibles</p>
+              )}
+            </div>
+          </div>
+
+          <button
+            className="add-to-cart-btn"
+            onClick={handleAddToCart}
+            disabled={!product.stock || !selectedSize}
+          >
+            {product.stock ? "AÑADIR AL CARRITO" : "SIN STOCK"}
+          </button>
+        </div>
       </div>
     </div>
   );
