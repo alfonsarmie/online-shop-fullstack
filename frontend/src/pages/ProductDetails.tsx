@@ -147,7 +147,7 @@ function ProductDetails() {
           <h1>{product.name}</h1>
           <p className="product-stock">
             {product.stock > 0
-              ? `En stock (${product.stock} disponibles)`
+              ? `En stock`
               : "Sin stock"}
           </p>
           <p className="price">${product.price.toLocaleString("es-AR")}</p>
