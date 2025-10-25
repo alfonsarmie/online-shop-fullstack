@@ -1,34 +1,46 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { FiPackage } from 'react-icons/fi';
-import { orderService, mapOrderToFrontend } from '../services/orderService';
-import { FrontendOrder, FrontendOrderStatus } from '../types/order';
-import { User } from '../types/user';
-import '../styles/myOrders.css';
+import React, { useState, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
+import { FiPackage } from "react-icons/fi";
+import { orderService, mapOrderToFrontend } from "../services/orderService";
+import { FrontendOrder, FrontendOrderStatus } from "../types/order";
+import { User } from "../types/user";
+import "../styles/myOrders.css";
 
 const MyOrders: React.FC = () => {
   const [orders, setOrders] = useState<FrontendOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<FrontendOrderStatus | 'all'>('all');
-  const [selectedOrder, setSelectedOrder] = useState<FrontendOrder | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<
+    FrontendOrderStatus | "all"
+  >("all");
+  const [selectedOrder, setSelectedOrder] = useState<FrontendOrder | null>(
+    null
+  );
   const [user, setUser] = useState<User | null>(null);
 
   const filteredOrders = useMemo(() => {
-    console.log('Calculating filteredOrders with orders:', orders, 'selectedStatus:', selectedStatus);
-    const filtered = selectedStatus === 'all' ? orders : orders.filter(order => order.status === selectedStatus);
-    console.log('Filtered orders result:', filtered);
+    console.log(
+      "Calculating filteredOrders with orders:",
+      orders,
+      "selectedStatus:",
+      selectedStatus
+    );
+    const filtered =
+      selectedStatus === "all"
+        ? orders
+        : orders.filter((order) => order.status === selectedStatus);
+    console.log("Filtered orders result:", filtered);
     return filtered;
   }, [orders, selectedStatus]);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
+    const savedUser = localStorage.getItem("user");
     if (savedUser) {
       const parsedUser = JSON.parse(savedUser);
-      console.log('User loaded from localStorage:', parsedUser);
+      console.log("User loaded from localStorage:", parsedUser);
       setUser(parsedUser);
     } else {
-      console.log('No user in localStorage');
+      console.log("No user in localStorage");
     }
   }, []);
 
@@ -43,16 +55,16 @@ const MyOrders: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      console.log('Fetching orders for user:', user.idUser);
+      console.log("Fetching orders for user:", user.idUser);
       const backendOrders = await orderService.getUserOrders(user.idUser);
-      console.log('Backend orders received:', backendOrders);
+      console.log("Backend orders received:", backendOrders);
       const frontendOrders = backendOrders.map(mapOrderToFrontend);
-      console.log('Frontend orders mapped:', frontendOrders);
-      console.log('Setting orders state to:', frontendOrders);
+      console.log("Frontend orders mapped:", frontendOrders);
+      console.log("Setting orders state to:", frontendOrders);
       setOrders(frontendOrders);
     } catch (error) {
-      console.error('Error fetching orders:', error);
-      setError('Error al cargar los pedidos. Por favor, intenta de nuevo.');
+      console.error("Error fetching orders:", error);
+      setError("Error al cargar los pedidos. Por favor, intenta de nuevo.");
     } finally {
       setLoading(false);
     }
@@ -66,7 +78,7 @@ const MyOrders: React.FC = () => {
       withdrawn: 0,
       cancelled: 0,
     };
-    orders.forEach(order => {
+    orders.forEach((order) => {
       counts[order.status]++;
     });
     return counts;
@@ -76,33 +88,40 @@ const MyOrders: React.FC = () => {
 
   const getStatusBadgeClass = (status: FrontendOrderStatus) => {
     switch (status) {
-      case 'confirmed': return 'status-badge status-confirmed';
-      case 'ready': return 'status-badge status-ready';
-      case 'withdrawn': return 'status-badge status-withdrawn';
-      case 'cancelled': return 'status-badge status-cancelled';
-      default: return 'status-badge';
+      case "confirmed":
+        return "status-badge status-confirmed";
+      case "ready":
+        return "status-badge status-ready";
+      case "withdrawn":
+        return "status-badge status-withdrawn";
+      case "cancelled":
+        return "status-badge status-cancelled";
+      default:
+        return "status-badge";
     }
   };
 
   const getStatusLabel = (status: FrontendOrderStatus) => {
     switch (status) {
-      case 'ready':
-        return 'Listo para retirar';
-      case 'withdrawn':
-        return 'Retirado';
-      case 'cancelled':
-        return 'Cancelado';
+      case "ready":
+        return "Listo para retirar";
+      case "withdrawn":
+        return "Retirado";
+      case "cancelled":
+        return "Cancelado";
       default:
-        return 'Confirmado';
+        return "Confirmado";
     }
   };
 
   const handleCancelOrder = async (orderId: number) => {
     try {
-      await orderService.updateOrderStatus(orderId, { description: 'cancelled' });
+      await orderService.updateOrderStatus(orderId, {
+        description: "cancelled",
+      });
       fetchOrders(); // Refresh orders
     } catch (error) {
-      console.error('Error cancelling order:', error);
+      console.error("Error cancelling order:", error);
     }
   };
 
@@ -113,7 +132,9 @@ const MyOrders: React.FC = () => {
           <div className="empty-icon">🔒</div>
           <h3>Acceso requerido</h3>
           <p>Debes iniciar sesión para ver tus pedidos.</p>
-          <Link to="/login" className="shop-button">Iniciar Sesión</Link>
+          <Link to="/login" className="shop-button">
+            Iniciar Sesión
+          </Link>
         </div>
       </div>
     );
@@ -137,7 +158,9 @@ const MyOrders: React.FC = () => {
           <div className="empty-icon">⚠️</div>
           <h3>Error al cargar pedidos</h3>
           <p>{error}</p>
-          <button className="shop-button" onClick={fetchOrders}>Reintentar</button>
+          <button className="shop-button" onClick={fetchOrders}>
+            Reintentar
+          </button>
         </div>
       </div>
     );
@@ -146,59 +169,71 @@ const MyOrders: React.FC = () => {
   return (
     <div className="my-orders-container">
       <div className="orders-header">
-        <Link to="/" className="back-button">← Volver al inicio</Link>
+        <Link to="/" className="back-button">
+          ← Volver al inicio
+        </Link>
         <h1>Mis Pedidos</h1>
         <p>Revisa el estado de tus compras y pedidos anteriores</p>
       </div>
 
       <div className="status-filters">
         <button
-          className={`status-pill ${selectedStatus === 'all' ? 'active' : ''}`}
-          onClick={() => setSelectedStatus('all')}
+          className={`status-pill ${selectedStatus === "all" ? "active" : ""}`}
+          onClick={() => setSelectedStatus("all")}
         >
           Todos <span className="status-count">{statusCounts.all}</span>
         </button>
         <button
-          className={`status-pill ${selectedStatus === 'ready' ? 'active' : ''}`}
-          onClick={() => setSelectedStatus('ready')}
+          className={`status-pill ${selectedStatus === "ready" ? "active" : ""}`}
+          onClick={() => setSelectedStatus("ready")}
         >
-          Listo para retirar <span className="status-count">{statusCounts.ready}</span>
+          Listo para retirar{" "}
+          <span className="status-count">{statusCounts.ready}</span>
         </button>
         <button
-          className={`status-pill ${selectedStatus === 'confirmed' ? 'active' : ''}`}
-          onClick={() => setSelectedStatus('confirmed')}
+          className={`status-pill ${selectedStatus === "confirmed" ? "active" : ""}`}
+          onClick={() => setSelectedStatus("confirmed")}
         >
-          Confirmado <span className="status-count">{statusCounts.confirmed}</span>
+          Confirmado{" "}
+          <span className="status-count">{statusCounts.confirmed}</span>
         </button>
         <button
-          className={`status-pill ${selectedStatus === 'withdrawn' ? 'active' : ''}`}
-          onClick={() => setSelectedStatus('withdrawn')}
+          className={`status-pill ${selectedStatus === "withdrawn" ? "active" : ""}`}
+          onClick={() => setSelectedStatus("withdrawn")}
         >
-          Retirado <span className="status-count">{statusCounts.withdrawn}</span>
+          Retirado{" "}
+          <span className="status-count">{statusCounts.withdrawn}</span>
         </button>
         <button
-          className={`status-pill ${selectedStatus === 'cancelled' ? 'active' : ''}`}
-          onClick={() => setSelectedStatus('cancelled')}
+          className={`status-pill ${selectedStatus === "cancelled" ? "active" : ""}`}
+          onClick={() => setSelectedStatus("cancelled")}
         >
-          Cancelado <span className="status-count">{statusCounts.cancelled}</span>
+          Cancelado{" "}
+          <span className="status-count">{statusCounts.cancelled}</span>
         </button>
       </div>
 
       {filteredOrders.length === 0 ? (
-          <div className="empty-orders">
-            <div className="empty-icon"><FiPackage size={64} /></div>
-            <h3>No hay pedidos</h3>
-            <p>No tienes pedidos en esta categoría.</p>
-            <Link to="/catalog" className="shop-button">Explorar productos</Link>
+        <div className="empty-orders">
+          <div className="empty-icon">
+            <FiPackage size={32} />
           </div>
+          <h3>No hay pedidos</h3>
+          <p>No tienes pedidos en esta categoría.</p>
+          <Link to="/catalog" className="shop-button">
+            Explorar productos
+          </Link>
+        </div>
       ) : (
         <div className="orders-list">
-          {filteredOrders.map(order => (
+          {filteredOrders.map((order) => (
             <div key={order.id} className="order-card">
               <div className="order-header">
                 <div className="order-info">
                   <h3>{order.orderNumber}</h3>
-                  <p className="order-date">{new Date(order.date).toLocaleDateString()}</p>
+                  <p className="order-date">
+                    {new Date(order.date).toLocaleDateString()}
+                  </p>
                 </div>
                 <span className={getStatusBadgeClass(order.status)}>
                   {getStatusLabel(order.status)}
@@ -207,12 +242,15 @@ const MyOrders: React.FC = () => {
 
               <div className="order-content">
                 <div className="order-items">
-                  {order.items.slice(0, 3).map(item => (
+                  {order.items.slice(0, 3).map((item) => (
                     <div key={item.id} className="order-item-preview">
                       <img
                         src={orderService.getItemImage(item.image)}
                         alt={item.name}
-                        onError={(e) => { (e.target as HTMLImageElement).src = orderService.getItemImage(); }}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            orderService.getItemImage();
+                        }}
                       />
                     </div>
                   ))}
@@ -228,15 +266,22 @@ const MyOrders: React.FC = () => {
               </div>
 
               <div className="order-footer">
-                {order.status === 'withdrawn' && (
+                {/* --- SE AÑADIÓ ESTE BLOQUE --- */}
+                {order.status === "ready" && (
+                  <div className="ready-info">
+                    <FiPackage size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                    <span>¡Listo para retirar!</span>
+                  </div>
+                )}
+                {order.status === "withdrawn" && (
                   <div className="completed-info">
-                    <span>✓</span>
+                    <FiPackage size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
                     <span>Pedido completado</span>
                   </div>
                 )}
-                {order.status === 'cancelled' && (
+                {order.status === "cancelled" && (
                   <div className="cancelled-info">
-                    <span>✗</span>
+                    <FiPackage size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
                     <span>Pedido cancelado</span>
                   </div>
                 )}
@@ -247,8 +292,6 @@ const MyOrders: React.FC = () => {
                   >
                     Ver detalles
                   </button>
-                  {/* Cancel button removed per request */}
-                  {/* buy again button removed per request */}
                 </div>
               </div>
             </div>
@@ -258,10 +301,15 @@ const MyOrders: React.FC = () => {
 
       {selectedOrder && (
         <div className="modal-overlay" onClick={() => setSelectedOrder(null)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Detalles del pedido {selectedOrder.orderNumber}</h2>
-              <button className="close-modal" onClick={() => setSelectedOrder(null)}>×</button>
+              <button
+                className="close-modal"
+                onClick={() => setSelectedOrder(null)}
+              >
+                ×
+              </button>
             </div>
             <div className="modal-body">
               <div className="order-detail-section">
@@ -269,7 +317,9 @@ const MyOrders: React.FC = () => {
                 <div className="detail-grid">
                   <div className="detail-item">
                     <strong>Fecha del pedido:</strong>
-                    <span>{new Date(selectedOrder.date).toLocaleDateString()}</span>
+                    <span>
+                      {new Date(selectedOrder.date).toLocaleDateString()}
+                    </span>
                   </div>
                   <div className="detail-item">
                     <strong>Estado:</strong>
@@ -284,7 +334,9 @@ const MyOrders: React.FC = () => {
                   {selectedOrder.pickupDate && (
                     <div className="detail-item">
                       <strong>Fecha de retiro:</strong>
-                      <span>{new Date(selectedOrder.pickupDate).toLocaleString()}</span>
+                      <span>
+                        {new Date(selectedOrder.pickupDate).toLocaleString()}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -293,18 +345,23 @@ const MyOrders: React.FC = () => {
               <div className="order-detail-section">
                 <h4>Productos</h4>
                 <div className="order-items-detail">
-                  {selectedOrder.items.map(item => (
+                  {selectedOrder.items.map((item) => (
                     <div key={item.id} className="order-item-detail">
                       <img
                         src={orderService.getItemImage(item.image)}
                         alt={item.name}
-                        onError={(e) => { (e.target as HTMLImageElement).src = orderService.getItemImage(); }}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            orderService.getItemImage();
+                        }}
                       />
                       <div className="item-details">
                         <h4>{item.name}</h4>
                         <p>Cantidad: {item.quantity}</p>
                         {item.size && <p>Talla: {item.size}</p>}
-                        <p className="item-price">${item.price.toFixed(2)} c/u</p>
+                        <p className="item-price">
+                          ${item.price.toFixed(2)} c/u
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -314,18 +371,29 @@ const MyOrders: React.FC = () => {
               {selectedOrder.history && selectedOrder.history.length > 0 && (
                 <div className="order-detail-section">
                   <h4>Historial de estados</h4>
-                  <ul>
+                  {/* Convertimos el <ul> en un <div> con clases para la timeline */}
+                  <div className="status-history-list">
                     {selectedOrder.history.map((hist, index) => (
-                      <li key={index}>
-                        {new Date(hist.statusDate).toLocaleString()}: {getStatusLabel(hist.description)}
-                      </li>
+                      <div key={index} className="history-item">
+                        <span className="history-date">
+                          {new Date(hist.statusDate).toLocaleString()}
+                        </span>
+                        <span className="history-status">
+                          {getStatusLabel(hist.description)}
+                        </span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               )}
             </div>
             <div className="modal-footer">
-              <button className="close-button" onClick={() => setSelectedOrder(null)}>Cerrar</button>
+              <button
+                className="close-button"
+                onClick={() => setSelectedOrder(null)}
+              >
+                Cerrar
+              </button>
             </div>
           </div>
         </div>

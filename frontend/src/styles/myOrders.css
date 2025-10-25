@@ -6,7 +6,6 @@
   min-height: 100vh;
 }
 
-/* Header */
 .orders-header {
   text-align: center;
   margin-bottom: 3rem;
@@ -93,7 +92,6 @@
   border-radius: 999px;
 }
 
-/* Loading */
 .loading-spinner {
   display: flex;
   flex-direction: column;
@@ -117,7 +115,6 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Empty State */
 .empty-orders {
   text-align: center;
   padding: 4rem 2rem;
@@ -158,7 +155,6 @@
   text-decoration: none;
 }
 
-/* Orders List */
 .orders-list {
   display: flex;
   flex-direction: column;
@@ -245,7 +241,6 @@
 }
 
 .orders-list .order-items {
-  /* show thumbnails in a row inside each order card */
   flex-direction: row;
   gap: 0.75rem;
   margin-top: 1rem;
@@ -327,16 +322,17 @@
 .order-actions {
   display: flex;
   gap: 1rem;
-  justify-content: flex-end;
 }
 
 .order-footer {
   display: flex;
   gap: 1rem;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   margin-top: 1.2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e9ecef;
 }
 
 .view-details-btn {
@@ -355,7 +351,6 @@
   background-color: #357abd;
 }
 
-/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -374,57 +369,73 @@
 .modal-content {
   background: white;
   border-radius: 20px;
-  max-width: 600px;
+  max-width: 700px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
+  padding: 1.5rem 2rem;
   border-bottom: 1px solid #e9ecef;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background-color: #f8f9fa;
   border-radius: 20px 20px 0 0;
 }
 
 .modal-header h2 {
   margin: 0;
   color: #323232;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
+  font-weight: 600;
 }
 
 .close-modal {
-  background: none;
+  background: #e9ecef;
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #6c757d;
-  padding: 0.5rem;
+  color: #323232;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  transition: all 0.3s ease;
 }
 
 .close-modal:hover {
-  background-color: #e9ecef;
-  color: #323232;
-}S
+  background-color: #d1d8de;
+  transform: scale(1.05);
+}
 
 .modal-body {
-  padding: 1.5rem;
+  padding: 2rem;
+  overflow-y: auto;
+  flex-grow: 1;
 }
 
 .order-detail-section {
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.order-detail-section:last-child {
+  margin-bottom: 0;
 }
 
 .order-detail-section h4 {
   color: #323232;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
   border-bottom: 2px solid #1E7335;
   padding-bottom: 0.5rem;
 }
@@ -432,8 +443,7 @@
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: 1.5rem;
 }
 
 .detail-item {
@@ -460,9 +470,10 @@
 .order-item-detail {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
   padding: 1rem;
   background: #f8f9fa;
+  border: 1px solid #e9ecef;
   border-radius: 12px;
 }
 
@@ -470,24 +481,14 @@
   width: 72px;
   height: 72px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 2px solid #e9ecef;
-}
-
-/* myOrders.css - Secciones nuevas agregadas */
-
-/* Order Footer */
-.order-footer {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e9ecef;
 }
 
 .pickup-info {
   background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
   padding: 1rem;
   border-radius: 12px;
-  margin-bottom: 1rem;
   border-left: 4px solid #4a90e2;
 }
 
@@ -512,6 +513,18 @@
   font-size: 0.9rem;
 }
 
+.ready-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+  color: #0277bd;
+  border-left: 4px solid #0277bd;
+}
+
 .completed-info,
 .cancelled-info {
   display: flex;
@@ -519,7 +532,6 @@
   gap: 0.5rem;
   padding: 1rem;
   border-radius: 12px;
-  margin-bottom: 1rem;
   font-weight: 600;
 }
 
@@ -535,7 +547,6 @@
   border-left: 4px solid #dc3545;
 }
 
-/* Botones de acción */
 .cancel-order-btn { display: none; }
 
 .details-button {
@@ -556,7 +567,6 @@
   transform: translateY(-1px);
 }
 
-/* Modal adicional */
 .pickup-notice {
   background: #fff8e1;
   border: 1px solid #ffd54f;
@@ -599,13 +609,14 @@
   margin: 0.8rem 0 !important;
 }
 
-/* Footer del modal */
 .modal-footer {
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
-  padding: 1.5rem;
+  padding: 1.5rem 2rem;
   border-top: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+  border-radius: 0 0 20px 20px;
 }
 
 .cancel-button {
@@ -640,21 +651,70 @@
   background-color: #5a6268;
 }
 
-/* Responsive */
+.status-history-list {
+  position: relative;
+  padding-left: 25px; 
+  margin-top: 1rem;
+}
+
+.status-history-list::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 5px;
+  bottom: 5px;
+  width: 2px;
+  background-color: #e9ecef;
+  border-radius: 2px;
+}
+
+.history-item {
+  position: relative;
+  margin-bottom: 1.5rem; 
+}
+
+.history-item::before {
+  content: '';
+  position: absolute;
+  left: -20px; 
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #1E7335;
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px #1E7335; 
+}
+
+.history-item:last-child {
+  margin-bottom: 0;
+}
+
+.history-date {
+  display: block;
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 0.25rem;
+}
+
+.history-status {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #323232;
+}
+
 @media (max-width: 768px) {
   .order-actions {
     flex-direction: column;
   }
-  
   .modal-footer {
     flex-direction: column;
   }
-  
   .pickup-alert {
     flex-direction: column;
     text-align: center;
   }
-  
   .alert-icon {
     align-self: center;
   }
