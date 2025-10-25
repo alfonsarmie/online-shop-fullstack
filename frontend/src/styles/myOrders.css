@@ -1,4 +1,3 @@
-/* myOrders.css */
 .my-orders-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -207,7 +206,6 @@
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
-  display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   border: 1px solid transparent;
