@@ -463,3 +463,36 @@ export const getMonthlyWorth = async (req: Request, res: Response) => {
         });
     }
 };
+
+export const getSportsStats = async (req: Request, res: Response) => {
+    try {
+        const now = new Date();
+
+        const startDate = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+        
+        const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+        const sportsStats = await Order.findAll({
+            attributes: [
+                'sport',
+                [Order.sequelize!.fn('COUNT', Order.sequelize!.col('idOrder')), 'ordersCount']
+            ],
+            where: {
+                orderDate: {
+                    [Op.between]: [startDate, endDate]
+                }
+            },
+            group: ['sport'],
+            raw: true,
+        });
+
+        return res.status(200).json({
+            stats: sportsStats
+        });
+    } catch (error: any) {
+        return res.status(500).json({
+            msg: 'Error fetching Orders by Sports',
+            error: error.message,
+        });
+    }
+};

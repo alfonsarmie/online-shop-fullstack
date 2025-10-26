@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { check } from 'express-validator';
 import { validateFields } from '../middlewares/validate-fields';
 import { allowAdminOrReceptionist, validateJWT } from '../middlewares/validate-jwt';
-import { createOrderFromSession, getUserOrders, getOrders, getMonthlyWorth } from '../controllers/order-controller';
+import { createOrderFromSession, getUserOrders, getOrders, getMonthlyWorth, getSportsStats } from '../controllers/order-controller';
 
 const router = Router();
 
@@ -58,5 +58,17 @@ router.get(
     [validateJWT],
     getMonthlyWorth
 );
+
+/**
+ * @route GET /api/orders
+ * @desc Obtiene los pedidos por deporte de los ultimos 3 meses
+ * @access Private/Admin
+ */
+
+router.get(
+    '/sports',
+    [validateJWT],
+    getSportsStats
+)
 
 export default router;
