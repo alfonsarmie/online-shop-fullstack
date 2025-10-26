@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 import { Request, Response } from 'express';
-import { Transaction } from 'sequelize';
+import { Transaction, Op } from 'sequelize';
 import { db } from '../db/connection';
 import Order from '../models/order-model';
 import OrderLine from '../models/order-line-model';
@@ -435,3 +435,31 @@ export const getOrders = async (req: Request, res: Response) => {
     }
 };
 
+export const getMonthlyWorth = async (req: Request, res: Response) => {
+    try {
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1);
+
+        const total = await Order.sum('total_amount', {
+            where: {
+                orderDate: {
+                    [Op.between]: [startOfMonth, endOfMonth]
+                }
+            }
+        });
+
+        const monthlyWorth = Number(total || 0);
+
+        return res.status(200).json({
+            total_monthly_worth: monthlyWorth,
+            month: now.getMonth() + 1, // Mes actual (1-12)
+        });
+
+    } catch (error: any) {
+        return res.status(500).json({
+            msg: 'Error fetching monthly worth',
+            error: error.message,
+        });
+    }
+};

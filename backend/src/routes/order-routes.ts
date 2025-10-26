@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 import { validateFields } from '../middlewares/validate-fields';
-import { allowAdminOrReceptionist } from '../middlewares/validate-jwt';
-import { createOrderFromSession, getUserOrders, getOrders } from '../controllers/order-controller';
+import { allowAdminOrReceptionist, validateJWT } from '../middlewares/validate-jwt';
+import { createOrderFromSession, getUserOrders, getOrders, getMonthlyWorth } from '../controllers/order-controller';
 
 const router = Router();
 
@@ -47,7 +47,16 @@ router.get(
     getOrders
 );
 
-// Note: order status update moved to status-routes (status-controller.updateStatus)
+/**
+ * @route GET /api/orders
+ * @desc Obtiene el total facturado mensual
+ * @access Private/Admin
+ */
 
+router.get(
+    '/worth',
+    [validateJWT],
+    getMonthlyWorth
+);
 
 export default router;
