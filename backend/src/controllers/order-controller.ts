@@ -285,18 +285,18 @@ export const getUserOrders = async (req: Request, res: Response) => {
                     model: OrderLine,
                     as: 'orderLines',
                     include: [
+                        {
+                            model: Product,
+                            as: 'product',
+                            attributes: ['idProduct', 'name'],
+                            include: [
                                 {
-                                    model: Product,
-                                    as: 'product',
-                                    attributes: ['idProduct', 'name'],
-                                    include: [
-                                        {
-                                            model: (await import('../models/image-model')).default,
-                                            as: 'images',
-                                            attributes: ['url'],
-                                        },
-                                    ],
+                                    model: (await import('../models/image-model')).default,
+                                    as: 'images',
+                                    attributes: ['url'],
                                 },
+                            ],
+                        },
                         {
                             model: Size,
                             as: 'size',
@@ -309,6 +309,7 @@ export const getUserOrders = async (req: Request, res: Response) => {
                     as: 'statusHistory',
                     attributes: ['statusDate', 'description'],
                     order: [['statusDate', 'DESC']],
+                    separate: true
                 },
             ],
             order: [['orderDate', 'DESC']], // Más recientes primero

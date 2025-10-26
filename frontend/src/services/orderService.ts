@@ -24,8 +24,7 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
     image: line.product_image || undefined,
   }));
 
-  const latestStatus = (order.latestStatus?.description ??
-    order.statusHistory?.[0]?.description) as FrontendOrderStatus | undefined;
+  const latestStatus = (order.latestStatus?.description ?? order.statusHistory?.[0]?.description) as FrontendOrderStatus | undefined;
 
   let status: FrontendOrderStatus;
   if (latestStatus) {

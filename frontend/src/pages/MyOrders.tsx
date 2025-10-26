@@ -114,17 +114,6 @@ const MyOrders: React.FC = () => {
     }
   };
 
-  const handleCancelOrder = async (orderId: number) => {
-    try {
-      await orderService.updateOrderStatus(orderId, {
-        description: "cancelled",
-      });
-      fetchOrders(); // Refresh orders
-    } catch (error) {
-      console.error("Error cancelling order:", error);
-    }
-  };
-
   if (!user) {
     return (
       <div className="my-orders-container">
@@ -266,7 +255,6 @@ const MyOrders: React.FC = () => {
               </div>
 
               <div className="order-footer">
-                {/* --- SE AÑADIÓ ESTE BLOQUE --- */}
                 {order.status === "ready" && (
                   <div className="ready-info">
                     <FiPackage size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
