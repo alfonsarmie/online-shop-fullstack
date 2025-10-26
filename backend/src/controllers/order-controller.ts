@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 import { Request, Response } from 'express';
-import { Transaction, Op } from 'sequelize';
+import { Transaction, Op, Sequelize } from 'sequelize';
 import { db } from '../db/connection';
 import Order from '../models/order-model';
 import OrderLine from '../models/order-line-model';
@@ -469,7 +469,7 @@ export const getSportsStats = async (req: Request, res: Response) => {
         const now = new Date();
 
         const startDate = new Date(now.getFullYear(), now.getMonth() - 2, 1);
-        
+
         const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
 
         const sportsStats = await Order.findAll({
@@ -496,3 +496,57 @@ export const getSportsStats = async (req: Request, res: Response) => {
         });
     }
 };
+
+export const getStatusStats = async (req: Request, res: Response) => {
+    try {
+        const now = new Date();
+        const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+        //const orders = await Order.findAll({
+        //    where: {
+        //        orderDate: {
+        //            [Op.between]: [startDate, endDate]
+        //        }
+        //    },
+        //    include: [
+        //        {
+        //            model: Status,
+        //            as: 'statusHistory',
+        //            attributes: ['statusDate', 'description'],
+        //            order: [['statusDate', 'DESC']],
+        //            limit: 1 
+        //        }
+        //    ]
+        //});
+
+        const statusCounts = await Order.findAll({
+            where: {
+                orderDate: {
+                    [Op.between]: [startDate, endDate]
+                }
+            },
+            include: [
+                {
+                    model: Status,
+                    as: 'statusHistory',
+                    attributes: ['description'],
+                    required: false // Use left join to include orders without status
+                }
+            ],
+            attributes: [
+                [Sequelize.col('statusHistory.description'), 'status'],
+                [Sequelize.fn('COUNT', Sequelize.col('Order.idOrder')), 'count']
+            ],
+            group: ['statusHistory.description'],
+            raw: true
+        });
+
+        return res.status(200).json({ stats: statusCounts });
+    } catch (error: any) {
+        return res.status(500).json({
+            msg: 'Error fetching Orders by Status',
+            error: error.message,
+        });
+    }
+}
