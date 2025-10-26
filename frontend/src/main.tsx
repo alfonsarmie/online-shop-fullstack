@@ -5,8 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import './styles/page-layout.css';
 
-// Debug utilities for development
-import('./utils/debugOrders');
+
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

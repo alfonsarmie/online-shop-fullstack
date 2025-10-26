@@ -309,7 +309,6 @@ export const getUserOrders = async (req: Request, res: Response) => {
                     as: 'statusHistory',
                     attributes: ['statusDate', 'description'],
                     order: [['statusDate', 'DESC']],
-                    limit: 1, // Solo el más reciente
                 },
             ],
             order: [['orderDate', 'DESC']], // Más recientes primero
