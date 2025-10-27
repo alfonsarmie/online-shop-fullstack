@@ -87,6 +87,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: 'Afacad', sans-serif;
+  font-size: .9rem;
 }
 
 .role-option:hover {

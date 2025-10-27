@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import '../styles/receptionist-orders.css';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
 import { orderService } from '../services/orderService';
 import type { BackendOrder, BackendOrderLine } from '../types/order';
 
@@ -215,7 +216,7 @@ const ReceptionistOrders: React.FC = () => {
       )}
 
       {error && (
-        <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>
+        <ErrorMessage message={error} />
       )}
 
       <section className="panel">

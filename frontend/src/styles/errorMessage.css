@@ -1,11 +1,11 @@
 .error-message {
-  background-color: #fdecea; 
-  color: rgb(233, 53, 53); 
-  padding: 12px 40px 12px 20px;
+  background-color: #fdecea;
+  color: rgb(233, 53, 53);
+  padding: 12px 10px 12px 20px;
   border-radius: 4px;
   margin: 10px 0;
-  border-left: 4px solid rgb(233, 53, 53); 
-  font-family: 'Afacad', sans-serif;
+  border-left: 4px solid rgb(233, 53, 53);
+  font-family: "Afacad", sans-serif;
   position: fixed;
   top: 100px;
   right: 20px;
@@ -14,29 +14,31 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.5s ease-in-out;
   font-weight: bold;
-  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  font-size: 1rem;
 }
 
 .close-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
   background: transparent;
   border: none;
   color: rgb(233, 53, 53);
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: 500;
   cursor: pointer;
   padding: 0;
-  width: 20px;
-  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
 }
 
 .close-btn:hover {
-  background-color: rgba(46, 125, 50, 0.1);
+  color: rgb(126, 26, 26);
 }
 
 @keyframes fadeIn {

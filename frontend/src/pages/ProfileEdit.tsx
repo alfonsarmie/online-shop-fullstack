@@ -6,6 +6,7 @@ import "../styles/profileEdit.css";
 import WhatsAppButton from "../components/WhatsAppButton";
 import axios from "axios";
 import SuccessMessage from "../components/SuccessMessage";
+import ErrorMessage from "../components/ErrorMessage";
 
 // Interface for profile data
 interface Profile {
@@ -53,6 +54,9 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
 
   // State for success message
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // State for error message
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Original profile state to check for changes
   const [originalProfile, setOriginalProfile] = useState<Profile>({
@@ -233,9 +237,9 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
           setSuccessMessage("");
         }, 3000);
       } else {
-        setSuccessMessage("Error al actualizar el perfil");
+        setErrorMessage("Error al actualizar el perfil");
         setTimeout(() => {
-          setSuccessMessage("");
+          setErrorMessage("");
         }, 3000);
       }
     } catch (error: any) {
@@ -254,7 +258,8 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     e.preventDefault();
 
     if (!canUpdatePassword()) {
-      alert("Por favor, completa todos los campos correctamente");
+      setErrorMessage("Por favor, completa todos los campos correctamente");
+      setTimeout(() => setErrorMessage(""), 3000);
       return;
     }
 
@@ -284,18 +289,18 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
           setSuccessMessage("");
         }, 3000);
       } else {
-        setSuccessMessage("Error al cambiar la contraseña");
+        setErrorMessage("Error al cambiar la contraseña");
         setTimeout(() => {
-          setSuccessMessage("");
+          setErrorMessage("");
         }, 3000);
       }
     } catch (error: any) {
       console.error("Error:", error);
-      setSuccessMessage(
+      setErrorMessage(
         error.response?.data?.message || "Error al cambiar la contraseña"
       );
       setTimeout(() => {
-        setSuccessMessage("");
+        setErrorMessage("");
       }, 3000);
     }
   };
@@ -325,6 +330,12 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
         <SuccessMessage
           message={successMessage}
           onClose={() => setSuccessMessage("")}
+        />
+      )}
+      {errorMessage && (
+        <ErrorMessage
+          message={errorMessage}
+          onClose={() => setErrorMessage("")}
         />
       )}
       <h2>Editar Perfil</h2>

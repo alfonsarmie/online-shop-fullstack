@@ -4,6 +4,7 @@ import { useCheckoutQuery } from '../utils/useCheckoutQuery';
 import '../styles/checkout-status.css';
 import { useSearchParams } from 'react-router-dom';
 import api from '../services/api';
+import ErrorMessage from '../components/ErrorMessage';
 
 export default function CheckoutSuccess() {
   const info = useCheckoutQuery();
@@ -105,9 +106,7 @@ export default function CheckoutSuccess() {
         </p>
 
         {error && (
-          <div style={{ color: '#dc2626', padding: '10px', marginBottom: '10px' }}>
-            {error}
-          </div>
+          <ErrorMessage message={error} />
         )}
 
         {displayOrderNumber && !isCreatingOrder && (

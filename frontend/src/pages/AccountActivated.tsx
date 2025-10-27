@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import logo from '../assets/img/logo.png';
 import '../styles/account-activated.css';
+import ErrorMessage from '../components/ErrorMessage';
 
 export default function AccountActivated() {
   const { token } = useParams<{ token: string }>();
@@ -62,7 +63,7 @@ export default function AccountActivated() {
         <div className="account-activated-card error">
           <img src={logo} alt="Logo de la tienda" className="account-activated-logo" />
           <h1>Error de activación</h1>
-          <p className="error-message">{error}</p>
+          <ErrorMessage message={error} />
           <div className="account-activated-actions">
             <button
               type="button"
