@@ -523,7 +523,8 @@ export const getStatusStats = async (req: Request, res: Response) => {
         //    ]
         //});
 
-        const statusCounts = await Order.findAll({
+        // Primero obtenemos todos los pedidos del mes
+        const orders = await Order.findAll({
             where: {
                 orderDate: {
                     [Op.between]: [startDate, endDate]
@@ -533,19 +534,32 @@ export const getStatusStats = async (req: Request, res: Response) => {
                 {
                     model: Status,
                     as: 'statusHistory',
-                    attributes: ['description'],
-                    required: false // Use left join to include orders without status
+                    attributes: ['statusDate', 'description'],
+                    order: [['statusDate', 'DESC']],
+                    limit: 1 // Solo el estado más reciente
                 }
-            ],
-            attributes: [
-                [Sequelize.col('statusHistory.description'), 'status'],
-                [Sequelize.fn('COUNT', Sequelize.col('Order.idOrder')), 'count']
-            ],
-            group: ['statusHistory.description'],
-            raw: true
+            ]
         });
 
-        return res.status(200).json({ stats: statusCounts });
+        // Contamos los pedidos por estado
+        const statusCounts: { [key: string]: number } = {};
+        
+        orders.forEach(order => {
+            const orderWithStatus = order as PlainOrder;
+            const currentStatus = orderWithStatus.statusHistory && orderWithStatus.statusHistory.length > 0 
+                ? orderWithStatus.statusHistory[0].description 
+                : 'Sin estado';
+            
+            statusCounts[currentStatus] = (statusCounts[currentStatus] || 0) + 1;
+        });
+
+        // Convertimos a array para mantener la misma estructura de respuesta
+        const result = Object.entries(statusCounts).map(([status, count]) => ({
+            status,
+            count
+        }));
+
+        return res.status(200).json({ stats: result });
     } catch (error: any) {
         return res.status(500).json({
             msg: 'Error fetching Orders by Status',
