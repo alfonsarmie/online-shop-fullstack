@@ -3,10 +3,12 @@ import Product from "../models/product-model";
 import Category from "../models/category-model";
 import Price from "../models/price-model";
 import Image from "../models/image-model";
+import Order from '../models/order-model';
 import db from "../db/connection";
 import ProductSize from "../models/size-product-model";
 import Size from "../models/size-model";
-import { FindOptions, Op, WhereOptions } from "sequelize";
+import { FindOptions, Op, WhereOptions, fn, col, literal } from "sequelize";
+
 
 // Extend FindOptions locally to include the optional `escape` property used for LIKE queries
 type FindOptionsWithEscape = FindOptions & { escape?: string };
@@ -473,3 +475,32 @@ export const getCriticalProducts = async (req: Request, res: Response): Promise<
     });
   }
 };
+
+export const getTopFive = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    // Buscar los 5 productos con más orders asociados
+    const topProducts = await Order.findAll({
+      attributes: [
+        [fn('COUNT', col('Order.id')), 'orderCount']
+      ],
+      group: ['productId'],
+      order: [[literal('orderCount'), 'DESC']],
+      limit: 5,
+      include: [
+        {
+          model: Product,
+          attributes: ['id','name']
+        }
+      ]
+    });
+
+    return res.status(200).json({
+      topProducts
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      message: 'Error fetching products',
+      error: error.message,
+    });
+  }
+}
