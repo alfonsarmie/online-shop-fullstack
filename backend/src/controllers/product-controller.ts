@@ -445,3 +445,31 @@ export const getAllProducts = async (
     });
   }
 };
+
+export const getCriticalProducts = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const { criticalParam } = req.query;
+
+    let criticalValue: number = 10; // Default value
+
+    if (criticalParam && !isNaN(Number(criticalParam))) {
+      criticalValue = parseInt(criticalParam as string, 10);
+    }
+
+    const products = await Product.findAll({
+      where: {
+        stock: { [Op.lt]: criticalValue }
+      },
+      attributes: ['name', 'stock']
+    });
+
+    return res.status(200).json({
+      products,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      message: 'Error fetching critical products',
+      error: error.message,
+    });
+  }
+};

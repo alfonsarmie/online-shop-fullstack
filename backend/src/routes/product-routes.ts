@@ -5,12 +5,19 @@ import {
   updateProduct, 
   deleteProduct, 
   getAllProducts, 
-  getProduct 
+  getProduct, 
+  getCriticalProducts
 } from '../controllers/product-controller';
 import { validateFields } from '../middlewares/validate-fields';
 import { validateJWT, allowAdminOrReceptionist } from '../middlewares/validate-jwt';
 
 const router = Router();
+
+/**
+ * 
+ */
+
+router.get('/critical',[validateJWT],getCriticalProducts)
 
 // GET - Obtener todos los productos (pública)
 router.get("/", getAllProducts);
