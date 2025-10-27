@@ -486,9 +486,11 @@ export const getSportsStats = async (req: Request, res: Response) => {
             group: ['sport'],
             raw: true,
         });
-
+        
+        const filteredSportsStats = sportsStats.filter(stat => stat.sport !== null);
+        
         return res.status(200).json({
-            stats: sportsStats
+            stats: filteredSportsStats
         });
     } catch (error: any) {
         return res.status(500).json({
