@@ -115,11 +115,31 @@ const deleteOrder = async (id: number) => {
   }
 };
 
+const getSportsStats = async () => {
+  try {
+    const response = await api.get('/orders/sports');
+    return response.data.stats;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getStatusStats = async () => {
+  try {
+    const response = await api.get('/orders/status');
+    return response.data.stats;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const orderService = {
   getOrders,
   getUserOrders,
   updateOrderStatus,
   deleteOrder,
+  getSportsStats,
+  getStatusStats,
   mapOrderToFrontend,
   getItemImage,
 };

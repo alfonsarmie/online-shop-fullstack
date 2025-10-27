@@ -1,27 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Afacad&display=swap');
 
-/* Page container */
 .admin-dashboard {
-  /* Use padding-top instead of margin-top so the space under the fixed navbar
-     keeps the dark background and no white gap shows through */
   padding: 24px 32px;
-  padding-top: 80px; /* clear fixed navbar */
+  padding-top: 80px;
   color: #f0f0f0;
   background: #121212;
   min-height: 100%;
   font-family: 'Afacad', sans-serif;
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-x: hidden;
   box-sizing: border-box;
 }
 
-/* Ensure all child elements use border-box */
 .admin-dashboard *,
 .admin-dashboard *::before,
 .admin-dashboard *::after {
   box-sizing: border-box;
 }
 
-/* Page title */
 .admin-dashboard h1 {
   margin: 12px 0 0;
   font-family: 'Anton', sans-serif;
@@ -32,7 +27,6 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Subtitle under the main title */
 .subtitle {
   color: #e0e0e0;
   margin-top: 8px;
@@ -42,48 +36,6 @@
   font-weight: 400;
 }
 
-/* Top KPI grid */
-.kpis {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-}
-
-/* KPI card */
-.kpi-card {
-  background: #1D1D1D;
-  border: 1px solid #2a2a2a;
-  border-radius: 12px;
-  padding: 16px;
-}
-
-/* KPI label (caption) */
-.kpi-label {
-  color: #bdbdbd;
-  font-size: 18px !important;
-  font-family: 'Afacad', sans-serif;
-  font-weight: 600;
-}
-
-/* KPI main number */
-.kpi-value {
-  display: block;
-  margin-top: 8px;
-  font-size: 36px !important;
-  color: #1E7335;
-  font-family: 'Anton', sans-serif;
-  font-weight: bold;
-}
-
-/* KPI subtext (delta/extra info) */
-.kpi-sub {
-  color: #8f8f8f;
-  font-size: 16px !important;
-  font-family: 'Afacad', sans-serif;
-  margin-top: 4px;
-}
-
-/* Two-column responsive grid */
 .grid-2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -91,28 +43,17 @@
   margin-top: 18px;
 }
 
-/* Single-column section */
-.grid-1 {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-  margin-top: 18px;
-}
-
-/* Card-like panel wrapper */
 .panel {
   background: #1D1D1D;
   border: 1px solid #2a2a2a;
   border-radius: 12px;
 }
 
-/* Panel header */
 .panel-header {
   padding: 14px 16px;
   border-bottom: 1px solid #2a2a2a;
 }
 
-/* Panel header title */
 .panel-header h2 {
   margin: 0;
   font-size: 18px;
@@ -120,293 +61,67 @@
   color: #e8e8e8;
 }
 
-/* Panel content area */
 .panel-body {
   padding: 14px 16px 18px;
 }
 
-/* Inline chart background */
-.sparkline {
-  width: 100%;
-  background: #151515;
-  border-radius: 8px;
-}
-
-/* Small labels under sparkline */
-.legend {
-  margin-top: 10px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  color: #bdbdbd;
-  font-family: 'Afacad', sans-serif;
-}
-
-/* Single legend chip */
-.legend-item {
-  background: #151515;
-  border: 1px solid #2a2a2a;
-  padding: 4px 8px;
-  border-radius: 8px;
-}
-
-/* Horizontal stacked bar */
-.stacked-bar {
-  display: flex;
-  height: 14px;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #151515;
-  border: 1px solid #2a2a2a;
-}
-
-/* Taller variant for key mixes */
-.stacked-bar.large {
-  height: 18px;
-}
-
-.stacked-seg { display: inline-block; }
-
-/* Textual breakdown next to stacked bars */
-.status-list {
-  margin-top: 12px;
-  list-style: none;
-  padding: 0;
-}
-
-.status-list li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #dcdcdc;
-  padding: 6px 0;
-  border-bottom: 1px dashed #2a2a2a;
-  font-family: 'Afacad', sans-serif;
-}
-
-.status-list li:last-child { border-bottom: none; }
-
-/* Small color dot indicator */
-.status-list .dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  display: inline-block;
-}
-
-.status-list .right { margin-left: auto; color: #bdbdbd; }
-
-/* Simple table for rankings */
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: 'Afacad', sans-serif;
-  overflow-x: auto;
-  display: block;
-  white-space: nowrap;
-}
-
-.data-table thead,
-.data-table tbody,
-.data-table tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
-
-/* Table cell baselines */
-.data-table th, .data-table td {
-  text-align: left;
-  padding: 10px 8px;
-  border-bottom: 1px solid #2a2a2a;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.data-table th { color: #bdbdbd; font-weight: 600; }
-
-.data-table td { color: #e6e6e6; }
-
-/* Generic vertical list */
-.list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* List row */
-.list li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #2a2a2a;
-}
-
-/* Stock badges */
-.badge {
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  color: #fff;
-  font-family: 'Afacad', sans-serif;
-}
-
-.badge.warn { background: #E6B800; }
-.badge.danger { background: #C0392B; }
-
-/* Utility classes for responsive visibility */
-.hide-mobile {
-  display: block;
-}
-
-.show-mobile {
-  display: none;
-}
-
-/* Scrollable container for tables on small screens */
-.table-container {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  border-radius: 8px;
-}
-
-/* Smooth transitions for responsive changes */
 .panel,
-.kpi-card,
 .admin-dashboard {
   transition: all 0.2s ease-in-out;
 }
 
-/* Responsive breakpoints */
+.span-h2 {
+  font-size: 14px;
+  color: #b0b0b0;
+  font-weight: normal;
+  margin-left: 8px;
+}
 
-/* Large tablets and small desktops (1200px and down) */
 @media (max-width: 1200px) {
   .admin-dashboard {
     padding: 20px 24px;
     padding-top: 70px;
   }
-  
-  .kpis {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-  }
-  
-  .kpi-value {
-    font-size: 30px !important;
-  }
-  
-  .kpi-label {
-    font-size: 16px !important;
-  }
 }
 
-/* Tablets (1000px and down) */
 @media (max-width: 1000px) {
   .admin-dashboard {
     padding: 18px 20px;
     padding-top: 66px;
   }
-  
-  .kpis { 
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-  
-  .grid-2 { 
+
+  .grid-2 {
     grid-template-columns: 1fr;
     gap: 14px;
   }
-  
-  .kpi-card {
-    padding: 14px;
-  }
-  
-  .kpi-value {
-    font-size: 28px !important;
-  }
-  
-  .kpi-label {
-    font-size: 16px !important;
-  }
-  
+
   .panel-header h2 {
     font-size: 16px;
   }
-  
-  .data-table {
-    font-size: 14px;
-  }
-  
-  .data-table th, .data-table td {
-    padding: 8px 6px;
-  }
 }
 
-/* Small tablets (768px and down) */
 @media (max-width: 768px) {
   .admin-dashboard {
     padding: 16px 16px;
     padding-top: 60px;
   }
-  
+
   .admin-dashboard h1 {
     font-size: 28px;
     margin-top: 16px;
   }
-  
+
   .subtitle {
     font-size: 15px;
     margin-bottom: 18px;
   }
-  
-  .kpis {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-  
-  .kpi-card {
-    padding: 14px;
-    aspect-ratio: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    min-height: 110px;
-  }
-  
-  .kpi-value {
-    font-size: 26px ;
-  }
-  
-  .kpi-label {
-    font-size: 15px ;
-  }
-  
+
   .panel-header {
     padding: 12px 14px;
   }
-  
+
   .panel-body {
     padding: 12px 14px 16px;
-  }
-  
-  .legend {
-    gap: 8px;
-  }
-  
-  .legend-item {
-    padding: 3px 6px;
-    font-size: 11px;
-  }
-  
-  .stacked-bar {
-    height: 12px;
-  }
-  
-  .stacked-bar.large {
-    height: 16px;
   }
 }
 
@@ -432,36 +147,7 @@
     color: #e0e0e0;
   }
   
-  .kpis {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-  
-  .kpi-card {
-    padding: 12px;
-    text-align: center;
-    aspect-ratio: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100px;
-  }
-  
-  .kpi-value {
-    font-size: 24px ;
-    margin-top: 4px;
-  }
-  
-  .kpi-label {
-    font-size: 16px ;
-  }
-  
-  .kpi-sub {
-    font-size: 14px ;
-  }
-  
-  .grid-1, .grid-2 {
+  .grid-2 {
     margin-top: 14px;
     gap: 12px;
   }
@@ -476,49 +162,6 @@
   
   .panel-body {
     padding: 10px 12px 14px;
-  }
-  
-  .status-list li {
-    padding: 8px 0;
-    font-size: 14px;
-  }
-  
-  .data-table {
-    font-size: 13px;
-  }
-  
-  .data-table th, .data-table td {
-    padding: 6px 4px;
-  }
-  
-  .list li {
-    padding: 8px 0;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-  
-  .badge {
-    font-size: 11px;
-    padding: 3px 8px;
-  }
-  
-  .legend {
-    justify-content: center;
-    gap: 6px;
-  }
-  
-  /* Toggle visibility utility classes */
-  .hide-mobile {
-    display: none;
-  }
-  
-  .show-mobile {
-    display: block;
-  }
-  
-  /* Hide some secondary information on very small screens */
-  .kpi-sub {
-    display: none;
   }
 }
 
@@ -544,44 +187,16 @@
     gap: 8px;
   }
   
-  .kpi-card {
-    padding: 10px;
-    min-height: 90px;
-    aspect-ratio: 1;
-  }
-  
-  .kpi-value {
-    font-size: 20px;
-  }
-  
-  .kpi-label {
-    font-size: 14px ;
-  }
-  
   .panel-header {
     padding: 8px 10px;
   }
-  
+
   .panel-header h2 {
     font-size: 14px;
   }
-  
+
   .panel-body {
     padding: 8px 10px 12px;
-  }
-  
-  .data-table th, .data-table td {
-    padding: 4px 2px;
-    font-size: 12px;
-  }
-  
-  .status-list li {
-    font-size: 13px;
-  }
-  
-  .legend-item {
-    font-size: 10px;
-    padding: 2px 4px;
   }
 }
 
@@ -597,22 +212,5 @@
   
   .subtitle {
     margin-bottom: 8px;
-  }
-  
-  .kpis {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-  }
-  
-  .kpi-card {
-    padding: 6px;
-  }
-  
-  .kpi-value {
-    font-size: 18px !important;
-  }
-  
-  .kpi-label {
-    font-size: 13px !important;
   }
 }

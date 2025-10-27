@@ -49,13 +49,6 @@ const statusOptions: { value: OrderStatus; label: string }[] = [
   { value: 'cancelled', label: 'Cancelado' },
 ];
 
-const statusDescriptions: Record<OrderStatus, string> = {
-  confirmed: 'Pedido confirmado',
-  ready: 'Pedido listo para retiro',
-  withdrawn: 'Pedido entregado al socio',
-  cancelled: 'Pedido cancelado',
-};
-
 const parseDecimal = (value: number | string | undefined): number => {
   if (typeof value === 'number') return value;
   if (!value) return 0;
