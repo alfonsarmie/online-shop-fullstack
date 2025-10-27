@@ -24,15 +24,15 @@ const AdminDashboard: React.FC = () => {
   const mapStatusToFrontend = (status: string) => {
     switch (status) {
       case 'confirmed':
-        return { label: 'Confirmado', color: '#ffe733' };
+        return { label: 'Confirmado'};
       case 'ready':
-        return { label: 'Listo para retirar', color: '#ff7f11' };
+        return { label: 'Listo para retirar'};
       case 'cancelled':
-        return { label: 'Cancelado', color: '#ef5350' };
+        return { label: 'Cancelado'};
       case 'withdrawn':
-        return { label: 'Retirado', color: '#66bb6a' };
+        return { label: 'Retirado'};
       default:
-        return { label: status, color: '#8884d8' };
+        return { label: status};
     }
   };
 
@@ -136,7 +136,7 @@ const AdminDashboard: React.FC = () => {
             <h2>Estado de pedidos <span className='span-h2'>(últimos 30 días)</span></h2>
           </div>
           <div className="panel-body">
-            <BarChart width={400} height={300} data={statusStats}>
+            <BarChart width={500} height={300} data={statusStats}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="status" tickFormatter={(value) => mapStatusToFrontend(value).label} />
               <YAxis />
