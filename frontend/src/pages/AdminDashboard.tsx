@@ -226,7 +226,7 @@ useEffect(() => {
             <div className="admin-dashboard-panel-header">
               <h2>Pedidos por deporte</h2>
             </div>
-            <div className="admin-dashboard-panel-body kpi-card"> 
+            <div className="admin-dashboard-panel-body kpi-card sports-pie-chart"> 
               <PieChart width={400} height={300}>
                 <Pie
                   data={sportsStats}
@@ -258,7 +258,7 @@ useEffect(() => {
                 <span className="admin-dashboard-span-h2">(últimos 30 días)</span>
               </h2>
             </div>
-            <div className="admin-dashboard-panel-body kpi-card">
+            <div className="admin-dashboard-panel-body kpi-card status-bar-chart">
               <BarChart width={500} height={300} data={statusStats}> 
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis

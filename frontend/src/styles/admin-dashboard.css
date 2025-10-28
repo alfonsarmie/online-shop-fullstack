@@ -131,8 +131,10 @@
 
 .admin-dashboard-data-table {
   width: 100%;
-  border-collapse: collapse;
-  table-layout: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .admin-dashboard-data-table th, .admin-dashboard-data-table td {
@@ -142,9 +144,22 @@
 }
 
 .admin-dashboard-data-table th {
+  border: none; /* Remove borders from header cells */
   background-color: #1D1D1D;
   color: #22a341; 
   font-weight: bold;
+}
+
+.admin-dashboard-data-table th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.admin-dashboard-data-table th:last-child {
+  border-top-right-radius: 8px;
+}
+
+.admin-dashboard-data-table tr:first-child {
+  border-top: none; /* Remove top border from the first row */
 }
 
 .admin-dashboard-data-table td {
@@ -180,7 +195,7 @@
   align-items: center;
   justify-content: center;
   gap: 18px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: linear-gradient(145deg, #1f1f1f, #2b2b2b);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
   transition: all 0.3s ease;
@@ -228,6 +243,14 @@
 
 .kpi-fade-in {
   animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.status-bar-chart {
+  padding-top: 20px;
+}
+
+.sports-pie-chart {
+  padding-bottom: 20px;
 }
 
 @media (max-width: 1200px) {
