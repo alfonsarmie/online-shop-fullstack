@@ -133,6 +133,16 @@ const getStatusStats = async () => {
   }
 };
 
+// Fetch monthly worth
+const getMonthlyWorth = async () => {
+  try {
+    const response = await api.get('/orders/worth');
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const orderService = {
   getOrders,
   getUserOrders,
@@ -141,6 +151,7 @@ export const orderService = {
   getSportsStats,
   getStatusStats,
   mapOrderToFrontend,
+  getMonthlyWorth,
   getItemImage,
 };
 

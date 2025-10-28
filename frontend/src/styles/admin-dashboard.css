@@ -9,6 +9,7 @@
   width: 60px;
   padding: 4px 8px;
   font-size: 13px;
+  font-family: 'Afacad', sans-serif;
   background: #151515;
   border: 1px solid #2a2a2a;
   color: #e6e6e6;
@@ -93,7 +94,7 @@
 
 .admin-dashboard-panel-header h2 {
   margin: 0;
-  font-size: 18px;
+  font-size: 25px;
   font-family: 'Afacad', sans-serif;
   color: #e8e8e8;
 }
@@ -105,7 +106,7 @@
   margin-left: 8px;
 }
 
-
+/* Ajustes para la primera tabla en AdminDashboard */
 .admin-dashboard-data-table {
   width: 100%;
   border-collapse: collapse;
@@ -136,9 +137,9 @@
 
 .admin-dashboard-data-table .rank {
   font-weight: bold;
-  color: #3de564; 
-  width: 80px; 
-  text-align: center; 
+  color: #3de564; /* Color verde para destacar el ranking */
+  width: 80px; /* Reducir el ancho de la columna */
+  text-align: center; /* Centrar el contenido */
 }
 
 @media (max-width: 1200px) {
@@ -263,7 +264,7 @@
   }
 }
 
-
+/* Landscape orientation adjustments for mobile */
 @media (max-height: 500px) and (orientation: landscape) {
   .admin-dashboard-container {
     padding-top: 40px;
