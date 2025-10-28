@@ -29,14 +29,12 @@ export default function CheckoutSuccess() {
   };
 
   useEffect(() => {
-    // Crear la orden si tenemos session_id de Stripe
     const createOrder = async () => {
       if (!sessionId) {
         console.warn('No session_id found in URL');
         return;
       }
 
-      // Evitar llamadas duplicadas usando ref
       if (orderCreatedRef.current || isCreatingOrder) {
         return;
       }
@@ -57,7 +55,6 @@ export default function CheckoutSuccess() {
       } catch (err: any) {
         console.error('Error creando orden:', err);
         
-        // Si la orden ya existe, no es un error crítico
         if (err.response?.data?.msg?.includes('ya fue creada')) {
           const fallbackOrder = err.response?.data?.order;
           setOrderNumber(String(fallbackOrder?.idOrder || sessionId));
@@ -72,11 +69,9 @@ export default function CheckoutSuccess() {
     };
 
     createOrder();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionId]); // Solo sessionId como dependencia
+  }, [sessionId]); 
 
   const displayOrderNumber = useMemo(() => {
-    // Preferir el número de orden obtenido del backend
     return (
       orderNumber ??
       info.external_reference ??

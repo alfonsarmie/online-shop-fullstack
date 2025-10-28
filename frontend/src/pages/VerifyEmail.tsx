@@ -1,4 +1,4 @@
-// Screen shown after manual signup asking the user to verify their email address
+
 import { useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/img/logo.png';
 import '../styles/verify-email.css';
@@ -9,12 +9,10 @@ type LocationState = {
 
 export default function VerifyEmail() {
   const navigate = useNavigate();
-  // Pull the optional email from navigation state to personalize the message
   const location = useLocation();
   const state = (location.state as LocationState | null) ?? null;
   const email = state?.email;
 
-  // Provide guidance and shortcuts back to login or home
   return (
     <div className="verify-email-page form-page">
       <div className="verify-email-card">

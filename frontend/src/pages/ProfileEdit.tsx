@@ -8,7 +8,6 @@ import axios from "axios";
 import SuccessMessage from "../components/SuccessMessage";
 import ErrorMessage from "../components/ErrorMessage";
 
-// Interface for profile data
 interface Profile {
   name: string;
   surname?: string;
@@ -16,14 +15,12 @@ interface Profile {
   dni?: string;
 }
 
-// Interface for password data
 interface Passwords {
   actual: string;
   new: string;
   confirm: string;
 }
 
-// Interface for password strength
 interface PasswordStrength {
   strength: number;
   label: string;
@@ -31,7 +28,6 @@ interface PasswordStrength {
   width: string;
 }
 
-// Interface for component props
 interface ProfileEditProps {
   user: {
     idUser: number;
@@ -44,7 +40,6 @@ interface ProfileEditProps {
 }
 
 const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
-  // State for profile information
   const [profile, setProfile] = useState<Profile>({
     name: "",
     email: "",
@@ -52,13 +47,10 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     dni: "",
   });
 
-  // State for success message
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // State for error message
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Original profile state to check for changes
   const [originalProfile, setOriginalProfile] = useState<Profile>({
     name: "",
     email: "",
@@ -66,7 +58,6 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     dni: "",
   });
 
-  // Load user data into profile state on component mount or when user changes
   useEffect(() => {
     if (user) {
       const userProfile = {
@@ -80,7 +71,6 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     }
   }, [user]);
 
-  // State for edit mode of each field
   const [editMode, setEditMode] = useState({
     name: false,
     surname: false,
@@ -88,19 +78,16 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     dni: false,
   });
 
-  // State for password fields
   const [passwords, setPasswords] = useState<Passwords>({
     actual: "",
     new: "",
     confirm: "",
   });
 
-  // State for password validation messages
   const [passwordErrors, setPasswordErrors] = useState({
     samePassword: false,
   });
 
-  // Password strength state
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>({
     strength: 0,
     label: "",
@@ -115,7 +102,6 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     { text: "Debe ser diferente de la contraseña actual", valid: false },
   ]);
 
-  // Check if there are changes in profile data
   const hasProfileChanges = () => {
     return (
       profile.name !== originalProfile.name ||
@@ -125,7 +111,6 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     );
   };
 
-  // Check if password can be updated
   const canUpdatePassword = () => {
     return (
       passwords.actual.trim() !== "" &&
@@ -137,27 +122,22 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     );
   };
 
-  // Handlers for input changes
   const handleProfileChange = (e: ChangeEvent<HTMLInputElement>) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
-  // Handler to activate/deactivate edit mode
   const toggleEditMode = (fieldName: keyof Profile) => {
     setEditMode({ ...editMode, [fieldName]: !editMode[fieldName] });
   };
 
-  // Handler to prevent clicking on the input from closing edit mode
   const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
     e.stopPropagation();
   };
 
-  // Handlers for password changes
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPasswords({ ...passwords, [name]: value });
 
-    // Validate if new password is same as actual
     if (name === "new" || name === "actual") {
       setPasswordErrors({
         ...passwordErrors,
@@ -168,7 +148,6 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
       });
     }
 
-    // Calculate password strength, only for new password
     if (name === "new") {
       const newReqs = [
         { text: "Debe tener al menos 6 caracteres", valid: value.length >= 6 },
@@ -199,11 +178,9 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     }
   };
 
-  // Handler for profile form submission
   const handleProfileSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    // Preparar datos para enviar, convirtiendo DNI vacío a null
     const dataToSend = {
       ...profile,
       dni: profile.dni === "" ? null : profile.dni,
@@ -253,7 +230,6 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     }
   };
 
-  // Handler for password form submission
   const handlePasswordSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -314,7 +290,6 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
     );
   }
 
-  // Restrict access for receptionist role
   if (user && (user as any).role === 'receptionist') {
     return (
       <div className="profile-edit-container">

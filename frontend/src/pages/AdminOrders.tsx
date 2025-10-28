@@ -67,13 +67,10 @@ const determineStatus = (order: BackendOrder): OrderStatus => {
     return 'withdrawn';
   }
 
-  // If the provider has explicitly set the payment as cancelled
   if (order.statusMp === 'unpaid') return 'cancelled';
 
-  // Consider 'in_process' as 'ready'
   if (order.statusMp === 'paid') return 'confirmed';
 
-  // All other provider statuses we surface as 'confirmed' in the simplified admin view
   return 'confirmed';
 };
 
@@ -166,7 +163,6 @@ const AdminOrders: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Auto-hide success message after 3 seconds
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
@@ -176,7 +172,6 @@ const AdminOrders: React.FC = () => {
     }
   }, [successMessage]);
 
-  // Auto-hide error message after 3 seconds
   useEffect(() => {
     if (errorMessage) {
       const timer = setTimeout(() => {
@@ -303,7 +298,6 @@ const AdminOrders: React.FC = () => {
     }
   };
 
-  // deleteOrder removed to prevent deleting orders from admin UI
 
   if (loading) {
     return (
@@ -571,7 +565,7 @@ const AdminOrders: React.FC = () => {
         </div>
       )}
 
-      {/* Delete modal removed */}
+
     </div>
   );
 };

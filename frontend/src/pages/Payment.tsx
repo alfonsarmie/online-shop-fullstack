@@ -9,7 +9,6 @@ import ProgressBar from '../components/ProgressBar';
 import { checkoutService, CheckoutFormData } from '../services/checkoutService';
 import ErrorMessage from '../components/ErrorMessage';
 
-// Restore the logged user so we can prefill the payer email when sending the preference
 function getStoredUser(): User | null {
   const saved = localStorage.getItem('user');
   if (!saved) return null;
@@ -28,7 +27,6 @@ const Payment = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  // Get checkout data and user info
   const checkoutData = useMemo(() => {
     const saved = localStorage.getItem('checkoutData');
     if (!saved) return null;
@@ -48,20 +46,17 @@ const Payment = () => {
       return;
     }
     
-    // If no checkout data, redirect back to checkout
     if (!checkoutData) {
       navigate('/checkout');
       return;
     }
   }, [cartItems, checkoutData, navigate]);
 
-  // Calculate totals only when the cart changes
   const total = useMemo(
     () => cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
     [cartItems],
   );
 
-  // Handle payment processing
   const handlePayment = async () => {
     if (!checkoutData || !storedUser) {
       setErrorMessage("Datos de checkout no encontrados");
@@ -78,7 +73,6 @@ const Payment = () => {
     setErrorMessage("");
 
     try {
-      // Create payment preference
       const preference = await checkoutService.createPaymentPreference(
         checkoutData,
         cartItems,
@@ -87,11 +81,9 @@ const Payment = () => {
 
       console.log('✅ [PAYMENT] Preference created:', preference);
 
-      // Redirect to Mercado Pago
       const redirectUrl = preference.init_point || preference.sandbox_init_point;
       if (redirectUrl) {
         console.log('🔗 [PAYMENT] Redirecting to:', redirectUrl);
-        // Clear cart and checkout data since we're proceeding to payment
         clearCart();
         localStorage.removeItem('checkoutData');
         window.location.href = redirectUrl;
@@ -101,7 +93,6 @@ const Payment = () => {
     } catch (error) {
       console.error("❌ [PAYMENT] Error creating payment preference:", error);
       
-      // Obtener más detalles del error
       let errorMessage = "Error al procesar el pago. Inténtalo nuevamente.";
       
       if (error instanceof Error) {
@@ -109,7 +100,6 @@ const Payment = () => {
         console.error("❌ [PAYMENT] Error message:", error.message);
       }
       
-      // Si es un error de axios, obtener más detalles
       if (error && typeof error === 'object' && 'response' in error) {
         const axiosError = error as any;
         console.error("❌ [PAYMENT] Status:", axiosError.response?.status);
@@ -129,7 +119,7 @@ const Payment = () => {
   };
 
   if (!checkoutData) {
-    return null; // Will redirect in useEffect
+    return null; 
   }
 
   return (

@@ -12,13 +12,11 @@ import ErrorMessage from "../components/ErrorMessage";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 import { GoogleLogin } from "@react-oauth/google";
 
-// Props interface for LoginForm component
 interface LoginFormProps {
   setUser: (user: User | null) => void;
 }
 
 export default function LoginForm({ setUser }: LoginFormProps) {
-  // useState to handle form data
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
@@ -27,17 +25,14 @@ export default function LoginForm({ setUser }: LoginFormProps) {
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Toggle password visibility
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword); // Initially false, toggles between true/false
+    setShowPassword(!showPassword); 
   };
 
-  // Handle form submission
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
-      // Realize login request
       const response = await axios.post(
         "http://localhost:3000/api/auth/login",
         { email, password }
@@ -46,7 +41,6 @@ export default function LoginForm({ setUser }: LoginFormProps) {
       const userData = response.data.userFound; // Returned user data
       const token = response.data.token; // JWT token
 
-      // Store user data and token in localStorage
       localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("token", token);
       setUser(userData); // Update user state in App.jsx
@@ -54,7 +48,6 @@ export default function LoginForm({ setUser }: LoginFormProps) {
       setMessage("Inicio de sesión exitoso");
       setErrorMessage("");
 
-      // Redirect based on role after a short delay
       setTimeout(() => {
         if (userData.role === "admin") {
           navigate("/admin-dashboard");
@@ -68,15 +61,12 @@ export default function LoginForm({ setUser }: LoginFormProps) {
     } catch (error: any) {
       console.error("Login failed:", error.response?.data || error.message);
       
-      // Handle specific error messages from backend
       let errorMsg = "Error al iniciar sesión";
       
       if (error.response && error.response.data) {
-        // Try both 'message' and 'msg' fields for backward compatibility
         const backendMsg = error.response.data.message || error.response.data.msg;
         
         if (backendMsg) {
-          // Use the backend message directly since we improved them
           errorMsg = backendMsg;
         }
       } else if (error.code === 'NETWORK_ERROR' || !error.response) {
@@ -88,11 +78,10 @@ export default function LoginForm({ setUser }: LoginFormProps) {
       setErrorMessage(errorMsg);
       setTimeout(() => {
         setErrorMessage("");
-      }, 5000); // Increased timeout for longer messages
+      }, 5000); 
     }
   };
 
-  // Handle Google login success
   const handleGoogleLogin = async (credentialResponse: any) => {
     try {
       const response = await axios.post(
@@ -124,7 +113,6 @@ export default function LoginForm({ setUser }: LoginFormProps) {
       let errorMsg = "Error al iniciar sesión con Google";
       
       if (error.response && error.response.data) {
-        // Try both 'message' and 'msg' fields for backward compatibility
         const backendMsg = error.response.data.message || error.response.data.msg;
         
         if (backendMsg) {
@@ -182,7 +170,6 @@ export default function LoginForm({ setUser }: LoginFormProps) {
             required
           />
 
-          {/* Eye icon to toggle password visibility */}
           <button
             type="button"
             className="password-toggle"

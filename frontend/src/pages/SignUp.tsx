@@ -29,7 +29,6 @@ interface PasswordStrength {
 }
 
 export default function SignUp() {
-  // Navigate programmatically to confirmation pages
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -62,9 +61,7 @@ export default function SignUp() {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     
-    // Para el campo DNI, permitir solo números o vacío
     if (id === 'dni') {
-      // Solo permitir números o campo vacío
       if (value === '' || /^\d+$/.test(value)) {
         setFormData(prev => ({ ...prev, [id]: value }));
       }
@@ -76,7 +73,6 @@ export default function SignUp() {
   useEffect(() => {
     const { password, confirmPassword, name, surname, email } = formData;
 
-    // Requisitos de la contraseña
     const newReqs = [
       { text: 'Debe tener al menos 6 caracteres', valid: password.length >= 6 },
       { text: 'Debe contener al menos una mayúscula', valid: /[A-Z]/.test(password) },
@@ -84,7 +80,6 @@ export default function SignUp() {
     ];
     setRequirements(newReqs);
 
-    // Fuerza de la contraseña
     const strength = newReqs.filter(r => r.valid).length;
     const strengthMap = [
       { width: '0%', label: '', color: '' },
@@ -94,7 +89,6 @@ export default function SignUp() {
     ];
     setPasswordStrength({ strength, ...strengthMap[strength] });
 
-    // Confirmación
     if (!confirmPassword) {
       setMatchMessage('');
     } else if (password === confirmPassword) {
@@ -103,7 +97,6 @@ export default function SignUp() {
       setMatchMessage('Las contraseñas no coinciden');
     }
 
-    // Validez total del form (DNI es opcional, no se incluye en la validación)
     const valid =
       Boolean(name && surname && email) &&
       newReqs.every(r => r.valid) &&
@@ -115,7 +108,6 @@ export default function SignUp() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
-    // Clear previous messages and start loading
     setSuccessMessage('');
     setErrorMessage('');
     setIsLoading(true);
@@ -130,14 +122,12 @@ export default function SignUp() {
         password: formData.password
       };
 
-      // Preserve the email before making the request
       const emailForNotice = formData.email;
       
       // Make the API call
       await axios.post("http://localhost:3000/api/users/create", userData);
 
-      // Only execute this if the API call was successful
-      // Clear form
+      // On success, show message and navigate to verify email
       setFormData({
         name: '',
         surname: '',
@@ -147,23 +137,18 @@ export default function SignUp() {
         confirmPassword: ''
       });
 
-      // Send the user to the intermediate email verification notice
       navigate('/verify-email', { state: { email: emailForNotice } });
 
       
     } catch (error: any) {
-      // Handle errors - this will only execute if the API call failed
       console.error("Error en el registro:", error.response?.data || error.message);
       
       let errorMsg = "Error en el registro. Inténtalo de nuevo.";
       
       if (error.response && error.response.data) {
-        // Try to get the message from the backend response
         let backendMsg = error.response.data.message || error.response.data.msg || error.response.data.error;
         
-        // Handle express-validator errors format
         if (!backendMsg && error.response.data.errors && Array.isArray(error.response.data.errors)) {
-          // Extract the first error message from express-validator format
           const firstError = error.response.data.errors[0];
           if (firstError && firstError.msg) {
             backendMsg = firstError.msg;
@@ -210,7 +195,6 @@ export default function SignUp() {
               }
           }
         } else {
-          // No specific message from backend, use status-based fallbacks
           if (error.response.status === 400) {
             errorMsg = "Datos inválidos. Verifica que todos los campos estén correctos";
           } else if (error.response.status === 500) {
@@ -224,12 +208,10 @@ export default function SignUp() {
       setErrorMessage(errorMsg);
       setSuccessMessage('');
       
-      // Auto-hide error message after 5 seconds
       setTimeout(() => {
         setErrorMessage('');
       }, 5000);
     } finally {
-      // Always stop loading when done
       setIsLoading(false);
     }
   };
@@ -262,7 +244,7 @@ export default function SignUp() {
         <Input id="surname" type="text" placeholder="Apellido" value={formData.surname} onChange={handleChange} required />
         <Input id="email" type="email" placeholder="Correo electrónico" value={formData.email} onChange={handleChange} required />
         
-        {/* DNI opcional - tipo number pero sin required */}
+
         <Input 
           id="dni" 
           type="number" 
@@ -279,7 +261,7 @@ export default function SignUp() {
           strength={passwordStrength}
         />
 
-        {/* Requisitos de la contraseña */}
+
         <ul className="password-requirements">
           {requirements.map((req, idx) => (
             <li key={idx} className={req.valid ? "valid" : "invalid"}>
