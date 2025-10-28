@@ -42,7 +42,6 @@ const parseDecimal = (v: number | string | undefined) => {
   return Number.isNaN(n) ? 0 : n;
 };
 
-// Map backend order fields (status history, statusMp, actualPickupDate) to frontend OrderStatus
 const determineStatusFromBackend = (o: BackendOrder): OrderStatus => {
   const historyStatus =
     o.latestStatus?.description ?? o.statusHistory[0]?.description;
@@ -64,7 +63,6 @@ const ReceptionistOrders: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Helper: map backend orders to local Order shape, carrying over previousStatus from current state
   const mapBackendOrders = (backendList: BackendOrder[], carryFrom: Order[] = []): Order[] => {
     return (backendList || []).map((o: BackendOrder) => {
       const prev = carryFrom.find(p => p.id === o.idOrder)?.previousStatus;
@@ -90,7 +88,6 @@ const ReceptionistOrders: React.FC = () => {
     });
   };
 
-  // Fetch paginated orders from backend (admin list). We only need a page with many items
   useEffect(() => {
     let mounted = true;
     const fetch = async () => {
@@ -192,7 +189,6 @@ const ReceptionistOrders: React.FC = () => {
       setOrders(mapped.map(o => (o.id === id ? { ...o, previousStatus: undefined } : o)));
     } catch (err) {
       console.error('Error reverting order to pending:', err);
-      // try refetch
       try {
         const data = await orderService.getOrders({ page: 1, limit: 200 });
         const mapped: Order[] = mapBackendOrders(data.orders || [], orders);
@@ -295,7 +291,6 @@ const ReceptionistOrders: React.FC = () => {
         </div>
       </section>
 
-  {/* Delivered (all withdrawn) */}
       <section className="panel delivered-panel">
         <div className="panel-header">
           <h2>Entregados ({deliveredOrders.length})</h2>

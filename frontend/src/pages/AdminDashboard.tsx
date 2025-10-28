@@ -3,7 +3,7 @@ import "../styles/admin-dashboard.css";
 import { orderService } from "../services/orderService";
 import { productService } from '../services/productService';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Bar, Legend, PieChart, Pie, Cell } from 'recharts';
+import { ResponsiveContainer, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Bar, Legend, PieChart, Pie, Cell } from 'recharts';
 import { FaMoneyBillWave } from 'react-icons/fa';
 
 type SportsStat = {
@@ -227,6 +227,11 @@ useEffect(() => {
               <h2>Pedidos por deporte</h2>
             </div>
             <div className="admin-dashboard-panel-body kpi-card sports-pie-chart"> 
+                <ResponsiveContainer
+    width="100%"
+    minHeight={100}
+    maxHeight={900}
+  >
               <PieChart width={400} height={300}>
                 <Pie
                   data={sportsStats}
@@ -248,6 +253,7 @@ useEffect(() => {
                 </Pie>
                 <Tooltip content={<SportsTooltip />} />
               </PieChart>
+              </ResponsiveContainer>
             </div>
           </div>
 

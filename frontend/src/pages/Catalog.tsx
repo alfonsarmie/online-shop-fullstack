@@ -17,10 +17,8 @@ const normalizeText = (value?: string | null) =>
         .trim()
     : "";
 
-// Define filter types
 type FilterType = "price_asc" | "price_desc" | "name_asc" | "";
 
-// Page for displaying product catalog with filtering and sorting
 const Catalog = () => {
   const { addToCart } = useCart();
   const [products, setProducts] = useState<FrontendProduct[]>([]);
@@ -28,14 +26,12 @@ const Catalog = () => {
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<FilterType>("");
 
-  // Obtener parámetro de categoría de la URL
   const { category } = useParams<{ category?: string }>();
   const [searchParams] = useSearchParams();
   const searchQuery = (searchParams.get("search") || "").trim();
   const normalizedSearchQuery = normalizeText(searchQuery);
   const hasSearch = normalizedSearchQuery.length > 0;
 
-  // Cargar productos
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -54,7 +50,6 @@ const Catalog = () => {
     fetchProducts();
   }, [searchQuery]);
 
-  // Filtrar productos cuando cambian los parámetros o los productos
   useEffect(() => {
     if (products.length === 0) {
       setFilteredProducts([]);
@@ -87,7 +82,6 @@ const Catalog = () => {
     setFilteredProducts(filtered);
   }, [products, category]);
 
-  // useEffect para animaciones de scroll
   useEffect(() => {
     const reveals = document.querySelectorAll(".reveal");
     const observer = new IntersectionObserver((entries) => {
@@ -102,7 +96,6 @@ const Catalog = () => {
     return () => observer.disconnect();
   }, [filteredProducts]);
 
-  // Función para obtener productos ordenados
   const getSortedProducts = () => {
     if (!activeFilter) return filteredProducts;
 
@@ -124,7 +117,6 @@ const Catalog = () => {
 
   const sortedProducts = getSortedProducts();
 
-  // Función para obtener el título de la página
   const getHeaderTitle = () => {
     if (hasSearch) {
       const baseTitle = `Resultados para "${searchQuery}"`;
@@ -204,7 +196,6 @@ const Catalog = () => {
         />
       </div>
 
-      {/* Product Grid */}
       <div className="products-grid">
         {sortedProducts.length > 0 ? (
           sortedProducts.map((product) => (

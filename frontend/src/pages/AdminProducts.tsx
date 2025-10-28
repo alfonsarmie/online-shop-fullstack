@@ -7,7 +7,6 @@ import SuccessMessage from "../components/SuccessMessage";
 import ErrorMessage from "../components/ErrorMessage";
 import LoadingSpinner from "../components/LoadingSpinner";
 
-// Draft type for create/edit forms: sizes are labels (string[])
 type DraftLocal = Omit<FrontendProduct, "id" | "sizes"> & {
   imgFile?: File;
   img2File?: File;
@@ -42,7 +41,6 @@ const AdminProducts: React.FC = () => {
     { id: number; label: string; gender: string }[]
   >([]);
 
-  // Function to upload images
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("image", file);
@@ -62,7 +60,6 @@ const AdminProducts: React.FC = () => {
     }
   };
 
-  // Function for adding images
   const addImageToProduct = async (
     productId: number,
     imageData: { url: string; description: string }
@@ -74,7 +71,6 @@ const AdminProducts: React.FC = () => {
     }
   };
 
-  // Load sizes from the backend so we work with valid IDs
   useEffect(() => {
     api
       .get("/sizes/all")
@@ -113,15 +109,13 @@ const AdminProducts: React.FC = () => {
     return sizeNameToIdMap[key] || 0;
   };
 
-  // Load products from the backend and normalize sizes to string labels for this admin UI
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
         const productsData = await productService.getAllProducts();
 
-        // Products loaded from backend (normalized below)
-        // Normalize sizes to objects matching the Size interface used across the frontend
+
         const normalized = Array.isArray(productsData)
           ? productsData.map((p) => ({
               ...p,
@@ -150,7 +144,6 @@ const AdminProducts: React.FC = () => {
     fetchProducts();
   }, []);
 
-  // Cargar categorías dinámicamente
   useEffect(() => {
     api
       .get("/categories")
@@ -176,7 +169,6 @@ const AdminProducts: React.FC = () => {
       .catch(() => setCategoryOptions([]));
   }, []);
 
-  // Helper to manage size selection
   const handleSizeChange = (
     sizes: string[],
     size: string,
@@ -185,7 +177,6 @@ const AdminProducts: React.FC = () => {
     return checked ? [...sizes, size] : sizes.filter((s) => s !== size);
   };
 
-  // Helper to render sizes as a readable string. Accepts Size[] or string[]
   const renderSizes = (sizes: any[] | string[]) => {
     if (!sizes || sizes.length === 0) return "-";
     const out = sizes
@@ -198,9 +189,7 @@ const AdminProducts: React.FC = () => {
     return out.length ? out.join(", ") : "-";
   };
 
-  // Function to create a new product
   const create = async () => {
-    // Validación de campos requeridos
     const errores: string[] = [];
     if (!creating.name.trim()) errores.push("nombre");
     if (creating.price <= 0) errores.push("precio");
@@ -236,9 +225,7 @@ const AdminProducts: React.FC = () => {
       }
 
       setUploading(true);
-      // Convert sizes to IDs
       const sizeIds = mappedSizes.map((entry) => entry.id);
-      // 1. Create the basic product
       const productData = {
         name: creating.name.trim(),
         description: creating.description.trim(),
@@ -247,14 +234,11 @@ const AdminProducts: React.FC = () => {
         initialPrice: creating.price,
         sizes: sizeIds,
       };
-      // ...existing code...
       const newProduct = await productService.createProduct(productData);
       if (!newProduct || !newProduct.idProduct) {
         throw new Error("Respuesta inválida del backend");
       }
-      // ...existing code...
       const productId = newProduct.idProduct;
-      // ...existing code...
       const imageFiles = [
         { file: creating.imgFile, description: "Imagen principal" },
         { file: creating.img2File, description: "Imagen secundaria" },
@@ -272,7 +256,6 @@ const AdminProducts: React.FC = () => {
           }
         }
       }
-      // ...existing code...
       const completeProduct = await api.get(`/products/${productId}`);
       const mappedProduct = mapProductToFrontend(completeProduct.data.product);
       setProducts((prev) => [mappedProduct, ...prev]);
@@ -291,7 +274,6 @@ const AdminProducts: React.FC = () => {
     }
   };
 
-  // Function to map backend product to frontend format
   const mapProductToFrontend = (product: any): FrontendProduct => {
     if (!product) {
       return {
@@ -307,10 +289,8 @@ const AdminProducts: React.FC = () => {
       };
     }
 
-    // Extract the most recent price
     let latestPrice = 0;
     if (product.prices && product.prices.length > 0) {
-      // Sort prices by updateDate descending
       const sortedPrices = [...product.prices].sort(
         (a: any, b: any) =>
           new Date(b.updateDate).getTime() - new Date(a.updateDate).getTime()
@@ -318,7 +298,6 @@ const AdminProducts: React.FC = () => {
       latestPrice = sortedPrices[0]?.value || 0;
     }
 
-    // Extract sizes as Size[] objects
     const sizes =
       product.sizes
         ?.map((size: any) => ({
@@ -328,7 +307,6 @@ const AdminProducts: React.FC = () => {
         }))
         .filter((s: any) => s.name || s.sizeDesc) || [];
 
-    // Extract category
     let category = "";
     if (product.category?.name) {
       category = product.category.name;
@@ -339,7 +317,6 @@ const AdminProducts: React.FC = () => {
       category = found ? found.name : "";
     }
 
-    // Map to FrontendProduct structure
     return {
       id: product.idProduct?.toString() || product.id || "0",
       name: product.name || "",
@@ -353,7 +330,6 @@ const AdminProducts: React.FC = () => {
     };
   };
 
-  // Function to delete a product
   const deleteProduct = async (id: string) => {
     try {
       await productService.deleteProduct(id);
@@ -370,10 +346,8 @@ const AdminProducts: React.FC = () => {
     }
   };
 
-  // Function to apply edits to a product
   const applyEdit = async () => {
     if (editingId === null) return;
-    // Validación de campos requeridos
     const errores: string[] = [];
     if (!editing.name.trim()) errores.push("nombre");
     if (editing.price <= 0) errores.push("precio");
@@ -381,7 +355,6 @@ const AdminProducts: React.FC = () => {
     if (!editing.description.trim()) errores.push("descripción");
     if ((editing.sizes || []).length === 0) errores.push("talles");
     if (editing.stock <= 0) errores.push("stock");
-    // Puedes agregar validación de imágenes si son obligatorias
 
     if (errores.length > 0) {
       setErrorMessage(
@@ -410,10 +383,8 @@ const AdminProducts: React.FC = () => {
 
       setUploading(true);
 
-      // Convert sizes to IDs
       const sizeIds = mappedSizes.map((entry) => entry.id);
 
-      // 1. Upload new images if any
       const newImages: { url: string; description: string }[] = [];
 
       if (editing.imgFile) {
@@ -434,7 +405,6 @@ const AdminProducts: React.FC = () => {
         }
       }
 
-      // 2. Prepare updated product data including images
       const productData = {
         name: editing.name.trim(),
         description: editing.description.trim(),
@@ -445,30 +415,24 @@ const AdminProducts: React.FC = () => {
         images: newImages.length > 0 ? newImages : undefined,
       };
 
-  // updating product: productData prepared
 
-      // 3. Update product
       const response = await api.put(
         `/products/update/${editingId}`,
         productData
       );
       const updatedProductFromBackend = response.data.product;
 
-      // 4. Get complete product details
       let completeProduct;
       if (newImages.length === 0) {
         // Not uploading new images, keep existing ones
         const completeResponse = await api.get(`/products/${editingId}`);
         completeProduct = completeResponse.data.product;
       } else {
-        // New images were uploaded, use the updated product from response
         completeProduct = updatedProductFromBackend;
       }
 
-  // 5. Map correctly and update state
   const mappedProduct = mapProductToFrontend(completeProduct);
 
-      // 6. Update state correctly
       setProducts((prev) =>
         prev.map((p) => (p.id === editingId ? mappedProduct : p))
       );
@@ -489,15 +453,12 @@ const AdminProducts: React.FC = () => {
     }
   };
 
-  // States and editing functions
   const startEdit = (p: FrontendProduct) => {
     setEditingId(p.id);
 
-    // Find the category ID based on the name
     const categoryObj = categoryOptions.find((cat) => cat.name === p.category);
     const categoryId = categoryObj ? categoryObj.id : "";
 
-    // Ensure editing.sizes is an array of string labels
     const sizeLabels = (p.sizes || []).map((s: any) =>
       typeof s === "string" ? s : s.sizeDesc || s.name || s.label || ""
     );
@@ -508,7 +469,7 @@ const AdminProducts: React.FC = () => {
       description: p.description,
       sizes: sizeLabels,
       stock: p.stock,
-      category: categoryId, // Save the ID, not the name
+      category: categoryId, 
       img: p.img || "",
       img2: p.img2 || "",
     });
@@ -518,7 +479,6 @@ const AdminProducts: React.FC = () => {
     setEditingId(null);
   };
 
-  // Modal state for delete confirmation
   const [deleteModal, setDeleteModal] = useState<{
     open: boolean;
     id: string | null;
@@ -543,7 +503,6 @@ const AdminProducts: React.FC = () => {
     setDeleteModal({ open: false, id: null, name: "" });
   };
 
-  // Filtering function
   const filteredProducts = useMemo(() => {
     const q = filter.trim().toLowerCase();
     if (!q) return products;
@@ -596,7 +555,6 @@ const AdminProducts: React.FC = () => {
         </div>
       )}
 
-      {/* CREATION FORM */}
       <section className="panel">
         <div className="panel-header">
           <h2>Crear nuevo producto</h2>
@@ -742,7 +700,6 @@ const AdminProducts: React.FC = () => {
         </div>
       </section>
 
-      {/* PRODUCT TABLE */}
       <section className="panel">
         <div className="panel-header">
           <h2>Inventario ({products.length} productos)</h2>
@@ -803,7 +760,6 @@ const AdminProducts: React.FC = () => {
         </div>
       </section>
 
-      {/* EDITING MODAL */}
       {editingId !== null && (
         <section className="panel">
           <div className="panel-header">

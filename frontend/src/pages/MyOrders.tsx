@@ -359,7 +359,7 @@ const MyOrders: React.FC = () => {
               {selectedOrder.history && selectedOrder.history.length > 0 && (
                 <div className="order-detail-section">
                   <h4>Historial de estados</h4>
-                  {/* Convertimos el <ul> en un <div> con clases para la timeline */}
+
                   <div className="status-history-list">
                     {selectedOrder.history.map((hist, index) => (
                       <div key={index} className="history-item">

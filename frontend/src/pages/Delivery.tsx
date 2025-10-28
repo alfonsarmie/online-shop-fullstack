@@ -23,11 +23,9 @@ import {
   FaAccessibleIcon
 } from 'react-icons/fa';
 
-// Delivery page component
 const Delivery = ({ user, setUser }: { user: User | null, setUser: (user: User | null) => void }) => {
 
   useEffect(() => {
-    // fade in animation for sections
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -84,7 +82,6 @@ const Delivery = ({ user, setUser }: { user: User | null, setUser: (user: User |
       </div>
     </div>
 
-    {/* Información adicional */}
     <div className="info-item">
       <FaAccessibleIcon className="info-icon" />
       <div>
