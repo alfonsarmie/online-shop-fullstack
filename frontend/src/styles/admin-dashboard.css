@@ -38,7 +38,7 @@
 
 .admin-dashboard-container {
   padding: 24px 32px;
-  padding-top: 80px;
+  padding-top: 100px;
   color: #f0f0f0;
   background: #121212;
   min-height: 100%;
@@ -74,7 +74,7 @@
 
 .admin-dashboard-grid-2 {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 16px;
   margin-top: 18px;
 }
@@ -103,6 +103,30 @@
   color: #b0b0b0;
   font-weight: normal;
   margin-left: 8px;
+}
+
+.admin-dashboard-panel-body {
+  padding: 18px 20px 22px;
+  overflow-x: auto;
+}
+
+.admin-dashboard-panel-body::-webkit-scrollbar {
+  height: 6px;
+}
+
+.admin-dashboard-panel-body::-webkit-scrollbar-thumb {
+  background: rgba(56, 172, 87, 0.4);
+  border-radius: 999px;
+}
+
+.admin-dashboard-chart-panel {
+  display: block;
+  padding: 20px 16px 24px;
+}
+
+.admin-dashboard-chart {
+  width: 100%;
+  margin: 0 auto;
 }
 
 .admin-dashboard-data-table {
@@ -209,22 +233,22 @@
 @media (max-width: 1200px) {
   .admin-dashboard-container {
     padding: 20px 24px;
-    padding-top: 70px;
+    padding-top: 104px;
   }
 }
 
 @media (max-width: 1000px) {
   .admin-dashboard-container {
     padding: 18px 20px;
-    padding-top: 66px;
+    padding-top: 108px;
   }
 
-  .grid-2 {
+  .admin-dashboard-grid-2 {
     grid-template-columns: 1fr;
     gap: 14px;
   }
 
-  .panel-header h2 {
+  .admin-dashboard-panel-header h2 {
     font-size: 16px;
   }
 }
@@ -232,7 +256,7 @@
 @media (max-width: 768px) {
   .admin-dashboard-container {
     padding: 16px 16px;
-    padding-top: 60px;
+    padding-top: 120px;
   }
 
   .admin-dashboard-container h1 {
@@ -240,24 +264,43 @@
     margin-top: 16px;
   }
 
-  .subtitle {
+  .admin-dashboard-subtitle {
     font-size: 15px;
     margin-bottom: 18px;
+    text-align: center;
   }
 
-  .panel-header {
+  .admin-dashboard-grid-2 {
+    gap: 16px;
+  }
+
+  .admin-dashboard-panel-header {
     padding: 12px 14px;
   }
 
-  .panel-body {
+  .admin-dashboard-panel-body {
     padding: 12px 14px 16px;
+  }
+
+  .kpi-card {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .kpi-info {
+    align-items: center;
+  }
+
+  .monthly-worth-card {
+    align-items: center;
   }
 }
 
 @media (max-width: 600px) {
   .admin-dashboard-container {
     padding: 14px 12px;
-    padding-top: 56px;
+    padding-top: 124px;
   }
   
   .admin-dashboard-container h1 {
@@ -268,27 +311,29 @@
     color: #ffffff;
   }
   
-  .subtitle {
+  .admin-dashboard-subtitle {
     text-align: center;
     font-size: 14px;
     margin-bottom: 18px;
     color: #e0e0e0;
   }
   
-  .grid-2 {
+  .admin-dashboard-grid-2 {
     margin-top: 14px;
     gap: 12px;
   }
   
-  .panel-header {
+  .admin-dashboard-panel-header {
     padding: 10px 12px;
+    text-align: center;
   }
   
-  .panel-header h2 {
+  .admin-dashboard-panel-header h2 {
     font-size: 15px;
+    width: 100%;
   }
   
-  .panel-body {
+  .admin-dashboard-panel-body {
     padding: 10px 12px 14px;
   }
 }
@@ -297,7 +342,7 @@
 @media (max-width: 480px) {
   .admin-dashboard-container {
     padding: 12px 8px;
-    padding-top: 52px;
+    padding-top: 128px;
   }
   
   .admin-dashboard-container h1 {
@@ -305,7 +350,7 @@
     margin-bottom: 6px;
   }
   
-  .subtitle {
+  .admin-dashboard-subtitle {
     font-size: 13px;
     margin-bottom: 16px;
   }
@@ -315,29 +360,29 @@
     gap: 8px;
   }
   
-  .panel-header {
+  .admin-dashboard-panel-header {
     padding: 8px 10px;
   }
 
-  .panel-header h2 {
+  .admin-dashboard-panel-header h2 {
     font-size: 14px;
   }
 
-  .panel-body {
+  .admin-dashboard-panel-body {
     padding: 8px 10px 12px;
   }
 }
 
 @media (max-height: 500px) and (orientation: landscape) {
   .admin-dashboard-container {
-    padding-top: 40px;
+    padding-top: 96px;
   }
   
   .admin-dashboard-container h1 {
     font-size: 18px;
   }
   
-  .subtitle {
+  .admin-dashboard-subtitle {
     margin-bottom: 8px;
   }
 }
