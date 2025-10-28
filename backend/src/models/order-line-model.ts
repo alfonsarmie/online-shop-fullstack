@@ -31,7 +31,7 @@ OrderLine.init(
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
-        model: 'Order',     // o model: Order
+        model: 'Order',    
         key: 'idOrder',
       },
       onUpdate: 'CASCADE',
@@ -41,7 +41,7 @@ OrderLine.init(
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
-        model: 'Product',   // o model: Product
+        model: 'Product',   
         key: 'idProduct',
       },
       onUpdate: 'CASCADE',

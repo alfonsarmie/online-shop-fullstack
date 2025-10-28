@@ -1,6 +1,6 @@
 import User from "../models/user-model";
 
-// Validate uniqueness of email
+
 export const existsEmail = async (email: string): Promise<void> => {
   const existingUser = await User.findOne({ where: { email } });
   if (existingUser) {
@@ -8,7 +8,7 @@ export const existsEmail = async (email: string): Promise<void> => {
   }
 };
 
-// Validate uniqueness of DNI
+
 export const existsDni = async (dni: number): Promise<void> => {
   if (dni) {
     const existingDniUser = await User.findOne({ where: { dni } });

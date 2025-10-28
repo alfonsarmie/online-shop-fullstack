@@ -9,13 +9,14 @@ import app from '../../src/app'
 import { connectDB, db } from '../../src/db/connection'; 
 import User from '../../src/models/user-model';
 import bcrypt from 'bcryptjs';
+import { describe, it, expect, beforeEach, jest, beforeAll, afterAll } from '@jest/globals';
 
-// Connect to the database before any tests are run
+
 beforeAll(async () => {
   await connectDB();
 });
 
-// BE CAREFUL: This will delete all users before each test to ensure a clean state
+// This will delete all users before each test to ensure a clean state
 beforeEach(async () => {
   await User.destroy({ where: {} });
 });

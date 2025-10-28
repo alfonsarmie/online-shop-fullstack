@@ -1,16 +1,16 @@
-// controllers/upload-controller.ts - CORREGIDO
+
 import { Request, Response } from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-// Asegurarse de que la carpeta uploads existe
+
 const uploadsDir = path.join(__dirname, '../../uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Configurar multer para almacenamiento
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadsDir);
@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
 const upload = multer({ 
   storage: storage,
   limits: {
-    fileSize: 5 * 1024 * 1024 // Límite de 5MB
+    fileSize: 5 * 1024 * 1024 // 5MB Limit
   },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {

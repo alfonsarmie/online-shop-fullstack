@@ -2,11 +2,7 @@ import crypto from 'crypto';
 
 export type CartItemLike = { id: string | number; quantity: number };
 
-/**
- * Build a deterministic idempotency key for Stripe operations based on user and cart contents.
- * - Stable ordering and normalization to avoid accidental key changes.
- * - Avoids PII and keeps the key short enough for Stripe limits (< 255 chars).
- */
+
 export function buildIdempotencyKey(
   userId: string | number,
   items: CartItemLike[],

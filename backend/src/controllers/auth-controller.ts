@@ -13,7 +13,7 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
   const { email, password } = req.body;
 
   try {
-    // Check if the user exists
+    
     const userFound = await User.findOne({ where: { email } });
     if (!userFound) {
       return res.status(400).json({
@@ -21,14 +21,14 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
       });
     }
 
-    // Check if user is active
+    
     if (userFound.status !== 'active') {
       return res.status(400).json({
         message: 'Tu cuenta no está activada. Revisa tu correo para activarla'
       });
     }
 
-    // Verify password
+    
     const validPassword = bcrypt.compareSync(password, userFound.password);
     if (!validPassword) {
       return res.status(400).json({
@@ -36,7 +36,7 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
       });
     }
 
-    // Generate JWT (solucionar el tipo de dato del idUser)
+    
     const token = await generateJWT(userFound.idUser);
 
     return res.json({
@@ -74,10 +74,10 @@ export const googleSignIn = async (req: Request, res: Response): Promise<Respons
         name,
         surname,
         email,
-        password: ':P', // Placeholder password since Google users won't use it
-        isMember: false, // or true, depending on your logic
+        password: ':P', 
+        isMember: false, 
         registrationDate: new Date(),
-        status: 'active' // or another default status as needed
+        status: 'active' 
       }
 
       user = await User.create(data);
@@ -94,7 +94,7 @@ export const googleSignIn = async (req: Request, res: Response): Promise<Respons
     }
 
 
-    // Generate JWT (solucionar el tipo de dato del idUser)
+  
     const token = await generateJWT(user.idUser);
 
 

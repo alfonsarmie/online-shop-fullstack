@@ -34,16 +34,16 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public status!: string;
   public activationToken?: string | null;           
   public activationTokenExpires?: Date | null;  
-  // Password reset fields
+
   public passwordResetTokenHash?: string | null;
   public passwordResetTokenExpiresAt?: Date | null;
   public passwordResetTokenUsedAt?: Date | null;  
-  //public phone?: string; // ← Agregar esto
+  
 
   toJSON(): Omit<UserAttributes, 'password'> {
     const values = Object.assign({}, this.get()) as UserAttributes;
     const copy: Partial<UserAttributes> = { ...values };
-    delete copy.password; // Delete password from the copy
+    delete copy.password; 
     return copy as Omit<UserAttributes, 'password'>;
   }
 }
@@ -106,7 +106,7 @@ User.init({
     allowNull: true,
     defaultValue: null,
   },
-  // Password reset fields
+ 
   passwordResetTokenHash: {
     type: DataTypes.STRING(255),
     allowNull: true,
@@ -122,10 +122,7 @@ User.init({
     allowNull: true,
     defaultValue: null,
   },
-  //phone: {
-  //  type: DataTypes.STRING(20),
-  //  allowNull: true
-  //}
+  
 }, {
   sequelize: db,
   tableName: 'user',

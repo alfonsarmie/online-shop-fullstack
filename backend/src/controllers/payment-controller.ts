@@ -38,8 +38,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 
         console.log('📥 Items recibidos del frontend:', JSON.stringify(items, null, 2));
 
-        // Fetch product details from the database
-        // Accept both shapes from frontend: { id, quantity } or { idProduct, quantity }
+       
         const ids = (items as CartItem[]).map((it) => {
             const id = Number(it.id ?? it.idProduct);
             if (!Number.isFinite(id)) {
@@ -55,7 +54,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 
 
 
-        const priceMap = new Map<number, number>(); //Key-Value structure
+        const priceMap = new Map<number, number>(); 
         for (const id of ids) {
             
             const latestPrice = await Price.findOne({
@@ -85,7 +84,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
                 throw new Error(`No se pudo determinar el precio para el producto ${id}`);
             }
 
-            // Strip expect the amount in the smallest currency unit (cents for ARS/USD)
+            
             const unit_amount = Math.round((value as number) * 100);
 
             return {
@@ -105,7 +104,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
         });
 
 
-        // Normalize items for idempotency key (deterministic)
+        
         const normalizedForKey = (items as CartItem[]).map((it) => ({
             id: Number(it.id ?? it.idProduct),
             quantity: Number(it.quantity),
@@ -131,7 +130,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
         
         
             }, 
-            //{ idempotencyKey }
+            
         );
 
 

@@ -29,7 +29,7 @@ export const createProduct = async (
       sizes,
     } = req.body;
 
-    // Validate that category exists
+    
     const category = await Category.findByPk(idCategory, { transaction });
     if (!category) {
       await transaction.rollback();
@@ -38,7 +38,7 @@ export const createProduct = async (
       });
     }
 
-    // Create a new product
+    
     const productCreated = await Product.create(
       {
         name,
@@ -49,7 +49,7 @@ export const createProduct = async (
       { transaction }
     );
 
-    // Create initial price if provided
+    
     if (initialPrice !== undefined) {
       await Price.create(
         {
@@ -61,7 +61,7 @@ export const createProduct = async (
       );
     }
 
-    // Add images if provided
+    
     if (images && Array.isArray(images)) {
       for (const imageData of images) {
         await Image.create(
@@ -75,7 +75,7 @@ export const createProduct = async (
       }
     }
 
-    // Add sizes if provided
+    
     if (sizes && Array.isArray(sizes)) {
       for (const sizeId of sizes) {
         await ProductSize.create(
@@ -90,7 +90,7 @@ export const createProduct = async (
 
     await transaction.commit();
 
-    // Get the complete product with ALL associations including sizes and category
+   
     const completeProduct = await Product.findByPk(productCreated.idProduct, {
       include: [
         {
@@ -110,7 +110,7 @@ export const createProduct = async (
         {
           model: Size,
           as: "sizes",
-          through: { attributes: [] }, // Exclude the join table attributes
+          through: { attributes: [] }, 
         },
       ],
     });
@@ -120,7 +120,7 @@ export const createProduct = async (
       product: completeProduct,
     });
   } catch (error: any) {
-    // Check if transaction has already been committed
+    
     // @ts-ignore: Property 'finished' does not exist on type 'Transaction' but it exists at runtime
     if (transaction && !transaction.finished) {
       await transaction.rollback();
@@ -211,13 +211,13 @@ export const updateProduct = async (
     }
 
     if (images !== undefined) {
-      // Eliminar todas las imágenes existentes del producto
+      
       await Image.destroy({
         where: { idProduct: parseInt(id) },
         transaction,
       });
 
-      // Agregar las nuevas imágenes si se proporcionaron
+    
       if (Array.isArray(images) && images.length > 0) {
         for (const imageData of images) {
           await Image.create(
@@ -234,7 +234,6 @@ export const updateProduct = async (
 
     await transaction.commit();
 
-    // Get the complete updated product with all associations
     const completeProduct = await Product.findByPk(id, {
       include: [
         {
@@ -264,7 +263,7 @@ export const updateProduct = async (
       product: completeProduct,
     });
   } catch (error: any) {
-    // Check if transaction has already been committed
+    
     // @ts-ignore: Property 'finished' does not exist on type 'Transaction' but it exists at runtime
     if (transaction && !transaction.finished) {
       await transaction.rollback();
@@ -287,7 +286,7 @@ export const deleteProduct = async (
   const transaction = await db.transaction();
 
   try {
-    // Find product
+    
     const productToDelete = await Product.findByPk(id, { transaction });
     if (!productToDelete) {
       await transaction.rollback();
@@ -296,13 +295,13 @@ export const deleteProduct = async (
       });
     }
 
-    // Delete associated sizes first
+    
     await ProductSize.destroy({
       where: { idProduct: id },
       transaction,
     });
 
-    // Delete associated prices and images next
+  
     await Price.destroy({
       where: { idProduct: id },
       transaction,
@@ -313,7 +312,7 @@ export const deleteProduct = async (
       transaction,
     });
 
-    // Finally delete the product
+  
     await productToDelete.destroy({ transaction });
 
     await transaction.commit();
@@ -322,7 +321,7 @@ export const deleteProduct = async (
       message: "Product deleted successfully",
     });
   } catch (error: any) {
-    // Check if transaction has already been committed
+   
     // @ts-ignore: Property 'finished' does not exist on type 'Transaction' but it exists at runtime
     if (transaction && !transaction.finished) {
       await transaction.rollback();
@@ -431,7 +430,7 @@ export const getAllProducts = async (
 
     if (whereClause) {
       findOptions.where = whereClause;
-  // Ensure the escape character is respected in LIKE queries
+
   findOptions.escape = "\\";
     }
 
@@ -452,7 +451,7 @@ export const getCriticalProducts = async (req: Request, res: Response): Promise<
   try {
     const { criticalParam } = req.query;
 
-    let criticalValue: number = 10; // Default value
+    let criticalValue: number = 10; 
 
     if (criticalParam && !isNaN(Number(criticalParam))) {
       criticalValue = parseInt(criticalParam as string, 10);
@@ -478,7 +477,7 @@ export const getCriticalProducts = async (req: Request, res: Response): Promise<
 
 export const getTopFive = async (req: Request, res: Response): Promise<Response> => {
   try {
-    // Fetch the top 5 products with the most orders
+    
     const topProducts = await OrderLine.findAll({
       attributes: [
         'idProduct',

@@ -60,9 +60,7 @@ router.put(
   ],
   updateUser
 );
- // Custom validator to check if user exists by ID
 
-// Change password for authenticated user
 router.put(
   "/change-password",
   [
@@ -75,7 +73,6 @@ router.put(
 );
 
 
-//Password reset request
 router.post(
   "/reset-password",
   [

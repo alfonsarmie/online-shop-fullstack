@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 import { existsEmail } from '../src/helpers/db-validator-helper';
 import User from '../src/models/user-model';
 
-// Mock of model User
+
 jest.mock('../src/models/user-model', () => {
   return {
     __esModule: true,
@@ -13,7 +13,7 @@ jest.mock('../src/models/user-model', () => {
 });
 
 
-// Type the mock in a lax way to allow null / object
+
 const mockedUserModel: any = User;
 
 describe('existsEmail helper', () => {
@@ -32,7 +32,7 @@ describe('existsEmail helper', () => {
 
 
   it('throws an error when the email already exists', async () => {
-    mockedUserModel.findOne.mockResolvedValue({ idUser: 1, email: 'existe@example.com' }); //Simulates existing user
+    mockedUserModel.findOne.mockResolvedValue({ idUser: 1, email: 'existe@example.com' }); 
 
     await expect(existsEmail('existe@example.com')).rejects.toThrow('Ya existe una cuenta con este correo electrónico');
 

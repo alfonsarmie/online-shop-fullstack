@@ -72,44 +72,44 @@ Order.init({
     type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false,
   },
-  external_reference: { //Id that any payment method will refer to the order()
+  external_reference: { 
     type: DataTypes.STRING(255),
     allowNull: true, 
   },
-  payment_id: { // Id returned by the payment method (e.g., Mercado Pago payment id)()
+  payment_id: { 
     type: DataTypes.STRING(255),
     allowNull: true,
   },
-  total_amount: { // Total amount of the order()
+  total_amount: { 
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
     defaultValue: 0,
   },
-  customer_name: { // Name of the person that will retire the order()
+  customer_name: { 
     type: DataTypes.STRING(255),
     allowNull: false,
   },
-  customer_email: { // Email of the person that will retire the order
+  customer_email: { 
     type: DataTypes.STRING(255),
     allowNull: false,
   },
-  customer_phone: { // Phone number of the person that will retire the order
+  customer_phone: { 
     type: DataTypes.STRING(50),
     allowNull: true,
   },
-  customer_notes: { // Additional notes for the order
+  customer_notes: { 
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  sport: { // Sport selected for the order, stored as plain text
+  sport: { 
     type: DataTypes.STRING(100),
     allowNull: true,
   },
-  statusMp: { // Status of the payment returned by Mercado Pago 
+  statusMp: { 
     type: DataTypes.STRING(50),
     allowNull: true,
   },
-  currencyId: { // Currency code, default to 'ARS'
+  currencyId: { 
     type: DataTypes.STRING(10),
     allowNull: true,
     defaultValue: 'ARS',
