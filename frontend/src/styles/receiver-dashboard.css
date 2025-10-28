@@ -341,6 +341,32 @@ tr.stock-low {
   padding: 20px;
 }
 
+/* Estilos para tablas en receiver-dashboard */
+.receiver-dashboard-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.receiver-dashboard-data-table th,
+.receiver-dashboard-data-table td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #2a2a2a;
+  white-space: nowrap;
+}
+
+.receiver-dashboard-data-table th {
+  background-color: #151515;
+  color: #e6e6e6;
+}
+
+.receiver-dashboard-data-table td {
+  color: #bdbdbd;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 @media (max-width: 1000px) {
   .filters-grid {
     grid-template-columns: 1fr;

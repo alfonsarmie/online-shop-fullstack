@@ -1,6 +1,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Afacad&display=swap');
 
-.admin-dashboard {
+.admin-dashboard-label {
+  font-size: 13px;
+  color: #bdbdbd;
+}
+
+.admin-dashboard-input {
+  width: 60px;
+  padding: 4px 8px;
+  font-size: 13px;
+  background: #151515;
+  border: 1px solid #2a2a2a;
+  color: #e6e6e6;
+  border-radius: 4px;
+}
+
+.admin-dashboard-tooltip {
+  background-color: #145526ff;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.admin-dashboard-tooltip p {
+  margin: 0;
+}
+
+.admin-dashboard-tooltip-label {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.admin-dashboard-tooltip-item {
+  color: #d9534f;
+}
+
+/* Estilos específicos para AdminDashboard */
+.admin-dashboard-container {
   padding: 24px 32px;
   padding-top: 80px;
   color: #f0f0f0;
@@ -11,13 +47,13 @@
   box-sizing: border-box;
 }
 
-.admin-dashboard *,
-.admin-dashboard *::before,
-.admin-dashboard *::after {
+.admin-dashboard-container *,
+.admin-dashboard-container *::before,
+.admin-dashboard-container *::after {
   box-sizing: border-box;
 }
 
-.admin-dashboard h1 {
+.admin-dashboard-container h1 {
   margin: 12px 0 0;
   font-family: 'Anton', sans-serif;
   letter-spacing: 0.5px;
@@ -27,7 +63,7 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.subtitle {
+.admin-dashboard-subtitle {
   color: #e0e0e0;
   margin-top: 8px;
   margin-bottom: 20px;
@@ -36,56 +72,84 @@
   font-weight: 400;
 }
 
-.grid-2 {
+.admin-dashboard-grid-2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   margin-top: 18px;
 }
 
-.panel {
+.admin-dashboard-panel {
   background: #1D1D1D;
   border: 1px solid #2a2a2a;
   border-radius: 12px;
+  padding: 6px;
 }
 
-.panel-header {
+.admin-dashboard-panel-header {
   padding: 14px 16px;
   border-bottom: 1px solid #2a2a2a;
 }
 
-.panel-header h2 {
+.admin-dashboard-panel-header h2 {
   margin: 0;
   font-size: 18px;
   font-family: 'Afacad', sans-serif;
   color: #e8e8e8;
 }
 
-.panel-body {
-  padding: 14px 16px 18px;
-}
-
-.panel,
-.admin-dashboard {
-  transition: all 0.2s ease-in-out;
-}
-
-.span-h2 {
+.admin-dashboard-span-h2 {
   font-size: 14px;
   color: #b0b0b0;
   font-weight: normal;
   margin-left: 8px;
 }
 
+/* Ajustes para la primera tabla en AdminDashboard */
+.admin-dashboard-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.admin-dashboard-data-table th, .admin-dashboard-data-table td {
+  padding: 12px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.admin-dashboard-data-table th {
+  background-color: #1D1D1D;
+  color: #22a341; /* Verde similar al encabezado */
+  font-weight: bold;
+}
+
+.admin-dashboard-data-table td {
+  color: #bdbdbd;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-dashboard-data-table tr:hover {
+  background-color: #2a2a2a; /* Efecto hover */
+}
+
+.admin-dashboard-data-table .rank {
+  font-weight: bold;
+  color: #3de564; /* Color verde para destacar el ranking */
+  width: 80px; /* Reducir el ancho de la columna */
+  text-align: center; /* Centrar el contenido */
+}
+
 @media (max-width: 1200px) {
-  .admin-dashboard {
+  .admin-dashboard-container {
     padding: 20px 24px;
     padding-top: 70px;
   }
 }
 
 @media (max-width: 1000px) {
-  .admin-dashboard {
+  .admin-dashboard-container {
     padding: 18px 20px;
     padding-top: 66px;
   }
@@ -101,12 +165,12 @@
 }
 
 @media (max-width: 768px) {
-  .admin-dashboard {
+  .admin-dashboard-container {
     padding: 16px 16px;
     padding-top: 60px;
   }
 
-  .admin-dashboard h1 {
+  .admin-dashboard-container h1 {
     font-size: 28px;
     margin-top: 16px;
   }
@@ -127,12 +191,12 @@
 
 /* Mobile phones (600px and down) */
 @media (max-width: 600px) {
-  .admin-dashboard {
+  .admin-dashboard-container {
     padding: 14px 12px;
     padding-top: 56px;
   }
   
-  .admin-dashboard h1 {
+  .admin-dashboard-container h1 {
     font-size: 26px;
     text-align: center;
     font-weight: bold;
@@ -167,12 +231,12 @@
 
 /* Extra small phones (480px and down) */
 @media (max-width: 480px) {
-  .admin-dashboard {
+  .admin-dashboard-container {
     padding: 12px 8px;
     padding-top: 52px;
   }
   
-  .admin-dashboard h1 {
+  .admin-dashboard-container h1 {
     font-size: 24px;
     margin-bottom: 6px;
   }
@@ -202,11 +266,11 @@
 
 /* Landscape orientation adjustments for mobile */
 @media (max-height: 500px) and (orientation: landscape) {
-  .admin-dashboard {
+  .admin-dashboard-container {
     padding-top: 40px;
   }
   
-  .admin-dashboard h1 {
+  .admin-dashboard-container h1 {
     font-size: 18px;
   }
   

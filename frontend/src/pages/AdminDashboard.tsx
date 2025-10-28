@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "../styles/admin-dashboard.css";
-import { BarChart, PieChart, Pie, Cell, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { orderService } from "../services/orderService";
 import { productService } from '../services/productService';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Bar, Legend, PieChart, Pie, Cell } from 'recharts';
 
 type SportsStat = {
   sport: string;
@@ -189,20 +189,19 @@ const AdminDashboard: React.FC = () => {
   };
 
   return (
-    <div className="page-with-nav-spacing admin-surface">
+    <div className="admin-dashboard-container">
       <div className="admin-dashboard">
         <h1>Dashboard estadísticas</h1>
-        <p className="subtitle">
+        <p className="admin-dashboard-subtitle">
           Resumen ejecutivo del e-commerce del club...
         </p>
 
-        <section className="grid-2">
-          <div className="panel">
-            <div className="panel-header">
+        <section className="admin-dashboard-grid-2">
+          <div className="admin-dashboard-panel">
+            <div className="admin-dashboard-panel-header">
               <h2>Pedidos por deporte</h2>
             </div>
-            {/* Este panel-body no tiene estilos en línea y funciona */}
-            <div className="panel-body"> 
+            <div className="admin-dashboard-panel-body"> 
               <PieChart width={400} height={300}>
                 <Pie
                   data={sportsStats}
@@ -227,14 +226,14 @@ const AdminDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="panel">
-            <div className="panel-header">
+          <div className="admin-dashboard-panel">
+            <div className="admin-dashboard-panel-header">
               <h2>
                 Estado de pedidos{" "}
-                <span className="span-h2">(últimos 30 días)</span>
+                <span className="admin-dashboard-span-h2">(últimos 30 días)</span>
               </h2>
             </div>
-            <div className="panel-body">
+            <div className="admin-dashboard-panel-body">
               <BarChart width={500} height={300} data={statusStats}> 
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
@@ -254,62 +253,58 @@ const AdminDashboard: React.FC = () => {
           </div>
         </section> 
 
-        <section>
-            <div className="panel">
-              <div className="panel-header">
-                <h2>Stock Crítico
-                  <span className='span-h2'>(Stock &lt; {criticalStockLimit})</span>
-                </h2>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label htmlFor="criticalStockLimitInput" style={{ fontSize: '13px', color: '#bdbdbd' }}>Límite:</label>
-                  <input
-                    id="criticalStockLimitInput"
-                    type="number"
-                    min="1"
-                    value={criticalStockLimit}
-                    onChange={handleLimitChange}
-                    style={{ width: '60px', padding: '4px 8px', fontSize: '13px', background: '#151515', border: '1px solid #2a2a2a', color: '#e6e6e6', borderRadius: '4px' }}
-                  />
-                </div>
-              </div>
-              
-              <div className="panel-body">
-                {loadingCriticalStock ? (
-                  <LoadingSpinner />
-                ) : errorCriticalStock ? (
-                  <p style={{ color: '#d9534f' }}>{errorCriticalStock}</p>
-                ) : criticalStockProducts.length === 0 ? (
-                  <p style={{ color: '#bdbdbd' }}>No hay productos con stock crítico (menor a {criticalStockLimit}).</p>
-                ) : (
-
-                  <BarChart 
-                    width={1400} 
-                    height={300} 
-                    data={criticalStockProducts} 
-                    margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
-                  >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
-                      <XAxis dataKey="name" tick={{ fill: '#bdbdbd', fontSize: 16 }} />
-                      <YAxis allowDecimals={false} tick={{ fill: '#bdbdbd', fontSize: 12 }} />
-                      <Tooltip
-                        contentStyle={{ backgroundColor: '#151515', border: '1px solid #2a2a2a', borderRadius: '4px' }}
-                        labelStyle={{ color: '#ffffff', fontWeight: 'bold' }}
-                        itemStyle={{ color: '#d9534f' }} 
-                        formatter={(value: number) => [`${value} unidades`, 'Stock']}
-                      />
-                      <Bar dataKey="stock" name="Stock Actual" fill="#d9534f" barSize={30} />
-                  </BarChart>
-                )}
+        <section className="admin-dashboard-grid-2">
+          <div className="admin-dashboard-panel">
+            <div className="admin-dashboard-panel-header">
+              <h2>Stock Crítico
+                <span className='admin-dashboard-span-h2'>(Stock &lt; {criticalStockLimit})</span>
+              </h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <label htmlFor="criticalStockLimitInput" className="admin-dashboard-label">Límite:</label>
+                <input
+                  id="criticalStockLimitInput"
+                  type="number"
+                  min="1"
+                  value={criticalStockLimit}
+                  onChange={handleLimitChange}
+                  className="admin-dashboard-input"
+                />
               </div>
             </div>
-        </section>
+            
+            <div className="admin-dashboard-panel-body">
+              {loadingCriticalStock ? (
+                <LoadingSpinner />
+              ) : errorCriticalStock ? (
+                <p style={{ color: '#d9534f' }}>{errorCriticalStock}</p>
+              ) : criticalStockProducts.length === 0 ? (
+                <p style={{ color: '#bdbdbd' }}>No hay productos con stock crítico (menor a {criticalStockLimit}).</p>
+              ) : (
+                <table className="admin-dashboard-data-table">
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Stock</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {criticalStockProducts.map((product) => (
+                      <tr key={product.name}>
+                        <td>{product.name}</td>
+                        <td>{product.stock}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
 
-        <section className="grid-2">
-          <div className="panel">
-            <div className="panel-header">
+          <div className="admin-dashboard-panel">
+            <div className="admin-dashboard-panel-header">
               <h2>Top 5 productos más vendidos</h2>
             </div>
-            <div className="panel-body">
+            <div className="admin-dashboard-panel-body">
               {loadingTopProducts ? (
                 <LoadingSpinner />
               ) : errorTopProducts ? (
@@ -317,18 +312,24 @@ const AdminDashboard: React.FC = () => {
               ) : topProducts.length === 0 ? (
                 <p style={{ color: '#bdbdbd' }}>No hay datos disponibles para los productos más vendidos.</p>
               ) : (
-                <BarChart
-                  width={500}
-                  height={300}
-                  data={topProducts}
-                  margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
-                  <XAxis dataKey="name" tick={{ fill: '#bdbdbd', fontSize: 16 }} />
-                  <YAxis allowDecimals={false} tick={{ fill: '#bdbdbd', fontSize: 12 }} />
-                  <Tooltip content={<TopProductsTooltip />} />
-                  <Bar dataKey="orderCount" name="Órdenes" fill="#1E7335" barSize={30} />
-                </BarChart>
+                <table className="admin-dashboard-data-table">
+                  <thead>
+                    <tr>
+                      <th>Ranking</th>
+                      <th>Producto</th>
+                      <th>Órdenes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {topProducts.map((product, index) => (
+                      <tr key={product.name}>
+                        <td className="rank">{index + 1}°</td>
+                        <td>{product.name}</td>
+                        <td>{product.orderCount}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               )}
             </div>
           </div>

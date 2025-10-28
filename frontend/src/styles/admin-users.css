@@ -223,6 +223,31 @@
   font-weight: 600;
 }
 
+/* Estilos para tablas en admin-users */
+.admin-users-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.admin-users-data-table th, .admin-users-data-table td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #2a2a2a;
+  white-space: nowrap;
+}
+
+.admin-users-data-table th {
+  background-color: #151515;
+  color: #e6e6e6;
+}
+
+.admin-users-data-table td {
+  color: #bdbdbd;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 @media (max-width: 900px) {
   .admin-users {
     padding: 20px 18px;
