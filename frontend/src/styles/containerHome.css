@@ -29,7 +29,7 @@
     z-index: 100;
     text-align: center;
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); 
-
+}
 .opaco {
     position: absolute;
     top: 80px;
@@ -85,4 +85,4 @@
         font-size: 1.5rem; 
         bottom: 200px; 
     }
-}}
+}
