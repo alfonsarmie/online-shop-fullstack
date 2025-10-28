@@ -64,3 +64,8 @@ export interface ProductWithSize {
   stock?: number;
   category?: string;
 }
+
+export interface CriticalProductInfo {
+  name: string;
+  stock: number;
+}

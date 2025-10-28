@@ -1,5 +1,5 @@
 import api from "./api";
-import { Product, FrontendProduct } from "../types/product";
+import { Product, FrontendProduct, CriticalProductInfo } from "../types/product";
 
 export const productService = {
   // Get all products
@@ -106,4 +106,19 @@ export const productService = {
       throw error;
     }
   },
+
+  getCriticalStockProducts: async (criticalParam: number = 10): Promise<CriticalProductInfo[]> => {
+      try {
+        const response = await api.get<{ products: CriticalProductInfo[] }>('/products/critical', {
+          params: { criticalParam } 
+        });
+        return response.data.products || [];
+      } catch (error: any) {
+        console.error(
+          "Error fetching critical stock products:",
+          error.response?.data || error.message
+        );
+        throw error;
+      }
+    },
 };
