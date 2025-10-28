@@ -289,7 +289,7 @@ const AdminDashboard: React.FC = () => {
                     margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
                   >
                       <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
-                      <XAxis dataKey="name" tick={{ fill: '#bdbdbd', fontSize: 12 }} />
+                      <XAxis dataKey="name" tick={{ fill: '#bdbdbd', fontSize: 16 }} />
                       <YAxis allowDecimals={false} tick={{ fill: '#bdbdbd', fontSize: 12 }} />
                       <Tooltip
                         contentStyle={{ backgroundColor: '#151515', border: '1px solid #2a2a2a', borderRadius: '4px' }}
@@ -324,7 +324,7 @@ const AdminDashboard: React.FC = () => {
                   margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
-                  <XAxis dataKey="name" tick={{ fill: '#bdbdbd', fontSize: 12 }} />
+                  <XAxis dataKey="name" tick={{ fill: '#bdbdbd', fontSize: 16 }} />
                   <YAxis allowDecimals={false} tick={{ fill: '#bdbdbd', fontSize: 12 }} />
                   <Tooltip content={<TopProductsTooltip />} />
                   <Bar dataKey="orderCount" name="Órdenes" fill="#1E7335" barSize={30} />
