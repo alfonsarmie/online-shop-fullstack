@@ -9,6 +9,7 @@
   width: 60px;
   padding: 4px 8px;
   font-size: 13px;
+  font-family: 'Afacad', sans-serif;
   background: #151515;
   border: 1px solid #2a2a2a;
   color: #e6e6e6;
@@ -35,7 +36,6 @@
   color: #d9534f;
 }
 
-/* Estilos específicos para AdminDashboard */
 .admin-dashboard-container {
   padding: 24px 32px;
   padding-top: 80px;
@@ -93,7 +93,7 @@
 
 .admin-dashboard-panel-header h2 {
   margin: 0;
-  font-size: 18px;
+  font-size: 25px;
   font-family: 'Afacad', sans-serif;
   color: #e8e8e8;
 }
@@ -105,7 +105,6 @@
   margin-left: 8px;
 }
 
-/* Ajustes para la primera tabla en AdminDashboard */
 .admin-dashboard-data-table {
   width: 100%;
   border-collapse: collapse;
@@ -120,7 +119,7 @@
 
 .admin-dashboard-data-table th {
   background-color: #1D1D1D;
-  color: #22a341; /* Verde similar al encabezado */
+  color: #22a341; 
   font-weight: bold;
 }
 
@@ -131,14 +130,80 @@
 }
 
 .admin-dashboard-data-table tr:hover {
-  background-color: #2a2a2a; /* Efecto hover */
+  background-color: #2a2a2a; 
 }
 
 .admin-dashboard-data-table .rank {
   font-weight: bold;
-  color: #3de564; /* Color verde para destacar el ranking */
-  width: 80px; /* Reducir el ancho de la columna */
-  text-align: center; /* Centrar el contenido */
+  color: #3de564; 
+  width: 80px; 
+  text-align: center; 
+}
+
+.kpi-panel {
+  background: radial-gradient(circle at top left, #173b20, #1a1a1a 70%);
+  border: 1px solid #205b33;
+  transition: all 0.3s ease;
+}
+
+.kpi-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(34, 163, 65, 0.15);
+}
+
+.kpi-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #1f1f1f, #2b2b2b);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+  transition: all 0.3s ease;
+}
+
+.kpi-icon {
+  font-size: 3rem;
+  color: #3de564;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.kpi-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.kpi-label {
+  font-size: 0.95rem;
+  color: #bdbdbd;
+  letter-spacing: 0.5px;
+}
+
+.kpi-value {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #3de564;
+  text-shadow: 0 2px 6px rgba(61, 229, 100, 0.3);
+}
+
+.monthly-worth-card {
+  padding: 28px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px); 
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0); 
+  }
+}
+
+.kpi-fade-in {
+  animation: fadeInUp 0.5s ease-out forwards;
 }
 
 @media (max-width: 1200px) {
@@ -189,7 +254,6 @@
   }
 }
 
-/* Mobile phones (600px and down) */
 @media (max-width: 600px) {
   .admin-dashboard-container {
     padding: 14px 12px;
@@ -264,7 +328,6 @@
   }
 }
 
-/* Landscape orientation adjustments for mobile */
 @media (max-height: 500px) and (orientation: landscape) {
   .admin-dashboard-container {
     padding-top: 40px;

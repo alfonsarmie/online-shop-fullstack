@@ -4,6 +4,7 @@ import { orderService } from "../services/orderService";
 import { productService } from '../services/productService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Bar, Legend, PieChart, Pie, Cell } from 'recharts';
+import { FaMoneyBillWave } from 'react-icons/fa';
 
 type SportsStat = {
   sport: string;
@@ -35,6 +36,9 @@ const AdminDashboard: React.FC = () => {
   const [errorCriticalStock, setErrorCriticalStock] = useState<string | null>(null);
   const [errorTopProducts, setErrorTopProducts] = useState<string | null>(null);
   const [criticalStockLimit, setCriticalStockLimit] = useState<number>(10);
+  const [monthlyWorth, setMonthlyWorth] = useState<number | null>(null);
+  const [loadingMonthlyWorth, setLoadingMonthlyWorth] = useState(true);
+  const [errorMonthlyWorth, setErrorMonthlyWorth] = useState<string | null>(null);
   
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -55,68 +59,60 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const mapSportsToFrontend = (sport: string) => {
-    switch (sport) {
-      case "futbol":
-        return { label: "Fútbol", color: "#266a2fff" };
-      case "hockey":
-        return { label: "Hockey", color: "#00BFFF" };
-      case "futsal":
-        return { label: "Futsal", color: "#FF1493" };
-      case "vela":
-        return { label: "Vela", color: "#FF4500" };
-      case "voley":
-        return { label: "Voley", color: "#32CD32" };
-      case "natación":
-        return { label: "Natación", color: "#1E90FF" };
-      case "remo":
-        return { label: "Remo", color: "#8A2BE2" };
-      default:
-        return { label: sport, color: "#8884d8" };
+const mapSportsToFrontend = (sport: string) => {
+  switch (sport) {
+    case "futbol":
+      return { label: "Fútbol", color: "#81C784" }; 
+    case "hockey":
+      return { label: "Hockey", color: "#fdcae1" }; 
+    case "futsal":
+      return { label: "Futsal", color: "#E57373" }; 
+    case "vela":
+      return { label: "Vela", color: "#FFB74D" }; 
+    case "voley":
+      return { label: "Voley", color: "#FFF176" }; 
+    case "natación":
+      return { label: "Natación", color: "#64B5F6" };
+    case "remo":
+      return { label: "Remo", color: "#BA68C8" }; 
+    default:
+      return { label: sport, color: "#B0BEC5" };
+  }
+};
+
+useEffect(() => {
+  const loadStats = async () => {
+    try {
+      setLoadingCriticalStock(true);
+      setLoadingTopProducts(true);
+      setLoadingMonthlyWorth(true);
+
+      const [sports, status, critical, top, worth] = await Promise.all([
+        orderService.getSportsStats(),
+        orderService.getStatusStats(),
+        productService.getCriticalStockProducts(criticalStockLimit),
+        productService.getTopFiveProducts(),
+        orderService.getMonthlyWorth(),
+      ]);
+
+      setSportsStats(sports);
+      setStatusStats(status);
+      setCriticalStockProducts(critical);
+      setTopProducts(top);
+      setMonthlyWorth(worth.total_monthly_worth);
+    } catch (error) {
+      console.error("Error cargando dashboard:", error);
+      setErrorCriticalStock("No se pudo cargar el stock crítico.");
+      setErrorTopProducts("No se pudo cargar los productos más vendidos.");
+      setErrorMonthlyWorth("No se pudo cargar el monto mensual.");
+    } finally {
+      setLoadingCriticalStock(false);
+      setLoadingTopProducts(false);
+      setLoadingMonthlyWorth(false);
     }
   };
-
-  useEffect(() => {
-    const loadStats = async () => {
-      try {
-        const sports = await orderService.getSportsStats();
-        setSportsStats(sports);
-        const status = await orderService.getStatusStats();
-        setStatusStats(status);
-        const criticalProducts = await productService.getCriticalStockProducts(criticalStockLimit); 
-        setCriticalStockProducts(criticalProducts);
-        const topProductsData = await productService.getTopFiveProducts();
-        setTopProducts(topProductsData);
-      } catch (error) {
-        console.error("Error loading stats:", error);
-      }
-      
-      setLoadingCriticalStock(true);
-      setErrorCriticalStock(null);
-      try {
-        const criticalProducts = await productService.getCriticalStockProducts(criticalStockLimit); 
-        setCriticalStockProducts(criticalProducts);
-      } catch (error) {
-        console.error('Error loading critical stock products:', error);
-        setErrorCriticalStock('No se pudo cargar el stock crítico.');
-      } finally {
-        setLoadingCriticalStock(false);
-      }
-
-      setLoadingTopProducts(true);
-      setErrorTopProducts(null);
-      try {
-        const topProductsData = await productService.getTopFiveProducts();
-        setTopProducts(topProductsData);
-      } catch (error) {
-        console.error('Error loading top products:', error);
-        setErrorTopProducts('No se pudo cargar los productos más vendidos.');
-      } finally {
-        setLoadingTopProducts(false);
-      }
-    };
-    loadStats();
-  }, [criticalStockLimit]);
+  loadStats();
+}, [criticalStockLimit]);
 
   const handleLimitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value, 10);
@@ -196,12 +192,41 @@ const AdminDashboard: React.FC = () => {
           Resumen ejecutivo del e-commerce del club...
         </p>
 
+        
+        <section>
+          <div className="admin-dashboard-panel kpi-panel">
+            <div className="admin-dashboard-panel-header">
+              <h2>Monto ganado este mes</h2>
+            </div>
+            <div className="admin-dashboard-panel-body">
+              {loadingMonthlyWorth ? (
+                <LoadingSpinner />
+              ) : errorMonthlyWorth ? (
+                <p style={{ color: "#d9534f" }}>{errorMonthlyWorth}</p>
+              ) : (
+                <div className="kpi-card monthly-worth-card kpi-fade-in">
+                  <div className="kpi-icon"><FaMoneyBillWave /></div>
+                  <div className="kpi-info">
+                    <span className="kpi-label">Total del mes</span>
+                    <span className="kpi-value">
+                      ${monthlyWorth?.toLocaleString("es-AR", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
         <section className="admin-dashboard-grid-2">
-          <div className="admin-dashboard-panel">
+          <div className="admin-dashboard-panel kpi-panel">
             <div className="admin-dashboard-panel-header">
               <h2>Pedidos por deporte</h2>
             </div>
-            <div className="admin-dashboard-panel-body"> 
+            <div className="admin-dashboard-panel-body kpi-card"> 
               <PieChart width={400} height={300}>
                 <Pie
                   data={sportsStats}
@@ -226,14 +251,14 @@ const AdminDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="admin-dashboard-panel">
+          <div className="admin-dashboard-panel kpi-panel">
             <div className="admin-dashboard-panel-header">
               <h2>
                 Estado de pedidos{" "}
                 <span className="admin-dashboard-span-h2">(últimos 30 días)</span>
               </h2>
             </div>
-            <div className="admin-dashboard-panel-body">
+            <div className="admin-dashboard-panel-body kpi-card">
               <BarChart width={500} height={300} data={statusStats}> 
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
@@ -254,7 +279,7 @@ const AdminDashboard: React.FC = () => {
         </section> 
 
         <section className="admin-dashboard-grid-2">
-          <div className="admin-dashboard-panel">
+          <div className="admin-dashboard-panel kpi-panel">
             <div className="admin-dashboard-panel-header">
               <h2>Stock Crítico
                 <span className='admin-dashboard-span-h2'>(Stock &lt; {criticalStockLimit})</span>
@@ -272,7 +297,7 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
             
-            <div className="admin-dashboard-panel-body">
+            <div className="admin-dashboard-panel-body kpi-card">
               {loadingCriticalStock ? (
                 <LoadingSpinner />
               ) : errorCriticalStock ? (
@@ -300,11 +325,11 @@ const AdminDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="admin-dashboard-panel">
+          <div className="admin-dashboard-panel kpi-panel">
             <div className="admin-dashboard-panel-header">
               <h2>Top 5 productos más vendidos</h2>
             </div>
-            <div className="admin-dashboard-panel-body">
+            <div className="admin-dashboard-panel-body kpi-card">
               {loadingTopProducts ? (
                 <LoadingSpinner />
               ) : errorTopProducts ? (
@@ -334,6 +359,8 @@ const AdminDashboard: React.FC = () => {
             </div>
           </div>
         </section>
+
+
 
       </div>
     </div>
