@@ -16,7 +16,6 @@ import { useState, useEffect, useRef, type ChangeEvent, type FormEvent } from "r
 import UserSidebar from "./UserSideBar";
 import SuccessMessage from "./SuccessMessage";
 
-// Navbar props interface
 interface NavbarProps {
   user: User | null;
   setUser: (user: User | null) => void;
@@ -35,14 +34,12 @@ function Navbar({ user, setUser }: NavbarProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  // Efecto para limpiar automáticamente el mensaje después de 3 segundos
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
         setSuccessMessage("");
-      }, 3000); // 3 segundos
+      }, 3000); 
 
-      // Limpiar el timer si el componente se desmonta o el mensaje cambia
       return () => clearTimeout(timer);
     }
   }, [successMessage]);
@@ -90,45 +87,37 @@ function Navbar({ user, setUser }: NavbarProps) {
     };
   }, [isSearchOpen]);
 
-  // Abrir/cerrar menú lateral mobile
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen((prev) => !prev);
     setIsMobileDropdownOpen(false);
   };
 
-  // Cerrar menú móvil al hacer clic en un enlace
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
     setIsMobileDropdownOpen(false);
   };
 
-  // Abrir/cerrar dropdown de productos en mobile
   const handleMobileDropdownToggle = () => {
     setIsMobileDropdownOpen((prev) => !prev);
   };
 
-  // Función para volver al menú principal desde las categorías
   const handleBackToMainMenu = () => {
     setIsMobileDropdownOpen(false);
     setIsMainMenuAnimating(true);
-    // Mantener abierto el menú principal (isMobileMenuOpen permanece true)
-    
-    // Remover la clase de animación después de que termine
+
     setTimeout(() => {
       setIsMainMenuAnimating(false);
-    }, 400); // Duración de la animación
+    }, 400); 
   };
 
-  // Toggle sidebar function
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Navigate to home and scroll to top
   const handleHomeClick = () => {
     navigate("/");
     window.scrollTo(0, 0);
-    closeMobileMenu(); // Cerrar menú móvil al ir a inicio
+    closeMobileMenu(); 
   };
 
   const handleSearchToggle = () => {
@@ -158,7 +147,6 @@ function Navbar({ user, setUser }: NavbarProps) {
     window.scrollTo(0, 0);
   };
 
-  // Toggle options menu
   const openOptions = () => {
     const optionsMenu = document.getElementById("optionsMenu");
     if (optionsMenu) {
@@ -166,19 +154,16 @@ function Navbar({ user, setUser }: NavbarProps) {
     }
   };
 
-  // Open user sidebar
   const openUserSidebar = () => {
     setIsSidebarOpen(true);
   };
 
-  // Close user sidebar
   const closeUserSidebar = () => {
     setIsSidebarOpen(false);
   };
 
   return (
     <div>
-      {/* SuccessMessage a nivel superior */}
       <SuccessMessage
         message={successMessage}
         onClose={() => setSuccessMessage("")}
@@ -195,7 +180,6 @@ function Navbar({ user, setUser }: NavbarProps) {
           </Link>
         </div>
 
-        {/* Menú lateral mobile */}
         <div className={`mobile-menu${isMobileMenuOpen ? " open" : ""}`}>
           <button className="nav-toggle close" onClick={handleMobileMenuToggle} aria-label="Cerrar menú">
             &times;
@@ -224,7 +208,6 @@ function Navbar({ user, setUser }: NavbarProps) {
           )}
         </div>
 
-        {/* Menú desktop normal */}
         <div className="nav-links" id="navLinks">
           <ul>
             <li onClick={handleHomeClick}>
@@ -285,10 +268,8 @@ function Navbar({ user, setUser }: NavbarProps) {
             </form>
           </div>
 
-          {/* conditional rendering */}
           {user ? (
             <>
-              {/* Button to open user sidebar */}
               <button onClick={openUserSidebar} className="userOptions">
                 <FontAwesomeIcon icon={faUser} className="user-icon" />
                 <span className="user-name">Hola, {user.name}!</span>
@@ -311,7 +292,6 @@ function Navbar({ user, setUser }: NavbarProps) {
             </Link>
           )}
 
-          {/* Carrito solo para usuarios que no sean admin ni recepcionista */}
           {(!user || (user.role !== "admin" && user.role !== "receptionist")) && (
             <button onClick={openCart} className="cart-icon cart-btn">
               <FontAwesomeIcon icon={faCartShopping} />

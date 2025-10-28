@@ -1,8 +1,4 @@
-/**
- * Admin Navigation Bar
- * Purpose: top navigation for all `/admin/*` pages.
- * Reuses public navbar styles for visual consistency and exposes admin links.
- */
+
 import { Link } from "react-router-dom";
 import "../styles/nav.css";
 import "../index.css";
@@ -14,8 +10,7 @@ import { useState, useEffect } from "react";
 import UserSidebar from "./UserSideBar";
 import SuccessMessage from "./SuccessMessage";
 
-// Navbar props interface
-// Props contract: current user (or null) and a setter to update auth state
+
 interface NavbarProps {
   user: User | null;
   setUser: (user: User | null) => void;
@@ -26,19 +21,16 @@ function NavBarAdmin({ user, setUser }: NavbarProps) {
   const [successMessage, setSuccessMessage] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Effect to auto-clear success messages after 3 seconds
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
         setSuccessMessage("");
-      }, 3000); // 3 seconds
+      }, 3000); 
 
-      // Clear the timer if the component unmounts or the message changes
       return () => clearTimeout(timer);
     }
   }, [successMessage]);
 
-  // Effect to close mobile menu when clicking outside
   useEffect(() => {
     if (!isMobileMenuOpen) return;
 
@@ -57,29 +49,24 @@ function NavBarAdmin({ user, setUser }: NavbarProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isMobileMenuOpen]);
 
-  // Toggle mobile menu function
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen((prev) => !prev);
   };
 
-  // Close mobile menu when clicking on a link
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
 
-  // Open user sidebar
   const openUserSidebar = () => {
     setIsSidebarOpen(true);
   };
 
-  // Close user sidebar
   const closeUserSidebar = () => {
     setIsSidebarOpen(false);
   };
 
   return (
     <div>
-      {/* SuccessMessage a nivel superior */}
       <SuccessMessage
         message={successMessage}
         onClose={() => setSuccessMessage("")}
@@ -90,7 +77,6 @@ function NavBarAdmin({ user, setUser }: NavbarProps) {
           <FontAwesomeIcon icon={faBars} />
         </div>
 
-        {/* Mobile menu */}
         <div className={`mobile-menu${isMobileMenuOpen ? " open" : ""}`}>
           <button className="nav-toggle close" onClick={handleMobileMenuToggle} aria-label="Cerrar menú">
             &times;
@@ -132,16 +118,13 @@ function NavBarAdmin({ user, setUser }: NavbarProps) {
         </div>
 
         <div className="btnsRight">
-          {/* conditional rendering */}
           {user ? (
             <>
-              {/* Button to open user sidebar */}
               <button onClick={openUserSidebar} className="userOptions">
                 <FontAwesomeIcon icon={faUser} className="user-icon" />
                 <span className="user-name">Hola, {user.name}!</span>
               </button>
 
-              {/* User Sidebar is only displayed if user exists */}
               <UserSidebar
                 isOpen={isSidebarOpen}
                 onClose={closeUserSidebar}

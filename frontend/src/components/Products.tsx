@@ -20,7 +20,6 @@ function Products() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Cargar productos desde el backend
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -29,7 +28,6 @@ function Products() {
 
         console.log("Productos desde backend:", productsData);
 
-        // Log de las URLs de imágenes
         productsData.forEach((product, index) => {
           console.log(`Producto ${index}:`, {
             name: product.name,
@@ -39,7 +37,6 @@ function Products() {
         });
 
         if (Array.isArray(productsData) && productsData.length > 0) {
-          // Ya deberían estar en formato FrontendProduct
           const processedProducts: FrontendProduct[] = productsData.map(
             (product) => ({
               id: product.id,

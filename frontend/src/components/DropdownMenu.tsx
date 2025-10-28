@@ -90,7 +90,6 @@ function DropdownMenu({ mobile = false, isOpen: mobileOpen, onClose, onBackToMen
     }
   };
 
-  // MOBILE SIDEBAR MODE
   if (mobile) {
     return (
       <div className={`dropdown-mobile${mobileOpen ? " is-open" : ""}`}> 
@@ -120,7 +119,6 @@ function DropdownMenu({ mobile = false, isOpen: mobileOpen, onClose, onBackToMen
     );
   }
 
-  // DESKTOP DROPDOWN
   return (
     <div
       className={`dropdown${isOpen ? " is-open" : ""}`}

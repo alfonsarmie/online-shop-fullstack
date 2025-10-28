@@ -21,7 +21,6 @@ const AdminCategories: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Fetch categories from backend
   useEffect(() => {
     api
       .get("/categories")
@@ -38,7 +37,6 @@ const AdminCategories: React.FC = () => {
       .catch(() => setCategories([]));
   }, []);
 
-  // Filtered and/or edited view of categories
   const view = useMemo(() => {
     const q = filter.trim().toLowerCase();
     const source = editMode ? edited : categories;
@@ -50,20 +48,16 @@ const AdminCategories: React.FC = () => {
     );
   }, [categories, edited, editMode, filter]);
 
-  // Start bulk editing
   const startBulkEdit = () => {
-    // Editable copy
     setEdited(categories.map((c) => ({ ...c })));
     setEditMode(true);
   };
 
-  // Cancel bulk editing
   const cancelBulkEdit = () => {
     setEdited([]);
     setEditMode(false);
   };
 
-  // Handle changes in editable fields
   const onEditedChange = (idCategory: number, key: "name", value: string) => {
     if (!editMode) return;
     setEdited((prev) =>
@@ -73,7 +67,6 @@ const AdminCategories: React.FC = () => {
     );
   };
 
-  // Save all changes to backend
   const saveBulkChanges = async () => {
     try {
       await Promise.all(
@@ -94,7 +87,6 @@ const AdminCategories: React.FC = () => {
     }
   };
 
-  // Create a new category
   const create = async () => {
     const name = creating.name.trim();
     if (!name) return;
@@ -114,10 +106,8 @@ const AdminCategories: React.FC = () => {
     }
   };
 
-  // Confirm deletion of a category
   const confirmDelete = (c: Category) => setDeleteTarget(c);
 
-  // Delete a category
   const deleteCategory = async (idCategory: number) => {
     try {
       await api.delete(`/categories/${idCategory}`);
@@ -131,7 +121,6 @@ const AdminCategories: React.FC = () => {
         error.message?.toLowerCase() ||
         "";
 
-      // Si el mensaje del backend o el status code indica error de integridad, mostrar mensaje personalizado
       const isIntegrityError =
         backendMsg.includes("integridad referencial") ||
         backendMsg.includes("foreign key") ||
@@ -167,7 +156,6 @@ const AdminCategories: React.FC = () => {
         Crear, editar y eliminar categorías de productos
       </p>
 
-      {/* Crear nueva categoría */}
       <section className="panel">
         <div className="panel-header">
           <h2>Crear nueva categoría</h2>
@@ -194,7 +182,6 @@ const AdminCategories: React.FC = () => {
         </div>
       </section>
 
-      {/* Listado de categorías */}
       <section className="panel">
         <div className="panel-header">
           <h2>Categorías ({view.length})</h2>
@@ -284,7 +271,6 @@ const AdminCategories: React.FC = () => {
         </div>
       </section>
 
-      {/* Modal de confirmación */}
       {deleteTarget && (
         <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>

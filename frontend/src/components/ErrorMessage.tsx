@@ -1,6 +1,5 @@
 import '../styles/errorMessage.css';
 
-// Component to display error messages
 interface ErrorMessageProps {
   message: string;
   onClose?: () => void;

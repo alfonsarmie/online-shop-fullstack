@@ -3,7 +3,6 @@ import "../styles/product.css";
 import { useState } from "react";
 import { ProductWithSize, Size } from "../types/product";
 
-// Props interface for Product component
 interface ProductProps {
   id: string;
   name: string;
@@ -11,7 +10,7 @@ interface ProductProps {
   img: string;
   img2: string;
   description: string;
-  sizes: Size[]; // Cambiado de string[] a Size[]
+  sizes: Size[]; 
   stock: number;
   onAddToCart: (product: ProductWithSize) => void;
 }
@@ -30,13 +29,12 @@ function ProductComponent({
   const [selectedSize, setSelectedSize] = useState<Size | null>(null);
   const [showSizeSelector, setShowSizeSelector] = useState(false);
 
-  // Asegurar que las URLs de imágenes sean válidas
   const mainImage = img || "/placeholder-image.jpg";
   const secondaryImage = img2 || "/placeholder-image.jpg";
 
   const handleAddToCartClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation(); // Prevenir que el enlace se active
+    e.stopPropagation(); 
     setShowSizeSelector(true);
   };
 
@@ -69,7 +67,6 @@ function ProductComponent({
           className="imgProd"
           alt={name}
           onError={(e) => {
-            // Fallback para imágenes rotas
             e.currentTarget.src = "/placeholder-image.jpg";
           }}
         />
@@ -81,7 +78,6 @@ function ProductComponent({
         Añadir al carrito
       </button>
 
-      {/* Backdrop oscuro */}
       {showSizeSelector && (
         <div 
           className="size-selector-backdrop"

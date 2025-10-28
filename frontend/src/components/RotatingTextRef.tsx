@@ -1,6 +1,5 @@
 "use client";
 
-// TypeScript declaration for Intl.Segmenter
 declare global {
   interface Intl {
     Segmenter?: any;
@@ -91,7 +90,6 @@ const RotatingText = forwardRef<RotatingTextRef, RotatingTextProps>(
     const containerRef = React.useRef<HTMLSpanElement>(null);
     const measureRef = React.useRef<HTMLSpanElement>(null);
 
-    // Actualizar el ancho cada vez que cambia el texto actual
     useEffect(() => {
       if (measureRef.current) {
         measureRef.current.textContent = texts[currentTextIndex];
@@ -227,7 +225,6 @@ const RotatingText = forwardRef<RotatingTextRef, RotatingTextProps>(
 
     return (
       <>
-        {/* Span oculto para medir el ancho del texto actual, replicando estructura y clases */}
         <span
           ref={measureRef}
           className={cn("text-rotate", mainClassName)}

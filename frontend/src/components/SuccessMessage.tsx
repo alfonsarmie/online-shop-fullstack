@@ -1,6 +1,5 @@
 import '../styles/successMessage.css';
 
-// Component to display success messages
 interface SuccessMessageProps {
   message: string;
   onClose?: () => void;

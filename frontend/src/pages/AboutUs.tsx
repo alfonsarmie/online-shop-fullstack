@@ -9,12 +9,9 @@ import rio from "../assets/img/rio.jpg";
 import WhatsAppButton from "../components/WhatsAppButton";
 import RotatingText from "../components/RotatingTextRef";
 
-// icon imports
 import { FaHeart, FaHandsHelping, FaHistory } from "react-icons/fa";
 
-// About Us page component
 const AboutUs = () => {
-  // State for user authentication
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -30,7 +27,6 @@ const AboutUs = () => {
   }, []);
 
   useEffect(() => {
-    // fade in animation for sections
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

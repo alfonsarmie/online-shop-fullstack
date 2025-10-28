@@ -1,8 +1,4 @@
-﻿// NavBarReceiver.tsx
-/**
- * NavBarReceiver
- * Purpose: Navigation bar for receptionist routes with access to stock and pending orders.
- */
+﻿
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/nav.css';
 import '../index.css';
@@ -32,7 +28,6 @@ function NavBarReceiver({ user, setUser }: NavbarProps) {
     }
   }, [successMessage]);
 
-  // Effect to close mobile menu when clicking outside
   useEffect(() => {
     if (!isMobileMenuOpen) return;
 
@@ -56,12 +51,10 @@ function NavBarReceiver({ user, setUser }: NavbarProps) {
     window.scrollTo(0, 0);
   };
 
-  // Toggle mobile menu function
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen((prev) => !prev);
   };
 
-  // Close mobile menu when clicking on a link
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
@@ -77,7 +70,6 @@ function NavBarReceiver({ user, setUser }: NavbarProps) {
           <FontAwesomeIcon icon={faBars} />
         </div>
 
-        {/* Mobile menu */}
         <div className={`mobile-menu${isMobileMenuOpen ? " open" : ""}`}>
           <button className="nav-toggle close" onClick={handleMobileMenuToggle} aria-label="Cerrar menú">
             &times;

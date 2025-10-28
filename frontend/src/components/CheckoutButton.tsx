@@ -38,13 +38,11 @@ interface OrderDraftPayload {
   items: OrderDraftItemPayload[];
 }
 
-// Normalize trailing slash so we do not produce URLs like ...//api
 function normaliseApiUrl(rawUrl: string | undefined): string | null {
   if (!rawUrl) return null;
   return rawUrl.endsWith('/') ? rawUrl.slice(0, -1) : rawUrl;
 }
 
-// Convert the cart data into the structure Mercado Pago expects
 function mapCartItems(cartItems: CartItem[]): PreferenceItemPayload[] {
   return cartItems.map((item, index) => ({
     id: item.id ?? `item-${index + 1}`,
@@ -100,7 +98,6 @@ function buildOrderDraft(
   };
 }
 
-// Button that requests a Checkout Pro preference and redirects the shopper
 export default function CheckoutButton({
   cartItems,
   orderId,
@@ -170,7 +167,6 @@ export default function CheckoutButton({
         orderId?: number | null;
       };
 
-      // Prefer production URL but fallback to sandbox for test accounts
       const redirectUrl = data.init_point ?? data.sandbox_init_point;
       if (!redirectUrl) {
         throw new Error('El backend no devolvio una URL de pago valida.');

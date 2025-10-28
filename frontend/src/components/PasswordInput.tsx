@@ -72,7 +72,6 @@ export default function PasswordInput({
         </>
       )}
 
-      {/* toggle is rendered as a child of Input so it sits inside .form__group for proper centering */}
     </div>
   );
 }

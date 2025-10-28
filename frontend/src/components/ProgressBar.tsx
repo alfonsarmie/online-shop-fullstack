@@ -12,13 +12,10 @@ function ProgressBar({ currentStep, className }: ProgressContainerProps) {
 
   return (
     <div className={`progress-container ${className || ''}`}>
-      {/* "Información" step */}
       <div className={`step ${isDetailsActive ? 'active' : ''}`}>Información</div>
 
-      {/* Visual progress line */}
       <div className={`progress-line ${isPaymentActive ? 'line-filled' : ''}`}></div>
 
-      {/* "Pago" step */}
       <div className={`step ${isPaymentActive ? 'active' : ''}`}>Pago</div>
     </div>
   );

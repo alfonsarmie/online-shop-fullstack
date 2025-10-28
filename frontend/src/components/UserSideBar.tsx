@@ -1,4 +1,3 @@
-// UserSidebar.tsx 
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/userSidebar.css';
@@ -80,7 +79,6 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
         </div>
 
         <div className="sidebar-options">
-          {/* Mis Pedidos - Solo clientes (no admin ni recepcionista) */}
           {role !== 'admin' && role !== 'receptionist' && (
             <button 
               className="option-btn my-orders"
@@ -90,7 +88,6 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
             </button>
           )}
 
-          {/* Editar Perfil - Solo clientes */}
           {role === 'client' && (
             <button 
               className="option-btn edit-profile"
@@ -100,7 +97,6 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
             </button>
           )}
 
-          {/* Cerrar Sesión */}
           <button 
             className="option-btn logout"
             onClick={handleLogout}

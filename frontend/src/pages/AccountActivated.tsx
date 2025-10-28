@@ -1,4 +1,3 @@
-// Screen shown after successful account activation
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import logo from '../assets/img/logo.png';
@@ -14,7 +13,6 @@ export default function AccountActivated() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if there's an error parameter in the URL (from backend redirect)
     const errorParam = searchParams.get('error');
     if (errorParam) {
       let errorMessage = 'Error al activar la cuenta';
@@ -33,8 +31,7 @@ export default function AccountActivated() {
       return;
     }
 
-    // If no error parameter, assume activation was successful
-    // (because backend already processed and redirected here)
+
     if (!errorParam && token) {
       setActivationSuccess(true);
       setIsActivating(false);

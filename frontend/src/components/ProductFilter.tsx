@@ -5,20 +5,16 @@ import { faCaretDown, faFilter } from '@fortawesome/free-solid-svg-icons';
 import '../styles/products.css';
 import '../styles/productFilters.css';
 
-// Define filter types
 type FilterType = 'price_asc' | 'price_desc' | 'name_asc' | '';
 
-// Props interface for ProductFilter component
 interface ProductFilterProps {
   activeFilter: FilterType;
   onFilterChange: (filterType: FilterType) => void;
 }
 
 const ProductFilter = ({ activeFilter, onFilterChange }: ProductFilterProps) => {
-    // State for filter dropdown visibility
   const [showFilters, setShowFilters] = useState(false);
 
-  // Handle filter selection and close dropdown
   const handleFilterClick = (filterType: FilterType) => {
     onFilterChange(filterType);
     setShowFilters(false);
@@ -27,7 +23,6 @@ const ProductFilter = ({ activeFilter, onFilterChange }: ProductFilterProps) => 
   return (
     <div className="filtro">
       <div className="filtro-dropdown">
-      {/* Filter dropdown toggle button */}
         <button 
           className={`btnFlechaAbajo ${activeFilter ? 'active' : ''}`}
           onClick={() => setShowFilters(!showFilters)}
@@ -39,7 +34,6 @@ const ProductFilter = ({ activeFilter, onFilterChange }: ProductFilterProps) => 
           <FontAwesomeIcon icon={faCaretDown} className='icon-filter' />
         </button>
         
-        {/* Filter options dropdown */}
         {showFilters && (
           <ul className="filters">
             

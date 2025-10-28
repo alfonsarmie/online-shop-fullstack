@@ -10,14 +10,11 @@ interface PrivateRouteProps {
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ user, requiredRole, children }) => {
   if (!user) {
-    // Not authenticated, redirect to login
     return <Navigate to="/login" replace />;
   }
   if (requiredRole && user.role !== requiredRole) {
-    // Does not have the required role, redirect to home
     return <Navigate to="/" replace />;
   }
-  // User is authenticated and has the correct role
   return children;
 };
 

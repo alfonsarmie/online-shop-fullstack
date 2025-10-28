@@ -14,7 +14,6 @@ const ReceptionistStock: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Load products from backend
   useEffect(() => {
     setLoading(true);
     productService
@@ -25,7 +24,6 @@ const ReceptionistStock: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  // Get unique categories for filter
   const currentList = editing && draft ? draft : products;
   const categories = useMemo(() => {
     const cats = currentList
@@ -96,12 +94,10 @@ const ReceptionistStock: React.FC = () => {
       maximumFractionDigits: 0,
     });
 
-  // Save changes to backend
   const saveStockChanges = async () => {
     if (!draft) return;
     setLoading(true);
     try {
-      // Only update products whose stock changed
       const updates = draft.filter((d, i) => d.stock !== products[i]?.stock);
       await Promise.all(
         updates.map((p) =>
@@ -120,7 +116,6 @@ const ReceptionistStock: React.FC = () => {
     }
   };
 
-  // Helper to render sizes (accepts Size[] or string[])
   const renderSizes = (sizes: any[] | undefined) => {
     if (!sizes || sizes.length === 0) return "-";
     const out = sizes
@@ -142,7 +137,6 @@ const ReceptionistStock: React.FC = () => {
 
       <SuccessMessage message={successMessage} onClose={() => setSuccessMessage("")} />
 
-      {/* Edit controls */}
       <section className="panel" style={{ display: "none" }}>
         <div className="panel-header">
           <h2>Edición</h2>

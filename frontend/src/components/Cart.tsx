@@ -1,13 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import '../styles/cart.css';
-import { useCart } from './CartContext'; // custom hook to use cart context
-import { CartItem } from '../types/cart'; // Import CartItem type
+import { useCart } from './CartContext'; 
+import { CartItem } from '../types/cart'; 
 import { useState } from 'react';
 import LoginRequiredModal from './LoginRequiredModal';
 
 function Cart() {
 
-  // Destructure cart context values
   const { 
     isCartOpen, 
     closeCart, 
@@ -15,9 +14,8 @@ function Cart() {
     removeFromCart 
   } = useCart();
 
-  // Calculate subtotal and total
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const total = subtotal; // Add tax or shipping if needed
+  const total = subtotal; 
 
   const navigate = useNavigate();
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -30,7 +28,6 @@ function Cart() {
       loggedIn = false;
     }
     if (!loggedIn) {
-      // Close the cart panel before showing modal so it doesn't cover it
       closeCart();
       setShowLoginModal(true);
       return;
@@ -41,10 +38,8 @@ function Cart() {
 
   return (
     <>
-    {/* Overlay to close cart when clicking outside */}
       <div className={`cart-overlay ${isCartOpen ? 'active' : ''}`} onClick={closeCart}></div>
 
-      {/* Cart panel */}
       <div className={`cart ${isCartOpen ? 'open' : ''}`}> {/* Add 'open' class if cart is open */} 
         <div className="cart-header">
           <h2 className='cart-title'>Tu carrito | <span>{cartItems.reduce((sum, item) => sum + item.quantity, 0)}</span> Artículos</h2>
@@ -52,7 +47,6 @@ function Cart() {
         </div>
         
         <div className="cart-items">
-          {/* if cart is empty, show message, else show items */}
           {cartItems.length === 0 ? (
             <p>Tu carrito está vacío</p>
           ) : (
@@ -78,7 +72,6 @@ function Cart() {
                   </div>
                 </div>
 
-                {/* Remove item button */}
                 <button 
                   onClick={() => removeFromCart(item.name, item.size)} 
                   className='remove-btn-cart'>                
@@ -89,7 +82,6 @@ function Cart() {
           )}
         </div>
 
-        {/* Shows cart totals */}
         <div className="cart-footer">
           <div className="cart-footer-item">
             <p>Subtotal: $<span>{subtotal}</span></p>
@@ -98,7 +90,6 @@ function Cart() {
             <p>Total: $<span>{total}</span></p>
           </div>
 
-          {/* Checkout button, only if there are items in the cart */}
           {cartItems.length > 0 && (
             <div className="btnCompletarPedido">
               <button onClick={handleCheckout}>COMPLETAR PEDIDO</button>

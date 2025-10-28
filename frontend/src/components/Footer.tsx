@@ -14,11 +14,9 @@ const Footer = () => {
 
     if (footerLogo) {
 
-      // Initial styles
       footerLogo.style.opacity = '0';
       footerLogo.style.transform = 'scale(0.3)';
 
-      // Intersection Observer to trigger animation
       const logoObserver = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
@@ -35,7 +33,6 @@ const Footer = () => {
 
       logoObserver.observe(footerLogo);
 
-      // Cleanup
       return () => {
         logoObserver.disconnect();
       };

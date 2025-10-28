@@ -5,13 +5,11 @@ import { useState, useEffect } from 'react';
 import { productService } from '../services/productService';
 import { FrontendProduct } from '../types/product';
 
-// Component to display dynamic image container with banner and product gallery
 function DinamicsImgContainer() {
   const [featuredProducts, setFeaturedProducts] = useState<FrontendProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  // Estado para el carrusel móvil
   const [activeSlide, setActiveSlide] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [carouselProgress, setCarouselProgress] = useState(0);
@@ -20,11 +18,9 @@ function DinamicsImgContainer() {
     const fetchFeaturedProducts = async () => {
       try {
         setLoading(true);
-        // Obtener todos los productos
         const allProducts = await productService.getAllProducts();
         
-        // Seleccionar productos destacados (puedes cambiar la lógica según necesites)
-        // Por ejemplo: los primeros 5 productos, o productos con alguna propiedad especial
+
         const featured = allProducts.slice(0, 5);
         
         setFeaturedProducts(featured);
@@ -40,7 +36,6 @@ function DinamicsImgContainer() {
     fetchFeaturedProducts();
   }, []);
 
-  // Detectar si es dispositivo móvil/touch
   useEffect(() => {
     const checkMobile = () => {
       const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
@@ -52,12 +47,11 @@ function DinamicsImgContainer() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Carrusel automático para móviles
   useEffect(() => {
     if (!isMobile || featuredProducts.length === 0) return;
     
-    const intervalDuration = 4000; // 4 segundos
-    const progressInterval = 100; // Actualizar progreso cada 100ms
+    const intervalDuration = 4000; 
+    const progressInterval = 100; 
     
     let progressValue = 0;
     const progressTimer = setInterval(() => {
@@ -74,13 +68,11 @@ function DinamicsImgContainer() {
     return () => clearInterval(progressTimer);
   }, [isMobile, featuredProducts.length, activeSlide]);
 
-  // Función para ir a un slide específico
   const goToSlide = (index: number) => {
     setActiveSlide(index);
     setCarouselProgress(0);
   };
 
-  // Función para obtener la clase CSS del slide
   const getSlideClass = (index: number) => {
     if (!isMobile) return '';
     
@@ -89,7 +81,6 @@ function DinamicsImgContainer() {
     return 'next';
   };
 
-  // Efecto para animación reveal
   useEffect(() => {
     const revealElements = document.querySelectorAll('.reveal');
     
@@ -106,11 +97,10 @@ function DinamicsImgContainer() {
     };
 
     window.addEventListener('scroll', revealOnScroll);
-    // Ejecutar una vez al cargar
     revealOnScroll();
     
     return () => window.removeEventListener('scroll', revealOnScroll);
-  }, [featuredProducts]); // Se ejecuta cuando featuredProducts cambia
+  }, [featuredProducts]); 
 
   if (loading) {
     return (
@@ -148,7 +138,6 @@ function DinamicsImgContainer() {
               key={product.id}
             >
               <img src={product.img} alt={product.name} onError={(e) => {
-                // Manejar error de carga de imagen
                 const target = e.target as HTMLImageElement;
                 target.src = '/placeholder-image.jpg';
               }} />
@@ -158,10 +147,8 @@ function DinamicsImgContainer() {
             </Link>
           ))}
           
-          {/* Elementos del carrusel móvil */}
           {isMobile && featuredProducts.length > 0 && (
             <>
-              {/* Dots de navegación */}
               <div className="carousel-dots">
                 {featuredProducts.map((_, index) => (
                   <div 
@@ -172,7 +159,6 @@ function DinamicsImgContainer() {
                 ))}
               </div>
               
-              {/* Barra de progreso */}
               <div 
                 className="carousel-progress" 
                 style={{width: `${carouselProgress}%`}}
