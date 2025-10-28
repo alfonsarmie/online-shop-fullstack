@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../styles/admin-dashboard.css";
-import { BarChart, PieChart, Pie, Cell, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'; // ResponsiveContainer ya no se usa para el de stock, pero lo dejamos por el de Pedidos
+import { BarChart, PieChart, Pie, Cell, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { orderService } from "../services/orderService";
 import { productService } from '../services/productService';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -20,12 +20,20 @@ interface CriticalProductInfo {
   stock: number;
 }
 
+type TopProductStat = {
+  name: string;
+  orderCount: number;
+};
+
 const AdminDashboard: React.FC = () => {
   const [sportsStats, setSportsStats] = useState<SportsStat[]>([]);
   const [statusStats, setStatusStats] = useState<StatusStat[]>([]);
   const [criticalStockProducts, setCriticalStockProducts] = useState<CriticalProductInfo[]>([]);
+  const [topProducts, setTopProducts] = useState<TopProductStat[]>([]);
   const [loadingCriticalStock, setLoadingCriticalStock] = useState(true);
+  const [loadingTopProducts, setLoadingTopProducts] = useState(true);
   const [errorCriticalStock, setErrorCriticalStock] = useState<string | null>(null);
+  const [errorTopProducts, setErrorTopProducts] = useState<string | null>(null);
   const [criticalStockLimit, setCriticalStockLimit] = useState<number>(10);
   
   useEffect(() => {
@@ -75,6 +83,10 @@ const AdminDashboard: React.FC = () => {
         setSportsStats(sports);
         const status = await orderService.getStatusStats();
         setStatusStats(status);
+        const criticalProducts = await productService.getCriticalStockProducts(criticalStockLimit); 
+        setCriticalStockProducts(criticalProducts);
+        const topProductsData = await productService.getTopFiveProducts();
+        setTopProducts(topProductsData);
       } catch (error) {
         console.error("Error loading stats:", error);
       }
@@ -89,6 +101,18 @@ const AdminDashboard: React.FC = () => {
         setErrorCriticalStock('No se pudo cargar el stock crítico.');
       } finally {
         setLoadingCriticalStock(false);
+      }
+
+      setLoadingTopProducts(true);
+      setErrorTopProducts(null);
+      try {
+        const topProductsData = await productService.getTopFiveProducts();
+        setTopProducts(topProductsData);
+      } catch (error) {
+        console.error('Error loading top products:', error);
+        setErrorTopProducts('No se pudo cargar los productos más vendidos.');
+      } finally {
+        setLoadingTopProducts(false);
       }
     };
     loadStats();
@@ -138,6 +162,26 @@ const AdminDashboard: React.FC = () => {
         >
           <p style={{ margin: 0 }}>{`Deporte: ${mapped.label}`}</p>
           <p style={{ margin: 0 }}>{`Cantidad de pedidos: ${data.ordersCount}`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const TopProductsTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div
+          style={{
+            backgroundColor: "#145526ff",
+            padding: "10px",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+          }}
+        >
+          <p style={{ margin: 0 }}>{`Producto: ${data.name}`}</p>
+          <p style={{ margin: 0 }}>{`Cantidad de órdenes: ${data.orderCount}`}</p>
         </div>
       );
     }
@@ -258,6 +302,36 @@ const AdminDashboard: React.FC = () => {
                 )}
               </div>
             </div>
+        </section>
+
+        <section className="grid-2">
+          <div className="panel">
+            <div className="panel-header">
+              <h2>Top 5 productos más vendidos</h2>
+            </div>
+            <div className="panel-body">
+              {loadingTopProducts ? (
+                <LoadingSpinner />
+              ) : errorTopProducts ? (
+                <p style={{ color: '#d9534f' }}>{errorTopProducts}</p>
+              ) : topProducts.length === 0 ? (
+                <p style={{ color: '#bdbdbd' }}>No hay datos disponibles para los productos más vendidos.</p>
+              ) : (
+                <BarChart
+                  width={500}
+                  height={300}
+                  data={topProducts}
+                  margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                  <XAxis dataKey="name" tick={{ fill: '#bdbdbd', fontSize: 12 }} />
+                  <YAxis allowDecimals={false} tick={{ fill: '#bdbdbd', fontSize: 12 }} />
+                  <Tooltip content={<TopProductsTooltip />} />
+                  <Bar dataKey="orderCount" name="Órdenes" fill="#1E7335" barSize={30} />
+                </BarChart>
+              )}
+            </div>
+          </div>
         </section>
 
       </div>

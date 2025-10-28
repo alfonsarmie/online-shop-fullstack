@@ -8,7 +8,7 @@ import db from "../db/connection";
 import ProductSize from "../models/size-product-model";
 import Size from "../models/size-model";
 import { FindOptions, Op, WhereOptions, fn, col, literal } from "sequelize";
-
+import OrderLine from '../models/order-line-model';
 
 // Extend FindOptions locally to include the optional `escape` property used for LIKE queries
 type FindOptionsWithEscape = FindOptions & { escape?: string };
@@ -478,29 +478,35 @@ export const getCriticalProducts = async (req: Request, res: Response): Promise<
 
 export const getTopFive = async (req: Request, res: Response): Promise<Response> => {
   try {
-    // Buscar los 5 productos con más orders asociados
-    const topProducts = await Order.findAll({
+    // Fetch the top 5 products with the most orders
+    const topProducts = await OrderLine.findAll({
       attributes: [
-        [fn('COUNT', col('Order.id')), 'orderCount']
+        'idProduct',
+        [fn('COUNT', col('OrderLine.idOrder')), 'orderCount']
       ],
-      group: ['productId'],
+      group: ['idProduct'],
       order: [[literal('orderCount'), 'DESC']],
       limit: 5,
       include: [
         {
           model: Product,
-          attributes: ['id','name']
+          as: 'product',
+          attributes: ['idProduct', 'name']
         }
       ]
     });
 
     return res.status(200).json({
-      topProducts
+      topProducts: topProducts.map((item: any) => ({
+        name: item.product?.name || 'Unknown',
+        orderCount: item.get('orderCount')
+      }))
     });
   } catch (error: any) {
+    console.error('Error fetching top products:', error);
     return res.status(500).json({
-      message: 'Error fetching products',
-      error: error.message,
+      message: 'Error fetching top products',
+      error: error.message
     });
   }
-}
+};

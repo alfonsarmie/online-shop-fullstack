@@ -121,4 +121,14 @@ export const productService = {
         throw error;
       }
     },
+
+  getTopFiveProducts: async (): Promise<{ name: string; orderCount: number }[]> => {
+    try {
+      const response = await api.get<{ topProducts: { name: string; orderCount: number }[] }>("/products/topfive");
+      return response.data.topProducts || [];
+    } catch (error: any) {
+      console.error("Error fetching top five products:", error.response?.data || error.message);
+      throw error;
+    }
+  },
 };
