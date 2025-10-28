@@ -319,7 +319,7 @@ Authenticates or registers a user via Google Sign-In.
 ## Module: Products (`/api/products`)
 
 ### **POST /api/products**
-Creates a new product with associated prices, images, and sizes.
+Creates a new product along with its images, prices, and sizes.
 
 **Headers:**
 - `x-token`: Valid JWT token from an admin user.
@@ -343,9 +343,9 @@ Creates a new product with associated prices, images, and sizes.
 ```
 
 **Responses:**
-- `201 Created`: Product successfully created with complete product data including prices, images, category, and sizes.
-- `400 Bad Request`: Category does not exist.
-- `500 Internal Server Error`: Error creating the product.
+- `201 Created`: Product successfully created with all associated data.
+- `400 Bad Request`: Category not found or invalid data.
+- `500 Internal Server Error`: Error while creating the product.
 
 **Response Example (201):**
 ```json
@@ -354,45 +354,108 @@ Creates a new product with associated prices, images, and sizes.
   "product": {
     "idProduct": 1,
     "name": "Classic Cotton T-Shirt",
-    "description": "A comfortable and stylish cotton t-shirt perfect for everyday wear",
+    "description": "Soft and breathable cotton t-shirt",
     "stock": 50,
-    "idCategory": 1,
-    "prices": [
-      {
-        "idProduct": 1,
-        "updateDate": "2025-01-16T10:30:00.000Z",
-        "value": 2999
-      }
-    ],
-    "images": [
-      {
-        "idProduct": 1,
-        "url": "/uploads/image-1757712165212-162394935.jpg",
-        "description": "Front view of the t-shirt"
-      },
-      {
-        "idProduct": 1,
-        "url": "/uploads/image-1757713332838-709404748.jpg",
-        "description": "Back view showing design details"
-      }
-    ],
     "category": {
       "idCategory": 1,
       "name": "Clothing"
     },
-    "sizes": [
+    "prices": [
       {
-        "idSize": 1,
-        "sizeDesc": "S"
-      },
-      {
-        "idSize": 2,
-        "sizeDesc": "M"
-      },
-      {
-        "idSize": 3,
-        "sizeDesc": "L"
+        "idProduct": 1,
+        "value": 2999,
+        "updateDate": "2025-10-28T10:00:00.000Z"
       }
+    ],
+    "images": [
+      {
+        "url": "/uploads/image-1757712165212-162394935.jpg",
+        "description": "Front view"
+      },
+      {
+        "url": "/uploads/image-1757713332838-709404748.jpg",
+        "description": "Back view"
+      }
+    ],
+    "sizes": [
+      { "idSize": 1, "sizeDesc": "S" },
+      { "idSize": 2, "sizeDesc": "M" },
+      { "idSize": 3, "sizeDesc": "L" }
+    ]
+  }
+}
+```
+
+---
+
+### **GET /api/products**
+Retrieves all products, optionally filtered by a search term.
+
+**Query Parameters:**
+- `search` (string, optional): Filters products by partial name or description.
+
+**Responses:**
+- `200 OK`: Returns a list of all products with their latest price, up to two images, and category data.
+- `500 Internal Server Error`: Error fetching products.
+
+**Response Example (200):**
+```json
+{
+  "products": [
+    {
+      "idProduct": 1,
+      "name": "Classic Cotton T-Shirt",
+      "description": "Soft and breathable cotton t-shirt",
+      "stock": 50,
+      "category": { "idCategory": 1, "name": "Clothing" },
+      "prices": [
+        { "idProduct": 1, "value": 2999, "updateDate": "2025-10-28T10:00:00.000Z" }
+      ],
+      "images": [
+        { "url": "/uploads/image1.jpg", "description": "Front view" },
+        { "url": "/uploads/image2.jpg", "description": "Back view" }
+      ],
+      "sizes": [
+        { "idSize": 1, "sizeDesc": "S" },
+        { "idSize": 2, "sizeDesc": "M" }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+### **GET /api/products/:id**
+Retrieves detailed information about a specific product.
+
+**Path Parameters:**
+- `id` (number): Product ID.
+
+**Responses:**
+- `200 OK`: Returns the product with all related data (prices, images, category, and sizes).
+- `404 Not Found`: Product not found.
+- `500 Internal Server Error`: Error retrieving the product.
+
+**Response Example (200):**
+```json
+{
+  "product": {
+    "idProduct": 1,
+    "name": "Classic Cotton T-Shirt",
+    "description": "Soft and breathable cotton t-shirt",
+    "stock": 50,
+    "category": { "idCategory": 1, "name": "Clothing" },
+    "prices": [
+      { "idProduct": 1, "value": 2999, "updateDate": "2025-10-28T10:00:00.000Z" }
+    ],
+    "images": [
+      { "url": "/uploads/image1.jpg", "description": "Front view" },
+      { "url": "/uploads/image2.jpg", "description": "Back view" }
+    ],
+    "sizes": [
+      { "idSize": 1, "sizeDesc": "S" },
+      { "idSize": 2, "sizeDesc": "M" }
     ]
   }
 }
@@ -401,7 +464,7 @@ Creates a new product with associated prices, images, and sizes.
 ---
 
 ### **PUT /api/products/:id**
-Updates an existing product's information, including prices, images, and sizes.
+Updates an existing product, replacing its related data (prices, images, sizes).
 
 **Path Parameters:**
 - `id` (number): Product ID.
@@ -428,8 +491,8 @@ Updates an existing product's information, including prices, images, and sizes.
 ```
 
 **Responses:**
-- `200 OK`: Product successfully updated with complete product data.
-- `400 Bad Request`: Category does not exist.
+- `200 OK`: Product successfully updated.
+- `400 Bad Request`: Invalid category or data.
 - `404 Not Found`: Product not found.
 - `500 Internal Server Error`: Error updating the product.
 
@@ -440,45 +503,20 @@ Updates an existing product's information, including prices, images, and sizes.
   "product": {
     "idProduct": 1,
     "name": "Premium Cotton T-Shirt",
-    "description": "Updated description - A high-quality cotton t-shirt with improved comfort and style",
+    "description": "Updated description",
     "stock": 75,
-    "idCategory": 1,
+    "category": { "idCategory": 1, "name": "Clothing" },
     "prices": [
-      {
-        "idProduct": 1,
-        "updateDate": "2025-01-16T15:45:00.000Z",
-        "value": 3499
-      }
+      { "idProduct": 1, "value": 3499, "updateDate": "2025-10-28T15:00:00.000Z" }
     ],
     "images": [
-      {
-        "idProduct": 1,
-        "url": "/uploads/image-1757713805937-7466327.jpg",
-        "description": "Updated front view"
-      },
-      {
-        "idProduct": 1,
-        "url": "/uploads/image-1757786528571-165423984.jpg",
-        "description": "Updated back view"
-      }
+      { "url": "/uploads/image-updated-1.jpg", "description": "New front view" },
+      { "url": "/uploads/image-updated-2.jpg", "description": "New back view" }
     ],
-    "category": {
-      "idCategory": 1,
-      "name": "Clothing"
-    },
     "sizes": [
-      {
-        "idSize": 2,
-        "sizeDesc": "M"
-      },
-      {
-        "idSize": 3,
-        "sizeDesc": "L"
-      },
-      {
-        "idSize": 4,
-        "sizeDesc": "XL"
-      }
+      { "idSize": 2, "sizeDesc": "M" },
+      { "idSize": 3, "sizeDesc": "L" },
+      { "idSize": 4, "sizeDesc": "XL" }
     ]
   }
 }
@@ -487,7 +525,7 @@ Updates an existing product's information, including prices, images, and sizes.
 ---
 
 ### **DELETE /api/products/:id**
-Deletes a product and all its associated data (prices, images, and sizes).
+Deletes a product and all its related data (prices, images, and sizes).
 
 **Path Parameters:**
 - `id` (number): Product ID.
@@ -496,7 +534,7 @@ Deletes a product and all its associated data (prices, images, and sizes).
 - `x-token`: Valid JWT token from an admin user.
 
 **Responses:**
-- `200 OK`: Product successfully deleted.
+- `200 OK`: Product deleted successfully.
 - `404 Not Found`: Product not found.
 - `500 Internal Server Error`: Error deleting the product.
 
@@ -509,83 +547,12 @@ Deletes a product and all its associated data (prices, images, and sizes).
 
 ---
 
-### **GET /api/products/:id**
-Retrieves detailed information about a specific product.
-
-**Path Parameters:**
-- `id` (number): Product ID.
-
-**Responses:**
-- `200 OK`: Returns product with all associated data (prices, images, category, and sizes).
-- `404 Not Found`: Product not found.
-- `500 Internal Server Error`: Error fetching the product.
-
-**Response Example:**
-```json
-{
-  "product": {
-    "idProduct": "number",
-    "name": "string",
-    "description": "string",
-    "stock": "number",
-    "idCategory": "number",
-    "prices": [...],
-    "images": [...],
-    "category": {...},
-    "sizes": [...]
-  }
-}
-```
-
----
-
-### **GET /api/products**
-Retrieves all products with optional search functionality.
-
-**Query Parameters:**
-- `search` (string, optional): Search term to filter products by name or description.
-
-**Responses:**
-- `200 OK`: Returns array of products with their latest price, up to 2 images, category, and sizes.
-- `500 Internal Server Error`: Error fetching products.
-
-**Response Example:**
-```json
-{
-  "products": [
-    {
-      "idProduct": "number",
-      "name": "string",
-      "description": "string",
-      "stock": "number",
-      "idCategory": "number",
-      "prices": [...],
-      "images": [...],
-      "category": {...},
-      "sizes": [...]
-    }
-  ]
-}
-```
-
----
-
-## Product Data Structure
-
-### Associated Models
-- **Price**: Historical pricing information with update dates. Latest price is returned by default.
-- **Image**: Product images with URLs and optional descriptions.
-- **Category**: Product category information.
-- **Size**: Available sizes for the product (many-to-many relationship).
-
----
-
 ## Notes
-- All product operations use **database transactions** to ensure data consistency.
-- When updating images or sizes, existing records are completely replaced with the new data.
-- The search functionality supports partial matching on product name and description.
-- Product deletion is a hard delete that removes all associated data (prices, images, and size relationships).
-- Prices are stored with timestamps, maintaining a complete price history for each product.
+- Product creation and update operations are executed inside **transactions** for data consistency.
+- When updating, **images and sizes are fully replaced** with the new provided arrays.
+- Products have a **one-to-many** relationship with prices and images, and a **many-to-many** relationship with sizes.
+- The search endpoint supports **case-insensitive partial matching** on both product name and description.
+- Deleting a product performs a **hard delete**, removing all associated records.
 
 ---
 
@@ -1086,3 +1053,337 @@ Uploads an image file to the server.
 - Images are stored in the `/uploads` directory on the server.
 - Filenames are generated with a unique timestamp and random suffix to prevent conflicts.
 - The returned URL can be used to reference the uploaded image in product image entries.
+
+---
+
+## Module: Orders (`/api/orders`)
+
+### **POST /api/orders**
+Creates a new order with the provided products, quantities, and total price.
+
+**Headers:**
+- `x-token`: Valid JWT token from an authenticated user.
+
+**Body (JSON):**
+```json
+{
+  "idUser": "number",
+  "totalPrice": "number",
+  "products": [
+    {
+      "idProduct": "number",
+      "quantity": "number",
+      "price": "number"
+    }
+  ]
+}
+```
+
+**Responses:**
+- `201 Created`: Order successfully created.
+- `400 Bad Request`: Invalid data or missing products.
+- `500 Internal Server Error`: Error creating the order.
+
+**Response Example (201):**
+```json
+{
+  "message": "Order created successfully",
+  "order": {
+    "idOrder": 1,
+    "idUser": 3,
+    "totalPrice": 14997,
+    "orderDate": "2025-10-28T12:30:00.000Z",
+    "status": "pending",
+    "products": [
+      {
+        "idProduct": 2,
+        "name": "Classic Cotton T-Shirt",
+        "quantity": 3,
+        "price": 4999
+      }
+    ]
+  }
+}
+```
+
+---
+
+### **GET /api/orders**
+Retrieves all orders (admin only).
+
+**Headers:**
+- `x-token`: Valid JWT token from an admin user.
+
+**Responses:**
+- `200 OK`: Returns array of all orders with their associated users and products.
+- `500 Internal Server Error`: Error fetching orders.
+
+**Response Example (200):**
+```json
+{
+  "orders": [
+    {
+      "idOrder": 1,
+      "idUser": 3,
+      "user": {
+        "name": "John",
+        "surname": "Doe",
+        "email": "john.doe@example.com"
+      },
+      "totalPrice": 14997,
+      "status": "confirmed",
+      "orderDate": "2025-10-28T12:30:00.000Z",
+      "products": [
+        {
+          "idProduct": 2,
+          "name": "Classic Cotton T-Shirt",
+          "quantity": 3,
+          "price": 4999
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+### **GET /api/orders/user/:idUser**
+Retrieves all orders for a specific user.
+
+**Path Parameters:**
+- `idUser` (number): User ID.
+
+**Headers:**
+- `x-token`: Valid JWT token from the same user or an admin.
+
+**Responses:**
+- `200 OK`: Returns array of user's orders with products.
+- `404 Not Found`: No orders found for the user.
+- `500 Internal Server Error`: Error fetching user's orders.
+
+**Response Example (200):**
+```json
+{
+  "orders": [
+    {
+      "idOrder": 3,
+      "totalPrice": 8999,
+      "status": "pending",
+      "orderDate": "2025-10-27T17:45:00.000Z",
+      "products": [
+        {
+          "idProduct": 5,
+          "name": "Denim Jacket",
+          "quantity": 1,
+          "price": 8999
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+### **PUT /api/orders/:id**
+Updates an order's status (e.g., confirmed, ready, withdrawn, cancelled).
+
+**Path Parameters:**
+- `id` (number): Order ID.
+
+**Headers:**
+- `x-token`: Valid JWT token from an admin or receptionist.
+
+**Body (JSON):**
+```json
+{
+  "status": "confirmed | ready | withdrawn | cancelled"
+}
+```
+
+**Responses:**
+- `200 OK`: Order status successfully updated.
+- `400 Bad Request`: Invalid status or order cannot transition to that status.
+- `404 Not Found`: Order not found.
+- `500 Internal Server Error`: Error updating order status.
+
+**Response Example (200):**
+```json
+{
+  "message": "Order status updated successfully",
+  "order": {
+    "idOrder": 1,
+    "status": "confirmed"
+  }
+}
+```
+
+---
+
+### **DELETE /api/orders/:id**
+Deletes an order (admin only).
+
+**Path Parameters:**
+- `id` (number): Order ID.
+
+**Headers:**
+- `x-token`: Valid JWT token from an admin user.
+
+**Responses:**
+- `200 OK`: Order successfully deleted.
+- `404 Not Found`: Order not found.
+- `500 Internal Server Error`: Error deleting the order.
+
+**Response Example (200):**
+```json
+{
+  "message": "Order deleted successfully"
+}
+```
+
+---
+
+## Order Status
+- `pending`: Order created but not yet confirmed.
+- `confirmed`: Order accepted and being prepared.
+- `ready`: Order ready for pickup or delivery.
+- `withdrawn`: Order completed and delivered to the user.
+- `cancelled`: Order cancelled by admin or user.
+
+---
+
+## Notes
+- Orders include associated product details with quantities and prices.
+- Admin users can view all orders, while clients can only view their own.
+- Order deletions are hard deletes.
+- Order creation automatically generates entries in the order-product relationship table.
+
+---
+
+## Module: Status (`/api/status`)
+
+### **POST /api/status/:idOrder**
+Creates a new status entry for an order.
+
+**Path Parameters:**
+- `idOrder` (number): ID of the order to which the new status will be applied.
+
+**Headers:**
+- `x-token`: Valid JWT token from an admin or receptionist.
+
+**Body (JSON):**
+```json
+{
+  "description": "ready | confirmed | withdrawn | cancelled"
+}
+```
+
+**Responses:**
+- `201 Created`: Status successfully created and associated with the order.
+- `400 Bad Request`: Invalid or missing description.
+- `404 Not Found`: Order not found.
+- `500 Internal Server Error`: Error creating the status.
+
+**Response Example (201):**
+```json
+{
+  "message": "Status created successfully",
+  "status": {
+    "idStatus": 12,
+    "idOrder": 5,
+    "description": "confirmed",
+    "date": "2025-10-28T14:00:00.000Z"
+  }
+}
+```
+
+---
+
+### **GET /api/status/:idOrder**
+Retrieves all status changes for a specific order, ordered by date.
+
+**Path Parameters:**
+- `idOrder` (number): ID of the order.
+
+**Headers:**
+- `x-token`: Valid JWT token from the same user (order owner) or an admin.
+
+**Responses:**
+- `200 OK`: Returns array of all status records for the given order.
+- `404 Not Found`: Order not found or has no statuses.
+- `500 Internal Server Error`: Error fetching statuses.
+
+**Response Example (200):**
+```json
+{
+  "statuses": [
+    {
+      "idStatus": 1,
+      "idOrder": 5,
+      "description": "confirmed",
+      "date": "2025-10-28T14:00:00.000Z"
+    },
+    {
+      "idStatus": 2,
+      "idOrder": 5,
+      "description": "ready",
+      "date": "2025-10-28T17:30:00.000Z"
+    },
+    {
+      "idStatus": 3,
+      "idOrder": 5,
+      "description": "withdrawn",
+      "date": "2025-10-28T19:00:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+### **GET /api/status**
+Retrieves all status entries for all orders (admin only).
+
+**Headers:**
+- `x-token`: Valid JWT token from an admin user.
+
+**Responses:**
+- `200 OK`: Returns array of all statuses across all orders.
+- `500 Internal Server Error`: Error fetching statuses.
+
+**Response Example (200):**
+```json
+{
+  "statuses": [
+    {
+      "idStatus": 1,
+      "idOrder": 1,
+      "description": "confirmed",
+      "date": "2025-10-26T13:00:00.000Z"
+    },
+    {
+      "idStatus": 2,
+      "idOrder": 2,
+      "description": "cancelled",
+      "date": "2025-10-27T09:30:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+## Status Descriptions
+- `confirmed`: Order confirmed by admin or receptionist.
+- `ready`: Order is ready for pickup or delivery.
+- `withdrawn`: Order collected by the customer.
+- `cancelled`: Order cancelled by admin or customer.
+
+---
+
+## Notes
+- Each order can have multiple status records (historical tracking).
+- The most recent status determines the current state of the order.
+- Only admins and receptionists can create new status records.
+- Users can view their own order statuses but cannot modify them.
