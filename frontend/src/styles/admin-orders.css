@@ -50,7 +50,7 @@
   padding: 14px 16px 18px;
 }
 
-/* Estilos para tablas en admin-orders */
+
 .admin-orders-data-table {
   width: 100%;
   border-collapse: collapse;
@@ -99,7 +99,7 @@ label .span-admin {
 
 .data-table {
   width: 100%;
-  min-width: 1000px; /* Increased to force horizontal scroll */
+  min-width: 1000px; 
   border-collapse: collapse;
   background: #181818;
   border-radius: 10px;
@@ -107,16 +107,16 @@ label .span-admin {
   table-layout: auto;
 }
 
-/* Direct scroll on the panel body */
+
 .panel-body {
   padding: 14px 16px 18px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  /* Force scroll capability */
+
   max-width: 100%;
 }
 
-/* Better scrollbar for panel body */
+
 .panel-body::-webkit-scrollbar {
   height: 12px;
 }
@@ -135,7 +135,7 @@ label .span-admin {
   background: #1E7335;
 }
 
-/* Table wrapper for better mobile scrolling */
+
 .table-container {
   overflow-x: auto;
   overflow-y: visible;
@@ -143,20 +143,19 @@ label .span-admin {
   border-radius: 10px;
   margin-bottom: 16px;
   width: 100%;
-  /* Force scroll to show */
+
   max-width: 100%;
   position: relative;
-  /* Improve scroll bar styling */
+
   scrollbar-width: thin;
   scrollbar-color: #22a341 #1D1D1D;
 }
 
-/* Force horizontal scroll when needed */
 .table-container.force-scroll {
   overflow-x: scroll;
 }
 
-/* Scroll hint indicator */
+
 .table-container::before {
   content: "";
   position: absolute;
@@ -215,37 +214,37 @@ label .span-admin {
   vertical-align: middle;
 }
 
-/* Specific column widths for better layout */
+
 .data-table th:first-child,
 .data-table td:first-child {
-  min-width: 120px; /* Order ID */
+  min-width: 120px; 
   max-width: 120px;
 }
 
 .data-table th:nth-child(2),
 .data-table td:nth-child(2) {
-  min-width: 180px; /* Customer */
+  min-width: 180px; 
 }
 
 .data-table th:nth-child(3),
 .data-table td:nth-child(3) {
-  min-width: 100px; /* Total */
+  min-width: 100px; 
 }
 
 .data-table th:nth-child(4),
 .data-table td:nth-child(4) {
-  min-width: 140px; /* Status - increased for better badge display */
-  text-align: center; /* Center align status badges */
+  min-width: 140px; 
+  text-align: center; 
 }
 
 .data-table th:nth-child(5),
 .data-table td:nth-child(5) {
-  min-width: 140px; /* Date */
+  min-width: 140px; 
 }
 
 .data-table th:last-child,
 .data-table td:last-child {
-  min-width: 160px; /* Actions */
+  min-width: 160px; 
 }
 
 .data-table tr:last-child td {
@@ -346,7 +345,7 @@ label .span-admin {
   flex-wrap: wrap;
 }
 
-/* Add scroll hint after table */
+
 .scroll-hint {
   text-align: center;
   font-size: 12px;
@@ -532,9 +531,7 @@ label .span-admin {
   font-size: 16px;
 }
 
-/* Responsive breakpoints with comprehensive improvements */
 
-/* Large tablets and small desktops (1200px and down) */
 @media (max-width: 1200px) {
   .admin-orders {
     padding: 20px 24px;
@@ -580,7 +577,7 @@ label .span-admin {
     min-width: auto;
   }
   
-  /* Keep table but make it more compact */
+ 
   .data-table {
     min-width: 700px;
   }
@@ -606,7 +603,7 @@ label .span-admin {
   }
 }
 
-/* Small tablets (768px and down) */
+
 @media (max-width: 768px) {
   .admin-orders {
     padding: 16px 16px;
@@ -623,7 +620,7 @@ label .span-admin {
     font-size: 14px;
   }
   
-  /* Keep table but make it more compact */
+
   .data-table {
     min-width: 600px;
     font-size: 13px;
@@ -657,7 +654,7 @@ label .span-admin {
     font-size: 16px;
   }
   
-  /* Add scroll hint */
+
   .table-container::after {
     content: "← Desliza para ver más →";
     display: block;
@@ -670,7 +667,7 @@ label .span-admin {
   }
 }
 
-/* Mobile landscape and small tablets (600px and down) - Keep table with better scroll */
+
 @media (max-width: 600px) {
   .admin-orders {
     padding: 16px 14px;
@@ -688,7 +685,7 @@ label .span-admin {
     font-size: 13px;
   }
   
-  /* Keep table but make it more mobile-friendly */
+
   .data-table {
     min-width: 500px;
     font-size: 12px;
@@ -716,7 +713,7 @@ label .span-admin {
     font-size: 11px;
   }
   
-  /* Enhanced scroll hint for mobile */
+
   .table-container::after {
     content: "⬅ Desliza horizontalmente para ver más columnas ➡";
     font-size: 11px;
@@ -743,7 +740,6 @@ label .span-admin {
   }
 }
 
-/* Mobile phones (480px and down) - Switch to card layout */
 @media (max-width: 480px) {
   .admin-orders {
     padding: 14px 12px;
@@ -762,7 +758,7 @@ label .span-admin {
     margin-bottom: 16px;
   }
   
-  /* Hide table, show cards only on very small screens */
+
   .data-table {
     display: none;
   }
@@ -775,7 +771,7 @@ label .span-admin {
     display: none;
   }
   
-  /* Toggle visibility utility classes */
+
   .hide-mobile {
     display: none;
   }
@@ -848,7 +844,7 @@ label .span-admin {
   }
 }
 
-/* Mobile landscape and small tablets (600px and down) - Keep table with better scroll */
+
 @media (max-width: 600px) {
   .admin-orders {
     padding: 16px 14px;
@@ -865,7 +861,7 @@ label .span-admin {
     font-size: 13px;
   }
   
-  /* Keep table but make it more mobile-friendly */
+
   .data-table {
     min-width: 500px;
     font-size: 12px;
@@ -893,7 +889,7 @@ label .span-admin {
     font-size: 11px;
   }
   
-  /* Enhanced scroll hint */
+
   .table-container::after {
     content: "⬅ Desliza horizontalmente para ver más columnas ➡";
     font-size: 11px;
@@ -956,9 +952,7 @@ label .span-admin {
   }
 }
 
-/* End of 480px breakpoint */
 
-/* Landscape orientation adjustments for mobile */
 @media (max-height: 500px) and (orientation: landscape) {
   .admin-orders {
     padding-top: 25px;
@@ -983,7 +977,6 @@ label .span-admin {
   }
 }
 
-/* Utility classes for responsive visibility */
 .hide-mobile {
   display: block;
 }
@@ -1000,7 +993,7 @@ label .span-admin {
   display: block;
 }
 
-/* Smooth transitions for responsive changes */
+
 .panel,
 .order-card,
 .admin-orders,
@@ -1008,26 +1001,25 @@ label .span-admin {
   transition: all 0.2s ease-in-out;
 }
 
-/* Better button styling for mobile */
+
 .btn-group {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-/* Improved form styling */
+
 .form-row {
   display: flex;
   gap: 12px;
   align-items: end;
 }
 
-/* Delivered section muted styling */
 .delivered-panel .panel-header h2 { color: #bdbdbd; }
 .delivered-table tbody tr.delivered-row td { color: #a0a0a0; }
 .delivered-table tbody tr.delivered-row { background: #181818; }
 
-/* Status badge responsive overrides to ensure proper display */
+
 @media (max-width: 768px) {
   .status-badge {
     font-size: 10px !important;

@@ -1,4 +1,4 @@
-/* Nueva fila para h2 y RotatingText */
+
 .sports-row {
     display: flex;
     align-items: center;
@@ -33,7 +33,7 @@
     transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Only hide overflow and set height for the animated text, not the container */
+
 .rotating-text-main .text-rotate {
     overflow: hidden;
     height: 1.7em;
@@ -349,7 +349,7 @@
     line-height: 1.7;
 }
 
-/* Responsive */
+
 @media (max-width: 992px) {
     .aboutUs-content {
         grid-template-columns: 1fr;
@@ -414,7 +414,7 @@
     }
 }
 
-/* Efectos de aparición para elementos */
+
 .fade-in {
     opacity: 0;
     transform: translateY(20px);
@@ -426,7 +426,7 @@
     transform: translateY(0);
 }
 
-/* Mejoras de diseño para el texto */
+
 .highlight {
     color: #1E7335;
     font-weight: 600;

@@ -1,6 +1,4 @@
-/* Layout CSS para manejo de espaciado de páginas */
 
-/* Prevenir overflow horizontal global */
 * {
     box-sizing: border-box;
     max-width: 100%;
@@ -14,33 +12,32 @@ body, html {
     padding: 0;
 }
 
-/* Evitar scroll horizontal en todos los elementos */
+
 *:not(html):not(body) {
     max-width: 100%;
 }
 
-/* Clase para páginas que necesitan espaciado superior (la mayoría) */
 .page-with-nav-spacing {
     padding-top: 30px !important;
     min-height: 100vh;
     box-sizing: border-box;
 }
 
-/* Clase para el home sin espaciado superior */
+
 .home-page {
     padding-top: 0;
     min-height: 100vh;
     box-sizing: border-box;
 }
 
-/* Clase para páginas con formularios (login, signup, etc.) */
+
 .form-page {
     padding-top: 30px;
     min-height: 100vh;
     box-sizing: border-box;
 }
 
-/* Layout para pantallas administrativas con fondo oscuro */
+
 .page-with-nav-spacing.admin-surface {
     background: #121212;
     min-height: 100vh;
@@ -52,7 +49,7 @@ body, html {
     flex: 1 0 auto;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
     .page-with-nav-spacing {
         padding-top: 20px !important;
@@ -73,7 +70,7 @@ body, html {
     }
 }
 
-/* Reglas específicas para sobrescribir conflictos de CSS específicos de páginas */
+
 .page-with-nav-spacing .aboutUs-bg {
     margin-top: 0 !important;
     padding-top: 0 !important;

@@ -51,7 +51,7 @@
   padding-bottom: 0.5rem;
 }
 
-/* Estilos para los campos de perfil no editables */
+
 .profile-field {
   margin-bottom: 1.5rem;
   cursor: pointer;
@@ -80,14 +80,14 @@
   color: #333;
 }
 
-/* Contenedor que mantiene el mismo tamaño para el input y el texto */
+
 .profile-input-container {
   min-height: 48px;
   display: flex;
   align-items: center;
 }
 
-/* Sobrescribir estilos de input.css para evitar desbordamiento */
+
 .profile-column .form__group,
 .password-column .form__group {
   max-width: 100% !important;
@@ -95,7 +95,7 @@
   box-sizing: border-box !important;
 }
 
-/* ESTILOS PARA BOTONES - ACTUALIZADO */
+
 .profile-edit-container form button[type="submit"] {
   width: 100%;
   padding: 12px;
@@ -122,7 +122,7 @@
   box-shadow: 0 6px 16px rgba(30, 115, 53, 0.4);
 }
 
-/* Botón desactivado (disabled) */
+
 .profile-edit-container form button[type="submit"].disabled {
   background-color: #cccccc;
   color: #666666;
@@ -136,13 +136,13 @@
   box-shadow: none;
 }
 
-/* Ocultar barra de fortaleza para la contraseña actual */
+
 .password-input-container:first-of-type .strength-bar,
 .password-input-container:first-of-type #strength-text {
   display: none;
 }
 
-/* ESTILOS PARA REQUISITOS DE CONTRASEÑA - ACTUALIZADO */
+
 .password-requirements {
   font-family: 'Afacad', sans-serif;
   list-style: none;
@@ -187,7 +187,7 @@
   color: #dc3545;
 }
 
-/* Indicador visual de estado del formulario */
+
 .form-status {
   padding: 10px;
   border-radius: 6px;
@@ -208,7 +208,7 @@
   border: 1px solid #ffe0b2;
 }
 
-/* Mensajes de feedback */
+
 .feedback-message {
   padding: 8px 12px;
   border-radius: 6px;
@@ -229,7 +229,7 @@
   border: 1px solid #f5c6cb;
 }
 
-/* Responsive design */
+
 @media (max-width: 768px) {
   .profile-edit-container {
     margin: 60px 15px 30px 15px;
@@ -256,7 +256,7 @@
   }
 }
 
-/* Animaciones suaves */
+
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.02); }
@@ -267,7 +267,7 @@
   animation: pulse 0.3s ease;
 }
 
-/* Mejora visual para campos en modo edición */
+
 .profile-field.editing {
   background: #e8f5e8;
   border: 1px solid #1E7335;

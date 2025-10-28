@@ -4,7 +4,7 @@
   gap: 10px;
 }
 
-/* Miniaturas para escritorio */
+
 .thumbnails {
   display: flex;
   flex-direction: column;
@@ -30,20 +30,20 @@
   transform: scale(1.02);
 }
 
-/* Imagen principal */
+
 .main-image {
   position: relative;
   width: 400px;
-  overflow: hidden; /* Para ocultar imágenes fuera del contenedor */
+  overflow: hidden; 
 }
 
-/* Contenedor para efecto de deslizamiento */
+
 .image-slider {
   display: flex;
   transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
   width: 100%;
-  touch-action: pan-y; /* Permitir scroll vertical pero optimizar horizontal */
-  user-select: none; /* Evitar selección de texto */
+  touch-action: pan-y; 
+  user-select: none; 
 }
 
 .image-slider img {
@@ -52,10 +52,10 @@
   height: auto;
   object-fit: cover;
   border-radius: 8px;
-  pointer-events: none; /* Evitar interferencia con gestos */
+  pointer-events: none; 
 }
 
-/* Controles del carrusel (ocultos en escritorio) */
+
 .carousel-controls {
   display: none;
 }
@@ -64,7 +64,7 @@
   display: none;
 }
 
-/* RESPONSIVE */
+
 @media (max-width: 600px) {
   .product-gallery {
     flex-direction: column;
@@ -79,7 +79,7 @@
     width: 100%;
     max-width: 100%;
     position: relative;
-    overflow: hidden; /* Para efectos de deslizamiento */
+    overflow: hidden; 
   }
 
   .main-image img {
@@ -89,7 +89,7 @@
     object-fit: contain;
   }
 
-  /* Contenedor slider para móvil */
+
   .image-slider {
     display: flex;
     transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
@@ -107,7 +107,6 @@
     pointer-events: none;
   }
 
-  /* Mostrar controles en móvil */
   .carousel-controls {
     display: flex;
     position: absolute;
@@ -144,7 +143,7 @@
     transform: scale(0.95);
   }
 
-  /* Indicadores */
+
   .carousel-indicators {
     display: flex;
     justify-content: center;

@@ -35,7 +35,7 @@
   color: #d9534f;
 }
 
-/* Estilos específicos para AdminDashboard */
+
 .admin-dashboard-container {
   padding: 24px 32px;
   padding-top: 80px;
@@ -105,7 +105,7 @@
   margin-left: 8px;
 }
 
-/* Ajustes para la primera tabla en AdminDashboard */
+
 .admin-dashboard-data-table {
   width: 100%;
   border-collapse: collapse;
@@ -120,7 +120,7 @@
 
 .admin-dashboard-data-table th {
   background-color: #1D1D1D;
-  color: #22a341; /* Verde similar al encabezado */
+  color: #22a341; 
   font-weight: bold;
 }
 
@@ -131,14 +131,14 @@
 }
 
 .admin-dashboard-data-table tr:hover {
-  background-color: #2a2a2a; /* Efecto hover */
+  background-color: #2a2a2a; 
 }
 
 .admin-dashboard-data-table .rank {
   font-weight: bold;
-  color: #3de564; /* Color verde para destacar el ranking */
-  width: 80px; /* Reducir el ancho de la columna */
-  text-align: center; /* Centrar el contenido */
+  color: #3de564; 
+  width: 80px; 
+  text-align: center; 
 }
 
 @media (max-width: 1200px) {
@@ -189,7 +189,6 @@
   }
 }
 
-/* Mobile phones (600px and down) */
 @media (max-width: 600px) {
   .admin-dashboard-container {
     padding: 14px 12px;
@@ -229,7 +228,7 @@
   }
 }
 
-/* Extra small phones (480px and down) */
+
 @media (max-width: 480px) {
   .admin-dashboard-container {
     padding: 12px 8px;
@@ -264,7 +263,7 @@
   }
 }
 
-/* Landscape orientation adjustments for mobile */
+
 @media (max-height: 500px) and (orientation: landscape) {
   .admin-dashboard-container {
     padding-top: 40px;

@@ -1,4 +1,4 @@
-/* Modal de confirmación de borrado */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -62,7 +62,7 @@
   from { opacity: 0; transform: scale(0.97); }
   to { opacity: 1; transform: scale(1); }
 }
-/* Admin Products Styles: consistent with dark admin look */
+
 .admin-products {
   padding: 24px 32px;
   padding-top: 80px;
@@ -83,7 +83,7 @@
   margin-bottom: 18px;
 }
 
-/* Panel styles */
+
 .admin-products .panel {
   background: #1D1D1D;
   border: 1px solid #2a2a2a !important;
@@ -111,7 +111,7 @@
   padding: 14px 16px 18px;
 }
 
-/* Form grid */
+
 .form-grid {
   display: flex;
   flex-wrap: wrap;
@@ -138,7 +138,7 @@
   grid-column: span 2;
 }
 
-/* Labels and inputs */
+
 .admin-products label span {
   display: block;
   color: #bdbdbd;
@@ -174,7 +174,7 @@
   min-height: 80px;
 }
 
-/* Sizes checkboxes */
+
 .sizes {
   font-size: 14px;
   color: #bdbdbd;
@@ -241,7 +241,7 @@
   opacity: 1;
 }
 
-/* File inputs */
+
 .admin-products input[type="file"] {
   width: auto;
   padding: 0;
@@ -273,7 +273,7 @@
   transform: translateY(0);
 }
 
-/* Safari/legacy */
+
 .admin-products input[type="file"]::-webkit-file-upload-button {
   background: #22a341;
   color: #fff;
@@ -290,7 +290,7 @@
   background: #1c8a39;
 }
 
-/* Buttons */
+
 .actions {
   display: flex;
   gap: 12px;
@@ -348,7 +348,7 @@
   background: #9d2f23;
 }
 
-/* Tools and search */
+
 .tools {
   display: flex;
   gap: 10px;
@@ -366,7 +366,7 @@
   font-size: 14px;
 }
 
-/* Data table */
+
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -397,7 +397,7 @@
   gap: 8px;
 }
 
-/* Stock control */
+
 .stock-ctrl {
   display: inline-flex;
   gap: 8px;
@@ -412,7 +412,7 @@
   display: inline-block;
 }
 
-/* Loading and error states */
+
 .loading {
   text-align: center;
   padding: 20px;
@@ -420,7 +420,7 @@
   font-style: italic;
 }
 
-/* Estilos para tablas en admin-products */
+
 .admin-products-data-table {
   width: 100%;
   border-collapse: collapse;
@@ -445,7 +445,7 @@
   text-overflow: ellipsis;
 }
 
-/* Responsive design */
+
 @media (max-width: 1000px) {
   .admin-products {
     padding: 16px;
@@ -514,7 +514,7 @@
   }
 }
 
-/* Modal styles (for consistency) */
+
 .section-divider {
   height: 1px;
   background: linear-gradient(90deg, rgba(0,0,0,0), #2a2a2a 20%, #2a2a2a 80%, rgba(0,0,0,0));
@@ -587,7 +587,7 @@
   margin-bottom: 16px;
 }
 
-/* Ensure all elements use the correct font */
+
 .admin-products * {
   font-family: 'Afacad', sans-serif;
 }

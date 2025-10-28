@@ -2,7 +2,7 @@ import api from "./api";
 import { Product, FrontendProduct, CriticalProductInfo } from "../types/product";
 
 export const productService = {
-  // Get all products
+
   getAllProducts: async (search?: string): Promise<FrontendProduct[]> => {
     try {
       const trimmedSearch =
@@ -45,7 +45,7 @@ export const productService = {
     }
   },
 
-  // Get a product by ID
+
   getProductById: async (id: string): Promise<any> => {
     try {
       const response = await api.get(`/products/${id}`);
@@ -66,7 +66,7 @@ export const productService = {
     }
   },
 
-  // Create a new product
+
   createProduct: async (productData: any): Promise<Product> => {
     try {
       const response = await api.post("/products/create", productData);
@@ -80,7 +80,7 @@ export const productService = {
     }
   },
 
-  // Update a product
+
   updateProduct: async (id: string, productData: any): Promise<Product> => {
     try {
       const response = await api.put(`/products/update/${id}`, productData);
@@ -94,7 +94,7 @@ export const productService = {
     }
   },
 
-  // Delete a product
+
   deleteProduct: async (id: string): Promise<void> => {
     try {
       await api.delete(`/products/delete/${id}`);

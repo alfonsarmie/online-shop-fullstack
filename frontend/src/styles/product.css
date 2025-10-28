@@ -28,7 +28,7 @@
 
 .cajaProducto a {
     text-decoration: none;
-    color: inherit; /* para que no se ponga azul */
+    color: inherit; 
 }
 
 .cajaProducto:hover {

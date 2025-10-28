@@ -1,4 +1,4 @@
-/* Estilos unificados para ambos componentes laterales */
+
 .sidebar-overlay {
   position: fixed;
   top: 0;
@@ -16,7 +16,6 @@
   display: block;
 }
 
-/* Panel lateral (compartido) */
 .sidebar {
   position: fixed;
   top: 0;
@@ -38,7 +37,7 @@
   right: 0;
 }
 
-/* Header del panel */
+
 .sidebar-header {
   display: flex;
   justify-content: space-between;
@@ -69,7 +68,7 @@
   color: #1E7335;
 }
 
-/* Información del usuario */
+
 .user-info {
   display: flex;
   align-items: center;
@@ -116,7 +115,6 @@
   text-transform: uppercase;
 }
 
-/* Información adicional */
 .additional-info {
   padding: 1.5rem;
   border-bottom: 1px solid #e0e0e0;
@@ -145,7 +143,7 @@
   font-weight: 500;
 }
 
-/* Opciones del sidebar */
+
 .sidebar-options {
   padding: 1.5rem;
   display: flex;
@@ -205,7 +203,7 @@
   background-color: #bd2130;
 }
 
-/* Estilos específicos para el carrito */
+
 .cart-items {
   flex: 1;
   overflow-y: auto;

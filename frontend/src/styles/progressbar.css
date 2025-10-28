@@ -29,11 +29,11 @@
   height: 5px;
   background-color: #bcd4c2;
   border-radius: 3px;
-  transition: background-color 0.4s ease; /* Add transition for a smooth fill */
+  transition: background-color 0.4s ease;  
 }
 
 .progress-line.line-filled {
-  background-color: #1e7335; /* Color when the line is "filled" */
+  background-color: #1e7335; 
 }
 
 @media (max-width: 600px) {

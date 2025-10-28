@@ -65,7 +65,7 @@ p {
     margin-left: 4px;
 }
 
-/* reset input */
+
 .form__field:required, .form__field:invalid {
   box-shadow: none;
 }

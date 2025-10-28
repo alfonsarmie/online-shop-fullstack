@@ -1,18 +1,18 @@
-/* Estilos generales del contenedor */
+
 .img-dinamicas-container {
   display: flex;
   flex-direction: row;
   background-color: #1D1D1D;
   color: white;
   font-family: "Afacad";
-  height: 430px; /* Altura exacta para desktop */
+  height: 430px; 
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   overflow: hidden;
 }
 
-/* Efecto reveal */
+
 .reveal {
   opacity: 0;
   transform: translateX(-50px);
@@ -24,7 +24,7 @@
   transform: translateX(0);
 }
 
-/* Sección del banner */
+
 .banner-section {
   position: relative;
   width: 100%;
@@ -85,7 +85,7 @@
   cursor: pointer;
 }
 
-/* Desktop hover effects */
+
 @media (hover: hover) and (pointer: fine) {
   .gallery-item:hover {
     flex: 3;
@@ -109,7 +109,7 @@
   }
 }
 
-/* Mobile carousel styles - activate on touch devices */
+
 @media (hover: none) and (pointer: coarse) {
   .gallery-container {
     position: relative;
@@ -145,7 +145,7 @@
     z-index: 1;
   }
   
-  /* Show buy button always on active slide in mobile */
+
   .gallery-item.active .hover-overlay {
     height: 100%;
     opacity: 1;
@@ -157,7 +157,7 @@
     opacity: 1;
   }
   
-  /* Carousel navigation dots */
+
   .carousel-dots {
     position: absolute;
     bottom: 20px;
@@ -184,7 +184,7 @@
     transform: scale(1.2);
   }
   
-  /* Carousel progress bar */
+
   .carousel-progress {
     position: absolute;
     bottom: 0;
@@ -246,13 +246,13 @@
   transition: all 0.5s ease;
 }
 
-/* Asegurar que los enlaces sean clickeables */
+
 .gallery-item {
   display: block;
   text-decoration: none;
 }
 
-/* Estados de carga y error */
+
 .loading-container, .error-container {
   display: flex;
   justify-content: center;
@@ -267,11 +267,11 @@
   color: white;
 }
 
-/* Responsive */
+
 @media (max-width: 1024px) {
   .img-dinamicas-container {
     flex-direction: column;
-    height: 800px; /* banner 400px + gallery 400px */
+    height: 800px;
   }
   
   .banner-section {
@@ -289,7 +289,7 @@
     object-position: center 15%;
   }
   
-  /* En tablets, mantener el carrusel móvil */
+
   .gallery-container {
     height: 400px;
   }
@@ -297,7 +297,7 @@
 
 @media (max-width: 768px) {
   .img-dinamicas-container {
-    height: 700px; /* banner 350px + gallery 350px */
+    height: 700px; 
   }
   
   .banner-section {
@@ -342,7 +342,7 @@
 
 @media (max-width: 480px) {
   .img-dinamicas-container {
-    height: 600px; /* banner 300px + gallery 300px */
+    height: 600px; 
   }
   
   .banner-section {
@@ -393,7 +393,7 @@
 
 @media (max-width: 380px) {
   .img-dinamicas-container {
-    height: 540px; /* banner 270px + gallery 270px */
+    height: 540px; 
   }
   
   .banner-section {

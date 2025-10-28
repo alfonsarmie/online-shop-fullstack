@@ -25,9 +25,9 @@ const validateCheckoutForm = (data: CheckoutFormData): ValidationResult => {
   if (!data.phone || data.phone.trim().length === 0)
     errors.push("Teléfono requerido");
 
-  // If expectedPickupDate is provided, ensure it's strictly greater than today
+
   if (data.expectedPickupDate) {
-    // Expecting format 'YYYY-MM-DD' from input[type=date]
+
     const parts = data.expectedPickupDate.split("-");
     if (parts.length === 3) {
       const [yyyy, mm, dd] = parts.map((p) => parseInt(p, 10));

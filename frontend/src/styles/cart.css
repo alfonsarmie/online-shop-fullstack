@@ -1,7 +1,7 @@
 .cart {
   position: fixed;
   top: 0;
-  right: -450px; /* Oculto inicialmente */
+  right: -450px; 
   width: 450px;
   height: 100%;
   background-color: white;
@@ -148,7 +148,7 @@
   display: block;
 }
 
-/* Estilos para el scroll */
+
 .cart-items::-webkit-scrollbar {
   width: 8px;
 }

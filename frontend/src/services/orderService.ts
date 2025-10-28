@@ -9,7 +9,7 @@ import type {
 
 const API_URL = "";
 
-// Helper to map backend order to frontend shape used in MyOrders/AdminOrders
+
 export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
   const items: FrontendOrderItem[] = (order.orderLines || []).map((line) => ({
     id: line.idProduct,
@@ -20,7 +20,7 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
         ? line.subtotal / Math.max(1, line.quantity)
         : Number(line.subtotal) / Math.max(1, line.quantity),
     size: line.size,
-    // Backend now includes `product_image` (first image url) when available
+
     image: line.product_image || undefined,
   }));
 
@@ -58,9 +58,9 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
 };
 
 export const getItemImage = (fallback?: string) => {
-  // Return a placeholder image path used in the app if available
+
   if (!fallback) return "/placeholder-image.jpg";
-  // If backend serves uploads under /uploads, prefix with backend host so browser can fetch it
+
   if (fallback.startsWith("/uploads")) {
     const host =
       (import.meta as any).env?.VITE_API_HOST || "http://localhost:3000";
@@ -69,7 +69,7 @@ export const getItemImage = (fallback?: string) => {
   return fallback;
 };
 
-// Admin: get paginated orders
+
 const getOrders = async (params?: { page?: number; limit?: number }) => {
   try {
     const response = await api.get<PaginatedOrders>("/orders", { params });
@@ -79,7 +79,7 @@ const getOrders = async (params?: { page?: number; limit?: number }) => {
   }
 };
 
-// Get orders for a user (array)
+
 const getUserOrders = async (userId: number) => {
   try {
     const response = await api.get<{ orders: BackendOrder[] } | BackendOrder[]>(
@@ -98,7 +98,7 @@ const updateOrderStatus = async (
   payload: { description: string }
 ) => {
   try {
-    // Use the createStatus endpoint (POST) to add a new status entry
+
     const response = await api.post(`/status/${id}/create`, payload);
     return response.data;
   } catch (error) {

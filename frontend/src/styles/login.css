@@ -1,6 +1,4 @@
-/* Estilos específicos para la página de login */
 
-/* Contenedor general del formulario de login */
 .login-container {
     margin-bottom: 50px;
     width: 100%;
@@ -30,20 +28,20 @@
 }
 
 .container h1 {
-    font-size: 2rem; /* Tamaño de fuente más grande */
+    font-size: 2rem; 
     font-family: "Afacad", sans-serif;
     text-align: center;
     color: #0c3f19;
     margin-bottom: 20px;
 }
 
-/* Estilos para el contenedor de Google */
+
 .google-login-container {
     margin-bottom: 20px;
     width: 100%;
     max-width: 100%;
     display: flex;
-    justify-content: center; /* Centrar el botón de Google */
+    justify-content: center; 
     overflow: hidden;
 }
 
@@ -56,9 +54,9 @@
     font-weight: 700;
     color: white;
     border: none;
-    padding: 15px; /* Aumento del padding */
-    width: 100%; /* Ocupa el 100% del contenedor */
-    max-width: 420px; /* Límite para el ancho */
+    padding: 15px; 
+    width: 100%; 
+    max-width: 420px; 
     border-radius: 30px;
     cursor: pointer;
     transition: background-color 0.1s ease, transform 0.1s ease;
@@ -80,7 +78,7 @@
 
 
 
-/* Texto de registro */
+
 .msjreg {
     font-family: "Afacad", sans-serif;
     color: #333;
@@ -88,18 +86,18 @@
     text-align: center;
 }
 
-/* Link para registro */
+
 .link_signUp {
     text-decoration: none;
     color: #1E7335;
     font-weight: 700;
 }
 
-/* Estilo de los inputs */
+
 .form__group.field {
     width: 100%;
-    max-width: 420px; /* Ancho consistente con el botón */
-    min-width: 0; /* Evita overflow */
+    max-width: 420px; 
+    min-width: 0; 
     margin-top: 20px;
     box-sizing: border-box;
 }
@@ -123,7 +121,7 @@
     border-bottom-color: #1E7335;
 }
 
-/* Etiqueta flotante */
+
 .form__label {
     font-family: 'Afacad', sans-serif;
     font-weight: 600;
@@ -181,7 +179,7 @@
     margin-right: 70px;
 }
 
-/* Responsive Design */
+
 
 @media (max-width: 900px) {
     .login-container {
@@ -199,7 +197,7 @@
     }
 }
 
-/* Tablet grande y escritorio pequeño */
+
 @media (max-width: 768px) {
     .login-container {
         padding: 48px 20px;
@@ -236,7 +234,7 @@
         margin-top: 25px;
     }
 }
-/* Tablet pequeño */
+
 @media (max-width: 640px) {
     .login-container {
         padding: 40px 16px;
@@ -283,7 +281,7 @@
         margin-right: 0;
     }
 }
-/* Móvil */
+
 @media (max-width: 480px) {
     body, html {
         overflow-x: hidden !important;
@@ -389,7 +387,7 @@
         margin-right: 0;
     }
 }
-/* Móvil pequeño */
+
 @media (max-width: 360px) {
     .login-container {
         padding: 24px 8px;
@@ -448,7 +446,7 @@
         margin-right: 0;
     }
 }
-/* Landscape en móvil */
+
 @media (max-height: 500px) and (orientation: landscape) {
     .login-container {
         margin-top: 20px;

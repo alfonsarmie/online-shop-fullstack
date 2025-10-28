@@ -22,8 +22,7 @@
   color: #fff;
 }
 
-/* Eliminado: estilos duplicados y obsoletos de mobile-category-link */
-/* Estilo para links de categorías en el menú móvil igual a los links principales */
+
 .mobile-menu .dropdown-menu-mobile .category-title {
   color: #22a341;
   text-decoration: none;
@@ -43,7 +42,7 @@
   align-items: flex-start;
 }
 
-/* Eliminar cualquier efecto de línea inferior */
+
 .mobile-menu .dropdown-menu-mobile .category-title::after {
   display: none !important;
 }
@@ -54,7 +53,7 @@
   transform: none !important;
   box-shadow: none !important;
 }
-/* Animación para el dropdown de categorías en mobile */
+
 .animate-mobile-dropdown {
   animation: mobileDropdownSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -70,7 +69,7 @@
   }
 }
 
-/* Animación para el menú principal cuando se vuelve desde categorías */
+
 .animate-main-menu {
   animation: mainMenuSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -337,7 +336,7 @@ nav li {
     color 0.2s ease;
 }
 
-/* Estilos para la X nativa del input search */
+
 .nav-search__form input::-webkit-search-cancel-button {
   -webkit-appearance: none;
   appearance: none;
@@ -438,7 +437,7 @@ nav li {
   font-weight: bold;
 }
 
-/* Dropdown */
+
 .dropdown {
   position: relative;
   display: flex;
@@ -583,7 +582,7 @@ nav li {
 .dropdown-item .category-title:focus-visible {
   outline: none;
 }
-/* Agregar esto a nav.css o crear un archivo aparte */
+
 .user-menu {
   display: flex;
   align-items: center;
@@ -826,22 +825,7 @@ nav li {
   color: #fff;
 }
 
-/* Tablet */
-/*@media (max-width: 1000px) {
-  .nav-search {
-    margin-right: 15px;
-  }
 
-  .nav-search__toggle {
-    width: 40px;
-    height: 40px;
-  }
-
-  .nav-search__form {
-    width: 350px;
-    min-width: 350px;
-  }
-}*/
 
 @media (max-width: 1000px) {
   nav {
@@ -864,7 +848,6 @@ nav li {
     display: none;
   }
 
-  /* Adjust user icon for mobile */
   .user-icon {
     font-size: 16px;
     margin-right: 6px;
@@ -875,7 +858,7 @@ nav li {
     font-size: 14px;
   }
 
-  /* Estilos para el menú de categorías en el sidebar móvil */
+  
   .dropdown-mobile {
     width: 100% ;
     margin-top: 0;
@@ -1009,7 +992,6 @@ nav li {
   }
 }
 
-/* Mobile muy pequeño */
 @media (max-width: 360px) {
   .nav-search {
     margin-right: 6px;

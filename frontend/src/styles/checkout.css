@@ -1,4 +1,4 @@
-/* Label para deportes en checkout */
+
 .deportes-label {
   font-weight: 700;
   font-size: 17px;
@@ -17,7 +17,7 @@
   box-shadow: 0 1px 4px rgba(30, 115, 53, 0.07);
   transition: background 0.2s;
 }
-/* Deportes checkboxes en checkout */
+
 .deportes-container {
   display: flex;
   flex-wrap: wrap;
@@ -101,7 +101,7 @@
   box-shadow: 0 0 0 4px rgba(30, 115, 53, 0.3);
 }
 
-/* Estilo especial para la opción "Ninguno" */
+
 .deporte-checkbox:first-child {
   border-color: #d1d5db;
   background: #f9fafb;
@@ -121,7 +121,7 @@
   border-color: #6b7280;
 }
 
-/* Efecto cuando está seleccionado */
+
 .deporte-checkbox:has(input[type="radio"]:checked) {
   border-color: #1e7335;
   background: linear-gradient(135deg, #f0f9f2, #e8f5ea);
@@ -135,7 +135,7 @@
   box-shadow: 0 4px 20px rgba(107, 114, 128, 0.2);
 }
 
-  /* react-datepicker custom overrides to match site styles */
+ 
   .custom-react-datepicker {
     font-family: "Afacad", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     border-radius: 10px;
@@ -405,7 +405,7 @@ main {
   max-width: unset;
 }
 
-/* CART */
+
 
 .cart-container {
   display: flex;
@@ -491,7 +491,7 @@ main {
     height: auto;
   }
   
-  /* Responsive para deportes en móviles */
+
   .deportes-container {
     flex-direction: row;
     gap: 10px;

@@ -1,8 +1,7 @@
-/* receiver-dashboard.css */
-/* Receiver Dashboard Styles: consistent with dark admin look */
+
 .receiver-dashboard {
   padding: 24px 32px;
-  padding-top: 50px; /* keep clear of fixed navbar */
+  padding-top: 50px; 
   color: #f0f0f0;
   background: #121212;
   min-height: calc(100vh - 100px);
@@ -341,7 +340,7 @@ tr.stock-low {
   padding: 20px;
 }
 
-/* Estilos para tablas en receiver-dashboard */
+
 .receiver-dashboard-data-table {
   width: 100%;
   border-collapse: collapse;

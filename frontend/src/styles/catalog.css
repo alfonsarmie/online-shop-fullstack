@@ -1,4 +1,4 @@
-/* Estilos generales */
+
 * {
   margin: 0;
   padding: 0;
@@ -13,7 +13,7 @@
   margin-top: 80px;
 }
 
-/* Encabezado de categoría */
+
 .categoria-header {
   margin-bottom: 30px;
   padding-bottom: 20px;
@@ -46,7 +46,7 @@
   font-size: 1rem;
 }
 
-/* Filtros y ordenamiento */
+
 .filtros-ordenamiento {
   display: flex;
   justify-content: space-between;
@@ -93,7 +93,7 @@
   border-color: #1e7335;
 }
 
-/* Caja de productos */
+
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -103,7 +103,7 @@
   width: 100%;
 }
 
-/* Responsive */
+
 @media (max-width: 900px) {
   .catalogo-productos {
     padding: 10px;
