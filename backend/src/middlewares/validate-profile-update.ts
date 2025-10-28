@@ -19,7 +19,7 @@ export const validateProfileUpdate = async (req: Request, res: Response, next: N
     console.log('   ID desde token:', userId, '(tipo:', typeof userId, ')');
     console.log('   ID desde URL:', idToUpdate, '(tipo:', typeof idToUpdate, ')');
 
-    // Verificar que el usuario existe
+    
     const user = await User.findByPk(userId);
     if (!user || user.status === 'deleted') {
       res.status(404).json({ message: 'User not found' });
@@ -28,13 +28,13 @@ export const validateProfileUpdate = async (req: Request, res: Response, next: N
 
     console.log('   Rol del usuario:', user.role);
     
-    // Convertir ambos IDs a número para comparación consistente
+    
     const userIdNum = Number(userId);
     const idToUpdateNum = Number(idToUpdate);
 
     console.log('   Comparación:', userIdNum, '===', idToUpdateNum, '→', userIdNum === idToUpdateNum);
     
-    // Permitir que usuarios actualicen su propio perfil O admins actualicen cualquier perfil
+    
     if (userIdNum !== idToUpdateNum && user.role !== 'admin') {
       console.log('   ❌ Permiso denegado');
       res.status(403).json({ message: 'You can only update your own profile' });

@@ -11,7 +11,7 @@ import PaymentMethod from './payment-method-model';
 import User from './user-model';
 
 export const defineAssociations = () => {
-  // Product - Category
+  
   Product.belongsTo(Category, { 
     foreignKey: 'idCategory', 
     as: 'category' 
@@ -21,7 +21,7 @@ export const defineAssociations = () => {
     as: 'products' 
   });
 
-  // Product - Price
+  
   Product.hasMany(Price, { 
     foreignKey: 'idProduct', 
     as: 'prices' 
@@ -31,7 +31,7 @@ export const defineAssociations = () => {
     as: 'product' 
   });
 
-  // Product - Image
+  
   Product.hasMany(Image, { 
     foreignKey: 'idProduct', 
     as: 'images' 
@@ -41,7 +41,7 @@ export const defineAssociations = () => {
     as: 'product' 
   });
 
-  // Product - Size (Many-to-Many)
+  
   Product.belongsToMany(Size, {
     through: ProductSize,
     foreignKey: 'idProduct',
@@ -56,7 +56,7 @@ export const defineAssociations = () => {
     as: 'products'
   });
 
-  // ProductSize associations
+ 
   ProductSize.belongsTo(Product, { 
     foreignKey: 'idProduct', 
     as: 'product' 
@@ -66,7 +66,7 @@ export const defineAssociations = () => {
     as: 'size' 
   });
 
-  // Order - User
+  
   Order.belongsTo(User, { 
     foreignKey: 'idUser', 
     as: 'user' 
@@ -76,7 +76,7 @@ export const defineAssociations = () => {
     as: 'orders' 
   });
 
-  // Order - PaymentMethod
+  
   Order.belongsTo(PaymentMethod, { 
     foreignKey: 'idPaymentMethod', 
     as: 'paymentMethod' 
@@ -86,7 +86,7 @@ export const defineAssociations = () => {
     as: 'orders' 
   });
 
-  // Order - Status (historial)
+  
   Order.hasMany(Status, { 
     foreignKey: 'idOrder', 
     as: 'statusHistory' 
@@ -96,7 +96,7 @@ export const defineAssociations = () => {
     as: 'order' 
   });
 
-  // Order - OrderLine
+  
   Order.hasMany(OrderLine, { 
     foreignKey: 'idOrder', 
     as: 'orderLines' 
@@ -106,7 +106,7 @@ export const defineAssociations = () => {
     as: 'order' 
   });
 
-  // OrderLine - Product
+  
   OrderLine.belongsTo(Product, { 
     foreignKey: 'idProduct', 
     as: 'product' 
@@ -116,7 +116,7 @@ export const defineAssociations = () => {
     as: 'orderLines' 
   });
 
-  // OrderLine - Size
+  
   OrderLine.belongsTo(Size, { 
     foreignKey: 'idSize', 
     as: 'size' 

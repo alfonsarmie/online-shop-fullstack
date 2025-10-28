@@ -28,7 +28,6 @@ describe("generateJWT (simple)", () => {
 		expect(typeof token).toBe("string");
 		expect(token.length).toBeGreaterThan(10);
 
-		// Assert: it can be verified with the secret and contains the expected payload
 		const decoded = jwt.verify(token, "test_secret") as jwt.JwtPayload;
 		expect(decoded.userId).toBe(userId);
 	});

@@ -37,11 +37,7 @@ type PlainOrder = {
     [key: string]: any;
 };
 
-/**
- * @desc    Verifica el pago en Stripe y crea la orden si fue exitoso
- * @route   POST /api/orders/create-from-session
- * @access  Public (cualquiera con session_id puede llamarlo)
- */
+
 export const createOrderFromSession = async (req: Request, res: Response) => {
     const { session_id } = req.body;
 
@@ -52,12 +48,12 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
     try {
         console.log(`🔍 Verificando sesión de Stripe: ${session_id}`);
 
-        // 1. Obtener la sesión de Stripe
+        
         const session = await stripe.checkout.sessions.retrieve(session_id);
 
         console.log(`✅ Sesión recuperada: ${session.id}, status: ${session.payment_status}`);
 
-        // 2. Verificar que el pago fue exitoso
+        
         if (session.payment_status !== 'paid') {
             return res.status(400).json({ 
                 msg: 'El pago no ha sido completado',
@@ -65,8 +61,7 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
             });
         }
 
-        // 3. Verificar si ya existe una orden para esta sesión
-        // Usar el nombre del atributo del modelo, Sequelize lo mapeará a 'externalReference' en la DB
+        
         const existingOrder = await Order.findOne({
             where: { external_reference: session.id }
         });
@@ -79,7 +74,7 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
             });
         }
 
-        // 4. Obtener los items de la sesión
+        
         const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
             expand: ['data.price.product'],
             limit: 100,
@@ -87,7 +82,7 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
 
         console.log(`📦 Items en la sesión: ${lineItems.data.length}`);
 
-        // 5. Parsear orderDetails del metadata
+        
         const raw = session.metadata?.orderDetails;
         let orderDetailsParsed: any = {};
         if (raw) {
@@ -98,13 +93,13 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
             }
         }
 
-        // 6. Extraer información
+        
         const customerName = session.customer_details?.name || orderDetailsParsed?.customer_name || 'N/A';
         const customerEmail = session.customer_details?.email || orderDetailsParsed?.customer_email || 'no-reply@example.com';
         const customerPhone = session.customer_details?.phone || orderDetailsParsed?.phone || undefined;
         const customerNotes = orderDetailsParsed?.notes || undefined;
         
-        // El deporte ahora se almacena como texto plano
+        
         const rawSport =
             orderDetailsParsed?.sport ??
             session.metadata?.sport ??
@@ -116,14 +111,13 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
         
         const paymentId = typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id;
 
-        // Map Stripe statuses to our internal provider status (statusMp)
+        
         const mapStripeToStatusMp = (sess: any) => {
-            // Stripe checkout.session.payment_status can be: 'paid', 'unpaid', 'no_payment_required'
+            
             if (sess.payment_status === 'paid') return 'approved';
             if (sess.payment_status === 'unpaid') return 'pending';
             if (sess.payment_status === 'no_payment_required') return 'pending';
 
-            // If a PaymentIntent object is available, use its status for finer granularity
             const pi = typeof sess.payment_intent === 'object' ? sess.payment_intent : undefined;
             const piStatus = pi?.status;
             if (piStatus === 'succeeded') return 'approved';
@@ -131,13 +125,13 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
             if (piStatus === 'requires_payment_method' || piStatus === 'requires_action' || piStatus === 'requires_confirmation') return 'pending';
             if (piStatus === 'canceled' || piStatus === 'failed') return 'cancelled';
 
-            // Default fallback
+            
             return 'pending';
         };
 
     const detectedStatusMp = mapStripeToStatusMp(session as Stripe.Checkout.Session);
 
-        // 7. Calcular total y parsear items
+        
         let totalCents = 0;
         const parsedItems: Array<{ idProduct: number; idSize?: number; quantity: number; subtotalCents: number }> = [];
 
@@ -172,7 +166,7 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
             });
         }
 
-        // 8. Parsear expectedPickupDate
+        
         let expectedPickupDate: Date | undefined = undefined;
         if (orderDetailsParsed.expected_pickup_date) {
             const dateParts = orderDetailsParsed.expected_pickup_date.split('-');
@@ -182,13 +176,13 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
             }
         }
 
-        // 9. Crear la orden en una transacción
+        
         let createdOrder: Order;
 
         await db.transaction(async (t: Transaction) => {
             const currency = (session.currency || 'usd').toUpperCase();
 
-            // Crear la orden
+            
             createdOrder = await Order.create({
                 orderDate: new Date(),
                 expectedPickupDate: expectedPickupDate,
@@ -203,12 +197,12 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
                 customer_notes: customerNotes,
                 currencyId: currency,
                 sport: sport,
-                statusMp: detectedStatusMp, // Mapeado desde Stripe (p. ej. 'approved' si payment_status === 'paid')
+                statusMp: detectedStatusMp, 
             }, { transaction: t });
 
             console.log(`✅ Orden #${createdOrder.idOrder} creada`);
 
-            // Crear el status inicial "confirmado"
+            
             await Status.create({
                 idOrder: createdOrder.idOrder,
                 statusDate: new Date(),
@@ -217,7 +211,7 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
 
             console.log(`📋 Status 'confirmado' creado para orden #${createdOrder.idOrder}`);
 
-            // Crear las líneas de orden y descontar stock
+            
             for (const item of parsedItems) {
                 const product = await Product.findByPk(item.idProduct, {
                     transaction: t,
@@ -232,15 +226,15 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
                     console.warn(`⚠️ Stock insuficiente para producto ${product.idProduct}`);
                 }
 
-                // Descontar stock
+                
                 product.stock = Math.max(0, product.stock - item.quantity);
                 await product.save({ transaction: t });
 
-                // Crear línea de orden
+                
                 await OrderLine.create({
                     idOrder: createdOrder.idOrder,
                     idProduct: item.idProduct,
-                    idSize: item.idSize ?? 7, // Si no hay talla, usar 7 (Único)
+                    idSize: item.idSize ?? 7, 
                     quantity: item.quantity,
                     subtotal: Number((item.subtotalCents / 100).toFixed(2)),
                 }, { transaction: t });
@@ -265,11 +259,7 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
     }
 };
 
-/**
- * @desc    Obtiene todas las órdenes de un usuario
- * @route   GET /api/orders/user/:userId
- * @access  Private (el usuario debe estar autenticado)
- */
+
 export const getUserOrders = async (req: Request, res: Response) => {
     const { userId } = req.params;
 
@@ -506,24 +496,7 @@ export const getStatusStats = async (req: Request, res: Response) => {
         const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
         const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
 
-        //const orders = await Order.findAll({
-        //    where: {
-        //        orderDate: {
-        //            [Op.between]: [startDate, endDate]
-        //        }
-        //    },
-        //    include: [
-        //        {
-        //            model: Status,
-        //            as: 'statusHistory',
-        //            attributes: ['statusDate', 'description'],
-        //            order: [['statusDate', 'DESC']],
-        //            limit: 1 
-        //        }
-        //    ]
-        //});
-
-        // Primero obtenemos todos los pedidos del mes
+       
         const orders = await Order.findAll({
             where: {
                 orderDate: {
@@ -536,12 +509,12 @@ export const getStatusStats = async (req: Request, res: Response) => {
                     as: 'statusHistory',
                     attributes: ['statusDate', 'description'],
                     order: [['statusDate', 'DESC']],
-                    limit: 1 // Solo el estado más reciente
+                    limit: 1 
                 }
             ]
         });
 
-        // Contamos los pedidos por estado
+        
         const statusCounts: { [key: string]: number } = {};
         
         orders.forEach(order => {
@@ -553,7 +526,7 @@ export const getStatusStats = async (req: Request, res: Response) => {
             statusCounts[currentStatus] = (statusCounts[currentStatus] || 0) + 1;
         });
 
-        // Convertimos a array para mantener la misma estructura de respuesta
+        
         const result = Object.entries(statusCounts).map(([status, count]) => ({
             status,
             count

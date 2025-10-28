@@ -41,8 +41,7 @@ export const addSizeToProduct = async (req: Request, res: Response): Promise<Res
   try {
     const { idProduct, idSize } = req.params;
 
-    // Esta función requeriría el modelo ProductSize
-    // Asumiendo que tienes el modelo ProductSize implementado
+    
     const productSize = await ProductSize.create({
       idProduct: parseInt(idProduct),
       idSize: parseInt(idSize)

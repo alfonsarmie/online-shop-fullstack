@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 import { existsUserById } from '../src/helpers/db-validator-helper';
 import User from '../src/models/user-model';
 
-// Mock del modelo User
+
 jest.mock('../src/models/user-model', () => ({
   __esModule: true,
   default: {

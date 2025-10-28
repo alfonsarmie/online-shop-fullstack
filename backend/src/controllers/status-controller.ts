@@ -20,12 +20,12 @@ export const createStatus = async (req: Request, res: Response): Promise<Respons
       });
     }
 
-    // Wrap in a transaction: update Order and create Status atomically
+    
     await db.transaction(async (t: Transaction) => {
       const order = await Order.findByPk(parseInt(idOrder), { transaction: t });
       if (!order) throw new Error('Order not found');
 
-      // If description indicates withdrawn, set actualPickupDate
+      
       if (normalizedDesc === 'withdrawn') {
         order.actualPickupDate = new Date();
       } else {
@@ -44,13 +44,6 @@ export const createStatus = async (req: Request, res: Response): Promise<Respons
   }
 };
 
-/**
- * Update order status endpoint.
- * Accepts body: { description: 'ready'|'confirmed'|'withdrawn'|'cancelled', statusMp?: string }
- */
-// NOTE: updateStatus removed — use `createStatus` (POST) to add a new status entry.
-// The createStatus handler already performs the same work (update Order + create Status row)
-// and will be used for all status changes.
 
 export const getOrderStatusHistory = async (req: Request, res: Response): Promise<Response> => {
   try {

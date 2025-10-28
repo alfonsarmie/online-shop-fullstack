@@ -6,7 +6,7 @@ export const validateFields = (req: Request, res: Response, next: NextFunction):
   
   // If there are validation errors, respond with 400 and the errors
   if (!errors.isEmpty()) {
-    // Log errors to help debugging clients that receive 400
+    
     console.error('Request validation failed:', errors.array());
     res.status(400).json({ errors: errors.array() });
     return;

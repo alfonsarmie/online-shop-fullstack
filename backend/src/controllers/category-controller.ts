@@ -63,13 +63,12 @@ export const updateCategory = async (req: Request, res: Response) => {
     if (!category) {
       return res.status(404).json({ error: 'Categoría no encontrada' });
     }
-    
-    // Verificar si el nombre ya existe en otra categoría
-    const existingCategory = await Category.findOne({ 
-      where: { 
-        name, 
-        idCategory: { [Symbol.for('ne')]: id } 
-      } 
+
+    const existingCategory = await Category.findOne({
+      where: {
+        name,
+        idCategory: { [Symbol.for('ne')]: id }
+      }
     });
     
     if (existingCategory) {

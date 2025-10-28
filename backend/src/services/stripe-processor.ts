@@ -30,16 +30,14 @@ export const stripeWebhookHandler = async (req: Request, res: Response) => {
 
 
 
-    // Handle the event
+
     switch (event.type) {
         case 'checkout.session.completed':
-            // DESHABILITADO: usando polling desde frontend (order-controller.ts)
-            // Para habilitar en producción: descomentar todo el código de abajo
-            // y deshabilitar el endpoint POST /api/orders/create-from-session
+           
             console.log('✅ Webhook checkout.session.completed recibido (deshabilitado - usando polling)');
             return res.status(200).json({ received: true, note: 'Webhook disabled - using polling' });
             
-        // Handle other event types as needed
+       
         default:
             console.log(`Unhandled event type ${event.type}`);
             return res.status(200).json({ received: true });

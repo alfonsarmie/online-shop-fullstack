@@ -6,11 +6,7 @@ import { createOrderFromSession, getUserOrders, getOrders, getMonthlyWorth, getS
 
 const router = Router();
 
-/**
- * @route   POST /api/orders/create-from-session
- * @desc    Verifica el pago en Stripe y crea la orden
- * @access  Public
- */
+
 router.post(
     '/create-from-session',
     [
@@ -20,38 +16,22 @@ router.post(
     createOrderFromSession
 );
 
-/**
- * @route   GET /api/orders/user/:userId
- * @desc    Obtiene todas las órdenes de un usuario
- * @access  Public (idealmente debería ser Private con JWT)
- */
+
 router.get(
     '/user/:userId',
     getUserOrders
 );
 
-/**
- * @route   GET /api/orders
- * @desc    Obtiene órdenes paginadas (admin)
- * @access  Private/Admin (no auth enforced here — add middleware if required)
- */
+
 router.get(
     '/',
-    // optional query params: page, limit
+    
     (req, res, next) => next(),
-    // controller will handle params
-    // function imported from controller
-    // getOrders will be exported from controller
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+   
     getOrders
 );
 
-/**
- * @route GET /api/orders
- * @desc Obtiene el total facturado mensual
- * @access Private/Admin
- */
+
 
 router.get(
     '/worth',
@@ -59,11 +39,7 @@ router.get(
     getMonthlyWorth
 );
 
-/**
- * @route GET /api/orders
- * @desc Obtiene los pedidos por deporte de los ultimos 3 meses
- * @access Private/Admin
- */
+
 
 router.get(
     '/sports',
@@ -71,11 +47,7 @@ router.get(
     getSportsStats
 )
 
-/**
- * @route GET /api/orders
- * @desc Obtiene los pedidos por estado del ultimo mes
- * @access Private/Admin
- */
+
 
 router.get(
     '/status',

@@ -33,10 +33,9 @@ export const requireAuth = (req: Request,res: Response,next: NextFunction): void
 
 };
 
-// Admin/self delete validator previously used for delete operations
-export const validateJWT = async (req: Request,res: Response,next: NextFunction): Promise<void> => {
-  const token = req.header("x-token"); //This is the name of the header frontend will send the token
 
+export const validateJWT = async (req: Request,res: Response,next: NextFunction): Promise<void> => {
+  const token = req.header("x-token"); 
   if (!token) {
     res.status(401).json({
       message: "No token provided",
@@ -60,7 +59,7 @@ export const validateJWT = async (req: Request,res: Response,next: NextFunction)
       return;
     }
 
-    // Verify if user is admin or receptionist
+    
     if (userToValidate.role !== "admin") {
       res.status(403).json({
         message: "You do not have permission to perform this action",
@@ -69,7 +68,6 @@ export const validateJWT = async (req: Request,res: Response,next: NextFunction)
       return;
     }
 
-    // Verify if user is not already deleted or exists
     if (userToValidate.status === "deleted") {
       res.status(404).json({
         message: "User not found or already deleted",
@@ -79,7 +77,6 @@ export const validateJWT = async (req: Request,res: Response,next: NextFunction)
 
     }
 
-    // Only admin can delete any user, non-admin can only delete themselves
     if (userId !== parseInt(idToDelete, 10) && userToValidate.role !== "admin") {
       res.status(403).json({
         message: "You do not have permission to perform this action",
@@ -99,7 +96,6 @@ export const validateJWT = async (req: Request,res: Response,next: NextFunction)
   }
 };
 
-// Middleware: Only admin or receptionist can update products
 export const allowAdminOrReceptionist = async (
   req: Request,
   res: Response,
@@ -131,7 +127,7 @@ export const allowAdminOrReceptionist = async (
       res.status(404).json({ message: "User not found or already deleted" });
       return;
     }
-    // Attach user info if needed
+ 
   (req as AuthRequest).userId = userId;
     next();
   } catch (error) {

@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import nodemailer from "nodemailer";
-import { Op } from "sequelize"
+
 
 
 
@@ -58,16 +58,16 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
       accountStatus = "active";
     }
 
-    // Encrypt the password
+    
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
-    // Create a new user
+    
 
 
     if (accountStatus === "pending") {
-      activationToken = uuidv4(); //Creates uuid token
-      activationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 horas desde ahora
+      activationToken = uuidv4(); 
+      activationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours expiration
     }
 
 
@@ -86,17 +86,17 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
     };
     
 
-    // Create the user first
+   
     const userCreated = await User.create(newUser);
 
-    // Send activation email only if account status is pending
+   
     if (accountStatus === "pending" && activationToken) {
       try {
-        // Debug: Log environment variables (without revealing the password)
+        
         console.log('EMAIL_USER:', process.env.EMAIL_USER ? 'SET' : 'NOT SET');
         console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? 'SET' : 'NOT SET');
         
-        // Verify environment variables
+        
         if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
           console.error('Email credentials not found in environment variables');
           console.error('EMAIL_USER value:', process.env.EMAIL_USER);
@@ -119,7 +119,7 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
           },
         });
 
-        // Verify the transporter configuration
+        
         await transporter.verify();
         console.log('Email transporter verified successfully');
     
@@ -164,7 +164,7 @@ export const activateUser = async (req: Request, res: Response): Promise<Respons
     const user = await User.findOne({ where: { activationToken: token } });
 
     if (!user || !user.activationTokenExpires || user.activationTokenExpires < new Date()) {
-      // Redirect to frontend with error parameter
+      
       return res.redirect(`http://localhost:5173/activate/${token}?error=invalid_token`);
     }
 
@@ -173,11 +173,11 @@ export const activateUser = async (req: Request, res: Response): Promise<Respons
     user.activationTokenExpires = null;
     await user.save();
 
-    // Redirect to frontend activation success page
+
     return res.redirect(`http://localhost:5173/activate/${token}`);
 
   } catch (error: any) {
-    // Redirect to frontend with error parameter
+    
     return res.redirect(`http://localhost:5173/activate/${req.params.token}?error=server_error`);
   }
 };
@@ -193,7 +193,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
   try {
 
 
-    // Logic to delete user (soft delete by changing status to 'deleted')
+    
     const userToDelete = await User.findByPk(id);
     if (!userToDelete) {
       return res.status(404).json({
@@ -260,7 +260,7 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
 
 export const changePassword = async (req: Request, res: Response): Promise<Response> => {
   try {
-    // Request may be an AuthRequest injected by auth middleware
+   
     const authReq = req as (Request & { userId?: number });
     const userId = authReq.userId as number | string | undefined;
     const { currentPassword, newPassword } = req.body as { currentPassword: string; newPassword: string };
@@ -307,14 +307,14 @@ export const resetPassword = async (req: Request, res: Response): Promise<Respon
     const { email } = req.body;
     const user = await User.findOne({ where: { email } });
 
-    // Check if user exists and is active
+    
     if (!user || user.status !== "active") {
       return res.status(404).json({ message: "User not found" });
     }
 
 
 
-    // Generate password reset token using UUID
+    
     const resetToken = uuidv4();
     user.passwordResetTokenHash = resetToken;
     user.passwordResetTokenExpiresAt = new Date(Date.now() + 3600000); // 1 hour
@@ -323,7 +323,7 @@ export const resetPassword = async (req: Request, res: Response): Promise<Respon
 
 
 
-    // Send email with password reset link
+    
     const transporter = nodemailer.createTransport({
         service: "gmail",
         host: "smtp.gmail.com",
