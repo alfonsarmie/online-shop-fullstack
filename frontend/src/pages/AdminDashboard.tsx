@@ -164,26 +164,6 @@ useEffect(() => {
     return null;
   };
 
-  const TopProductsTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div
-          style={{
-            backgroundColor: "#145526ff",
-            padding: "10px",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-          }}
-        >
-          <p style={{ margin: 0 }}>{`Producto: ${data.name}`}</p>
-          <p style={{ margin: 0 }}>{`Cantidad de órdenes: ${data.orderCount}`}</p>
-        </div>
-      );
-    }
-    return null;
-  };
-
   return (
     <div className="admin-dashboard-container">
       <div className="admin-dashboard">
@@ -227,11 +207,6 @@ useEffect(() => {
               <h2>Pedidos por deporte</h2>
             </div>
             <div className="admin-dashboard-panel-body kpi-card sports-pie-chart"> 
-                <ResponsiveContainer
-    width="100%"
-    minHeight={100}
-    maxHeight={900}
-  >
               <PieChart width={400} height={300}>
                 <Pie
                   data={sportsStats}
@@ -253,7 +228,6 @@ useEffect(() => {
                 </Pie>
                 <Tooltip content={<SportsTooltip />} />
               </PieChart>
-              </ResponsiveContainer>
             </div>
           </div>
 

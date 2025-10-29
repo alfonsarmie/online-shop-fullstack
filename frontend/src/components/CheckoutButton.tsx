@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useState, useMemo } from 'react';
 import type { CartItem } from '../types/cart';
 import type { User } from '../types/user';
@@ -144,28 +145,16 @@ export default function CheckoutButton({
           }
         : undefined;
 
-      const response = await fetch(`${apiBaseUrl}/api/payments/create-preference`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: preferenceItems,
-          orderId,
-          payer: payerData,
-          orderPayload,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorBody = await response.json().catch(() => ({}));
-        const message = (errorBody as { message?: string }).message ?? 'No se pudo crear la preferencia de pago';
-        throw new Error(message);
-      }
-
-      const data = await response.json() as {
+      const { data } = await axios.post<{
         init_point?: string;
         sandbox_init_point?: string;
         orderId?: number | null;
-      };
+      }>(`${apiBaseUrl}/api/payments/create-preference`, {
+        items: preferenceItems,
+        orderId,
+        payer: payerData,
+        orderPayload,
+      });
 
       const redirectUrl = data.init_point ?? data.sandbox_init_point;
       if (!redirectUrl) {
@@ -175,7 +164,11 @@ export default function CheckoutButton({
       window.location.href = redirectUrl;
     } catch (error) {
       console.error('Mercado Pago checkout error', error);
-      const message = error instanceof Error ? error.message : 'Hubo un problema iniciando el pago';
+      const message = axios.isAxiosError(error)
+        ? (error.response?.data as { message?: string } | undefined)?.message ?? error.message ?? 'No se pudo crear la preferencia de pago'
+        : error instanceof Error
+          ? error.message
+          : 'Hubo un problema iniciando el pago';
       alert(message);
     } finally {
       setLoading(false);

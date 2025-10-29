@@ -1,10 +1,4 @@
-﻿// App.tsx (actualizado)
-/**
- * App router and layout
- * - Decides which navbar to render based on route prefix
- * - Registers public routes and admin routes (e.g., /admin/dashboard)
- */
-import './App.css';
+﻿import './App.css';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Index from './pages/Index';

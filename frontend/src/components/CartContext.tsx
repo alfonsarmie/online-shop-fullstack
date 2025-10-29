@@ -28,7 +28,6 @@ function CartProvider({ children }: CartProviderProps) {
       return [...prevItems, { ...product, quantity: 1 }];
     });
 
-    // Open cart when item is added
     setIsCartOpen(true);
   }, []);
 
