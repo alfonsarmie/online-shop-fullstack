@@ -71,7 +71,7 @@ function ProductComponent({
           }}
         />
         <p className="nombre">{name}</p>
-        <p className="precio">${price} ARS</p>
+        <p className="precio">{new Intl.NumberFormat("es-AR", { maximumFractionDigits: 0 }).format(price)} ARS</p>
       </Link>
 
       <button className="btnAddToCart" onClick={handleAddToCartClick}>

@@ -592,14 +592,16 @@ const AdminProducts: React.FC = () => {
             <span className="span-admin">Precio</span>
             <input
               className="input-admin"
-              type="number"
-              step="0.01"
-              value={creating.price === 0 ? "" : creating.price}
+              type="text"
+              value={creating.price === 0 ? "" : new Intl.NumberFormat("es-AR", { maximumFractionDigits: 0 }).format(creating.price)}
               onChange={(e) => {
-                const val = e.target.value;
+                const raw = e.target.value || "";
+                // Remove thousand separators (dots/spaces), allow comma as decimal separator
+                const sanitized = raw.replace(/\./g, "").replace(/\s/g, "").replace(/,/g, ".").replace(/[^0-9.\-]/g, "");
+                const num = sanitized === "" ? 0 : Number(sanitized);
                 setCreating({
                   ...creating,
-                  price: val === "" ? 0 : Number(val),
+                  price: isNaN(num) ? 0 : num,
                 });
               }}
             />
@@ -760,7 +762,7 @@ const AdminProducts: React.FC = () => {
               {filteredProducts.map((p) => (
                 <tr key={p.id}>
                   <td>{p.name}</td>
-                  <td>${p.price} ARS</td>
+                  <td>{new Intl.NumberFormat("es-AR", { maximumFractionDigits: 0 }).format(p.price)} ARS</td>
                   <td>{p.category || "-"}</td>
                   <td>{renderSizes(p.sizes)}</td>
                   <td>{p.stock}</td>
@@ -810,14 +812,15 @@ const AdminProducts: React.FC = () => {
             <label>
               <span>Precio</span>
               <input
-                type="number"
-                step="0.01"
-                value={editing.price === 0 ? "" : editing.price}
+                type="text"
+                value={editing.price === 0 ? "" : new Intl.NumberFormat("es-AR", { maximumFractionDigits: 0 }).format(editing.price)}
                 onChange={(e) => {
-                  const val = e.target.value;
+                  const raw = e.target.value || "";
+                  const sanitized = raw.replace(/\./g, "").replace(/\s/g, "").replace(/,/g, ".").replace(/[^0-9.\-]/g, "");
+                  const num = sanitized === "" ? 0 : Number(sanitized);
                   setEditing({
                     ...editing,
-                    price: val === "" ? 0 : Number(val),
+                    price: isNaN(num) ? 0 : num,
                   });
                 }}
               />
