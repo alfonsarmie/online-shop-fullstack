@@ -2,6 +2,7 @@
 import { Request, Response } from 'express';
 import { Op, Transaction } from 'sequelize';
 import Product from '../models/product-model';
+import ProductSize from '../models/size-product-model';
 import { db } from '../db/connection';
 import Order from '../models/order-model';
 import OrderLine from '../models/order-line-model';
@@ -123,18 +124,18 @@ export const stripeWebhookHandler = async (req: Request, res: Response) => {
                 }, { transaction: t });
 
                 for (const item of parsedItems) {
-                    const product = await Product.findByPk(item.idProduct, {
+                    // Validate and decrement stock per size
+                    const ps = await ProductSize.findOne({
+                        where: { idProduct: item.idProduct, idSize: item.idSize ?? 7 },
                         transaction: t,
                         lock: t.LOCK.UPDATE,
                     });
-                    
-                    if (!product) throw new Error(`No existe el producto ${item.idProduct}`);
-                    if (product.stock < item.quantity) {
-                        throw new Error(`Stock insuficiente para producto ${product.idProduct}`);
+                    if (!ps) throw new Error(`No existe el talle para producto ${item.idProduct}`);
+                    if (ps.stock < item.quantity) {
+                        throw new Error(`Stock insuficiente para producto ${item.idProduct} talle ${item.idSize ?? 7}`);
                     }
-
-                    product.stock = product.stock - item.quantity;
-                    await product.save({ transaction: t });
+                    ps.stock = ps.stock - item.quantity;
+                    await ps.save({ transaction: t });
 
                     await OrderLine.create({
                         idOrder: order.idOrder,

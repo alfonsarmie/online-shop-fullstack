@@ -62,12 +62,12 @@ function ProductDetails() {
               ? productData.images[1].url
               : "/placeholder-image.jpg",
           description: productData.description || "Descripción no disponible",
-          stock: productData.stock || 0,
           sizes: productData.sizes
             ? productData.sizes.map((size: any) => ({
                 idSize: size.idSize || size.id,
                 name: size.name || size.sizeDesc || "Talle",
                 sizeDesc: size.sizeDesc || size.name || "",
+                stock: (size.stock ?? (size.ProductSize?.stock ?? 0)),
               }))
             : [],
           category: productData.category?.name,
@@ -146,9 +146,7 @@ function ProductDetails() {
         <div className="product-info">
           <h1>{product.name}</h1>
           <p className="product-stock">
-            {product.stock > 0
-              ? `En stock`
-              : "Sin stock"}
+            {selectedSize?.stock && selectedSize.stock > 0 ? "En stock" : "Sin stock"}
           </p>
           <p className="price">${product.price.toLocaleString("es-AR")}</p>
           <p className="description">{product.description}</p>
@@ -177,9 +175,9 @@ function ProductDetails() {
           <button
             className="add-to-cart-btn"
             onClick={handleAddToCart}
-            disabled={!product.stock || !selectedSize}
+            disabled={!selectedSize || !(selectedSize.stock && selectedSize.stock > 0)}
           >
-            {product.stock ? "AÑADIR AL CARRITO" : "SIN STOCK"}
+            {selectedSize && selectedSize.stock && selectedSize.stock > 0 ? "AÑADIR AL CARRITO" : "SIN STOCK"}
           </button>
         </div>
       </div>

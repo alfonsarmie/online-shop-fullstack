@@ -1,13 +1,15 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../styles/receiver-dashboard.css";
-import { FrontendProduct } from "../types/product";
+import { FrontendProduct, Size } from "../types/product";
 import { productService } from "../services/productService";
 import SuccessMessage from "./SuccessMessage";
 
 const ReceptionistStock: React.FC = () => {
   const [products, setProducts] = useState<FrontendProduct[]>([]);
-  const [draft, setDraft] = useState<FrontendProduct[] | null>(null);
-  const [editing, setEditing] = useState(false);
+  // Modal state for per-product size stock editing
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalProduct, setModalProduct] = useState<FrontendProduct | null>(null);
+  const [modalSizes, setModalSizes] = useState<Array<Size & { stock?: number }>>([]);
   const [filter, setFilter] = useState("");
   const [lowStockOnly, setLowStockOnly] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -24,7 +26,7 @@ const ReceptionistStock: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const currentList = editing && draft ? draft : products;
+  const currentList = products;
   const categories = useMemo(() => {
     const cats = currentList
       .map((p) => (typeof p.category === "string" ? p.category : ""))
@@ -44,7 +46,7 @@ const ReceptionistStock: React.FC = () => {
       );
     }
     if (lowStockOnly) {
-      result = result.filter((p) => p.stock < 10);
+      result = result.filter((p) => (p.stock ?? 0) < 10);
     }
     if (categoryFilter !== "all") {
       result = result.filter((p) => (p.category || "") === categoryFilter);
@@ -52,24 +54,19 @@ const ReceptionistStock: React.FC = () => {
     return result;
   }, [currentList, filter, lowStockOnly, categoryFilter]);
 
-  const adjustStock = (id: string, delta: number) => {
-    if (!editing || !draft) return;
-    setDraft((prev) =>
-      (prev || []).map((p) => {
-        if (p.id === id) {
-          const newStock = Math.max(0, p.stock + delta);
-          return { ...p, stock: newStock };
-        }
-        return p;
-      })
+  // Modal handlers: adjust and set stock values per size within modal
+  const adjustSizeStock = (sizeId: number, delta: number) => {
+    setModalSizes((prev) =>
+      (prev || []).map((s: any) =>
+        s.idSize === sizeId ? { ...s, stock: Math.max(0, (s.stock || 0) + delta) } : s
+      )
     );
   };
 
-  const setStockValue = (id: string, value: number) => {
-    if (!editing || !draft) return;
+  const setSizeStockValue = (sizeId: number, value: number) => {
     const newStock = Math.max(0, value);
-    setDraft((prev) =>
-      (prev || []).map((p) => (p.id === id ? { ...p, stock: newStock } : p))
+    setModalSizes((prev) =>
+      (prev || []).map((s: any) => (s.idSize === sizeId ? { ...s, stock: newStock } : s))
     );
   };
 
@@ -94,24 +91,60 @@ const ReceptionistStock: React.FC = () => {
       maximumFractionDigits: 0,
     });
 
-  const saveStockChanges = async () => {
-    if (!draft) return;
+  const openModal = (product: FrontendProduct) => {
+    setModalProduct(product);
+    setModalSizes(
+      (product.sizes || []).map((s: any) => ({
+        idSize: s.idSize,
+        name: s.name,
+        sizeDesc: s.sizeDesc,
+        stock: s.stock ?? 0,
+      }))
+    );
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setModalProduct(null);
+    setModalSizes([]);
+  };
+
+  const saveModal = async () => {
+    if (!modalProduct) return;
     setLoading(true);
     try {
-      const updates = draft.filter((d, i) => d.stock !== products[i]?.stock);
-      await Promise.all(
-        updates.map((p) =>
-          productService.updateProduct(p.id, { stock: p.stock })
-        )
-      );
-      setProducts(draft);
-      setSuccessMessage("Cambios de stock guardados");
-      setTimeout(() => setSuccessMessage(""), 3000);
+      const oldP = products.find((p) => p.id === modalProduct.id);
+      const oldSizes = (oldP?.sizes || []) as any[];
+      const calls: Promise<any>[] = [];
+      for (const s of modalSizes as any[]) {
+        const old = oldSizes.find((os) => os.idSize === s.idSize);
+        const oldStock = old?.stock ?? 0;
+        const newStock = s.stock ?? 0;
+        if (newStock !== oldStock) {
+          calls.push(productService.updateProductSizeStock(modalProduct.id, s.idSize, newStock));
+        }
+      }
+      await Promise.all(calls);
+
+      // Update local list
+      const updatedProducts = products.map((p) => {
+        if (p.id !== modalProduct.id) return p;
+        const sizes = (p.sizes || []).map((s: any) => {
+          const newS = (modalSizes as any[]).find((ms) => ms.idSize === s.idSize);
+          return newS ? { ...s, stock: newS.stock ?? 0 } : s;
+        });
+        const agg = sizes.reduce((acc: number, s: any) => acc + (s.stock || 0), 0);
+        return { ...p, sizes, stock: agg } as FrontendProduct;
+      });
+      setProducts(updatedProducts);
+      setSuccessMessage("Stock por talle actualizado");
+      setTimeout(() => setSuccessMessage(""), 2500);
+      closeModal();
     } catch (e) {
-      setSuccessMessage("Error al guardar los cambios de stock");
+      setSuccessMessage("Error al actualizar stock por talle");
+      setTimeout(() => setSuccessMessage(""), 3000);
     } finally {
-      setEditing(false);
-      setDraft(null);
       setLoading(false);
     }
   };
@@ -129,6 +162,7 @@ const ReceptionistStock: React.FC = () => {
   };
 
   return (
+    <>
     <div className="receiver-dashboard">
       <h1>Gestión de Stock</h1>
       <p className="subtitle">
@@ -137,24 +171,7 @@ const ReceptionistStock: React.FC = () => {
 
       <SuccessMessage message={successMessage} onClose={() => setSuccessMessage("")} />
 
-      <section className="panel" style={{ display: "none" }}>
-        <div className="panel-header">
-          <h2>Edición</h2>
-        </div>
-        <div className="panel-body" style={{ display: "flex", gap: 8 }}>
-          {!editing && (
-            <button
-              className="btn primary"
-              onClick={() => {
-                setDraft(JSON.parse(JSON.stringify(products)));
-                setEditing(true);
-              }}
-            >
-              Modificar stock
-            </button>
-          )}
-        </div>
-      </section>
+      {/* Edición ahora se maneja con un modal por producto */}
 
       <section className="panel">
         <div className="panel-header">
@@ -210,27 +227,17 @@ const ReceptionistStock: React.FC = () => {
             <span className="summary-item">
               Stock bajo:{" "}
               <strong className="warn">
-                {products.filter((p) => p.stock < 10).length}
+                {products.filter((p) => (p.stock ?? 0) < 10).length}
               </strong>
             </span>
             <span className="summary-item">
               Sin stock:{" "}
               <strong className="danger">
-                {products.filter((p) => p.stock === 0).length}
+                {products.filter((p) => (p.stock ?? 0) === 0).length}
               </strong>
             </span>
           </div>
-          {!editing && (
-            <button
-              className="btn primary"
-              onClick={() => {
-                setDraft(JSON.parse(JSON.stringify(products)));
-                setEditing(true);
-              }}
-            >
-              Modificar stock
-            </button>
-          )}
+          {/* La edición se realiza por fila con botón "Editar talles" */}
         </div>
         <div className="panel-body">
           <table className="data-table">
@@ -238,17 +245,16 @@ const ReceptionistStock: React.FC = () => {
               <tr>
                 <th>Producto</th>
                 <th>Categoría</th>
-                <th>Talles</th>
+                <th>Talles y stock</th>
                 <th>Estado</th>
-                <th>Stock actual</th>
-                <th>Ajustar stock</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {filteredProducts.map((product) => (
                 <tr
                   key={product.id}
-                  className={`stock-${getStockStatus(product.stock)}`}
+                  className={`stock-${getStockStatus(product.stock ?? 0)}`}
                 >
                   <td>
                     <div className="product-name">{product.name}</div>
@@ -257,62 +263,34 @@ const ReceptionistStock: React.FC = () => {
                     </div>
                   </td>
                   <td>{product.category || "-"}</td>
-                  <td>{renderSizes(product.sizes)}</td>
+                  <td>
+                    <div className="sizes-stock-editor">
+                      {(product.sizes || []).map((s: any) => (
+                        <div key={s.idSize} className="size-line" style={{  marginBottom: 4, display: 'flex', justifyContent: 'flex-start' }}>
+                          <span className="size-label">{s.sizeDesc || s.name}:</span>
+                          <span style={{ marginLeft: 8, opacity: 0.8 }}>{s.stock ?? 0}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </td>
                   <td>
                     <span
-                      className={`status-badge status-${getStockStatus(product.stock)}`}
+                      className={`status-badge status-${getStockStatus(product.stock ?? 0)}`}
                     >
-                      {getStockStatusText(product.stock)}
+                      {getStockStatusText(product.stock ?? 0)}
                     </span>
                   </td>
                   <td>
-                    <div className="stock-display">
-                      <span className="stock-number">{product.stock}</span>
-                      unidades
-                    </div>
-                  </td>
-                  <td>
-                    <div className="stock-controls">
-                      <div className="quick-adjust">
-                        <button
-                          className="btn stock-btn"
-                          onClick={() => adjustStock(product.id, -1)}
-                          disabled={!editing || product.stock <= 0}
-                        >
-                          -
-                        </button>
-                        <button
-                          className="btn stock-btn"
-                          onClick={() => adjustStock(product.id, 1)}
-                          disabled={!editing}
-                        >
-                          +
-                        </button>
-                      </div>
-
-                      <div className="set-stock">
-                        <input
-                          type="number"
-                          min="0"
-                          value={product.stock}
-                          onChange={(e) =>
-                            setStockValue(
-                              product.id,
-                              parseInt(e.target.value) || 0
-                            )
-                          }
-                          className="stock-input"
-                          disabled={!editing}
-                        />
-                      </div>
-                    </div>
+                    <button className="btn primary" onClick={() => openModal(product)}>
+                      Editar talles
+                    </button>
                   </td>
                 </tr>
               ))}
               {filteredProducts.length === 0 && (
                 <tr>
                   <td
-                    colSpan={6}
+                    colSpan={5}
                     style={{ textAlign: "center", color: "#bdbdbd" }}
                   >
                     No hay productos para mostrar
@@ -321,33 +299,6 @@ const ReceptionistStock: React.FC = () => {
               )}
             </tbody>
           </table>
-          {editing && (
-            <div
-              style={{
-                marginTop: 12,
-                display: "flex",
-                gap: 8,
-                justifyContent: "flex-end",
-              }}
-            >
-              <button
-                className="btn"
-                onClick={() => {
-                  setEditing(false);
-                  setDraft(null);
-                }}
-              >
-                Cancelar
-              </button>
-              <button
-                className="btn primary"
-                onClick={saveStockChanges}
-                disabled={loading}
-              >
-                {loading ? "Guardando..." : "Guardar cambios"}
-              </button>
-            </div>
-          )}
         </div>
       </section>
 
@@ -356,11 +307,11 @@ const ReceptionistStock: React.FC = () => {
           <h2>Alertas de stock crítico</h2>
         </div>
         <div className="panel-body">
-          {products.filter((p) => p.stock < 5).length > 0 ? (
+          {products.filter((p) => (p.stock ?? 0) < 5).length > 0 ? (
             <div className="alerts-list">
               {products
-                .filter((p) => p.stock < 5)
-                .sort((a, b) => a.stock - b.stock)
+                .filter((p) => (p.stock ?? 0) < 5)
+                .sort((a, b) => (a.stock ?? 0) - (b.stock ?? 0))
                 .map((product) => (
                   <div key={product.id} className="alert-item">
                     <div className="alert-info">
@@ -369,9 +320,9 @@ const ReceptionistStock: React.FC = () => {
                     </div>
                     <div className="alert-stock">
                       <span
-                        className={`stock-indicator ${getStockStatus(product.stock)}`}
+                        className={`stock-indicator ${getStockStatus(product.stock ?? 0)}`}
                       >
-                        {product.stock} unidades
+                        {(product.stock ?? 0)} unidades
                       </span>
                     </div>
                   </div>
@@ -383,6 +334,39 @@ const ReceptionistStock: React.FC = () => {
         </div>
       </section>
     </div>
+    {modalOpen && modalProduct && (
+      <div className="modal-overlay">
+        <div className="modal" style={{ minWidth: 520 }}>
+          <h3>Editar talles - {modalProduct?.name}</h3>
+          <div className="sizes-container" style={{ marginTop: 12 }}>
+            {modalSizes.length > 0 ? (
+              modalSizes.map((s) => (
+                <div key={s.idSize} className="size-line" style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                  <span className="size-label" style={{ width: 64 }}>{s.sizeDesc || s.name}</span>
+                  <button className="btn stock-btn" onClick={() => adjustSizeStock(s.idSize, -1)} disabled={(s.stock ?? 0) <= 0}>-</button>
+                  <input
+                    type="number"
+                    min={0}
+                    className="stock-input"
+                    value={s.stock ?? 0}
+                    onChange={(e) => setSizeStockValue(s.idSize, parseInt(e.target.value) || 0)}
+                    style={{ width: 80 }}
+                  />
+                  <button className="btn stock-btn" onClick={() => adjustSizeStock(s.idSize, 1)}>+</button>
+                </div>
+              ))
+            ) : (
+              <p style={{ color: '#bdbdbd' }}>Este producto no tiene talles asignados.</p>
+            )}
+          </div>
+          <div className="modal-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 12 }}>
+            <button className="btn" onClick={closeModal}>Cancelar</button>
+            <button className="btn primary" onClick={saveModal} disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</button>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 };
 

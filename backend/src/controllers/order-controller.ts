@@ -5,6 +5,7 @@ import { db } from '../db/connection';
 import Order from '../models/order-model';
 import OrderLine from '../models/order-line-model';
 import Product from '../models/product-model';
+import ProductSize from '../models/size-product-model';
 import Size from '../models/size-model';
 import Status from '../models/status-model';
 
@@ -213,33 +214,33 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
 
             
             for (const item of parsedItems) {
-                const product = await Product.findByPk(item.idProduct, {
+                const idSize = item.idSize ?? 7; // default size if not provided
+                const ps = await ProductSize.findOne({
+                    where: { idProduct: item.idProduct, idSize },
                     transaction: t,
                     lock: t.LOCK.UPDATE,
                 });
 
-                if (!product) {
-                    throw new Error(`No existe el producto ${item.idProduct}`);
+                if (!ps) {
+                    throw new Error(`No existe talle ${idSize} para producto ${item.idProduct}`);
                 }
 
-                if (product.stock < item.quantity) {
-                    console.warn(`⚠️ Stock insuficiente para producto ${product.idProduct}`);
+                if (ps.stock < item.quantity) {
+                    throw new Error(`Stock insuficiente para producto ${item.idProduct} talle ${idSize}`);
                 }
 
-                
-                product.stock = Math.max(0, product.stock - item.quantity);
-                await product.save({ transaction: t });
+                ps.stock = ps.stock - item.quantity;
+                await ps.save({ transaction: t });
 
-                
                 await OrderLine.create({
                     idOrder: createdOrder.idOrder,
                     idProduct: item.idProduct,
-                    idSize: item.idSize ?? 7, 
+                    idSize,
                     quantity: item.quantity,
                     subtotal: Number((item.subtotalCents / 100).toFixed(2)),
                 }, { transaction: t });
 
-                console.log(`📦 Stock actualizado para producto ${product.idProduct}: ${product.stock}`);
+                console.log(`📦 Stock actualizado product=${item.idProduct} size=${idSize}: ${ps.stock}`);
             }
         });
 
