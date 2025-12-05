@@ -219,7 +219,8 @@ const AdminOrders: React.FC = () => {
         (order) =>
           order.customerName.toLowerCase().includes(q) ||
           order.customerEmail.toLowerCase().includes(q) ||
-          order.id.toString().includes(q)
+          order.id.toString().includes(q) ||
+          order.orderNumber.toLowerCase().includes(q)
       );
     }
 
@@ -394,7 +395,7 @@ const AdminOrders: React.FC = () => {
           <table className="data-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>N° Pedido</th>
                 <th>Cliente</th>
                 <th>Fecha</th>
                 <th>Productos</th>
@@ -406,7 +407,7 @@ const AdminOrders: React.FC = () => {
             <tbody>
               {filteredOrders.map((order) => (
                 <tr key={order.id}>
-                  <td>#{order.orderNumber}</td>
+                  <td>{order.orderNumber}</td>
                   <td>
                     <div>{order.customerName}</div>
                     <div className="text-muted">{order.customerEmail}</div>

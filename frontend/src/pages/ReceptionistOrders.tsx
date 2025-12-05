@@ -21,6 +21,7 @@ type OrderItem = {
 
 type Order = {
   id: number;
+  orderNumber: string;
   customerName: string;
   customerEmail: string;
   items: OrderItem[];
@@ -32,6 +33,8 @@ type Order = {
   withdrawnAt?: string;
   previousStatus?: OrderStatus;
 };
+
+const formatOrderNumber = (id: number) => `ORD-${id.toString().padStart(4, '0')}`;
 
 const nowIso = () => new Date().toISOString();
 
@@ -68,6 +71,7 @@ const ReceptionistOrders: React.FC = () => {
       const prev = carryFrom.find(p => p.id === o.idOrder)?.previousStatus;
       return {
         id: o.idOrder,
+        orderNumber: formatOrderNumber(o.idOrder),
         customerName: o.customer_name,
         customerEmail: o.customer_email,
         items: (o.orderLines || []).map((ln: BackendOrderLine) => ({
@@ -119,7 +123,8 @@ const ReceptionistOrders: React.FC = () => {
         return (
           o.customerName.toLowerCase().includes(lower) ||
           o.customerEmail.toLowerCase().includes(lower) ||
-          String(o.id).includes(lower)
+          String(o.id).includes(lower) ||
+          o.orderNumber.toLowerCase().includes(lower)
         );
       });
   }, [orders, filter]);
@@ -242,7 +247,7 @@ const ReceptionistOrders: React.FC = () => {
           <table className="data-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>N° Pedido</th>
                 <th>Cliente</th>
                 <th>Fecha</th>
                 <th>Productos</th>
@@ -254,7 +259,7 @@ const ReceptionistOrders: React.FC = () => {
             <tbody>
               {pendingOrders.map(order => (
                 <tr key={order.id}>
-                  <td>#{order.id}</td>
+                  <td>{order.orderNumber}</td>
                   <td>
                     <div>{order.customerName}</div>
                     <div className="text-muted">{order.customerEmail}</div>
@@ -299,7 +304,7 @@ const ReceptionistOrders: React.FC = () => {
           <table className="data-table delivered-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>N° Pedido</th>
                 <th>Cliente</th>
                 <th>Fecha</th>
                 <th>Productos</th>
@@ -311,7 +316,7 @@ const ReceptionistOrders: React.FC = () => {
             <tbody>
               {deliveredOrders.map(order => (
                 <tr key={order.id} className="delivered-row">
-                  <td>#{order.id}</td>
+                  <td>{order.orderNumber}</td>
                   <td>
                     <div>{order.customerName}</div>
                     <div className="text-muted">{order.customerEmail}</div>
@@ -350,7 +355,7 @@ const ReceptionistOrders: React.FC = () => {
         <div className="modal-overlay" onClick={() => setSelectedOrder(null)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>Detalles del pedido #{selectedOrder.id}</h2>
+              <h2>Detalles del pedido {selectedOrder.orderNumber}</h2>
               <button className="btn-close" onClick={() => setSelectedOrder(null)}>×</button>
             </div>
             <div className="modal-body">
