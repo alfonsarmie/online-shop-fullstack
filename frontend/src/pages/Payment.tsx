@@ -74,9 +74,9 @@ const Payment = () => {
 
     try {
       const preference = await checkoutService.createPaymentPreference(
-        checkoutData,
-        cartItems,
-        storedUser
+        checkoutData, // datos del usuario (nombre, mail, deportes, etc)
+        cartItems, // items del carrito
+        storedUser // datos del usuario logueado (idUser, email, name)
       );
 
       console.log('✅ [PAYMENT] Preference created:', preference);
@@ -132,7 +132,7 @@ const Payment = () => {
 
             <div className="order-items">
               {cartItems.map((item: CartItem) => (
-                <div key={`${item.id}-${item.size ?? 'default'}`} className="order-item">
+                <div key={`${item.idProduct}-${item.size ?? 'default'}`} className="order-item">
                   <img src={item.img} alt={item.name} />
                   <div>
                     <h4>{item.name}</h4>

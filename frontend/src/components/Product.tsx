@@ -42,7 +42,7 @@ function ProductComponent({
     setSelectedSize(size);
     
     const productToAdd = {
-      id: id,
+      idProduct: id,
       name,
       price,
       img: mainImage,

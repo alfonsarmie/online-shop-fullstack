@@ -46,7 +46,7 @@ function normaliseApiUrl(rawUrl: string | undefined): string | null {
 
 function mapCartItems(cartItems: CartItem[]): PreferenceItemPayload[] {
   return cartItems.map((item, index) => ({
-    id: item.id ?? `item-${index + 1}`,
+    id: item.idProduct?.toString() ?? `item-${index + 1}`,
     title: item.name,
     quantity: item.quantity,
     unit_price: Number(item.price),
@@ -66,7 +66,7 @@ function parseProductId(rawId: string | undefined, index: number): number {
 
 function mapOrderDraftItems(cartItems: CartItem[]): OrderDraftItemPayload[] {
   return cartItems.map((item, index) => ({
-    idProduct: parseProductId(item.id, index),
+    idProduct: parseProductId(item.idProduct, index),
     quantity: item.quantity,
     size: item.size,
     unitPrice: Number(item.price),

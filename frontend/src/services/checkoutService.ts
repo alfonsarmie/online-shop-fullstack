@@ -66,7 +66,7 @@ const createPaymentPreference = async (
   try {
     // Map items to the shape the backend expects: { idProduct, quantity, idSize }
     const lineItems = items.map((it) => ({
-      idProduct: Number(it.id),
+      idProduct: Number(it.idProduct),
       quantity: it.quantity,
       // Usar sizeId directamente si está disponible
       idSize: it.sizeId ? Number(it.sizeId) : undefined,

@@ -96,7 +96,7 @@ function ProductDetails() {
     if (!product) return;
 
     addToCart({
-      id: product.id,
+      idProduct: product.id,
       name: product.name,
       price: product.price,
       img: product.img,

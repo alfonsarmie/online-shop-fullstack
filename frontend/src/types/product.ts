@@ -51,7 +51,7 @@ export interface Image {
 }
 
 export interface ProductWithSize {
-  id: string;
+  idProduct: string;
   name: string;
   price: number;
   img: string;
