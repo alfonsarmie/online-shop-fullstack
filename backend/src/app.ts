@@ -13,7 +13,6 @@ import authRoutes from './routes/auth-routes';
 import productRoutes from './routes/product-routes';
 import priceRoutes from './routes/price-routes';
 import imageRoutes from './routes/image-routes';
-import webHookRoutes from './routes/webhooks-routes';
 import sizeRoutes from './routes/size-routes';
 import categoryRoutes from './routes/category-routes';
 import uploadRoutes from './routes/upload-routes';
@@ -56,7 +55,7 @@ app.use(cors({
 })); // To enable CORS with explicit origins
 
 // Mount Stripe webhook BEFORE JSON parser to keep raw body for signature verification
-app.use('/api/webhooks', webHookRoutes);
+//app.use('/api/webhooks', webHookRoutes);
 app.use(express.json()); //To parse JSON data 
 app.use(express.urlencoded({ extended: true })); 
 

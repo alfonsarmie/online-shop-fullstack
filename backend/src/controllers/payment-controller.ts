@@ -1,145 +1,54 @@
-// Create a checkout session with Stripe
-import Stripe from 'stripe';
-import { Request, Response } from 'express';
-import { Op } from 'sequelize';
+// SDK de Mercado Pago
+import { MercadoPagoConfig, Preference, Payment } from 'mercadopago';
+import { createPreferenceService, getPaymentDataService } from '../services/payment-service';
+import { createOrder, updateOrderStatus } from '../services/order-service';
 
-
-import Product from '../models/product-model';
-import Price from '../models/price-model';
-import { buildIdempotencyKey } from '../helpers/idempotency-helper';
-
-
-const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!)
-
-// Define a narrow type for cart items accepted from the frontend
-type CartItem = {
-    id?: string | number;
-    idProduct?: string | number;
-    idSize?: string | number;
-    quantity: number;
-};
-
-export const createCheckoutSession = async (req: Request, res: Response) => {
-
-
-    const { items, orderDetails, userId} = req.body;
-
-    if (!items || items.length === 0) {
-        return res.status(400).json({ msg: 'El carrito está vacío' });
-    }
-    if (!orderDetails || typeof orderDetails !== 'object') {
-        return res.status(400).json({ msg: 'Faltan los datos de la orden (orderDetails)' });
-    }
-    if (!orderDetails.customer_email) {
-        return res.status(400).json({ msg: 'Falta el email del cliente (orderDetails.customer_email)' });
-    }
-
+export const createPreference = async (req: any, res: any) => {
     try {
+        const { cartItems, storedUser, checkoutData } = req.body; // Asume que envías userId desde el front o lo sacas del token
 
-        console.log('📥 Items recibidos del frontend:', JSON.stringify(items, null, 2));
+        // 1. Crear la orden completa (Header + Lines) en la DB
+        // Pasamos un userId hardcodeado (1) si no viene en el body, ajusta según tu auth
+        const orderId = await createOrder(cartItems, storedUser?.idUser || 1, checkoutData || {});
 
-       
-        const ids = (items as CartItem[]).map((it) => {
-            const id = Number(it.id ?? it.idProduct);
-            if (!Number.isFinite(id)) {
-                throw new Error('Formato de item inválido: cada item debe incluir id o idProduct numérico');
-            }
-            return id;
+        // 2. Crea la preferencia pasando el ID de la orden real como referencia externa
+        const result = await createPreferenceService(cartItems, orderId);
+
+        res.status(200).json(result);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Execution on payment preference creation failed. Please contact the administrator.'
         });
-        
-        const products = await Product.findAll({
-            where: { idProduct: { [Op.in]: ids } },
-            attributes: ['idProduct', 'name'],
-        });
+    }
+}
 
+export const receiveWebhook = async (req: any, res: any) => {
+    /*
+    try {
+        const payment = req.query;
+        console.log(payment);
 
+        if (payment.type === 'payment') {
+            const data = await getPaymentDataService(payment['data.id']);
+            console.log(data);
 
-        const priceMap = new Map<number, number>(); 
-        for (const id of ids) {
-            
-            const latestPrice = await Price.findOne({
-                where: { idProduct: id },
-                order: [['updateDate', 'DESC']],
-                attributes: ['idProduct', 'value'],
-            });
-            
-            if (!latestPrice) {
+            // Verificamos que venga la referencia externa (nuestro ID de orden)
+            if (data.external_reference) {
+                // Actualizamos estado y stock (si corresponde) en una sola operación atómica
+                await updateOrderStatus(data.external_reference, data.status);
                 
-                throw new Error(`No hay precio vigente para el producto ${id}`);
+                if (data.status === 'approved') {
+                    console.log(`Orden ${data.external_reference} procesada y stock actualizado.`);
+                }
             }
-            priceMap.set(id, latestPrice.value);
-        
         }
 
-
-        const currency = (req.body.currency || 'usd').toLowerCase();
-
-        const line_items = (items as CartItem[]).map((item) => {
-            const id = Number(item.id ?? item.idProduct);
-            const idSize = item.idSize !== undefined ? Number(item.idSize) : undefined;
-            const product = products.find((p) => p.idProduct === id);
-            const value = priceMap.get(id);
-            
-            if (!Number.isFinite(value)) {
-                throw new Error(`No se pudo determinar el precio para el producto ${id}`);
-            }
-
-            
-            const unit_amount = Math.round((value as number) * 100);
-
-            return {
-                quantity: item.quantity,
-                price_data: {
-                currency,
-                product_data: {
-                    name: product?.name ?? `Producto ${id}`,
-                    metadata: {
-                        idProduct: String(id),
-                        ...(Number.isFinite(idSize as number) ? { idSize: String(idSize) } : {}),
-                    },
-                },
-                unit_amount,
-                },
-            };
-        });
-
-
-        
-        const normalizedForKey = (items as CartItem[]).map((it) => ({
-            id: Number(it.id ?? it.idProduct),
-            quantity: Number(it.quantity),
-        }));
-
-        const idempotencyKey =
-            req.body.idempotencyKey 
-            ?? buildIdempotencyKey(userId ?? 'anon', normalizedForKey, 'checkout');
-
-
-        //Create the checkout session
-        const session = await stripeClient.checkout.sessions.create({
-            payment_method_types: ['card'],
-            line_items,
-            mode: 'payment',
-            success_url: `${process.env.FRONTEND_BASE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.FRONTEND_BASE_URL}/cart`,
-            metadata: {
-                userId: userId?.toString() || 'guest',
-                orderDetails: JSON.stringify(orderDetails),
-            },
-            customer_email: orderDetails.customer_email,
-        
-        
-            }, 
-            
-        );
-
-
-
-        return res.status(200).json({ url : session.url });
-    
-    }catch (error) {
-        console.error('Error creating checkout session:', error);
-        return res.status(500).json({ msg: 'Internal server error' });
+        res.sendStatus(204);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
     }
-
+        */
 }

@@ -70,7 +70,7 @@ Order.init({
   },
   idPaymentMethod: {
     type: DataTypes.INTEGER.UNSIGNED,
-    allowNull: false,
+    allowNull: true,
   },
   external_reference: { 
     type: DataTypes.STRING(255),
