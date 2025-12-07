@@ -18,6 +18,8 @@ router.post(
     
         // Corregido: Debe coincidir con el body del controller (cartItems)
         check('cartItems', 'El carrito no puede estar vacío').isArray({ min: 1 }),
+        check('checkoutData.name', 'El nombre del cliente es obligatorio').not().isEmpty(),
+        check('checkoutData.email', 'El email del cliente es obligatorio').isEmail(),
         
         validateFields
     ],
