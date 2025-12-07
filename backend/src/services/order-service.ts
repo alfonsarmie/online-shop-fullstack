@@ -1,6 +1,6 @@
 import Order from '../models/order-model'; 
 import OrderLine from '../models/order-line-model';
-import Product from '../models/product-model'; // Asegúrate de tener este modelo
+import ProductSize from '../models/size-product-model'; // Importamos el modelo de talles
 import db from '../db/connection';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,7 +9,26 @@ export const createOrder = async (items: any[], userId: number, checkoutData: an
     const t = await db.transaction();
 
     try {
-        
+        // 0. VALIDACIÓN DE STOCK PREVIA
+        // Antes de crear nada, verificamos que haya stock suficiente para todos los items
+        for (const item of items) {
+            const productSize = await ProductSize.findOne({
+                where: {
+                    idProduct: item.id,
+                    idSize: item.sizeId || 1 // Asegúrate de que item.sizeId venga del front
+                },
+                transaction: t
+            });
+
+            if (!productSize) {
+                throw new Error(`El producto ${item.title} no tiene talle asignado.`);
+            }
+
+            if (productSize.stock < item.quantity) {
+                throw new Error(`Stock insuficiente para ${item.title}. Disponible: ${productSize.stock}`);
+            }
+        }
+
         const external_reference = uuidv4();
 
         // 1. Calcular el total
@@ -31,7 +50,6 @@ export const createOrder = async (items: any[], userId: number, checkoutData: an
 
         
         // 3. Preparar y Crear las OrderLines (Detalle)
-        // Descomenta esto cuando tengas listos los datos de items    
         const lines = items.map(item => ({
             idOrder: newOrder.getDataValue('idOrder'),
             idProduct: item.id,
@@ -55,46 +73,58 @@ export const createOrder = async (items: any[], userId: number, checkoutData: an
     }
 };
 
-export const updateOrderStatus = async (externalReference: string, status: string) => {
+// Agregamos paymentId como parámetro opcional
+export const updateOrderStatus = async (externalReference: string, status: string, paymentId?: string) => {
     const t = await db.transaction();
-    /*
+    
     try {
-        // 1. Actualizamos el estado de la orden
-        await Order.update({ statusMp: status }, {
+        // 1. Primero buscamos la orden para verificar su estado actual (Idempotencia)
+        const currentOrder = await Order.findOne({ 
+            where: { external_reference: externalReference },
+            transaction: t 
+        });
+
+        
+        //Evitamos que se descuente dos veces el stock
+        if (!currentOrder || currentOrder.statusMp === 'approved') {
+            await t.commit();
+            return;
+        }
+
+        // 2. Actualizamos el estado de la orden y guardamos el ID de pago
+        await Order.update({ 
+            statusMp: status,
+            payment_id: paymentId 
+        }, {
             where: { external_reference: externalReference },
             transaction: t
         });
 
-        // 2. Si el pago fue APROBADO, descontamos el stock
+        // 3. Si el pago fue APROBADO, descontamos el stock
         if (status === 'approved') {
-            const order = await Order.findOne({ 
-                where: { external_reference: externalReference },
-                transaction: t 
+            // Usamos currentOrder que ya recuperamos arriba
+            const lines = await OrderLine.findAll({ 
+                where: { idOrder: currentOrder.idOrder },
+                transaction: t
             });
 
-            if (order) {
-                const lines = await OrderLine.findAll({ 
-                    where: { idOrder: order.idOrder },
+            for (const line of lines) {
+                // Decrementamos el stock en la tabla intermedia ProductSize
+                await ProductSize.decrement('stock', { 
+                    by: line.quantity,
+                    where: { 
+                        idProduct: line.idProduct,
+                        idSize: line.idSize 
+                    },
                     transaction: t
                 });
-
-                for (const line of lines) {
-                    // Decrementamos el stock del producto según la cantidad comprada
-                    await Product.decrement('stock', { 
-                        by: line.quantity,
-                        where: { idProduct: line.idProduct },
-                        transaction: t
-                    });
-                }
             }
         }
             
-
         await t.commit();
     } catch (error) {
         await t.rollback();
         console.error("Error actualizando orden y stock:", error);
         throw error;
     }
-        */
 };

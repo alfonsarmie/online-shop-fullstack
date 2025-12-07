@@ -16,39 +16,48 @@ export const createPreference = async (req: any, res: any) => {
 
         res.status(200).json(result);
 
-    } catch (error) {
+    } catch (error: any) {
         console.log(error);
-        res.status(500).json({
-            msg: 'Execution on payment preference creation failed. Please contact the administrator.'
+        res.status(400).json({
+            msg: error.message || 'Execution on payment preference creation failed. Please contact the administrator.'
         });
     }
 }
 
 export const receiveWebhook = async (req: any, res: any) => {
-    /*
     try {
-        const payment = req.query;
-        console.log(payment);
+        
+        const paymentId = req.query.id || req.query['data.id'] || req.body?.data?.id || req.body?.id;
+        const type = req.query.type || req.query.topic || req.body?.type;
 
-        if (payment.type === 'payment') {
-            const data = await getPaymentDataService(payment['data.id']);
-            console.log(data);
+    
 
-            // Verificamos que venga la referencia externa (nuestro ID de orden)
-            if (data.external_reference) {
-                // Actualizamos estado y stock (si corresponde) en una sola operación atómica
-                await updateOrderStatus(data.external_reference, data.status);
+        if (type === 'payment' && paymentId) {
+            
+            const paymentDetails = await getPaymentDataService(paymentId);
+            
+            if (paymentDetails.external_reference && paymentDetails.status) {
+                // Pasamos el ID del pago (convertido a string) como tercer argumento
+                await updateOrderStatus(
+                    paymentDetails.external_reference, 
+                    paymentDetails.status, 
+                    String(paymentDetails.id)
+                );
                 
-                if (data.status === 'approved') {
-                    console.log(`Orden ${data.external_reference} procesada y stock actualizado.`);
+                if (paymentDetails.status === 'approved') {
+                    console.log(`Orden ${paymentDetails.external_reference} procesada y stock actualizado.`);
                 }
             }
         }
 
-        res.sendStatus(204);
+        res.status(200).json({
+            msg: 'Webhook received successfully'
+        });
+
     } catch (error) {
         console.log(error);
-        res.sendStatus(500);
+        res.status(500).json({
+            msg: 'Error processing webhook. Please contact the administrator.'
+        });
     }
-        */
 }
