@@ -187,7 +187,6 @@ CREATE TABLE `product` (
   `idProduct` int unsigned NOT NULL AUTO_INCREMENT,
   `description` varchar(400) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `stock` int unsigned DEFAULT NULL,
   `idCategory` int unsigned NOT NULL,
   PRIMARY KEY (`idProduct`),
   KEY `idCategory` (`idCategory`),
@@ -205,6 +204,7 @@ DROP TABLE IF EXISTS `product_size`;
 CREATE TABLE `product_size` (
   `idProduct` int unsigned NOT NULL,
   `idSize` int unsigned NOT NULL,
+  `stock` int unsigned DEFAULT NULL,
   PRIMARY KEY (`idProduct`,`idSize`),
   KEY `idSize` (`idSize`),
   CONSTRAINT `product_size_ibfk_1` FOREIGN KEY (`idProduct`) REFERENCES `product` (`idProduct`) ON UPDATE CASCADE,
