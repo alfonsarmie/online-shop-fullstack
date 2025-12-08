@@ -2,7 +2,7 @@
 import { useCart } from '../components/CartContext';
 import { useNavigate } from 'react-router-dom';
 import '../styles/payment.css';
-import stripeLogo from '../assets/img/stripe-logo.png';
+import mpLogo from '../assets/img/mercado-pago-logo.png';
 import type { CartItem } from '../types/cart';
 import type { User } from '../types/user';
 import ProgressBar from '../components/ProgressBar';
@@ -164,9 +164,9 @@ const Payment = () => {
               defaultChecked
             />
             <label htmlFor="stripe">
-              <img src={stripeLogo} alt="Stripe" />
+              <img src={mpLogo} alt="Mercado Pago" />
               <span>
-                <strong>Stripe</strong>
+                <strong>Mercado Pago </strong>
               </span>
             </label>
           </div>

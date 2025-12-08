@@ -1,5 +1,6 @@
 import api from "./api";
 import type { CartItem } from "../types/cart";
+import type { User } from "../types/user";
 
 export interface CheckoutFormData {
   name: string;
@@ -55,70 +56,52 @@ const validateCheckoutForm = (data: CheckoutFormData): ValidationResult => {
   return { isValid: errors.length === 0, errors };
 };
 
-// Create a Stripe Checkout Session in the backend.
-// Important: we send minimal product info to the backend so the backend can
-// create the session and (after payment) create the order server-side.
+// Create a Mercado Pago preference in the backend so the user is redirected to the checkout UI.
 const createPaymentPreference = async (
   checkoutData: CheckoutFormData,
   items: CartItem[],
-  user: { idUser: number; email?: string; name?: string }
+  user: User
 ) => {
   try {
-    // Map items to the shape the backend expects: { idProduct, quantity, idSize }
-    const lineItems = items.map((it) => ({
-      idProduct: Number(it.idProduct),
-      quantity: it.quantity,
-      // Usar sizeId directamente si está disponible
-      idSize: it.sizeId ? Number(it.sizeId) : undefined,
+    const cartItems = items.map((item) => ({
+      id: Number(item.idProduct),
+      idProduct: Number(item.idProduct),
+      title: item.name,
+      name: item.name,
+      quantity: item.quantity,
+      unit_price: Number(item.price),
+      price: Number(item.price),
+      sizeId: item.sizeId !== undefined ? Number(item.sizeId) : undefined,
     }));
 
-    // Format expectedPickupDate from YYYY-MM-DD to DD-MM-YYYY (with hyphens) if provided
-    const pad = (s: string) => s.padStart(2, "0");
-    const formatToDDMMYYYY = (d?: string) => {
-      if (!d) return undefined;
-      const parts = d.split("-");
-      if (parts.length !== 3) return d.replace(/[^0-9-]/g, ""); // fallback: strip everything except digits and hyphen
-      const [yyyy, mm, dd] = parts;
-      return `${pad(dd)}-${pad(mm)}-${yyyy}`;
-    };
-
     const payload = {
-      userId: Number(user.idUser),
-      items: lineItems,
-      orderDetails: {
-        customer_name: checkoutData.name,
-        customer_email: checkoutData.email || user.email || "",
-        phone: checkoutData.phone || "",
-        notes: checkoutData.notes || "",
-        sport: checkoutData.sport || "",
-        expected_pickup_date: formatToDDMMYYYY(checkoutData.expectedPickupDate),
+      cartItems,
+      storedUser: {
+        ...user,
+        idUser: Number(user.idUser),
+        email: user.email ?? checkoutData.email ?? "",
+        name: user.name ?? checkoutData.name ?? "",
       },
-      currency: "usd",
+      checkoutData,
     };
 
-    // Call backend endpoint that creates a Stripe Checkout Session
-    // Backend route: POST /api/payments/create-checkout-session (note the plural 'payments')
     const response = await api.post(
-      "/payments/create-checkout-session",
+      "/payments/create-checkout-preference",
       payload
     );
 
-    // backend may return different field names (url, sessionUrl, checkoutUrl, init_point)
     const data = response.data || {};
-    const redirectUrl =
-      data.url || data.sessionUrl || data.checkoutUrl || data.init_point;
+    const redirectUrl = data.init_point || data.sandbox_init_point || data.url;
 
     if (!redirectUrl) {
-      // Provide more context in the error to help debugging in the browser console
       throw new Error(
         `No redirect URL returned from backend: ${JSON.stringify(data)}`
       );
     }
 
-    // Maintain compatibility with existing Payment.tsx which expects init_point or sandbox_init_point
     return {
       init_point: redirectUrl,
-      sandbox_init_point: redirectUrl,
+      sandbox_init_point: data.sandbox_init_point || redirectUrl,
       raw: data,
     };
   } catch (error: any) {
