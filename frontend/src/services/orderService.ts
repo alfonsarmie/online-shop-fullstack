@@ -98,7 +98,6 @@ const updateOrderStatus = async (
   payload: { description: string }
 ) => {
   try {
-
     const response = await api.post(`/status/${id}/create`, payload);
     return response.data;
   } catch (error) {
@@ -106,9 +105,9 @@ const updateOrderStatus = async (
   }
 };
 
-const deleteOrder = async (id: number) => {
+const cancelOrder = async (id: number) => {
   try {
-    const response = await api.delete(`/orders/${id}`);
+    const response = await api.put(`/orders/regret/${id}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -147,7 +146,7 @@ export const orderService = {
   getOrders,
   getUserOrders,
   updateOrderStatus,
-  deleteOrder,
+  cancelOrder,
   getSportsStats,
   getStatusStats,
   mapOrderToFrontend,
