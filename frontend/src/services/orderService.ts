@@ -135,6 +135,18 @@ const updateOrderStatus = async (
   }
 };
 
+const updateStatusTransition = async (
+  id: number,
+  payload: { description: string }
+) => {
+  try {
+    const response = await api.post(`/status/${id}/update`, payload);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const cancelOrder = async (id: number) => {
   try {
     const response = await api.put(`/orders/regret/${id}`);
@@ -176,6 +188,7 @@ export const orderService = {
   getOrders,
   getUserOrders,
   updateOrderStatus,
+  updateStatusTransition,
   cancelOrder,
   getSportsStats,
   getStatusStats,
