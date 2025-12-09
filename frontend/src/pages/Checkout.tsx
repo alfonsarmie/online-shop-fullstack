@@ -10,6 +10,7 @@ import ProgressBar from "../components/ProgressBar";
 import { User } from "../types/user";
 import { checkoutService, CheckoutFormData } from "../services/checkoutService";
 import ErrorMessage from "../components/ErrorMessage";
+import formatCurrency from "../utils/formatCurrency";
 
 interface FormData extends CheckoutFormData {}
 
@@ -91,9 +92,11 @@ const Checkout = () => {
     navigate("/payment");
   };
 
-  const formatPrice = (price: number) => {
-    return price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
+  const formatPrice = (price: number) =>
+    formatCurrency(price, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
 
   useEffect(() => {
     const { name, email, phone } = formData;
@@ -127,11 +130,9 @@ const Checkout = () => {
           <div className="form-container">
             <form onSubmit={handleSubmit} className="checkout-form">
               <h3>Tus detalles</h3>
-              
-              {errorMessage && (
-                <ErrorMessage message={errorMessage} />
-              )}
-              
+
+              {errorMessage && <ErrorMessage message={errorMessage} />}
+
               <div className="form__group_checkout field">
                 <input
                   type="text"
@@ -147,35 +148,35 @@ const Checkout = () => {
                 </label>
               </div>
 
+              <div className="form__group_checkout field">
+                <input
+                  type="email"
+                  className="form__field emailInput"
+                  placeholder="Correo electrónico"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                />
+                <label htmlFor="email" className="form__label">
+                  Correo electrónico
+                </label>
+              </div>
 
-                <div className="form__group_checkout field">
-                  <input
-                    type="email"
-                    className="form__field emailInput"
-                    placeholder="Correo electrónico"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  <label htmlFor="email" className="form__label">
-                    Correo electrónico
-                  </label>
-                </div>
-                <div className="form__group_checkout field">
-                  <input
-                    type="text"
-                    className="form__field phoneInput"
-                    placeholder="Teléfono"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  <label htmlFor="phone" className="form__label">
-                    Teléfono
-                  </label>
-                </div>
+              <div className="form__group_checkout field">
+                <input
+                  type="text"
+                  className="form__field phoneInput"
+                  placeholder="Teléfono"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  required
+                />
+                <label htmlFor="phone" className="form__label">
+                  Teléfono
+                </label>
+              </div>
 
               <div className="form__group_checkout field">
                 <textarea
@@ -193,10 +194,16 @@ const Checkout = () => {
               </div>
 
               <div className="form__group_checkout field">
-                <label htmlFor="expectedPickupDate" className="form__label">Fecha estimada de retiro (opcional)</label>
+                <label htmlFor="expectedPickupDate" className="form__label">
+                  Fecha estimada de retiro (opcional)
+                </label>
                 <DatePicker
                   id="expectedPickupDate"
-                  selected={formData.expectedPickupDate ? new Date(formData.expectedPickupDate) : null}
+                  selected={
+                    formData.expectedPickupDate
+                      ? new Date(formData.expectedPickupDate)
+                      : null
+                  }
                   onChange={handleDateChange}
                   dateFormat="yyyy-MM-dd"
                   minDate={new Date(minPickupDate)}
@@ -207,7 +214,9 @@ const Checkout = () => {
               </div>
 
               <div style={{ margin: "18px 0 10px 0" }}>
-                <span className="deportes-label">¿Qué deporte practicás en Rowing?</span>
+                <span className="deportes-label">
+                  ¿Qué deporte practicás en Rowing?
+                </span>
                 <span className="deportes-opcional">(opcional)</span>
                 <div className="deportes-container">
                   <label className="deporte-checkbox">
@@ -216,11 +225,22 @@ const Checkout = () => {
                       name="sport"
                       value=""
                       checked={!formData.sport}
-                      onChange={() => setFormData(prev => ({ ...prev, sport: '' }))}
+                      onChange={() =>
+                        setFormData((prev) => ({ ...prev, sport: "" }))
+                      }
                     />
                     Ninguno
                   </label>
-                  {['hockey', 'futbol', 'futsal', 'voley', 'remo', 'natación', 'vela', 'tenis'].map((dep) => (
+                  {[
+                    "hockey",
+                    "futbol",
+                    "futsal",
+                    "voley",
+                    "remo",
+                    "natación",
+                    "vela",
+                    "tenis",
+                  ].map((dep) => (
                     <label key={dep} className="deporte-checkbox">
                       <input
                         type="radio"
@@ -249,7 +269,7 @@ const Checkout = () => {
         <div className="cart-container">
           <div className="cart-header">
             <h2>
-              Tu carrito |{" "}
+              Tu carrito | {" "}
               <span id="itemCount">
                 {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
               </span>{" "}
@@ -284,7 +304,7 @@ const Checkout = () => {
                         <p style={{ margin: "2px 0" }}>Talle: {item.size}</p>
                       )}
                       <p style={{ margin: "2px 0" }}>
-                        ${item.price.toLocaleString("es-AR")} × {item.quantity}
+                        ${formatPrice(item.price)} × {item.quantity}
                       </p>
                     </div>
                   </div>
@@ -301,8 +321,8 @@ const Checkout = () => {
             </p>
           </div>
         </div>
-        <WhatsAppButton />
       </main>
+      <WhatsAppButton />
     </>
   );
 };

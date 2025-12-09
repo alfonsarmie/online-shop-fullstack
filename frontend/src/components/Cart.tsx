@@ -4,6 +4,7 @@ import { useCart } from './CartContext';
 import { CartItem } from '../types/cart'; 
 import { useState } from 'react';
 import LoginRequiredModal from './LoginRequiredModal';
+import formatCurrency from '../utils/formatCurrency';
 
 function Cart() {
 
@@ -109,7 +110,7 @@ function Cart() {
                     </div>
 
                     <p style={{ margin: '0', fontSize: '14px', color: '#666' }}>
-                      ${item.price * item.quantity} ARS
+                      ${formatCurrency(item.price * item.quantity)} ARS
                     </p>
                   </div>
                 </div>
@@ -126,10 +127,10 @@ function Cart() {
 
         <div className="cart-footer">
           <div className="cart-footer-item">
-            <p>Subtotal: $<span>{subtotal}</span></p>
+            <p>Subtotal: $<span>{formatCurrency(subtotal)}</span></p>
           </div>
           <div className="cart-footer-item">
-            <p>Total: $<span>{total}</span></p>
+            <p>Total: $<span>{formatCurrency(total)}</span></p>
           </div>
 
           {cartItems.length > 0 && (

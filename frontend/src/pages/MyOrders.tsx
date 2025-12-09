@@ -5,6 +5,7 @@ import { orderService, mapOrderToFrontend } from "../services/orderService";
 import { FrontendOrder, FrontendOrderStatus } from "../types/order";
 import { User } from "../types/user";
 import "../styles/myOrders.css";
+import formatCurrency from "../utils/formatCurrency";
 
 const MyOrders: React.FC = () => {
   const [orders, setOrders] = useState<FrontendOrder[]>([]);
@@ -315,7 +316,10 @@ const MyOrders: React.FC = () => {
                   )}
                 </div>
                 <div className="order-total">
-                  Total: ${order.total.toFixed(2)}
+                  Total: ${formatCurrency(order.total, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </div>
               </div>
 
@@ -406,7 +410,12 @@ const MyOrders: React.FC = () => {
                   </div>
                   <div className="detail-item">
                     <strong>Total:</strong>
-                    <span>${selectedOrder.total.toFixed(2)}</span>
+                    <span>
+                      ${formatCurrency(selectedOrder.total, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </span>
                   </div>
                   {selectedOrder.pickupDate && (
                     <div className="detail-item">
@@ -437,7 +446,10 @@ const MyOrders: React.FC = () => {
                         <p>Cantidad: {item.quantity}</p>
                         {item.size && <p>Talla: {item.size}</p>}
                         <p className="item-price">
-                          ${item.price.toFixed(2)} c/u
+                          ${formatCurrency(item.price, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })} c/u
                         </p>
                       </div>
                     </div>
