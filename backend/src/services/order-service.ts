@@ -63,7 +63,7 @@ export const createOrder = async (items: any[], userId: number, checkoutData: an
 
         // 4. Crear status inicial según order.statusMp
         try {
-            const statusDesc = (newOrder.getDataValue('statusMp') === 'approved') ? 'confirmed' : 'pending-payment';
+            const statusDesc = (newOrder.getDataValue('statusMp') === 'approved') ? 'confirmed' : 'pending_payment';
             await Status.create({
                 idOrder: newOrder.getDataValue('idOrder'),
                 statusDate: new Date(),
