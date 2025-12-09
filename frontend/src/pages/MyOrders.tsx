@@ -118,12 +118,13 @@ const MyOrders: React.FC = () => {
   };
 
   const getStatusCounts = () => {
-    const counts = {
+    const counts: Record<FrontendOrderStatus | "all", number> = {
       all: orders.length,
       confirmed: 0,
       ready: 0,
       withdrawn: 0,
       cancelled: 0,
+      pending_payment: 0,
     };
     orders.forEach((order) => {
       counts[order.status]++;
@@ -143,6 +144,8 @@ const MyOrders: React.FC = () => {
         return "status-badge status-withdrawn";
       case "cancelled":
         return "status-badge status-cancelled";
+      case "pending_payment":
+        return "status-badge status-pending_payment";
       default:
         return "status-badge";
     }
@@ -156,6 +159,8 @@ const MyOrders: React.FC = () => {
         return "Retirado";
       case "cancelled":
         return "Cancelado";
+      case "pending_payment":
+        return "Pendiente de pago";
       default:
         return "Confirmado";
     }
@@ -238,6 +243,13 @@ const MyOrders: React.FC = () => {
         >
           Confirmado{" "}
           <span className="status-count">{statusCounts.confirmed}</span>
+        </button>
+        <button
+          className={`status-pill ${selectedStatus === "pending_payment" ? "active" : ""}`}
+          onClick={() => setSelectedStatus("pending_payment")}
+        >
+          Pendiente de pago{" "}
+          <span className="status-count">{statusCounts.pending_payment}</span>
         </button>
         <button
           className={`status-pill ${selectedStatus === "withdrawn" ? "active" : ""}`}
@@ -324,6 +336,12 @@ const MyOrders: React.FC = () => {
                   <div className="cancelled-info">
                     <FiPackage size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
                     <span>Pedido cancelado</span>
+                  </div>
+                )}
+                {order.status === "pending_payment" && (
+                  <div className="pending-payment-info">
+                    <FiPackage size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                    <span>Estamos esperando la confirmación de tu pago.</span>
                   </div>
                 )}
                 {canShowRepentButton(order) && (

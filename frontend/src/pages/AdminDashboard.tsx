@@ -54,6 +54,8 @@ const AdminDashboard: React.FC = () => {
         return { label: "Cancelado" };
       case "withdrawn":
         return { label: "Retirado" };
+      case "pending_payment":
+        return { label: "Pendiente de pago" };
       default:
         return { label: status };
     }

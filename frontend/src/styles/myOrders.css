@@ -239,6 +239,12 @@
   border-color: #e53935;
 }
 
+.status-badge.status-pending_payment {
+  background: #fde68a;
+  border-color: #fbbf24;
+  color: #92400e !important;
+}
+
 .order-content {
   display: flex;
   justify-content: space-between;
@@ -657,6 +663,18 @@
   background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
   color: #dc3545;
   border-left: 4px solid #dc3545;
+}
+
+.pending-payment-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #92400e;
+  border-left: 4px solid #fbbf24;
 }
 
 .cancel-order-btn { display: none; }

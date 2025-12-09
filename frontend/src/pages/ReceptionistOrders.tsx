@@ -9,7 +9,8 @@ type OrderStatus =
   | 'confirmed'
   | 'ready'
   | 'withdrawn'
-  | 'cancelled';
+  | 'cancelled'
+  | 'pending_payment';
 
 type OrderItem = {
   productId: number;
@@ -45,15 +46,23 @@ const parseDecimal = (v: number | string | undefined) => {
   return Number.isNaN(n) ? 0 : n;
 };
 
+const normalizeStatus = (status?: string | null): OrderStatus => {
+  if (!status) return 'confirmed';
+  const cleaned = status.toLowerCase().replace(/[-\s]+/g, '_');
+  const allowed: OrderStatus[] = ['confirmed', 'ready', 'withdrawn', 'cancelled', 'pending_payment'];
+  return allowed.includes(cleaned as OrderStatus)
+    ? (cleaned as OrderStatus)
+    : 'confirmed';
+};
+
 const determineStatusFromBackend = (o: BackendOrder): OrderStatus => {
-  const historyStatus =
-    o.latestStatus?.description ?? o.statusHistory[0]?.description;
-  if (historyStatus) return historyStatus;
+  const rawHistoryStatus = o.latestStatus?.description ?? o.statusHistory[0]?.description;
+  if (rawHistoryStatus) return normalizeStatus(rawHistoryStatus);
 
   if (o.actualPickupDate) return 'withdrawn';
 
   const status = o.statusMp as string | undefined;
-  if (status === 'unpaid') return 'cancelled';
+  if (status === 'unpaid') return 'pending_payment';
   if (status === 'paid' || status === 'no_payment_required') return 'ready';
 
   return 'confirmed';
@@ -115,7 +124,7 @@ const ReceptionistOrders: React.FC = () => {
 
   const pendingOrders = useMemo(() => {
     const lower = filter.trim().toLowerCase();
-    const desired = new Set<OrderStatus>(['confirmed', 'ready']);
+    const desired = new Set<OrderStatus>(['confirmed', 'ready', 'pending_payment']);
     return orders
       .filter(o => desired.has(o.status))
       .filter(o => {
@@ -140,6 +149,7 @@ const ReceptionistOrders: React.FC = () => {
       case 'ready': return 'status-ready';
       case 'withdrawn': return 'status-withdrawn';
       case 'cancelled': return 'status-cancelled';
+      case 'pending_payment': return 'status-pending';
       default: return '';
     }
   };
@@ -150,6 +160,7 @@ const ReceptionistOrders: React.FC = () => {
       case 'ready': return 'Listo';
       case 'withdrawn': return 'Entregado';
       case 'cancelled': return 'Cancelado';
+      case 'pending_payment': return 'Pendiente de pago';
       default: return status;
     }
   };

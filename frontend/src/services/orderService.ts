@@ -5,10 +5,34 @@ import type {
   FrontendOrder,
   FrontendOrderItem,
   FrontendOrderStatus,
+  OrderStatusHistory,
+  FrontendOrderStatusHistory,
 } from "../types/order";
 
 const API_URL = "";
 
+const normalizeStatus = (status?: string | null): FrontendOrderStatus => {
+  if (!status) return "confirmed";
+  const cleaned = status.toLowerCase().replace(/[-\s]+/g, "_");
+  const allowed: FrontendOrderStatus[] = [
+    "confirmed",
+    "ready",
+    "withdrawn",
+    "cancelled",
+    "pending_payment",
+  ];
+  return allowed.includes(cleaned as FrontendOrderStatus)
+    ? (cleaned as FrontendOrderStatus)
+    : "confirmed";
+};
+
+const normalizeHistory = (
+  history?: OrderStatusHistory[]
+): FrontendOrderStatusHistory[] =>
+  (history || []).map((entry) => ({
+    ...entry,
+    description: normalizeStatus(entry.description),
+  }));
 
 export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
   const items: FrontendOrderItem[] = (order.orderLines || []).map((line) => ({
@@ -24,15 +48,21 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
     image: line.product_image || undefined,
   }));
 
-  const latestStatus = (order.latestStatus?.description ?? order.statusHistory?.[0]?.description) as FrontendOrderStatus | undefined;
+  const normalizedHistory = normalizeHistory(order.statusHistory);
+  const normalizedLatest = order.latestStatus
+    ? {
+        ...order.latestStatus,
+        description: normalizeStatus(order.latestStatus.description),
+      }
+    : normalizedHistory[0] ?? null;
 
   let status: FrontendOrderStatus;
-  if (latestStatus) {
-    status = latestStatus;
+  if (normalizedLatest) {
+    status = normalizedLatest.description;
   } else if (order.actualPickupDate) {
     status = "withdrawn";
   } else if (order.statusMp === "unpaid") {
-    status = "cancelled";
+    status = "pending_payment";
   } else {
     status = "confirmed";
   }
@@ -51,8 +81,8 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
     pickupDate: order.expectedPickupDate,
     canCancel: !order.actualPickupDate && order.statusMp !== "paid",
     statusMp: order.statusMp,
-    history: order.statusHistory || [],
-    latestStatus: order.latestStatus ?? order.statusHistory?.[0],
+    history: normalizedHistory,
+    latestStatus: normalizedLatest,
   };
   return mapped;
 };
