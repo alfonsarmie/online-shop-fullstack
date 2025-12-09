@@ -4,13 +4,14 @@ export interface CartItem {
   price: number;
   quantity: number;
   size?: string;
-  sizeId?: number; // ID del talle en la base de datos
+  sizeId?: number; 
   img: string;
 }
 
 export interface CartContextType {
   cartItems: CartItem[];
   addToCart: (product: CartItem) => void;
+  decreaseQuantity: (productName: string, productSize?: string) => void; 
   removeFromCart: (productName: string, productSize?: string) => void;
   clearCart: () => void;
   isCartOpen: boolean;
