@@ -106,6 +106,9 @@ CREATE TABLE `order` (
   `currencyId` varchar(10) DEFAULT 'ARS' COMMENT 'Código de moneda: ARS, USD, etc.',
   `external_reference` varchar(255) DEFAULT NULL,
   `payment_id` varchar(255) DEFAULT NULL COMMENT 'Payment intent ID from Stripe',
+  `pickup_code` CHAR(48) NULL,
+  `pickup_used` TINYINT(1) NOT NULL DEFAULT 0;
+  UNIQUE KEY `ux_orders_pickup_code` (`pickup_code`),
   PRIMARY KEY (`idOrder`),
   KEY `idUser` (`idUser`),
   KEY `idPaymentMethod` (`idPaymentMethod`),
