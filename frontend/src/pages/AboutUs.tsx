@@ -5,7 +5,7 @@ import "../styles/aboutUs.css";
 import "../styles/nav.css";
 import "../styles/footer.css";
 import remo from "/src/assets/img/travesia1.jpg";
-import rio from "/src/assets/img/rio.jpg";
+import rio from "/src/assets/img/Rio.jpg";
 import WhatsAppButton from "../components/WhatsAppButton";
 import RotatingText from "../components/RotatingTextRef";
 
