@@ -59,7 +59,7 @@ const determineStatusFromBackend = (o: BackendOrder): OrderStatus => {
   const rawHistoryStatus = o.latestStatus?.description ?? o.statusHistory[0]?.description;
   if (rawHistoryStatus) return normalizeStatus(rawHistoryStatus);
 
-  if (o.actualPickupDate) return 'withdrawn';
+  if (o.PickupDate) return 'withdrawn';
 
   const status = o.statusMp as string | undefined;
   if (status === 'unpaid') return 'pending_payment';
@@ -95,7 +95,7 @@ const ReceptionistOrders: React.FC = () => {
         date: o.orderDate,
         address: o.customer_notes || 'Retiro en Rowing Club',
         paymentMethod: o.paymentMethod?.name || 'Sin datos',
-        withdrawnAt: o.actualPickupDate || undefined,
+        withdrawnAt: o.PickupDate || undefined,
         previousStatus: prev,
       };
     });

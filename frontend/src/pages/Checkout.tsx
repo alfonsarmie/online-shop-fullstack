@@ -48,7 +48,6 @@ const Checkout = () => {
       phone: user?.phone || "",
       notes: "",
       sport: '',
-      expectedPickupDate: undefined,
     };
   });
 
@@ -57,14 +56,7 @@ const Checkout = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleDateChange = (date: Date | null) => {
-    if (!date) {
-      setFormData((prev) => ({ ...prev, expectedPickupDate: undefined }));
-      return;
-    }
-    const iso = date.toISOString().slice(0, 10);
-    setFormData((prev) => ({ ...prev, expectedPickupDate: iso }));
-  };
+
 
   const handleSportChange = (sport: string) => {
     setFormData((prev) => ({ ...prev, sport }));
@@ -116,11 +108,6 @@ const Checkout = () => {
     }));
   }, []);
 
-  const minPickupDate = useMemo(() => {
-    const t = new Date();
-    t.setDate(t.getDate() + 1);
-    return t.toISOString().slice(0, 10); // YYYY-MM-DD
-  }, []);
 
   return (
     <>
@@ -191,26 +178,6 @@ const Checkout = () => {
                 <label htmlFor="notes" className="form__label">
                   Observaciones (opcional)
                 </label>
-              </div>
-
-              <div className="form__group_checkout field">
-                <label htmlFor="expectedPickupDate" className="form__label">
-                  Fecha estimada de retiro (opcional)
-                </label>
-                <DatePicker
-                  id="expectedPickupDate"
-                  selected={
-                    formData.expectedPickupDate
-                      ? new Date(formData.expectedPickupDate)
-                      : null
-                  }
-                  onChange={handleDateChange}
-                  dateFormat="yyyy-MM-dd"
-                  minDate={new Date(minPickupDate)}
-                  placeholderText="Seleccionar fecha"
-                  className="form__field dateInput"
-                  calendarClassName="custom-react-datepicker"
-                />
               </div>
 
               <div style={{ margin: "18px 0 10px 0" }}>

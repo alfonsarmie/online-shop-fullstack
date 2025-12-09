@@ -8,7 +8,6 @@ export interface CheckoutFormData {
   phone: string;
   notes?: string;
   sport?: string;
-  expectedPickupDate?: string;
 }
 
 type ValidationResult = {
@@ -26,33 +25,6 @@ const validateCheckoutForm = (data: CheckoutFormData): ValidationResult => {
   if (!data.phone || data.phone.trim().length === 0)
     errors.push("Teléfono requerido");
 
-
-  if (data.expectedPickupDate) {
-
-    const parts = data.expectedPickupDate.split("-");
-    if (parts.length === 3) {
-      const [yyyy, mm, dd] = parts.map((p) => parseInt(p, 10));
-      if (
-        !Number.isFinite(yyyy) ||
-        !Number.isFinite(mm) ||
-        !Number.isFinite(dd)
-      ) {
-        errors.push("Fecha de retiro inválida");
-      } else {
-        const picked = new Date(yyyy, mm - 1, dd);
-        // Normalize today's date to local midnight
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        if (!(picked > today)) {
-          errors.push(
-            "La fecha estimada de retiro debe ser posterior a la fecha actual"
-          );
-        }
-      }
-    } else {
-      errors.push("Formato de fecha de retiro inválido");
-    }
-  }
   return { isValid: errors.length === 0, errors };
 };
 
