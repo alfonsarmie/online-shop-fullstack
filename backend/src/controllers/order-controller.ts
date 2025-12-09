@@ -541,3 +541,87 @@ export const getStatusStats = async (req: Request, res: Response) => {
         });
     }
 }
+
+export const buttonOfRegret = async (req: Request, res: Response) => {
+    try {
+        const { idOrder } = req.params;
+        if (!idOrder) {
+            return res.status(400).json({ msg: 'idOrder es requerido' });
+        }
+
+        const order = await Order.findByPk(Number(idOrder));
+
+        if (!order) {
+            return res.status(404).json({ msg: 'Orden no encontrada' });
+        }
+
+        const orderDate = order.orderDate ? new Date(order.orderDate as any) : null;
+        if (!orderDate) {
+            return res.status(400).json({ msg: 'OrderDate inválida' });
+        }
+
+        const now = new Date();
+        const msSinceOrder = now.getTime() - orderDate.getTime();
+        const hoursSinceOrder = msSinceOrder / (1000 * 60 * 60);
+
+        if (hoursSinceOrder > 24) {
+            return res.status(400).json({ msg: 'No se puede cancelar: pasaron más de 24 horas desde la orden' });
+        }
+
+        // Obtener último status de la orden
+        const latestStatus = await Status.findOne({
+            where: { idOrder: Number(idOrder) },
+            order: [['statusDate', 'DESC']],
+        });
+
+        if (!latestStatus) {
+            return res.status(400).json({ msg: 'No se encontró estado para la orden' });
+        }
+
+        const desc = (latestStatus.description || '');
+        if (desc !== 'ready' && desc !== 'confirmed') {
+            return res.status(400).json({ msg: "Sólo se pueden cancelar órdenes con estado 'ready' o 'confirmed'" });
+        }
+
+        // Obtener las líneas de la orden
+        const orderLines = await OrderLine.findAll({ where: { idOrder: Number(idOrder) } });
+
+        if (!orderLines || orderLines.length === 0) {
+            return res.status(400).json({ msg: 'La orden no tiene líneas' });
+        }
+
+        let createdStatus: any = null;
+
+        await db.transaction(async (t: Transaction) => {
+            // Crear status 'cancelled' vinculado a la orden
+            createdStatus = await Status.create({
+                idOrder: Number(idOrder),
+                statusDate: new Date(),
+                description: 'cancelled',
+            }, { transaction: t });
+
+            // Para cada order line, sumar la cantidad al stock correspondiente
+            for (const line of orderLines) {
+                const idSize = line.idSize ?? 7; 
+
+                const ps = await ProductSize.findOne({
+                    where: { idProduct: line.idProduct, idSize },
+                    transaction: t,
+                    lock: t.LOCK.UPDATE,
+                });
+
+                if (!ps) {
+                    throw new Error(`No existe product_size para product=${line.idProduct} size=${idSize}`);
+                }
+
+                ps.stock = (ps.stock || 0) + (line.quantity || 0);
+                await ps.save({ transaction: t });
+            }
+        });
+
+        return res.status(201).json({ msg: 'Orden cancelada correctamente', status: createdStatus });
+    } catch (error) {
+        console.error('Error en ButtonOfRegret:', error);
+        return res.status(500).json({ msg: 'Error al procesar cancelación', error: (error as any).message || error });
+    }
+}
