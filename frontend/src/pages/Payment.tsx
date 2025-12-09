@@ -2,7 +2,7 @@
 import { useCart } from '../components/CartContext';
 import { useNavigate } from 'react-router-dom';
 import '../styles/payment.css';
-import mpLogo from '../assets/img/mercado-pago-logo.png';
+import mpLogo from '/src/assets/img/mercado-pago-logo.png';
 import type { CartItem } from '../types/cart';
 import type { User } from '../types/user';
 import ProgressBar from '../components/ProgressBar';

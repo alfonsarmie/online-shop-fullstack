@@ -1,4 +1,4 @@
-import wspBtn from '../assets/img/whatsapp.png';
+import wspBtn from '/src/assets/img/whatsapp.png';
 import '../styles/whatsappButton.css';
 
 function WhatsAppButton() {

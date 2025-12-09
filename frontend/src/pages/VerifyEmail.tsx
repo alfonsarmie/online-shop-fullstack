@@ -1,6 +1,6 @@
 
 import { useLocation, useNavigate } from 'react-router-dom';
-import logo from '../assets/img/logo.png';
+import logo from '/src/assets/img/logo.png';
 import '../styles/verify-email.css';
 
 type LocationState = {

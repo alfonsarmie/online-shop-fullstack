@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/img/logo.png";
+import logo from "/src/assets/img/logo.png";
 import FormContainer from "../components/FormContainer";
 import Input from "../components/Input";
 import "../styles/input.css";

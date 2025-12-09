@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import '../styles/dinamicsImgContainer.css';
-import futsal from '../assets/img/futsal.jpg';
+import futsal from '/src/assets/img/futsal.jpg';
 import { useState, useEffect } from 'react';
 import { productService } from '../services/productService';
 import { FrontendProduct } from '../types/product';
