@@ -31,8 +31,7 @@ export interface BackendOrderLine {
 export interface BackendOrder {
   idOrder: number;
   orderDate: string;
-  expectedPickupDate?: string;
-  actualPickupDate?: string;
+  PickupDate?: string;
   idUser: number;
   idPaymentMethod: number;
   external_reference?: string;

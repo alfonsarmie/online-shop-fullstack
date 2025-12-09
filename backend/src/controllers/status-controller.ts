@@ -27,9 +27,9 @@ export const createStatus = async (req: Request, res: Response): Promise<Respons
 
       
       if (normalizedDesc === 'withdrawn') {
-        order.actualPickupDate = new Date();
+        order.PickupDate = new Date();
       } else {
-        order.actualPickupDate = null as any;
+        order.PickupDate = null as any;
       }
 
       await order.save({ transaction: t });

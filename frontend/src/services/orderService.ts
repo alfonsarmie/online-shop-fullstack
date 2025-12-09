@@ -59,7 +59,7 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
   let status: FrontendOrderStatus;
   if (normalizedLatest) {
     status = normalizedLatest.description;
-  } else if (order.actualPickupDate) {
+  } else if (order.PickupDate) {
     status = "withdrawn";
   } else if (order.statusMp === "unpaid") {
     status = "pending_payment";
@@ -78,8 +78,8 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
         ? order.total_amount
         : Number(order.total_amount || 0),
     items,
-    pickupDate: order.expectedPickupDate,
-    canCancel: !order.actualPickupDate && order.statusMp !== "paid",
+    pickupDate: order.PickupDate || undefined,
+    canCancel: !order.PickupDate && order.statusMp !== "paid",
     statusMp: order.statusMp,
     history: normalizedHistory,
     latestStatus: normalizedLatest,

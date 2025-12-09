@@ -92,8 +92,7 @@ DROP TABLE IF EXISTS `order`;
 CREATE TABLE `order` (
   `idOrder` int unsigned NOT NULL AUTO_INCREMENT,
   `orderDate` datetime NOT NULL,
-  `expectedPickupDate` datetime DEFAULT NULL,
-  `actualPickupDate` datetime DEFAULT NULL,
+  `PickupDate` datetime DEFAULT NULL,
   `idUser` int unsigned NOT NULL,
   `idPaymentMethod` int unsigned NOT NULL,
   `total_amount` decimal(10,2) NOT NULL DEFAULT '0.00',

@@ -15,8 +15,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 type PlainOrder = {
     idOrder: number;
     orderDate: string | Date;
-    expectedPickupDate?: string | Date | null;
-    actualPickupDate?: string | Date | null;
+    PickupDate?: string | Date | null;
     idUser?: number;
     idPaymentMethod?: number;
     external_reference?: string;
@@ -168,14 +167,6 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
         }
 
         
-        let expectedPickupDate: Date | undefined = undefined;
-        if (orderDetailsParsed.expected_pickup_date) {
-            const dateParts = orderDetailsParsed.expected_pickup_date.split('-');
-            if (dateParts.length === 3) {
-                const [dd, mm, yyyy] = dateParts;
-                expectedPickupDate = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
-            }
-        }
 
         
         let createdOrder: Order;
@@ -186,9 +177,8 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
             
             createdOrder = await Order.create({
                 orderDate: new Date(),
-                expectedPickupDate: expectedPickupDate,
                 idUser: Number(session.metadata?.userId || 0),
-                idPaymentMethod: 1, // 1 = Stripe
+                idPaymentMethod: 1, 
                 external_reference: session.id,
                 payment_id: paymentId ?? undefined,
                 total_amount: Number((totalCents / 100).toFixed(2)),

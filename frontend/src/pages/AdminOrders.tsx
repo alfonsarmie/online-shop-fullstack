@@ -73,7 +73,7 @@ const determineStatus = (order: BackendOrder): OrderStatus => {
     return normalizeStatus(rawStatus);
   }
 
-  if (order.actualPickupDate) {
+  if (order.PickupDate) {
     return 'withdrawn';
   }
 
