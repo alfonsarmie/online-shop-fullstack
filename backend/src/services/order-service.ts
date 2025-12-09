@@ -62,19 +62,12 @@ export const createOrder = async (items: any[], userId: number, checkoutData: an
         await OrderLine.bulkCreate(lines, { transaction: t });
 
         // 4. Crear status inicial según order.statusMp
-        try {
-            const statusDesc = (newOrder.getDataValue('statusMp') === 'approved') ? 'confirmed' : 'pending_payment';
-            await Status.create({
-                idOrder: newOrder.getDataValue('idOrder'),
-                statusDate: new Date(),
-                description: statusDesc,
-            }, { transaction: t });
-        } catch (err) {
-            // No queremos impedir la creación de la orden por un fallo menor al crear el status,
-            // pero dejamos el rollback para errores críticos que lleguen desde arriba.
-            console.warn('No se pudo crear status inicial para la orden', newOrder.getDataValue('idOrder'), err);
-        }
-
+        const statusDesc = (newOrder.getDataValue('statusMp') === 'approved') ? 'confirmed' : 'pending-payment';
+        await Status.create({
+            idOrder: newOrder.getDataValue('idOrder'),
+            statusDate: new Date(),
+            description: statusDesc,
+        }, { transaction: t });
 
         // Confirmar transacción
         await t.commit();

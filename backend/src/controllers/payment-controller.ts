@@ -20,7 +20,7 @@ export const createPreference = async (req: any, res: any) => {
     } catch (error: any) {
         console.log(error);
         res.status(400).json({
-            msg: error.message || 'Execution on payment preference creation failed. Please contact the administrator.'
+            msg: error.message || 'Execution on payment preference creation failed'
         });
     }
 }
