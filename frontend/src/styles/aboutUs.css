@@ -407,6 +407,23 @@
     }
 }
 
+    @media (max-width: 600px) {
+        .sports-row {
+            flex-direction: column;
+            gap: 12px;
+            text-align: center;
+        }
+
+        .sports-title {
+            font-size: 1.8rem !important;
+        }
+
+        .rotating-text-main {
+            font-size: 1.6rem !important;
+            justify-content: center;
+        }
+    }
+
 @keyframes fadeInUp {
     to {
         opacity: 1;

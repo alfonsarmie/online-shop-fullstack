@@ -5,6 +5,7 @@ import { orderService, mapOrderToFrontend } from "../services/orderService";
 import { FrontendOrder, FrontendOrderStatus } from "../types/order";
 import { User } from "../types/user";
 import "../styles/myOrders.css";
+import formatCurrency from "../utils/formatCurrency";
 
 const MyOrders: React.FC = () => {
   const [orders, setOrders] = useState<FrontendOrder[]>([]);
@@ -17,6 +18,33 @@ const MyOrders: React.FC = () => {
     null
   );
   const [user, setUser] = useState<User | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
+  const [orderToCancel, setOrderToCancel] = useState<FrontendOrder | null>(null);
+
+  const CANCELLATION_WINDOW_HOURS = 24;
+  const MILLISECONDS_IN_HOUR = 1000 * 60 * 60;
+
+  const isWithinCancellationWindow = (order: FrontendOrder) => {
+    const placedAt = new Date(order.date).getTime();
+    if (Number.isNaN(placedAt)) return false;
+    const deadline = placedAt + CANCELLATION_WINDOW_HOURS * MILLISECONDS_IN_HOUR;
+    return Date.now() <= deadline;
+  };
+
+  const remainingHoursToCancel = (order: FrontendOrder) => {
+    const placedAt = new Date(order.date).getTime();
+    if (Number.isNaN(placedAt)) return 0;
+    const remaining =
+      placedAt + CANCELLATION_WINDOW_HOURS * MILLISECONDS_IN_HOUR - Date.now();
+    if (remaining <= 0) return 0;
+    return Math.ceil(remaining / MILLISECONDS_IN_HOUR);
+  };
+
+  const canShowRepentButton = (order: FrontendOrder) => {
+    if (!order.canCancel) return false;
+    if (order.status === "cancelled" || order.status === "withdrawn") return false;
+    return isWithinCancellationWindow(order);
+  };
 
   const filteredOrders = useMemo(() => {
     console.log(
@@ -70,13 +98,34 @@ const MyOrders: React.FC = () => {
     }
   };
 
+  const cancelOrder = async (order: FrontendOrder) => {
+    setActionMessage(null);
+    const optimistic: FrontendOrder[] = orders.map((o) =>
+      o.id === order.id ? { ...o, status: "cancelled" as FrontendOrderStatus } : o
+    );
+    const previous = [...orders];
+    setOrders(optimistic);
+    try {
+      await orderService.cancelOrder(order.id);
+      setSelectedOrder((current) =>
+        current && current.id === order.id ? { ...current, status: "cancelled" } : current
+      );
+    } catch (err) {
+      console.error("Error cancelling order:", err);
+      setOrders(previous);
+      setActionMessage("No pudimos cancelar el pedido. Intenta nuevamente.");
+    }
+    setOrderToCancel(null);
+  };
+
   const getStatusCounts = () => {
-    const counts = {
+    const counts: Record<FrontendOrderStatus | "all", number> = {
       all: orders.length,
       confirmed: 0,
       ready: 0,
       withdrawn: 0,
       cancelled: 0,
+      pending_payment: 0,
     };
     orders.forEach((order) => {
       counts[order.status]++;
@@ -96,6 +145,8 @@ const MyOrders: React.FC = () => {
         return "status-badge status-withdrawn";
       case "cancelled":
         return "status-badge status-cancelled";
+      case "pending_payment":
+        return "status-badge status-pending_payment";
       default:
         return "status-badge";
     }
@@ -109,6 +160,8 @@ const MyOrders: React.FC = () => {
         return "Retirado";
       case "cancelled":
         return "Cancelado";
+      case "pending_payment":
+        return "Pendiente de pago";
       default:
         return "Confirmado";
     }
@@ -165,6 +218,12 @@ const MyOrders: React.FC = () => {
         <p>Revisa el estado de tus compras y pedidos anteriores</p>
       </div>
 
+      {actionMessage && (
+        <div className="action-message">
+          {actionMessage}
+        </div>
+      )}
+
       <div className="status-filters">
         <button
           className={`status-pill ${selectedStatus === "all" ? "active" : ""}`}
@@ -185,6 +244,13 @@ const MyOrders: React.FC = () => {
         >
           Confirmado{" "}
           <span className="status-count">{statusCounts.confirmed}</span>
+        </button>
+        <button
+          className={`status-pill ${selectedStatus === "pending_payment" ? "active" : ""}`}
+          onClick={() => setSelectedStatus("pending_payment")}
+        >
+          Pendiente de pago{" "}
+          <span className="status-count">{statusCounts.pending_payment}</span>
         </button>
         <button
           className={`status-pill ${selectedStatus === "withdrawn" ? "active" : ""}`}
@@ -250,7 +316,10 @@ const MyOrders: React.FC = () => {
                   )}
                 </div>
                 <div className="order-total">
-                  Total: ${order.total.toFixed(2)}
+                  Total: ${formatCurrency(order.total, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </div>
               </div>
 
@@ -271,6 +340,30 @@ const MyOrders: React.FC = () => {
                   <div className="cancelled-info">
                     <FiPackage size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
                     <span>Pedido cancelado</span>
+                  </div>
+                )}
+                {order.status === "pending_payment" && (
+                  <div className="pending-payment-info">
+                    <FiPackage size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                    <span>Estamos esperando la confirmación de tu pago.</span>
+                  </div>
+                )}
+                {canShowRepentButton(order) && (
+                  <div className="repent-window">
+                    <div className="repent-text">
+                      Puedes cancelar este pedido por arrepentimiento durante las primeras 24 horas.
+                    </div>
+                    <div className="repent-row">
+                      <div className="repent-time">
+                        Tiempo restante: {remainingHoursToCancel(order)}h
+                      </div>
+                      <button
+                        className="cancel-button solid"
+                        onClick={() => setOrderToCancel(order)}
+                      >
+                        Cancelar pedido
+                      </button>
+                    </div>
                   </div>
                 )}
                 <div className="order-actions">
@@ -317,7 +410,12 @@ const MyOrders: React.FC = () => {
                   </div>
                   <div className="detail-item">
                     <strong>Total:</strong>
-                    <span>${selectedOrder.total.toFixed(2)}</span>
+                    <span>
+                      ${formatCurrency(selectedOrder.total, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </span>
                   </div>
                   {selectedOrder.pickupDate && (
                     <div className="detail-item">
@@ -348,7 +446,10 @@ const MyOrders: React.FC = () => {
                         <p>Cantidad: {item.quantity}</p>
                         {item.size && <p>Talla: {item.size}</p>}
                         <p className="item-price">
-                          ${item.price.toFixed(2)} c/u
+                          ${formatCurrency(item.price, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })} c/u
                         </p>
                       </div>
                     </div>
@@ -376,11 +477,62 @@ const MyOrders: React.FC = () => {
               )}
             </div>
             <div className="modal-footer">
+              {selectedOrder && canShowRepentButton(selectedOrder) && (
+                <div className="repent-window inline">
+                  <div className="repent-text">
+                    Puedes cancelar este pedido por arrepentimiento durante las primeras 24 horas.
+                  </div>
+                  <div className="repent-row">
+                    <div className="repent-time">
+                      Horas restantes: {remainingHoursToCancel(selectedOrder)}h
+                    </div>
+                    <button
+                      className="cancel-button solid"
+                      onClick={() => setOrderToCancel(selectedOrder)}
+                    >
+                      Cancelar pedido
+                    </button>
+                  </div>
+                </div>
+              )}
               <button
                 className="close-button"
                 onClick={() => setSelectedOrder(null)}
               >
                 Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {orderToCancel && (
+        <div className="modal-overlay" onClick={() => setOrderToCancel(null)}>
+          <div className="modal-content confirm-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header confirm-header">
+              <h2>Confirmar cancelación</h2>
+              <button
+                className="close-modal confirm-close"
+                onClick={() => setOrderToCancel(null)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <p className="confirm-message">¿Está seguro que quiere cancelar el pedido?</p>
+            </div>
+            <div className="modal-footer confirm-actions">
+              <button
+                className="neutral-button"
+                onClick={() => setOrderToCancel(null)}
+              >
+                VOLVER
+              </button>
+              <button
+                className="confirm-button"
+                onClick={() => cancelOrder(orderToCancel)}
+              >
+                CANCELAR PEDIDO
               </button>
             </div>
           </div>

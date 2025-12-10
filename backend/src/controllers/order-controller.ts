@@ -15,8 +15,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 type PlainOrder = {
     idOrder: number;
     orderDate: string | Date;
-    expectedPickupDate?: string | Date | null;
-    actualPickupDate?: string | Date | null;
+    PickupDate?: string | Date | null;
     idUser?: number;
     idPaymentMethod?: number;
     external_reference?: string;
@@ -168,14 +167,6 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
         }
 
         
-        let expectedPickupDate: Date | undefined = undefined;
-        if (orderDetailsParsed.expected_pickup_date) {
-            const dateParts = orderDetailsParsed.expected_pickup_date.split('-');
-            if (dateParts.length === 3) {
-                const [dd, mm, yyyy] = dateParts;
-                expectedPickupDate = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
-            }
-        }
 
         
         let createdOrder: Order;
@@ -186,9 +177,8 @@ export const createOrderFromSession = async (req: Request, res: Response) => {
             
             createdOrder = await Order.create({
                 orderDate: new Date(),
-                expectedPickupDate: expectedPickupDate,
                 idUser: Number(session.metadata?.userId || 0),
-                idPaymentMethod: 1, // 1 = Stripe
+                idPaymentMethod: 1, 
                 external_reference: session.id,
                 payment_id: paymentId ?? undefined,
                 total_amount: Number((totalCents / 100).toFixed(2)),
@@ -539,5 +529,89 @@ export const getStatusStats = async (req: Request, res: Response) => {
             msg: 'Error fetching Orders by Status',
             error: error.message,
         });
+    }
+}
+
+export const buttonOfRegret = async (req: Request, res: Response) => {
+    try {
+        const { idOrder } = req.params;
+        if (!idOrder) {
+            return res.status(400).json({ msg: 'idOrder es requerido' });
+        }
+
+        const order = await Order.findByPk(Number(idOrder));
+
+        if (!order) {
+            return res.status(404).json({ msg: 'Orden no encontrada' });
+        }
+
+        const orderDate = order.orderDate ? new Date(order.orderDate as any) : null;
+        if (!orderDate) {
+            return res.status(400).json({ msg: 'OrderDate inválida' });
+        }
+
+        const now = new Date();
+        const msSinceOrder = now.getTime() - orderDate.getTime();
+        const hoursSinceOrder = msSinceOrder / (1000 * 60 * 60);
+
+        if (hoursSinceOrder > 24) {
+            return res.status(400).json({ msg: 'No se puede cancelar: pasaron más de 24 horas desde la orden' });
+        }
+
+        // Obtener último status de la orden
+        const latestStatus = await Status.findOne({
+            where: { idOrder: Number(idOrder) },
+            order: [['statusDate', 'DESC']],
+        });
+
+        if (!latestStatus) {
+            return res.status(400).json({ msg: 'No se encontró estado para la orden' });
+        }
+
+        const desc = (latestStatus.description || '');
+        if (desc !== 'ready' && desc !== 'confirmed') {
+            return res.status(400).json({ msg: "Sólo se pueden cancelar órdenes con estado 'ready' o 'confirmed'" });
+        }
+
+        // Obtener las líneas de la orden
+        const orderLines = await OrderLine.findAll({ where: { idOrder: Number(idOrder) } });
+
+        if (!orderLines || orderLines.length === 0) {
+            return res.status(400).json({ msg: 'La orden no tiene líneas' });
+        }
+
+        let createdStatus: any = null;
+
+        await db.transaction(async (t: Transaction) => {
+            // Crear status 'cancelled' vinculado a la orden
+            createdStatus = await Status.create({
+                idOrder: Number(idOrder),
+                statusDate: new Date(),
+                description: 'cancelled',
+            }, { transaction: t });
+
+            // Para cada order line, sumar la cantidad al stock correspondiente
+            for (const line of orderLines) {
+                const idSize = line.idSize ?? 7; 
+
+                const ps = await ProductSize.findOne({
+                    where: { idProduct: line.idProduct, idSize },
+                    transaction: t,
+                    lock: t.LOCK.UPDATE,
+                });
+
+                if (!ps) {
+                    throw new Error(`No existe product_size para product=${line.idProduct} size=${idSize}`);
+                }
+
+                ps.stock = (ps.stock || 0) + (line.quantity || 0);
+                await ps.save({ transaction: t });
+            }
+        });
+
+        return res.status(201).json({ msg: 'Orden cancelada correctamente', status: createdStatus });
+    } catch (error) {
+        console.error('Error en ButtonOfRegret:', error);
+        return res.status(500).json({ msg: 'Error al procesar cancelación', error: (error as any).message || error });
     }
 }

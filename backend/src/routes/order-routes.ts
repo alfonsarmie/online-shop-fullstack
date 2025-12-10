@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 import { validateFields } from '../middlewares/validate-fields';
-import { allowAdminOrReceptionist, validateJWT } from '../middlewares/validate-jwt';
-import { createOrderFromSession, getUserOrders, getOrders, getMonthlyWorth, getSportsStats, getStatusStats } from '../controllers/order-controller';
+import { allowAdminOrReceptionist, requireAuth, validateJWT } from '../middlewares/validate-jwt';
+import { createOrderFromSession, getUserOrders, getOrders, getMonthlyWorth, getSportsStats, getStatusStats, buttonOfRegret } from '../controllers/order-controller';
 
 const router = Router();
 
@@ -54,5 +54,11 @@ router.get(
     [validateJWT],
     getStatusStats
 )
+
+router.put(
+    '/regret/:idOrder',
+    [requireAuth],
+    buttonOfRegret
+);
 
 export default router;

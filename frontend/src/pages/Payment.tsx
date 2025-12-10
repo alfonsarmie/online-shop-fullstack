@@ -2,12 +2,13 @@
 import { useCart } from '../components/CartContext';
 import { useNavigate } from 'react-router-dom';
 import '../styles/payment.css';
-import stripeLogo from '../assets/img/stripe-logo.png';
+import mpLogo from '/src/assets/img/mercado-pago-logo.png';
 import type { CartItem } from '../types/cart';
 import type { User } from '../types/user';
 import ProgressBar from '../components/ProgressBar';
 import { checkoutService, CheckoutFormData } from '../services/checkoutService';
 import ErrorMessage from '../components/ErrorMessage';
+import formatCurrency from '../utils/formatCurrency';
 
 function getStoredUser(): User | null {
   const saved = localStorage.getItem('user');
@@ -138,7 +139,7 @@ const Payment = () => {
                     <h4>{item.name}</h4>
                     {item.size && <p>Talle: {item.size}</p>}
                     <p>
-                      ${item.price.toLocaleString('es-AR')} x {item.quantity}
+                      ${formatCurrency(item.price)} x {item.quantity}
                     </p>
                   </div>
                 </div>
@@ -146,8 +147,10 @@ const Payment = () => {
             </div>
             <div className="order-total">
               <h3>
-                Total: $
-                {total.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+                Total: ${formatCurrency(total, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </h3>
             </div>
           </div>
@@ -164,9 +167,9 @@ const Payment = () => {
               defaultChecked
             />
             <label htmlFor="stripe">
-              <img src={stripeLogo} alt="Stripe" />
+              <img src={mpLogo} alt="Mercado Pago" />
               <span>
-                <strong>Stripe</strong>
+                <strong>Mercado Pago </strong>
               </span>
             </label>
           </div>

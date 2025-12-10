@@ -6,20 +6,21 @@ import { createOrder, updateOrderStatus } from '../services/order-service';
 export const createPreference = async (req: any, res: any) => {
     try {
         const { cartItems, storedUser, checkoutData } = req.body; // Asume que envías userId desde el front o lo sacas del token
+        const frontendOrigin = req.headers?.origin || req.headers?.referer;
 
         // 1. Crear la orden completa (Header + Lines) en la DB
         // Pasamos un userId hardcodeado (1) si no viene en el body, ajusta según tu auth
         const orderId = await createOrder(cartItems, storedUser?.idUser || 1, checkoutData || {});
 
         // 2. Crea la preferencia pasando el ID de la orden real como referencia externa
-        const result = await createPreferenceService(cartItems, orderId);
+        const result = await createPreferenceService(cartItems, orderId, frontendOrigin as string | undefined);
 
         res.status(200).json(result);
 
     } catch (error: any) {
         console.log(error);
         res.status(400).json({
-            msg: error.message || 'Execution on payment preference creation failed. Please contact the administrator.'
+            msg: error.message || 'Execution on payment preference creation failed'
         });
     }
 }

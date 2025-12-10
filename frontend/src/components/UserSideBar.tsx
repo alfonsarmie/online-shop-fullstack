@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import '../styles/userSidebar.css';
+import '../styles/userSideBar.css';
 import { User } from '../types/user';
 
 interface UserSidebarProps {

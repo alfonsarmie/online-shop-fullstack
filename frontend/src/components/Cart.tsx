@@ -4,6 +4,7 @@ import { useCart } from './CartContext';
 import { CartItem } from '../types/cart'; 
 import { useState } from 'react';
 import LoginRequiredModal from './LoginRequiredModal';
+import formatCurrency from '../utils/formatCurrency';
 
 function Cart() {
 
@@ -11,7 +12,9 @@ function Cart() {
     isCartOpen, 
     closeCart, 
     cartItems, 
-    removeFromCart 
+    removeFromCart,
+    addToCart,        // <--- Traemos esto
+    decreaseQuantity  // <--- Y esto
   } = useCart();
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -40,7 +43,7 @@ function Cart() {
     <>
       <div className={`cart-overlay ${isCartOpen ? 'active' : ''}`} onClick={closeCart}></div>
 
-      <div className={`cart ${isCartOpen ? 'open' : ''}`}> {/* Add 'open' class if cart is open */} 
+      <div className={`cart ${isCartOpen ? 'open' : ''}`}>
         <div className="cart-header">
           <h2 className='cart-title'>Tu carrito | <span>{cartItems.reduce((sum, item) => sum + item.quantity, 0)}</span> Artículos</h2>
           <button onClick={closeCart}>✖</button>
@@ -66,8 +69,48 @@ function Cart() {
                         Talle: {item.size}
                       </p>
                     )}
-                    <p style={{ margin: '5px 0', fontSize: '14px' }}>
-                      ${item.price} ARS × {item.quantity}
+                    
+                    {/* Controles de cantidad */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '8px 0' }}>
+                      <button 
+                        onClick={() => decreaseQuantity(item.name, item.size)}
+                        style={{
+                          width: '24px', 
+                          height: '24px', 
+                          borderRadius: '4px', 
+                          border: '1px solid #ccc', 
+                          background: '#f0f0f0', 
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        -
+                      </button>
+                      <span style={{ fontSize: '14px', fontWeight: '500' }}>{item.quantity}</span>
+                      <button 
+                        onClick={() => addToCart(item)}
+                        style={{
+                          width: '24px', 
+                          height: '24px', 
+                          borderRadius: '4px', 
+                          border: '1px solid #ccc', 
+                          background: '#f0f0f0', 
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    <p style={{ margin: '0', fontSize: '14px', color: '#666' }}>
+                      ${formatCurrency(item.price * item.quantity)} ARS
                     </p>
                   </div>
                 </div>
@@ -84,10 +127,10 @@ function Cart() {
 
         <div className="cart-footer">
           <div className="cart-footer-item">
-            <p>Subtotal: $<span>{subtotal}</span></p>
+            <p>Subtotal: $<span>{formatCurrency(subtotal)}</span></p>
           </div>
           <div className="cart-footer-item">
-            <p>Total: $<span>{total}</span></p>
+            <p>Total: $<span>{formatCurrency(total)}</span></p>
           </div>
 
           {cartItems.length > 0 && (

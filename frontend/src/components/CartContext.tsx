@@ -12,7 +12,6 @@ function CartProvider({ children }: CartProviderProps) {
   const [isCartOpen, setIsCartOpen] = useState(false); 
 
   const addToCart = useCallback((product: CartItem) => {
-
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => 
         item.name === product.name && item.size === product.size
@@ -27,8 +26,20 @@ function CartProvider({ children }: CartProviderProps) {
       }
       return [...prevItems, { ...product, quantity: 1 }];
     });
-
+    // No hace falta forzar setIsCartOpen(true) acá si ya estamos en el carrito, pero no molesta.
     setIsCartOpen(true);
+  }, []);
+
+  // Función nueva para restar cantidad
+  const decreaseQuantity = useCallback((productName: string, productSize?: string) => {
+    setCartItems(prevItems => 
+      prevItems.map(item => {
+        if (item.name === productName && item.size === productSize) {
+          return { ...item, quantity: item.quantity - 1 };
+        }
+        return item;
+      }).filter(item => item.quantity > 0) // Si queda en 0, lo vuela
+    );
   }, []);
 
   const removeFromCart = useCallback((productName: string, productSize?: string) => {
@@ -44,10 +55,10 @@ function CartProvider({ children }: CartProviderProps) {
   }, []);
 
   return (
-
     <CartContext.Provider value={{
       cartItems, 
       addToCart, 
+      decreaseQuantity, // <--- No te olvides de exportarla acá
       removeFromCart, 
       clearCart, 
       isCartOpen, 
@@ -59,7 +70,6 @@ function CartProvider({ children }: CartProviderProps) {
     </CartContext.Provider>
   );
 }
-
 
 export function useCart(): CartContextType {
   const context = useContext(CartContext);

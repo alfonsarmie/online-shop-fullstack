@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import "../styles/nav.css";
 import "../index.css";
-import logo from "../assets/img/logo.png";
+import logo from "/src/assets/img/logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faBars } from "@fortawesome/free-solid-svg-icons";
 import { User } from "../types/user";
