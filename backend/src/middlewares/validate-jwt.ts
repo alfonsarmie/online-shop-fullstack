@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 
 // Local request type that includes authenticated user id
 interface AuthRequest extends Request {
-  userId?: number;
+  userId?: string;
 }
 import jwt from "jsonwebtoken";
 import User from "../models/user-model";
@@ -22,7 +22,7 @@ export const requireAuth = (req: Request,res: Response,next: NextFunction): void
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET || "default_secret"
-    ) as { userId: number };
+    ) as { userId: string };
     
   (req as AuthRequest).userId = decoded.userId;
     next();
@@ -47,7 +47,7 @@ export const validateJWT = async (req: Request,res: Response,next: NextFunction)
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET || "default_secret"
-    ) as { userId: number };
+    ) as { userId: string };
     const { userId } = decoded;
     const idToDelete = req.params.id;
 
@@ -77,7 +77,7 @@ export const validateJWT = async (req: Request,res: Response,next: NextFunction)
 
     }
 
-    if (userId !== parseInt(idToDelete, 10) && userToValidate.role !== "admin") {
+    if (userId !== idToDelete && userToValidate.role !== "admin") {
       res.status(403).json({
         message: "You do not have permission to perform this action",
       });
@@ -110,7 +110,7 @@ export const allowAdminOrReceptionist = async (
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET || "default_secret"
-    ) as { userId: number };
+    ) as { userId: string };
     const { userId } = decoded;
     const user = await User.findByPk(userId);
     if (!user) {

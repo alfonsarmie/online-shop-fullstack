@@ -19,7 +19,7 @@ interface UserAttributes {
   passwordResetTokenExpiresAt?: Date | null;
   passwordResetTokenUsedAt?: Date | null; 
 }
-interface UserCreationAttributes extends Optional<UserAttributes, 'idUser' | 'dni' | 'role' > {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'idUser' | 'dni' | 'role' | 'isMember' | 'registrationDate' | 'status'> {}
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public idUser!: string;
