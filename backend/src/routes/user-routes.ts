@@ -42,7 +42,7 @@ router.delete(
   "/delete/:id",
   [
     validateJWT,
-    check("id", "ID must be a number").isNumeric(),
+    check("id", "ID must be a valid UUID").isUUID(),
     check("id").custom(existsUserById),
 
     validateFields,
@@ -54,7 +54,7 @@ router.put(
   "/update/:id",
   [
     validateProfileUpdate,
-    check("id", "ID must be a number").isNumeric(),
+    check("id", "ID must be a valid UUID").isUUID(),
     check("id").custom(existsUserById),
     validateFields,
   ],
