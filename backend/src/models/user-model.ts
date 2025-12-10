@@ -3,7 +3,7 @@ import db from '../db/connection';
 
 
 interface UserAttributes {
-  idUser: number;
+  idUser: string;
   dni?: number | null;
   email: string;
   name: string;
@@ -19,10 +19,10 @@ interface UserAttributes {
   passwordResetTokenExpiresAt?: Date | null;
   passwordResetTokenUsedAt?: Date | null; 
 }
-interface UserCreationAttributes extends Optional<UserAttributes, 'idUser' | 'dni' | 'role' > {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'idUser' | 'dni' | 'role' | 'isMember' | 'registrationDate' | 'status'> {}
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-  public idUser!: number;
+  public idUser!: string;
   public dni?: number;
   public email!: string;
   public name!: string;
@@ -50,8 +50,8 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
 
 User.init({
   idUser: {
-    type: DataTypes.INTEGER.UNSIGNED,
-    autoIncrement: true,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
     allowNull: false
   },
