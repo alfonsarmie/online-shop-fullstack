@@ -1,5 +1,2 @@
 [build]
 rootDirectory = "backend"
-
-[deploy]
-startCommand = "npm run build && node dist/app.js"
