@@ -78,20 +78,18 @@ export const updateOrderStatus = async (externalReference: string, status: strin
     const t = await db.transaction();
     
     try {
-        // 1. Primero buscamos la orden para verificar su estado actual (Idempotencia)
+        // 1. Idempotencia: Verificar estado actual
         const currentOrder = await Order.findOne({ 
             where: { external_reference: externalReference },
             transaction: t 
         });
 
-        
-        //Evitamos que se descuente dos veces el stock
         if (!currentOrder || currentOrder.statusMp === 'approved') {
             await t.commit();
             return;
         }
 
-        // 2. Actualizamos el estado de la orden y guardamos el ID de pago
+        // 2. Actualizar estado y payment_id
         await Order.update({ 
             statusMp: status,
             payment_id: paymentId 
@@ -100,16 +98,14 @@ export const updateOrderStatus = async (externalReference: string, status: strin
             transaction: t
         });
 
-        // 3. Si el pago fue APROBADO, descontamos el stock
+        // 3. Si es aprobado, descontar stock
         if (status === 'approved') {
-            // Usamos currentOrder que ya recuperamos arriba
             const lines = await OrderLine.findAll({ 
                 where: { idOrder: currentOrder.idOrder },
                 transaction: t
             });
 
             for (const line of lines) {
-                // Decrementamos el stock en la tabla intermedia ProductSize
                 await ProductSize.decrement('stock', { 
                     by: line.quantity,
                     where: { 

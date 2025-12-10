@@ -44,7 +44,7 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
       }
 
       try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || "default_secret") as { userId: number };
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || "default_secret") as { userId: string };
         const requestingUser = await User.findByPk(decoded.userId);
 
         if (!requestingUser || requestingUser.role !== "admin") {
@@ -72,6 +72,7 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
 
 
     const newUser = {
+      idUser: uuidv4(),
       dni: normalizedDni,
       email,
       name,
