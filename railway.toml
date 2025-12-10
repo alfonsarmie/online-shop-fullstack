@@ -1,8 +1,2 @@
 [build]
 rootDirectory = "backend"
-
-
-buildCommand = "npm run build"
-
-[deploy]
-startCommand = "npm start"
