@@ -237,7 +237,7 @@ const ReceptionistStock: React.FC = () => {
               </strong>
             </span>
           </div>
-          {/* La edición se realiza por fila con botón "Editar talles" */}
+          {/* La edición se realiza por fila con botón "Editar stock" */}
         </div>
         <div className="panel-body">
           <table className="data-table">
@@ -282,7 +282,7 @@ const ReceptionistStock: React.FC = () => {
                   </td>
                   <td>
                     <button className="btn primary" onClick={() => openModal(product)}>
-                      Editar talles
+                      Editar stock
                     </button>
                   </td>
                 </tr>
@@ -333,34 +333,44 @@ const ReceptionistStock: React.FC = () => {
           )}
         </div>
       </section>
-    </div>
+    </div>Eliminar método de pago de la visualización de pedidos y mejorar estilos de modal y tabla de datosActualizar modal de edición de stock: cambiar "Editar talles" a "Editar stock" y mejorar estilos del modal
     {modalOpen && modalProduct && (
-      <div className="modal-overlay">
-        <div className="modal" style={{ minWidth: 520 }}>
-          <h3>Editar talles - {modalProduct?.name}</h3>
-          <div className="sizes-container" style={{ marginTop: 12 }}>
+      <div className="stock-modal-overlay">
+        <div className="stock-modal">
+          <div className="stock-modal-header">
+            <div>
+              <p className="modal-eyebrow">Inventario</p>
+              <h3>Editar {modalProduct?.name}</h3>
+              <p className="modal-sub">Ajusta el stock por talle </p>
+            </div>
+            <button className="btn close-btn" onClick={closeModal} aria-label="Cerrar modal">×</button>
+          </div>
+
+          <div className="stock-sizes-grid">
             {modalSizes.length > 0 ? (
               modalSizes.map((s) => (
-                <div key={s.idSize} className="size-line" style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                  <span className="size-label" style={{ width: 64 }}>{s.sizeDesc || s.name}</span>
-                  <button className="btn stock-btn" onClick={() => adjustSizeStock(s.idSize, -1)} disabled={(s.stock ?? 0) <= 0}>-</button>
-                  <input
-                    type="number"
-                    min={0}
-                    className="stock-input"
-                    value={s.stock ?? 0}
-                    onChange={(e) => setSizeStockValue(s.idSize, parseInt(e.target.value) || 0)}
-                    style={{ width: 80 }}
-                  />
-                  <button className="btn stock-btn" onClick={() => adjustSizeStock(s.idSize, 1)}>+</button>
+                <div key={s.idSize} className="stock-size-card">
+                  <div className="size-label">{s.sizeDesc || s.name}</div>
+                  <div className="stock-control">
+                    <button className="btn stock-btn" onClick={() => adjustSizeStock(s.idSize, -1)} disabled={(s.stock ?? 0) <= 0}>-</button>
+                    <input
+                      type="number"
+                      min={0}
+                      className="stock-input"
+                      value={s.stock ?? 0}
+                      onChange={(e) => setSizeStockValue(s.idSize, parseInt(e.target.value) || 0)}
+                    />
+                    <button className="btn stock-btn" onClick={() => adjustSizeStock(s.idSize, 1)}>+</button>
+                  </div>
+                  <div className="stock-hint">Stock actual: {s.stock ?? 0} u.</div>
                 </div>
               ))
             ) : (
-              <p style={{ color: '#bdbdbd' }}>Este producto no tiene talles asignados.</p>
+              <p className="no-sizes">Este producto no tiene talles asignados.</p>
             )}
           </div>
-          <div className="modal-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 12 }}>
-            <button className="btn" onClick={closeModal}>Cancelar</button>
+
+          <div className="modal-actions modal-actions-stock">
             <button className="btn primary" onClick={saveModal} disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</button>
           </div>
         </div>
