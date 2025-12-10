@@ -333,7 +333,7 @@ const ReceptionistStock: React.FC = () => {
           )}
         </div>
       </section>
-    </div>Eliminar método de pago de la visualización de pedidos y mejorar estilos de modal y tabla de datosActualizar modal de edición de stock: cambiar "Editar talles" a "Editar stock" y mejorar estilos del modal
+    </div>
     {modalOpen && modalProduct && (
       <div className="stock-modal-overlay">
         <div className="stock-modal">

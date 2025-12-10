@@ -300,42 +300,39 @@ label .span-admin {
   letter-spacing: 0.5px;
   border: 1px solid transparent;
   box-sizing: border-box;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
 .status-pending {
-  background-color: #E6B800;
-  color: #000;
-  border-color: #D4A800;
+  background-color: #f48c06; /* naranja */
+  color: #ffffff !important;
+  border-color: #d87603;
 }
 
 .status-confirmed {
-  background-color: #3498DB;
-  color: #fff;
-  border-color: #2E86C1;
+  background-color: #d7b700; /* amarillo más marcado */
+  color: #ffffff !important;
+  border-color: #bfa000;
 }
 
-.status-processing {
-  background-color: #9B59B6;
-  color: #fff;
-  border-color: #8E44AD;
-}
-
+.status-ready,
 .status-shipped {
-  background-color: #F39C12;
-  color: #000;
-  border-color: #E67E22;
+  background-color: #1aa5e6; /* celeste/azul */
+  color: #ffffff !important;
+  border-color: #1488bf;
 }
 
-.status-delivered {
-  background-color: #1E7335;
-  color: #fff;
-  border-color: #27AE60;
+.status-delivered,
+.status-withdrawn {
+  background-color: #1c8a37; /* verde */
+  color: #ffffff !important;
+  border-color: #16712d;
 }
 
 .status-cancelled {
-  background-color: #C0392B;
-  color: #fff;
-  border-color: #E74C3C;
+  background-color: #d63c2f; /* rojo */
+  color: #ffffff !important;
+  border-color: #b33027;
 }
 
 .row-actions {
@@ -1045,4 +1042,15 @@ label .span-admin {
     min-width: 50px !important;
     border-radius: 10px !important;
   }
+}
+
+/* Estado: forzar color de texto consistente */
+.status-badge.status-pending,
+.status-badge.status-confirmed,
+.status-badge.status-ready,
+.status-badge.status-shipped,
+.status-badge.status-withdrawn,
+.status-badge.status-delivered,
+.status-badge.status-cancelled {
+  color: #ffffff !important;
 }
