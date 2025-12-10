@@ -1,2 +1,8 @@
 [build]
 rootDirectory = "backend"
+# Comando para instalar las dependencias (se ejecutará dentro de backend/)
+buildCommand = "npm install"
+
+[deploy]
+# Comando para iniciar la aplicación (se ejecutará dentro de backend/)
+startCommand = "npm start"
