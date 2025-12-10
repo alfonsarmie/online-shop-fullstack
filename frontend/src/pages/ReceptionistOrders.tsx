@@ -423,7 +423,7 @@ const ReceptionistOrders: React.FC = () => {
                   <p><strong>Nombre:</strong> {selectedOrder.customerName}</p>
                   <p><strong>Email:</strong> {selectedOrder.customerEmail}</p>
                   <p><strong>Dirección:</strong> {selectedOrder.address}</p>
-                  <p><strong>Método de pago:</strong> {selectedOrder.paymentMethod}</p>
+
                 </div>
                 <div>
                   <h3>Detalles del pedido</h3>
