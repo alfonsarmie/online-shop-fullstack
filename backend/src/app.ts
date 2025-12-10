@@ -59,7 +59,6 @@ app.use(cors({
 //app.use('/api/webhooks', webHookRoutes);
 app.use(express.json()); //To parse JSON data 
 app.use(express.urlencoded({ extended: true })); 
-// HTTP request logger middleware (prints requests to console)
 app.use(morgan('dev'));
 
 // Connect to the database
