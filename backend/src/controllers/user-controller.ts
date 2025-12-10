@@ -262,8 +262,8 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
 export const changePassword = async (req: Request, res: Response): Promise<Response> => {
   try {
    
-    const authReq = req as (Request & { userId?: number });
-    const userId = authReq.userId as number | string | undefined;
+    const authReq = req as (Request & { userId?: string });
+    const userId = authReq.userId;
     const { currentPassword, newPassword } = req.body as { currentPassword: string; newPassword: string };
 
     if (currentPassword === newPassword) {
