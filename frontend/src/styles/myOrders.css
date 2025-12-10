@@ -217,32 +217,46 @@
   align-items: center;
   gap: 0.4rem;
   border: 1px solid transparent;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
 .status-badge.status-confirmed {
-  background: #ffe733;
-  border-color: #ffd600;
+  background: #d7b700; /* amarillo más marcado */
+  border-color: #bfa000;
+  color: #ffffff !important;
 }
 
 .status-badge.status-ready {
-  background: #ff7f11;
-  border-color: #ff6f00;
+  background: #1aa5e6; /* celeste/azul */
+  border-color: #1488bf;
+  color: #ffffff !important;
 }
 
 .status-badge.status-withdrawn {
-  background: #66bb6a;
-  border-color: #43a047;
+  background: #1c8a37; /* verde */
+  border-color: #16712d;
+  color: #ffffff !important;
 }
 
 .status-badge.status-cancelled {
-  background: #ef5350;
-  border-color: #e53935;
+  background: #d63c2f; /* rojo */
+  border-color: #b33027;
+  color: #ffffff !important;
 }
 
 .status-badge.status-pending_payment {
-  background: #fde68a;
-  border-color: #fbbf24;
-  color: #92400e !important;
+  background: #f48c06; /* naranja */
+  border-color: #d87603;
+  color: #ffffff !important;
+}
+
+/* Estado: forzar color de texto consistente */
+.status-badge.status-confirmed,
+.status-badge.status-ready,
+.status-badge.status-withdrawn,
+.status-badge.status-cancelled,
+.status-badge.status-pending_payment {
+  color: #ffffff !important;
 }
 
 .order-content {
