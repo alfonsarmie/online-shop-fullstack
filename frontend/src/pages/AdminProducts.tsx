@@ -11,7 +11,7 @@ type DraftLocal = Omit<FrontendProduct, "id" | "sizes" | "stock"> & {
   imgFile?: File;
   img2File?: File;
   sizes: string[]; // labels of selected sizes
-  sizeStocks: Record<string, number>; // stock per selected size label
+  sizeStocks: Record<string, number | string>; // stock per selected size label
 };
 
 const emptyDraft: DraftLocal = {
@@ -179,6 +179,14 @@ const AdminProducts: React.FC = () => {
     return checked ? [...sizes, size] : sizes.filter((s) => s !== size);
   };
 
+  const normalizeStockValue = (
+    value: number | string | "" | undefined | null
+  ) => {
+    if (value === "" || value === undefined || value === null) return NaN;
+    const num = typeof value === "number" ? value : Number(value);
+    return num;
+  };
+
   const renderSizes = (sizes: any[] | string[]) => {
     if (!sizes || sizes.length === 0) return "-";
     const out = sizes
@@ -201,7 +209,8 @@ const AdminProducts: React.FC = () => {
     // validar que cada talle seleccionado tenga un número válido (>=0)
     const hasInvalidStock = (creating.sizes || []).some((label) => {
       const v = creating.sizeStocks[label];
-      return v === undefined || v === null || isNaN(Number(v)) || Number(v) < 0;
+      const num = normalizeStockValue(v);
+      return v === "" || Number.isNaN(num) || num < 0;
     });
     if (hasInvalidStock) errores.push("stock por talle");
     // Puedes agregar validación de imágenes si son obligatorias
@@ -238,7 +247,13 @@ const AdminProducts: React.FC = () => {
         description: creating.description.trim(),
         idCategory: parseInt(creating.category || ""),
         initialPrice: creating.price,
-        sizes: mappedSizes.map((entry) => ({ id: entry.id, stock: creating.sizeStocks[entry.label] ?? 0 })),
+        sizes: mappedSizes.map((entry) => {
+          const stock = normalizeStockValue(creating.sizeStocks[entry.label]);
+          return {
+            id: entry.id,
+            stock: Number.isNaN(stock) ? 0 : stock,
+          };
+        }),
       };
       const newProduct = await productService.createProduct(productData);
       if (!newProduct || !newProduct.idProduct) {
@@ -364,7 +379,8 @@ const AdminProducts: React.FC = () => {
     if ((editing.sizes || []).length === 0) errores.push("talles");
     const hasInvalidStock = (editing.sizes || []).some((label) => {
       const v = editing.sizeStocks[label];
-      return v === undefined || v === null || isNaN(Number(v)) || Number(v) < 0;
+      const num = normalizeStockValue(v);
+      return v === "" || Number.isNaN(num) || num < 0;
     });
     if (hasInvalidStock) errores.push("stock por talle");
 
@@ -422,7 +438,13 @@ const AdminProducts: React.FC = () => {
         description: editing.description.trim(),
         idCategory: parseInt(editing.category || ""),
         initialPrice: editing.price,
-        sizes: mappedSizes.map((entry) => ({ id: entry.id, stock: editing.sizeStocks[entry.label] ?? 0 })),
+        sizes: mappedSizes.map((entry) => {
+          const stock = normalizeStockValue(editing.sizeStocks[entry.label]);
+          return {
+            id: entry.id,
+            stock: Number.isNaN(stock) ? 0 : stock,
+          };
+        }),
         images: newImages.length > 0 ? newImages : undefined,
       };
 
@@ -678,13 +700,17 @@ const AdminProducts: React.FC = () => {
                       className="input-admin"
                       type="number"
                       min={0}
-                      value={creating.sizeStocks[label] ?? 0}
+                      value={
+                        creating.sizeStocks[label] !== undefined
+                          ? creating.sizeStocks[label]
+                          : "0"
+                      }
                       onChange={(e) =>
                         setCreating({
                           ...creating,
                           sizeStocks: {
                             ...creating.sizeStocks,
-                            [label]: e.target.value === "" ? 0 : Number(e.target.value),
+                            [label]: e.target.value,
                           },
                         })
                       }
@@ -895,13 +921,17 @@ const AdminProducts: React.FC = () => {
                       <input
                         type="number"
                         min={0}
-                        value={editing.sizeStocks[label] ?? 0}
+                        value={
+                          editing.sizeStocks[label] !== undefined
+                            ? editing.sizeStocks[label]
+                            : "0"
+                        }
                         onChange={(e) =>
                           setEditing({
                             ...editing,
                             sizeStocks: {
                               ...editing.sizeStocks,
-                              [label]: e.target.value === "" ? 0 : Number(e.target.value),
+                              [label]: e.target.value,
                             },
                           })
                         }
