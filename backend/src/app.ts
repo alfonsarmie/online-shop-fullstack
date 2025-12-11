@@ -9,7 +9,7 @@ import morgan from 'morgan';
 dotenv.config();
 
 // Import routes
-import userRoutes from './routes/user-routes';
+import userRoutes from './routes/user-routes.js';
 import authRoutes from './routes/auth-routes';
 import productRoutes from './routes/product-routes';
 import priceRoutes from './routes/price-routes';
