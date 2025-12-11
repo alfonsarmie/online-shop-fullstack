@@ -78,6 +78,11 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
     (order as any).pickupused ??
     null;
 
+  const paymentMethodName =
+    (order as any).paymentMethod?.name ??
+    (order as any).paymentmethod?.name ??
+    undefined;
+
   let status: FrontendOrderStatus;
   if (normalizedLatest) {
     status = normalizedLatest.description;
@@ -110,6 +115,11 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
     statusMp: order.statusMp,
     history: normalizedHistory,
     latestStatus: normalizedLatest,
+    customerName: order.customer_name,
+    customerEmail: order.customer_email,
+    customerPhone: order.customer_phone,
+    customerNotes: order.customer_notes,
+    paymentMethodName,
   };
   return mapped;
 };
@@ -211,6 +221,14 @@ const getMonthlyWorth = async () => {
   }
 };
 
+const validatePickupCode = async (code: string) => {
+  const response = await api.post<{ message: string; order: BackendOrder }>(
+    '/pickup/validate',
+    { code }
+  );
+  return response.data;
+};
+
 export const orderService = {
   getOrders,
   getUserOrders,
@@ -222,6 +240,7 @@ export const orderService = {
   mapOrderToFrontend,
   getMonthlyWorth,
   getItemImage,
+  validatePickupCode,
 };
 
 export default orderService;

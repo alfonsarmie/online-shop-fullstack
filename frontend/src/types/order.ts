@@ -99,4 +99,9 @@ export interface FrontendOrder {
   statusMp?: MercadoPagoStatus;
   history: FrontendOrderStatusHistory[];
   latestStatus?: FrontendOrderStatusHistory | null;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  customerNotes?: string;
+  paymentMethodName?: string;
 }

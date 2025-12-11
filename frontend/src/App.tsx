@@ -35,6 +35,7 @@ import AdminUsers from './pages/AdminUsers';
 import ReceptionistOrders from './pages/ReceptionistOrders';
 import ReceptionistStock from './components/ReceptionistStock';
 import MyOrders from './pages/MyOrders';
+import Pickup from './pages/Pickup';
 import { User } from './types/user';
 import { useLocation } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
@@ -133,6 +134,11 @@ function App() {
           <Route path="/receptionist-stock" element={
             <PrivateRoute user={user} requiredRole="receptionist">
               <ReceptionistStock />
+            </PrivateRoute>
+          } />
+          <Route path="/pickup" element={
+            <PrivateRoute user={user} requiredRole="receptionist">
+              <Pickup />
             </PrivateRoute>
           } />
           {/* Backwards compatibility redirects */}
