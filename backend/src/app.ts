@@ -31,7 +31,7 @@ const app = express();
 
 
 // Allow configuring multiple frontends (local tunnels, production, etc.) via env vars
-const rawAllowedOrigins = process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://localhost:3000';
+const rawAllowedOrigins = process.env.CORS_ORIGINS || 'http://localhost:5173,http://localhost:3000';
 const allowedOrigins = rawAllowedOrigins
   .split(',')
   .map((origin) => origin.trim())
