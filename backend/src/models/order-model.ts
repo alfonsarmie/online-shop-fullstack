@@ -20,7 +20,7 @@ interface OrderAttributes {
 }
 
 interface OrderCreationAttributes extends Optional<OrderAttributes, 
-  "idOrder" |  "PickupDate" | "external_reference" | 
+  "idOrder" |  "PickupDate"  | "external_reference" | 
   "payment_id" | "customer_phone" | "customer_notes" | "sport" | "statusMp" | "currencyId"> {}
 
 class Order extends Model<OrderAttributes, OrderCreationAttributes> 

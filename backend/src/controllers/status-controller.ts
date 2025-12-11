@@ -1,8 +1,11 @@
 import { Request, Response } from 'express';
+import { randomBytes } from 'crypto';
 import Status from '../models/status-model';
 import Order from '../models/order-model';
 import { Transaction } from 'sequelize';
 import { db } from '../db/connection';
+
+const generatePickupCode = () => randomBytes(24).toString('base64url').slice(0, 48);
 
 export const createStatus = async (req: Request, res: Response): Promise<Response> => {
   try {
@@ -26,10 +29,16 @@ export const createStatus = async (req: Request, res: Response): Promise<Respons
       if (!order) throw new Error('Order not found');
 
       
-      if (normalizedDesc === 'withdrawn') {
+      if (normalizedDesc === 'ready') {
+        order.PickupDate = null as any;
+        order.pickup_used = false as any;
+        order.pickup_code = order.pickup_code || generatePickupCode();
+      } else if (normalizedDesc === 'withdrawn') {
         order.PickupDate = new Date();
+        order.pickup_used = true as any;
       } else {
         order.PickupDate = null as any;
+        order.pickup_used = false as any;
       }
 
       await order.save({ transaction: t });
@@ -94,7 +103,17 @@ export const updateStatus = async (req: Request, res: Response): Promise<Respons
         throw new Error(`Can only update to 'ready' or 'confirmed' status, not '${normalizedDesc}'.`);
       }
 
-
+      if (normalizedDesc === 'ready') {
+        order.PickupDate = null as any;
+        order.pickup_used = false as any;
+        order.pickup_code = order.pickup_code || generatePickupCode();
+      } else if (normalizedDesc === 'confirmed') {
+        order.PickupDate = null as any;
+        order.pickup_used = false as any;
+        order.pickup_code = null as any;
+      }
+      await order.save({ transaction: t });
+ 
       await Status.create(
         { idOrder: parseInt(idOrder), statusDate: new Date(), description: normalizedDesc },
         { transaction: t }
