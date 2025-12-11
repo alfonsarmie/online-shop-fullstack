@@ -1,6 +1,9 @@
 import api from "./api";
 import { Product, FrontendProduct, CriticalProductInfo } from "../types/product";
 
+
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
 export const productService = {
 
   getAllProducts: async (search?: string): Promise<FrontendProduct[]> => {
@@ -29,11 +32,11 @@ export const productService = {
           price: product.prices[0]?.value || 0,
           img:
             product.images && product.images.length > 0
-              ? `http://localhost:3000${product.images[0].url}` 
+              ? `${BASE_URL}${product.images[0].url}` 
               : "/placeholder-image.jpg",
           img2:
             product.images && product.images.length > 1
-              ? `http://localhost:3000${product.images[1].url}` 
+              ? `${BASE_URL}${product.images[1].url}` 
               : "/placeholder-image.jpg",
           description: product.description,
           sizes,
@@ -60,7 +63,7 @@ export const productService = {
       if (productData.images && Array.isArray(productData.images)) {
         productData.images = productData.images.map((image: any) => ({
           ...image,
-          url: `http://localhost:3000${image.url}`,
+          url: `${BASE_URL}${image.url}`,
         }));
       }
 
