@@ -84,7 +84,7 @@ app.use('/uploads', express.static('uploads'));
 
 // Initialize the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`Server listening on http://localhost:${PORT || 3000}`);
 });
 
