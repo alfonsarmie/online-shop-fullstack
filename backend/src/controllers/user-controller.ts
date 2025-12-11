@@ -124,7 +124,11 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
         await transporter.verify();
         console.log('Email transporter verified successfully');
     
-        const backendUrl = process.env.BACKEND_BASE_URL || "http://localhost:3000";
+        const backendUrl =
+          process.env.BACKEND_BASE_URL && process.env.BACKEND_BASE_URL.trim().length > 0
+            ? process.env.BACKEND_BASE_URL.trim().replace(/\/$/, "")
+            : "http://localhost:3000";
+            
         const activationUrl = `${backendUrl}/api/users/activate/${activationToken}`;
     
         await transporter.sendMail({
@@ -161,7 +165,11 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
 
 
 export const activateUser = async (req: Request, res: Response): Promise<Response | void> => {
-  const frontendUrl = process.env.FRONTEND_BASE_URL || "http://localhost:5173";
+  const frontendUrl =
+    process.env.FRONTEND_BASE_URL && process.env.FRONTEND_BASE_URL.trim().length > 0
+      ? process.env.FRONTEND_BASE_URL.trim().replace(/\/$/, "")
+      : "http://localhost:5173";
+
   try {
     const { token } = req.params;
     const user = await User.findOne({ where: { activationToken: token } });

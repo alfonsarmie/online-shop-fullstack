@@ -119,8 +119,7 @@ export const getItemImage = (fallback?: string) => {
   if (!fallback) return "/placeholder-image.jpg";
 
   if (fallback.startsWith("/uploads")) {
-    const host =
-      (import.meta as any).env?.VITE_API_HOST || "http://localhost:3000";
+    const host = (import.meta as any).env.VITE_API_URL || "http://localhost:3000";
     return `${host}${fallback}`;
   }
   return fallback;
@@ -137,7 +136,7 @@ const getOrders = async (params?: { page?: number; limit?: number }) => {
 };
 
 
-const getUserOrders = async (userId: number) => {
+const getUserOrders = async (userId: string) => {
   try {
     const response = await api.get<{ orders: BackendOrder[] } | BackendOrder[]>(
       `/orders/user/${userId}`

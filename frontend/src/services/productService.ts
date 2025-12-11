@@ -2,7 +2,7 @@ import api from "./api";
 import { Product, FrontendProduct, CriticalProductInfo } from "../types/product";
 
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const BASE_URL = (import.meta as any).env.VITE_API_URL || "http://localhost:3000";
 
 export const productService = {
 

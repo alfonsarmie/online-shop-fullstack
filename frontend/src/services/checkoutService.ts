@@ -50,7 +50,7 @@ const createPaymentPreference = async (
       cartItems,
       storedUser: {
         ...user,
-        idUser: Number(user.idUser),
+        idUser: String(user.idUser),
         email: user.email ?? checkoutData.email ?? "",
         name: user.name ?? checkoutData.name ?? "",
       },
