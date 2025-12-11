@@ -34,7 +34,7 @@ export default function LoginForm({ setUser }: LoginFormProps) {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/auth/login",
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
         { email, password }
       );
 
@@ -85,7 +85,7 @@ export default function LoginForm({ setUser }: LoginFormProps) {
   const handleGoogleLogin = async (credentialResponse: any) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/auth/google-login",
+        `${import.meta.env.VITE_API_URL}/api/auth/google-login`,
         { id_token: credentialResponse.credential }
       );
 
