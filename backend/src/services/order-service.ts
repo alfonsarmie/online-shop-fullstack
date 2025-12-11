@@ -6,7 +6,7 @@ import db from '../db/connection';
 import { v4 as uuidv4 } from 'uuid';
 
 // Agregamos checkoutData como tercer argumento
-export const createOrder = async (items: any[], userId: number, checkoutData: any) => {
+export const createOrder = async (items: any[], userId: string, checkoutData: any) => {
     const t = await db.transaction();
 
     try {
@@ -46,6 +46,7 @@ export const createOrder = async (items: any[], userId: number, checkoutData: an
             customer_email: checkoutData.email,
             customer_phone: checkoutData.phone,
             customer_notes: checkoutData.notes,
+            sport: checkoutData.sport || null,
             idPaymentMethod: 1 
         }, { transaction: t });
 

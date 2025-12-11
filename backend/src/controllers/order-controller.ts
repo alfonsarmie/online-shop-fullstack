@@ -15,7 +15,7 @@ type PlainOrder = {
     idOrder: number;
     orderDate: string | Date;
     PickupDate?: string | Date | null;
-    idUser?: number;
+    idUser?: string;
     idPaymentMethod?: number;
     external_reference?: string;
     payment_id?: string;
@@ -51,7 +51,7 @@ export const getUserOrders = async (req: Request, res: Response) => {
 
     try {
         const orders = await Order.findAll({
-            where: { idUser: Number(userId) },
+            where: { idUser: userId },
             include: [
                 {
                     model: OrderLine,
