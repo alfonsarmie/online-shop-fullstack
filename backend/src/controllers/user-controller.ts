@@ -124,7 +124,8 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
         await transporter.verify();
         console.log('Email transporter verified successfully');
     
-        const activationUrl = `http://localhost:3000/api/users/activate/${activationToken}`;
+        const backendUrl = process.env.BACKEND_BASE_URL || "http://localhost:3000";
+        const activationUrl = `${backendUrl}/api/users/activate/${activationToken}`;
     
         await transporter.sendMail({
           from: process.env.EMAIL_USER,
@@ -160,13 +161,14 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
 
 
 export const activateUser = async (req: Request, res: Response): Promise<Response | void> => {
+  const frontendUrl = process.env.FRONTEND_BASE_URL || "http://localhost:5173";
   try {
     const { token } = req.params;
     const user = await User.findOne({ where: { activationToken: token } });
 
     if (!user || !user.activationTokenExpires || user.activationTokenExpires < new Date()) {
       
-      return res.redirect(`http://localhost:5173/activate/${token}?error=invalid_token`);
+      return res.redirect(`${frontendUrl}/activate/${token}?error=invalid_token`);
     }
 
     user.status = "active";
@@ -175,11 +177,11 @@ export const activateUser = async (req: Request, res: Response): Promise<Respons
     await user.save();
 
 
-    return res.redirect(`http://localhost:5173/activate/${token}`);
+    return res.redirect(`${frontendUrl}/activate/${token}`);
 
   } catch (error: any) {
     
-    return res.redirect(`http://localhost:5173/activate/${req.params.token}?error=server_error`);
+    return res.redirect(`${frontendUrl}/activate/${req.params.token}?error=server_error`);
   }
 };
 
