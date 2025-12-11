@@ -5,7 +5,7 @@ interface OrderAttributes {
   idOrder: number;
   orderDate: Date;
   PickupDate?: Date;
-  idUser: number;
+  idUser: string;
   idPaymentMethod: number;
   external_reference?: string;
   payment_id?: string;
@@ -29,7 +29,7 @@ class Order extends Model<OrderAttributes, OrderCreationAttributes>
   public idOrder!: number;
   public orderDate!: Date;
   public PickupDate?: Date;
-  public idUser!: number;
+  public idUser!: string;
   public idPaymentMethod!: number;
   public external_reference?: string;
   public payment_id?: string;
@@ -60,7 +60,7 @@ Order.init({
     allowNull: true,
   },
   idUser: {
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.STRING(36),
     allowNull: false,
   },
   idPaymentMethod: {

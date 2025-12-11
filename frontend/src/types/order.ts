@@ -32,7 +32,7 @@ export interface BackendOrder {
   idOrder: number;
   orderDate: string;
   PickupDate?: string;
-  idUser: number;
+  idUser: string;
   idPaymentMethod: number;
   external_reference?: string;
   payment_id?: string;
@@ -48,7 +48,7 @@ export interface BackendOrder {
     name: string;
   };
   user?: {
-    idUser: number;
+    idUser: string;
     name: string;
     email: string;
   };
