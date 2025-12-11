@@ -2,19 +2,12 @@ import { Router } from 'express';
 import { check } from 'express-validator';
 import { validateFields } from '../middlewares/validate-fields';
 import { allowAdminOrReceptionist, requireAuth, validateJWT } from '../middlewares/validate-jwt';
-import { createOrderFromSession, getUserOrders, getOrders, getMonthlyWorth, getSportsStats, getStatusStats, buttonOfRegret } from '../controllers/order-controller';
+import { getUserOrders, getOrders, getMonthlyWorth, getSportsStats, getStatusStats, buttonOfRegret } from '../controllers/order-controller';
 
 const router = Router();
 
 
-router.post(
-    '/create-from-session',
-    [
-        check('session_id', 'session_id es requerido').notEmpty(),
-        validateFields
-    ],
-    createOrderFromSession
-);
+// Stripe session-based creation removed; endpoint deprecated
 
 
 router.get(
