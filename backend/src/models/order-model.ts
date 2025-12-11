@@ -5,6 +5,8 @@ interface OrderAttributes {
   idOrder: number;
   orderDate: Date;
   PickupDate?: Date;
+  pickup_code?: string | null;
+  pickup_used?: boolean | number | null;
   idUser: number;
   idPaymentMethod: number;
   external_reference?: string;
@@ -20,7 +22,7 @@ interface OrderAttributes {
 }
 
 interface OrderCreationAttributes extends Optional<OrderAttributes, 
-  "idOrder" |  "PickupDate" | "external_reference" | 
+  "idOrder" |  "PickupDate" | "pickup_code" | "pickup_used" | "external_reference" | 
   "payment_id" | "customer_phone" | "customer_notes" | "sport" | "statusMp" | "currencyId"> {}
 
 class Order extends Model<OrderAttributes, OrderCreationAttributes> 
@@ -29,6 +31,8 @@ class Order extends Model<OrderAttributes, OrderCreationAttributes>
   public idOrder!: number;
   public orderDate!: Date;
   public PickupDate?: Date;
+   public pickup_code?: string | null;
+   public pickup_used?: boolean | number | null;
   public idUser!: number;
   public idPaymentMethod!: number;
   public external_reference?: string;
@@ -58,6 +62,15 @@ Order.init({
   PickupDate: {
     type: DataTypes.DATE,
     allowNull: true,
+  },
+  pickup_code: {
+    type: DataTypes.STRING(48),
+    allowNull: true,
+  },
+  pickup_used: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
   },
   idUser: {
     type: DataTypes.INTEGER.UNSIGNED,

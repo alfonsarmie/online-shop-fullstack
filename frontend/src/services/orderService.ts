@@ -14,6 +14,16 @@ const API_URL = "";
 const normalizeStatus = (status?: string | null): FrontendOrderStatus => {
   if (!status) return "confirmed";
   const cleaned = status.toLowerCase().replace(/[-\s]+/g, "_");
+  const customMap: Record<string, FrontendOrderStatus> = {
+    listo_para_retirar: "ready",
+    listo: "ready",
+    retirado: "withdrawn",
+    cancelado: "cancelled",
+    pendiente_de_pago: "pending_payment",
+    pendiente_pago: "pending_payment",
+    confirmado: "confirmed",
+  };
+  if (customMap[cleaned]) return customMap[cleaned];
   const allowed: FrontendOrderStatus[] = [
     "confirmed",
     "ready",
@@ -56,6 +66,18 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
       }
     : normalizedHistory[0] ?? null;
 
+  const pickupCode =
+    (order as any).pickupCode ??
+    (order as any).pickup_code ??
+    (order as any).pickupcode ??
+    null;
+
+  const pickupUsedRaw =
+    (order as any).pickupUsed ??
+    (order as any).pickup_used ??
+    (order as any).pickupused ??
+    null;
+
   let status: FrontendOrderStatus;
   if (normalizedLatest) {
     status = normalizedLatest.description;
@@ -79,6 +101,11 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
         : Number(order.total_amount || 0),
     items,
     pickupDate: order.PickupDate || undefined,
+    pickupCode: pickupCode || undefined,
+    pickupUsed:
+      typeof pickupUsedRaw === "boolean"
+        ? pickupUsedRaw
+        : pickupUsedRaw === 1 || pickupUsedRaw === "1",
     canCancel: !order.PickupDate && order.statusMp !== "paid",
     statusMp: order.statusMp,
     history: normalizedHistory,

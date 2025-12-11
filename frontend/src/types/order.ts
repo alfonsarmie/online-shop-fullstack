@@ -47,6 +47,10 @@ export interface BackendOrder {
   paymentMethod?: {
     name: string;
   };
+  pickup_code?: string | null;
+  pickup_used?: boolean | number | null;
+  pickupCode?: string | null;
+  pickupUsed?: boolean | number | null;
   user?: {
     idUser: number;
     name: string;
@@ -89,6 +93,8 @@ export interface FrontendOrder {
   total: number;
   items: FrontendOrderItem[];
   pickupDate?: string;
+  pickupCode?: string;
+  pickupUsed?: boolean;
   canCancel: boolean;
   statusMp?: MercadoPagoStatus;
   history: FrontendOrderStatusHistory[];
