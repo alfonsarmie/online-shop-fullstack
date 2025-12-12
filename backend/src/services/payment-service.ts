@@ -30,6 +30,10 @@ const buildUrl = (path: string, base: string) => {
 };
 
 export const createPreferenceService = async (items: any[], externalReference: string, frontendBaseUrl?: string) => {
+    
+    const client = new MercadoPagoConfig({ accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN || '' });
+
+
     const preference = new Preference(client);
 
     const mpItems = items.map(item => ({

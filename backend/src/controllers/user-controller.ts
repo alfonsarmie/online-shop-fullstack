@@ -265,6 +265,7 @@ export const changePassword = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
+  
   try {
     const authReq = req as Request & { userId?: string };
     const userId = authReq.userId;
