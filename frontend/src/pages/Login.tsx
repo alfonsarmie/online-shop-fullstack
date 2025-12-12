@@ -5,12 +5,13 @@ import FormContainer from "../components/FormContainer";
 import Input from "../components/Input";
 import "../styles/input.css";
 import "../styles/login.css";
-import axios from "axios";
+import api from "../services/api";
 import { User } from "../types/user";
 import SuccessMessage from "../components/SuccessMessage";
 import ErrorMessage from "../components/ErrorMessage";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
 import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
 interface LoginFormProps {
   setUser: (user: User | null) => void;
@@ -36,8 +37,8 @@ export default function LoginForm({ setUser }: LoginFormProps) {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/auth/login`,
+      const response = await api.post(
+        "/auth/login",
         { email, password }
       );
 
