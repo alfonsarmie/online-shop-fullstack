@@ -61,7 +61,7 @@ export default function LoginForm({ setUser }: LoginFormProps) {
         } else {
           navigate("/");
         }
-      }, 1000);
+      }, 100000);
     } catch (error: any) {
       console.error("Login failed:", error.response?.data || error.message);
       
