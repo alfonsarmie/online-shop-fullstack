@@ -2,6 +2,10 @@
 //NOTE: Dont forget to install the dependencies with `npm install`!!!
 //NOTE: Check package.json for scripts to run the server in dev mode
 
+import dns from 'node:dns';
+// Esto fuerza a Node a usar IPv4 primero, solucionando el timeout de Railway/Gmail
+dns.setDefaultResultOrder('ipv4first');
+
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
