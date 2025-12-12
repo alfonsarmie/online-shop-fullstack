@@ -11,7 +11,8 @@ import { ok } from "assert";
 export const loginUser = async (req: Request, res: Response): Promise<Response> => {
 
   const { email, password } = req.body;
-
+  console.log("Login attempt for email:", email);
+  console.log("Password provided:", password);
   try {
     
     const userFound = await User.findOne({ where: { email } });
