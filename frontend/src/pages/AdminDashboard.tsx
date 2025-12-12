@@ -54,7 +54,7 @@ const AdminDashboard: React.FC = () => {
         return { label: "Cancelado" };
       case "withdrawn":
         return { label: "Retirado" };
-      case "pending_payment":
+      case "pending-payment":
         return { label: "Pendiente de pago" };
       default:
         return { label: status };
@@ -241,7 +241,7 @@ useEffect(() => {
               </h2>
             </div>
             <div className="admin-dashboard-panel-body kpi-card status-bar-chart">
-              <BarChart width={500} height={300} data={statusStats}> 
+              <BarChart width={600} height={300} data={statusStats}> 
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="status"
