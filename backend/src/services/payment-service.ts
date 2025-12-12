@@ -44,8 +44,8 @@ export const createPreferenceService = async (items: any[], externalReference: s
         currency_id: 'ARS'
     }));
 
-    const frontendUrl = normalizeBaseUrl(frontendBaseUrl || process.env.FRONTEND_URL);
-    const backendBase = normalizeBaseUrl(process.env.BACKEND_URL || 'http://localhost:3000');
+    const frontendUrl = normalizeBaseUrl(frontendBaseUrl || process.env.FRONTEND_BASE_URL);
+    const backendBase = normalizeBaseUrl(process.env.PUBLIC_BACKEND_URL || 'http://localhost:3000');
 
     const successUrl = buildUrl('/checkout/success', frontendUrl);
     const failureUrl = buildUrl('/checkout/failure', frontendUrl);
@@ -68,6 +68,8 @@ export const createPreferenceService = async (items: any[], externalReference: s
             notification_url: webhookUrl
         }
     });
+
+    console.log('[MercadoPago] init_point generado:', result.init_point);
 
     return {
         id: result.id,
