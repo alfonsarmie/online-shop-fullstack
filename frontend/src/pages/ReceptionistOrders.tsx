@@ -122,9 +122,24 @@ const ReceptionistOrders: React.FC = () => {
     return () => { mounted = false; };
   }, []);
 
+  const pendingPaymentOrders = useMemo(() => {
+    const lower = filter.trim().toLowerCase();
+    return orders
+      .filter(o => o.status === 'pending_payment')
+      .filter(o => {
+        if (!lower) return true;
+        return (
+          o.customerName.toLowerCase().includes(lower) ||
+          o.customerEmail.toLowerCase().includes(lower) ||
+          String(o.id).includes(lower) ||
+          o.orderNumber.toLowerCase().includes(lower)
+        );
+      });
+  }, [orders, filter]);
+
   const pendingOrders = useMemo(() => {
     const lower = filter.trim().toLowerCase();
-    const desired = new Set<OrderStatus>(['confirmed', 'ready', 'pending_payment']);
+    const desired = new Set<OrderStatus>(['confirmed', 'ready']);
     return orders
       .filter(o => desired.has(o.status))
       .filter(o => {
@@ -165,52 +180,26 @@ const ReceptionistOrders: React.FC = () => {
     }
   };
 
-  const markAsDelivered = async (id: number) => {
-    const now = nowIso();
-    const optimistic = orders.map(o => (o.id === id ? { ...o, previousStatus: o.status, status: 'withdrawn' as OrderStatus, withdrawnAt: now } : o));
+  const changeStatus = async (id: number, newStatus: OrderStatus) => {
+    const optimistic = orders.map(o => (o.id === id ? { ...o, status: newStatus, withdrawnAt: newStatus === 'withdrawn' ? nowIso() : undefined } : o));
     setOrders(optimistic);
     setSelectedOrder(null);
     try {
       await orderService.updateOrderStatus(id, {
-        description: 'withdrawn'
+        description: newStatus
       });
 
       const data = await orderService.getOrders({ page: 1, limit: 200 });
       const mapped: Order[] = mapBackendOrders(data.orders || [], optimistic);
       setOrders(mapped);
     } catch (err: any) {
-      console.error('Error marking order as delivered:', err);
-      try {
-        const data = await orderService.getOrders({ page: 1, limit: 200 });
-        const mapped: Order[] = mapBackendOrders(data.orders || [], optimistic);
-        setOrders(mapped);
-      } catch (e) {
-        console.error('Error refetching orders after failed mark delivered:', e);
-      }
-    }
-  };
-
-  const revertToPending = async (id: number) => {
-
-  const current = orders.find(o => o.id === id);
-  const targetStatus = (current?.previousStatus ?? current?.status ?? 'confirmed') as OrderStatus;
-  const optimistic = orders.map(o => (o.id === id ? { ...o, status: targetStatus, withdrawnAt: undefined, previousStatus: undefined } : o));
-    setOrders(optimistic);
-    try {
-      await orderService.updateOrderStatus(id, {
-        description: targetStatus,
-      });
-      const data = await orderService.getOrders({ page: 1, limit: 200 });
-      const mapped: Order[] = mapBackendOrders(data.orders || [], optimistic);
-      setOrders(mapped.map(o => (o.id === id ? { ...o, previousStatus: undefined } : o)));
-    } catch (err) {
-      console.error('Error reverting order to pending:', err);
+      console.error(`Error changing status to ${newStatus}:`, err);
       try {
         const data = await orderService.getOrders({ page: 1, limit: 200 });
         const mapped: Order[] = mapBackendOrders(data.orders || [], orders);
         setOrders(mapped);
       } catch (e) {
-        console.error('Error refetching orders after failed revert:', e);
+        console.error('Error refetching orders after failed status change:', e);
       }
     }
   };
@@ -247,6 +236,57 @@ const ReceptionistOrders: React.FC = () => {
               />
             </label>
           </div>
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="panel-header">
+          <h2>Pendientes de Pago ({pendingPaymentOrders.length})</h2>
+        </div>
+        <div className="panel-body">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>N° Pedido</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Productos</th>
+                <th>Total</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingPaymentOrders.map(order => (
+                <tr key={order.id}>
+                  <td>{order.orderNumber}</td>
+                  <td>
+                    <div>{order.customerName}</div>
+                    <div className="text-muted">{order.customerEmail}</div>
+                  </td>
+                  <td>{formatDate(order.date)}</td>
+                  <td>
+                    {order.items.length} producto{order.items.length !== 1 ? 's' : ''}
+                    <button className="btn-link" onClick={() => setSelectedOrder(order)}>
+                      Ver detalles
+                    </button>
+                  </td>
+                  <td>{currency(order.total)}</td>
+                  <td>
+                    <span className={`status-badge ${getStatusClass(order.status)}`}>
+                      {getStatusLabel(order.status)}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+              {pendingPaymentOrders.length === 0 && (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: 'center', color: '#bdbdbd' }}>
+                    No hay pedidos pendientes de pago
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -289,9 +329,21 @@ const ReceptionistOrders: React.FC = () => {
                     </span>
                   </td>
                   <td>
-                    <button className="btn" onClick={() => markAsDelivered(order.id)}>
-                      Marcar como entregado
-                    </button>
+                    {order.status === 'confirmed' && (
+                      <button className="btn" onClick={() => changeStatus(order.id, 'ready')}>
+                        Marcar como listo
+                      </button>
+                    )}
+                    {order.status === 'ready' && (
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button className="btn" onClick={() => changeStatus(order.id, 'withdrawn')}>
+                          Marcar como entregado
+                        </button>
+                        <button className="btn btn-secondary" onClick={() => changeStatus(order.id, 'confirmed')}>
+                          Revertir a confirmado
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -344,8 +396,8 @@ const ReceptionistOrders: React.FC = () => {
                     <span className={`status-badge ${getStatusClass(order.status)}`}>{getStatusLabel(order.status)}</span>
                   </td>
                   <td>
-                    <button className="btn" onClick={() => revertToPending(order.id)}>
-                      Revertir a pendiente
+                    <button className="btn" onClick={() => changeStatus(order.id, 'ready')}>
+                      Revertir a listo
                     </button>
                   </td>
                 </tr>
@@ -415,10 +467,27 @@ const ReceptionistOrders: React.FC = () => {
                 </tbody>
               </table>
 
-              <div style={{ marginTop: 16, textAlign: 'right' }}>
-                <button className="btn" onClick={() => markAsDelivered(selectedOrder.id)}>
-                  Marcar como entregado
-                </button>
+              <div style={{ marginTop: 16, textAlign: 'right', display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                {selectedOrder.status === 'confirmed' && (
+                  <button className="btn" onClick={() => changeStatus(selectedOrder.id, 'ready')}>
+                    Marcar como listo
+                  </button>
+                )}
+                {selectedOrder.status === 'ready' && (
+                  <>
+                    <button className="btn btn-secondary" onClick={() => changeStatus(selectedOrder.id, 'confirmed')}>
+                      Revertir a confirmado
+                    </button>
+                    <button className="btn" onClick={() => changeStatus(selectedOrder.id, 'withdrawn')}>
+                      Marcar como entregado
+                    </button>
+                  </>
+                )}
+                {selectedOrder.status === 'withdrawn' && (
+                  <button className="btn" onClick={() => changeStatus(selectedOrder.id, 'ready')}>
+                    Revertir a listo
+                  </button>
+                )}
               </div>
             </div>
           </div>
