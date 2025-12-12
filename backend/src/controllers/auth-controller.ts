@@ -34,7 +34,7 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     if (!validPassword) {
       return res.status(400).json({
         message: 'La contraseña es incorrecta',
-        log: email + ' ' + hashed + ' ' + userFound.password
+        log: email + ' ' + password + ' ' + userFound.password
       });
     }
 
