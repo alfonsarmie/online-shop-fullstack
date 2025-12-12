@@ -45,7 +45,8 @@ const AdminDashboard: React.FC = () => {
   }, []);
 
   const mapStatusToFrontend = (status: string) => {
-    switch (status) {
+    const normalized = status?.toLowerCase().trim().replace(/_/g, '-');
+    switch (normalized) {
       case "confirmed":
         return { label: "Confirmado" };
       case "ready":
