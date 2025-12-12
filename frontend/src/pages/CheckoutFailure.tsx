@@ -1,14 +1,49 @@
-﻿import { useMemo } from 'react';
+﻿import { useEffect, useMemo, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useCheckoutQuery } from '../utils/useCheckoutQuery';
+import api from '../services/api';
 import '../styles/checkout-status.css';
 
 export default function CheckoutFailure() {
   const info = useCheckoutQuery();
+  const [orderNumber, setOrderNumber] = useState<string | null>(null);
+  const fetchedRef = useRef(false);
 
-  const displayOrderNumber = useMemo(() => (
-    info.external_reference ?? info.payment_id ?? info.collection_id ?? ''
-  ), [info.collection_id, info.external_reference, info.payment_id]);
+  useEffect(() => {
+    const fetchOrder = async () => {
+      if (!info.external_reference || fetchedRef.current) return;
+
+      fetchedRef.current = true;
+
+      try {
+        const response = await api.post('/orders/create-from-session', {
+          session_id: info.external_reference,
+        });
+        
+        setOrderNumber(String(response.data.order?.idOrder || ''));
+        
+      } catch (err: any) {
+        console.error('Error fetching order:', err);
+        
+        if (err.response?.data?.msg?.includes('ya fue creada')) {
+          const fallbackOrder = err.response?.data?.order;
+          setOrderNumber(String(fallbackOrder?.idOrder || ''));
+        }
+      }
+    };
+
+    fetchOrder();
+  }, [info.external_reference]);
+
+  const displayOrderNumber = useMemo(() => {
+    const val = orderNumber ?? info.external_reference ?? info.payment_id ?? info.collection_id ?? '';
+    
+    // Si tenemos un número de orden (ya sea del fetch o porque val es numérico y corto), lo formateamos
+    if (orderNumber || (val && !isNaN(Number(val)) && val.length < 10)) {
+        return `ORD-${val.toString().padStart(4, '0')}`;
+    }
+    return val;
+  }, [orderNumber, info.collection_id, info.external_reference, info.payment_id]);
 
   return (
     <div className="page-with-nav-spacing">

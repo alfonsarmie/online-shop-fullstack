@@ -9,7 +9,7 @@ import axios from "axios";
 import { User } from "../types/user";
 import SuccessMessage from "../components/SuccessMessage";
 import ErrorMessage from "../components/ErrorMessage";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
+import { FaEye, FaEyeSlash } from "react-icons/fa"; 
 import { GoogleLogin } from "@react-oauth/google";
 
 interface LoginFormProps {
