@@ -137,7 +137,10 @@ export default function SignUp() {
         confirmPassword: ''
       });
 
-      navigate('/verify-email', { state: { email: emailForNotice } });
+      setTimeout(() => {
+      
+        navigate('/verify-email', { state: { email: emailForNotice } })
+        }, 100000);
 
       
     } catch (error: any) {
