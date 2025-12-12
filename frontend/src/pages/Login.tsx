@@ -17,7 +17,6 @@ interface LoginFormProps {
 }
 
 
-const API_URL = import.meta.env.VITE_API_URL;
 
 
 export default function LoginForm({ setUser }: LoginFormProps) {
@@ -38,7 +37,7 @@ export default function LoginForm({ setUser }: LoginFormProps) {
 
     try {
       const response = await axios.post(
-        `${API_URL}/api/auth/google-login`,
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
         { email, password }
       );
 
@@ -89,7 +88,7 @@ export default function LoginForm({ setUser }: LoginFormProps) {
   const handleGoogleLogin = async (credentialResponse: any) => {
     try {
       const response = await axios.post(
-        `${API_URL}/api/auth/google-login`,
+        `${import.meta.env.VITE_API_URL}/api/auth/google-login`,
         { id_token: credentialResponse.credential }
       );
 

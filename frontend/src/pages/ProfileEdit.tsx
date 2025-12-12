@@ -192,7 +192,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
       const token = localStorage.getItem("token");
 
       const response = await axios.put(
-        `http://localhost:3000/api/users/update/${user?.idUser}`,
+        `${import.meta.env.VITE_API_URL}/api/users/update/${user?.idUser}`,
         dataToSend, // ← Usar dataToSend en lugar de profile
         {
           headers: {
@@ -243,7 +243,7 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
       const token = localStorage.getItem("token");
 
       const response = await axios.put(
-        "http://localhost:3000/api/users/change-password",
+        `${import.meta.env.VITE_API_URL}/api/users/change-password/${user?.idUser}`,
         {
           currentPassword: passwords.actual,
           newPassword: passwords.new,

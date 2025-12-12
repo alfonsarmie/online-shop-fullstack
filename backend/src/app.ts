@@ -2,6 +2,10 @@
 //NOTE: Dont forget to install the dependencies with `npm install`!!!
 //NOTE: Check package.json for scripts to run the server in dev mode
 
+import dns from 'node:dns';
+// Esto fuerza a Node a usar IPv4 primero, solucionando el timeout de Railway/Gmail
+dns.setDefaultResultOrder('ipv4first');
+
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -31,7 +35,7 @@ const app = express();
 
 
 // Allow configuring multiple frontends (local tunnels, production, etc.) via env vars
-const rawAllowedOrigins = process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://localhost:3000';
+const rawAllowedOrigins = process.env.CORS_ORIGINS || 'http://localhost:5173,http://localhost:3000';
 const allowedOrigins = rawAllowedOrigins
   .split(',')
   .map((origin) => origin.trim())
@@ -84,7 +88,7 @@ app.use('/uploads', express.static('uploads'));
 
 // Initialize the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`Server listening on http://localhost:${PORT || 3000}`);
 });
 

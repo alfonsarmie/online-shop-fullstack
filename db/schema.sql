@@ -43,7 +43,7 @@ DROP TABLE IF EXISTS `client_discount`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `client_discount` (
   `idDiscount` int unsigned NOT NULL,
-  `idUser` int unsigned NOT NULL,
+  `idUser` varchar(45) NOT NULL,
   PRIMARY KEY (`idDiscount`,`idUser`),
   KEY `idUser` (`idUser`),
   CONSTRAINT `client_discount_ibfk_1` FOREIGN KEY (`idDiscount`) REFERENCES `discount` (`idDiscount`) ON UPDATE CASCADE,
@@ -93,7 +93,7 @@ CREATE TABLE `order` (
   `idOrder` int unsigned NOT NULL AUTO_INCREMENT,
   `orderDate` datetime NOT NULL,
   `PickupDate` datetime DEFAULT NULL,
-  `idUser` int unsigned NOT NULL,
+  `idUser` varchar(45) NOT NULL,
   `idPaymentMethod` int unsigned NOT NULL,
   `total_amount` decimal(10,2) NOT NULL DEFAULT '0.00',
   `customer_name` varchar(255) NOT NULL,
@@ -106,7 +106,7 @@ CREATE TABLE `order` (
   `external_reference` varchar(255) DEFAULT NULL,
   `payment_id` varchar(255) DEFAULT NULL COMMENT 'Payment intent ID from Stripe',
   `pickup_code` CHAR(48) NULL,
-  `pickup_used` TINYINT(1) NOT NULL DEFAULT 0;
+  `pickup_used` TINYINT(1) NOT NULL DEFAULT 0,
   UNIQUE KEY `ux_orders_pickup_code` (`pickup_code`),
   PRIMARY KEY (`idOrder`),
   KEY `idUser` (`idUser`),
@@ -260,7 +260,7 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
-  `idUser` int unsigned NOT NULL AUTO_INCREMENT,
+  `idUser` varchar(45) NOT NULL,
   `dni` int unsigned DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,

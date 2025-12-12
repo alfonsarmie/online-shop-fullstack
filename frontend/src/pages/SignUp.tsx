@@ -125,7 +125,7 @@ export default function SignUp() {
       const emailForNotice = formData.email;
       
       // Make the API call
-      await axios.post("http://localhost:3000/api/users/create", userData);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/users/create`, userData);
 
       // On success, show message and navigate to verify email
       setFormData({

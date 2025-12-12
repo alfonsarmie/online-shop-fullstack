@@ -31,14 +31,10 @@ export const createStatus = async (req: Request, res: Response): Promise<Respons
       
       if (normalizedDesc === 'ready') {
         order.PickupDate = null as any;
-        order.pickup_used = false as any;
-        order.pickup_code = order.pickup_code || generatePickupCode();
       } else if (normalizedDesc === 'withdrawn') {
         order.PickupDate = new Date();
-        order.pickup_used = true as any;
       } else {
         order.PickupDate = null as any;
-        order.pickup_used = false as any;
       }
 
       await order.save({ transaction: t });
@@ -105,12 +101,8 @@ export const updateStatus = async (req: Request, res: Response): Promise<Respons
 
       if (normalizedDesc === 'ready') {
         order.PickupDate = null as any;
-        order.pickup_used = false as any;
-        order.pickup_code = order.pickup_code || generatePickupCode();
       } else if (normalizedDesc === 'confirmed') {
         order.PickupDate = null as any;
-        order.pickup_used = false as any;
-        order.pickup_code = null as any;
       }
       await order.save({ transaction: t });
  
