@@ -11,8 +11,8 @@ import { ok } from "assert";
 export const loginUser = async (req: Request, res: Response): Promise<Response> => {
 
   const { email, password } = req.body;
-  console.log("Login attempt for email:", email);
-  console.log("Password provided:", password);
+  const salt = bcrypt.genSaltSync(10);
+  const hashed = bcrypt.hashSync(password, salt);
   try {
     
     const userFound = await User.findOne({ where: { email } });
@@ -33,7 +33,8 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     const validPassword = bcrypt.compareSync(password, userFound.password);
     if (!validPassword) {
       return res.status(400).json({
-        message: 'La contraseña es incorrecta'
+        message: 'La contraseña es incorrecta',
+        log: email + ' ' + hashed + ' ' + userFound.password
       });
     }
 
