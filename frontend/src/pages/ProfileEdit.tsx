@@ -30,7 +30,7 @@ interface PasswordStrength {
 
 interface ProfileEditProps {
   user: {
-    idUser: number;
+    idUser: string;
     name: string;
     surname?: string;
     email: string;

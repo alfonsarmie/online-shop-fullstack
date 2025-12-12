@@ -164,7 +164,10 @@ const AdminUsers = () => {
         role: prev.role,
       }));
     } catch (error: any) {
-      const apiMessage = error?.response?.data?.message;
+      const apiMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.errors?.[0]?.msg;
+
       setErrorMessage(apiMessage || "No se pudo crear la cuenta. Intenta nuevamente.");
       setSuccessMessage("");
     } finally {

@@ -32,7 +32,7 @@ interface OrderDraftItemPayload {
 }
 
 interface OrderDraftPayload {
-  idUser: number;
+  idUser: string;
   customer_name: string;
   customer_email: string;
   customer_phone?: string;
