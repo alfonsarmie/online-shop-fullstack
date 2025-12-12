@@ -221,11 +221,11 @@ const ProfileEdit: React.FC<ProfileEditProps> = ({ user, setUser }) => {
       }
     } catch (error: any) {
       console.error("Error:", error);
-      setSuccessMessage(
+      setErrorMessage(
         error.response?.data?.message || "Error al actualizar el perfil"
       );
       setTimeout(() => {
-        setSuccessMessage("");
+        setErrorMessage("");
       }, 3000);
     }
   };

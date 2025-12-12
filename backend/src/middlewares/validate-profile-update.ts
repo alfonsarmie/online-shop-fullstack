@@ -11,7 +11,7 @@ export const validateProfileUpdate = async (req: Request, res: Response, next: N
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret') as { userId: number };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret') as { userId: string };
     const { userId } = decoded;
     const idToUpdate = req.params.id;
 
@@ -29,22 +29,22 @@ export const validateProfileUpdate = async (req: Request, res: Response, next: N
     console.log('   Rol del usuario:', user.role);
     
     
-    const userIdNum = Number(userId);
-    const idToUpdateNum = Number(idToUpdate);
+    const userIdNum = (userId);
+    const idToUpdateNum = (idToUpdate);
 
     console.log('   Comparación:', userIdNum, '===', idToUpdateNum, '→', userIdNum === idToUpdateNum);
     
     
-    if (userIdNum !== idToUpdateNum && user.role !== 'admin') {
-      console.log('   ❌ Permiso denegado');
-      res.status(403).json({ message: 'You can only update your own profile' });
+    if (userIdNum !== idToUpdateNum && user.role == 'admin') {
+      console.log('   Permiso denegado');
+      res.status(403).json({ message: 'admin cannot update his own profile' });
       return;
     }
 
-    console.log('   ✅ Permiso concedido');
+    console.log('   Permiso concedido');
     next();
   } catch (error) {
-    console.log('❌ Error en validación de token:', error);
+    console.log(' Error en validación de token:', error);
     res.status(401).json({ message: 'Invalid token' });
   }
 };
