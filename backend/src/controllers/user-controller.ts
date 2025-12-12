@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
-import nodemailer from "nodemailer";
+import { Resend } from 'resend';
 
 import User from "../models/user-model";
 
@@ -105,21 +105,7 @@ export const createUser = async (
             error: "Missing email credentials",
           });
         }
-
-        console.log("Creating email transporter...");
-        const transporter = nodemailer.createTransport({
-          host: "smtp.gmail.com",
-          port: 587,
-          secure: false,
-          auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-          },
-        });
-
-        await transporter.verify();
-        console.log("Email transporter verified successfully");
-
+        
         const backendUrl =
           process.env.BACKEND_BASE_URL &&
           process.env.BACKEND_BASE_URL.trim().length > 0
@@ -127,13 +113,23 @@ export const createUser = async (
             : "http://localhost:3000";
 
         const activationUrl = `${backendUrl}/api/users/activate/${activationToken}`;
+        
+        const resend = new Resend(`${process.env.RESEND_API_KEY}`);
 
-        await transporter.sendMail({
-          from: process.env.EMAIL_USER,
-          to: userCreated.email,
+        console.log("Send email...");
+        
+          
+        await resend.emails.send({
+          from: `Acme <onboarding@resend.dev>`,
+          to: "rowingtienda@gmail.com",
           subject: "Activa tu cuenta",
           html: `<p>Haz click <a href="${activationUrl}">aquí</a> para activar tu cuenta.</p>`,
         });
+
+        
+        console.log("Email transporter verified successfully");
+
+
       } catch (error: any) {
         console.error("Email sending error:", error);
         return res.status(500).json({
@@ -332,20 +328,7 @@ export const resetPassword = async (
     user.passwordResetTokenExpiresAt = new Date(Date.now() + 3600000); // 1 hour
     user.passwordResetTokenUsedAt = null;
     await user.save();
-
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-      // ESTA ES LA MAGIA QUE TE FALTA:
-      family: 4, 
-    }as any);
-
-    await transporter.verify();
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     const frontendBaseUrl =
       process.env.FRONTEND_BASE_URL &&
@@ -353,13 +336,19 @@ export const resetPassword = async (
         ? process.env.FRONTEND_BASE_URL.trim().replace(/\/$/, "")
         : "http://localhost:5173";
     const resetUrl = `${frontendBaseUrl}/reset-password/${resetToken}`;
-
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
+    
+    console.log("Send email...");
+        
+      
+    await resend.emails.send({
+      from: `Acme <onboarding@resend.dev>`,
+      to: "rowingtienda@gmail.com",
       subject: "Restablecer contraseña",
       html: `<p>Haz click <a href="${resetUrl}">aquí</a> para restablecer tu contraseña.</p>`,
     });
+
+    console.log("Password reset email sent");
+
 
     return res.status(200).json({ message: "Password reset email sent" });
   } catch (error: any) {
