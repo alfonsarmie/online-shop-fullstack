@@ -122,11 +122,9 @@ const ReceptionistOrders: React.FC = () => {
     return () => { mounted = false; };
   }, []);
 
-  const paymentPendingOrders = useMemo(() => orders.filter(o => o.status === 'pending_payment'), [orders]);
-
-  const corfirmedOrders = useMemo(() => {
+  const pendingOrders = useMemo(() => {
     const lower = filter.trim().toLowerCase();
-    const desired = new Set<OrderStatus>(['confirmed', 'ready']);
+    const desired = new Set<OrderStatus>(['confirmed', 'ready', 'pending_payment']);
     return orders
       .filter(o => desired.has(o.status))
       .filter(o => {
@@ -167,44 +165,46 @@ const ReceptionistOrders: React.FC = () => {
     }
   };
 
-  const markAsReady = async (id: number) => {
-    const optimistic = orders.map(o => (o.id === id ? { ...o, previousStatus: o.status, status: 'ready' as OrderStatus } : o));
+  const markAsDelivered = async (id: number) => {
+    const now = nowIso();
+    const optimistic = orders.map(o => (o.id === id ? { ...o, previousStatus: o.status, status: 'withdrawn' as OrderStatus, withdrawnAt: now } : o));
     setOrders(optimistic);
     setSelectedOrder(null);
     try {
-      await orderService.updateStatusTransition(id, {
-        description: 'ready'
+      await orderService.updateOrderStatus(id, {
+        description: 'withdrawn'
       });
 
       const data = await orderService.getOrders({ page: 1, limit: 200 });
       const mapped: Order[] = mapBackendOrders(data.orders || [], optimistic);
       setOrders(mapped);
     } catch (err: any) {
-      console.error('Error marking order as ready:', err);
+      console.error('Error marking order as delivered:', err);
       try {
         const data = await orderService.getOrders({ page: 1, limit: 200 });
-        const mapped: Order[] = mapBackendOrders(data.orders || [], orders);
+        const mapped: Order[] = mapBackendOrders(data.orders || [], optimistic);
         setOrders(mapped);
       } catch (e) {
-        console.error('Error refetching orders after failed mark ready:', e);
+        console.error('Error refetching orders after failed mark delivered:', e);
       }
     }
   };
 
-  const revertToConfirmed = async (id: number) => {
-    const optimistic = orders.map(o => (o.id === id ? { ...o, previousStatus: o.status, status: 'confirmed' as OrderStatus } : o));
-    setOrders(optimistic);
-    setSelectedOrder(null);
-    try {
-      await orderService.updateStatusTransition(id, {
-        description: 'confirmed'
-      });
+  const revertToPending = async (id: number) => {
 
+  const current = orders.find(o => o.id === id);
+  const targetStatus = (current?.previousStatus ?? current?.status ?? 'confirmed') as OrderStatus;
+  const optimistic = orders.map(o => (o.id === id ? { ...o, status: targetStatus, withdrawnAt: undefined, previousStatus: undefined } : o));
+    setOrders(optimistic);
+    try {
+      await orderService.updateOrderStatus(id, {
+        description: targetStatus,
+      });
       const data = await orderService.getOrders({ page: 1, limit: 200 });
       const mapped: Order[] = mapBackendOrders(data.orders || [], optimistic);
-      setOrders(mapped);
-    } catch (err: any) {
-      console.error('Error reverting order to confirmed:', err);
+      setOrders(mapped.map(o => (o.id === id ? { ...o, previousStatus: undefined } : o)));
+    } catch (err) {
+      console.error('Error reverting order to pending:', err);
       try {
         const data = await orderService.getOrders({ page: 1, limit: 200 });
         const mapped: Order[] = mapBackendOrders(data.orders || [], orders);
@@ -252,51 +252,7 @@ const ReceptionistOrders: React.FC = () => {
 
       <section className="panel">
         <div className="panel-header">
-          <h2>Pedidos pendientes de pago ({paymentPendingOrders.length})</h2>
-        </div>
-        <div className="panel-body">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>N° Pedido</th>
-                <th>Cliente</th>
-                <th>Fecha</th>
-                <th>Productos</th>
-                <th>Total</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paymentPendingOrders.map(order => (
-                <tr key={order.id}>
-                  <td>{order.orderNumber}</td>
-                  <td>
-                    <div>{order.customerName}</div>
-                    <div className="text-muted">{order.customerEmail}</div>
-                    </td>
-                    <td>{formatDate(order.date)}</td>
-                    <td>
-                      {order.items.length} producto{order.items.length !== 1 ? 's' : ''}
-                      <button className="btn-link" onClick={() => setSelectedOrder(order)}>
-                        Ver detalles
-                      </button>
-                    </td>
-                    <td>{currency(order.total)}</td>
-                    <td>
-                      <span className={`status-badge ${getStatusClass(order.status)}`}>
-                        {getStatusLabel(order.status)}
-                      </span>
-                    </td>
-                </tr>
-              ))}
-              </tbody>
-          </table>
-        </div>          
-      </section>
-
-      <section className="panel">
-        <div className="panel-header">
-          <h2>Pedidos ({corfirmedOrders.length})</h2>
+          <h2>Pedidos ({pendingOrders.length})</h2>
         </div>
         <div className="panel-body">
           <table className="data-table">
@@ -312,7 +268,7 @@ const ReceptionistOrders: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {corfirmedOrders.map(order => (
+              {pendingOrders.map(order => (
                 <tr key={order.id}>
                   <td>{order.orderNumber}</td>
                   <td>
@@ -333,22 +289,13 @@ const ReceptionistOrders: React.FC = () => {
                     </span>
                   </td>
                   <td>
-                    <button 
-                      className="btn" 
-                      onClick={() => {
-                        if (order.status === 'confirmed') {
-                          markAsReady(order.id);
-                        } else if (order.status === 'ready') {
-                          revertToConfirmed(order.id);
-                        }
-                      }}
-                    >
-                      {order.status === 'confirmed' ? 'Marcar como listo' : 'Revertir a confirmado'}
+                    <button className="btn" onClick={() => markAsDelivered(order.id)}>
+                      Marcar como entregado
                     </button>
                   </td>
                 </tr>
               ))}
-              {corfirmedOrders.length === 0 && (
+              {pendingOrders.length === 0 && (
                 <tr>
                   <td colSpan={7} style={{ textAlign: 'center', color: '#bdbdbd' }}>
                     No hay pedidos pendientes
@@ -374,6 +321,7 @@ const ReceptionistOrders: React.FC = () => {
                 <th>Productos</th>
                 <th>Total</th>
                 <th>Estado</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -395,11 +343,16 @@ const ReceptionistOrders: React.FC = () => {
                   <td>
                     <span className={`status-badge ${getStatusClass(order.status)}`}>{getStatusLabel(order.status)}</span>
                   </td>
+                  <td>
+                    <button className="btn" onClick={() => revertToPending(order.id)}>
+                      Revertir a pendiente
+                    </button>
+                  </td>
                 </tr>
               ))}
               {deliveredOrders.length === 0 && (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: 'center', color: '#9b9b9b' }}>
+                  <td colSpan={7} style={{ textAlign: 'center', color: '#9b9b9b' }}>
                     No hay pedidos entregados hoy
                   </td>
                 </tr>
@@ -423,7 +376,7 @@ const ReceptionistOrders: React.FC = () => {
                   <p><strong>Nombre:</strong> {selectedOrder.customerName}</p>
                   <p><strong>Email:</strong> {selectedOrder.customerEmail}</p>
                   <p><strong>Dirección:</strong> {selectedOrder.address}</p>
-
+                  <p><strong>Método de pago:</strong> {selectedOrder.paymentMethod}</p>
                 </div>
                 <div>
                   <h3>Detalles del pedido</h3>
@@ -463,17 +416,8 @@ const ReceptionistOrders: React.FC = () => {
               </table>
 
               <div style={{ marginTop: 16, textAlign: 'right' }}>
-                <button 
-                  className="btn" 
-                  onClick={() => {
-                    if (selectedOrder.status === 'confirmed') {
-                      markAsReady(selectedOrder.id);
-                    } else if (selectedOrder.status === 'ready') {
-                      revertToConfirmed(selectedOrder.id);
-                    }
-                  }}
-                >
-                  {selectedOrder.status === 'confirmed' ? 'Marcar como listo' : 'Revertir a confirmado'}
+                <button className="btn" onClick={() => markAsDelivered(selectedOrder.id)}>
+                  Marcar como entregado
                 </button>
               </div>
             </div>

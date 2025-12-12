@@ -14,16 +14,6 @@ const API_URL = "";
 const normalizeStatus = (status?: string | null): FrontendOrderStatus => {
   if (!status) return "confirmed";
   const cleaned = status.toLowerCase().replace(/[-\s]+/g, "_");
-  const customMap: Record<string, FrontendOrderStatus> = {
-    listo_para_retirar: "ready",
-    listo: "ready",
-    retirado: "withdrawn",
-    cancelado: "cancelled",
-    pendiente_de_pago: "pending_payment",
-    pendiente_pago: "pending_payment",
-    confirmado: "confirmed",
-  };
-  if (customMap[cleaned]) return customMap[cleaned];
   const allowed: FrontendOrderStatus[] = [
     "confirmed",
     "ready",
@@ -66,18 +56,6 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
       }
     : normalizedHistory[0] ?? null;
 
-  const pickupCode =
-    (order as any).pickupCode ??
-    (order as any).pickup_code ??
-    (order as any).pickupcode ??
-    null;
-
-  const pickupUsedRaw =
-    (order as any).pickupUsed ??
-    (order as any).pickup_used ??
-    (order as any).pickupused ??
-    null;
-
   let status: FrontendOrderStatus;
   if (normalizedLatest) {
     status = normalizedLatest.description;
@@ -101,11 +79,6 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
         : Number(order.total_amount || 0),
     items,
     pickupDate: order.PickupDate || undefined,
-    pickupCode: pickupCode || undefined,
-    pickupUsed:
-      typeof pickupUsedRaw === "boolean"
-        ? pickupUsedRaw
-        : pickupUsedRaw === 1 || pickupUsedRaw === "1",
     canCancel: !order.PickupDate && order.statusMp !== "paid",
     statusMp: order.statusMp,
     history: normalizedHistory,
@@ -119,7 +92,8 @@ export const getItemImage = (fallback?: string) => {
   if (!fallback) return "/placeholder-image.jpg";
 
   if (fallback.startsWith("/uploads")) {
-    const host = (import.meta as any).env.VITE_API_URL || "http://localhost:3000";
+    const host =
+      (import.meta as any).env?.VITE_API_HOST || "http://localhost:3000";
     return `${host}${fallback}`;
   }
   return fallback;
@@ -136,7 +110,7 @@ const getOrders = async (params?: { page?: number; limit?: number }) => {
 };
 
 
-const getUserOrders = async (userId: string) => {
+const getUserOrders = async (userId: number) => {
   try {
     const response = await api.get<{ orders: BackendOrder[] } | BackendOrder[]>(
       `/orders/user/${userId}`
@@ -155,18 +129,6 @@ const updateOrderStatus = async (
 ) => {
   try {
     const response = await api.post(`/status/${id}/create`, payload);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-const updateStatusTransition = async (
-  id: number,
-  payload: { description: string }
-) => {
-  try {
-    const response = await api.post(`/status/${id}/update`, payload);
     return response.data;
   } catch (error) {
     throw error;
@@ -214,7 +176,6 @@ export const orderService = {
   getOrders,
   getUserOrders,
   updateOrderStatus,
-  updateStatusTransition,
   cancelOrder,
   getSportsStats,
   getStatusStats,
