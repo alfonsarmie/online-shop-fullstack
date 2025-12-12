@@ -341,7 +341,9 @@ export const resetPassword = async (
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
-    });
+      // ESTA ES LA MAGIA QUE TE FALTA:
+      family: 4, 
+    }as any);
 
     await transporter.verify();
 
