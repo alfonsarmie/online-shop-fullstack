@@ -110,7 +110,6 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
 
         console.log('Creating email transporter...');
         const transporter = nodemailer.createTransport({
-          service: "gmail",
           host: "smtp.gmail.com",
           port: 587,
           secure: false,
