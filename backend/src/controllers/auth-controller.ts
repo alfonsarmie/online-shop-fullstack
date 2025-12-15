@@ -40,7 +40,12 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     if (!validPassword) {
       return res.status(400).json({
         message: 'La contraseña es incorrecta',
-        log: email + ' ' + password + ' ' + userFound.password + ' ' + validPassword
+        // ACÁ AGREGAMOS LA DATA DE DEBUG:
+        debug: {
+            recibido: password,
+            hashEnBaseDeDatos: userFound.password,
+            largoDelHash: userFound.password.length // <--- ESTE ES EL DATO QUE QUEREMOS VER
+        }
       });
     }
 
