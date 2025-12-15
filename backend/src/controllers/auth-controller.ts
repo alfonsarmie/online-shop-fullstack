@@ -29,6 +29,12 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
       });
     }
 
+    // En auth-controller.ts, justo antes del compareSync
+    console.log('--- DEBUG LOGIN ---');
+    console.log('Password ingresada:', password);
+    console.log('Hash en Base de Datos:', userFound.password);
+    console.log('Largo del Hash:', userFound.password.length); // <--- ESTE ES EL DATO CLAVE
+
     
     const validPassword = bcrypt.compareSync(password, userFound.password);
     if (!validPassword) {
