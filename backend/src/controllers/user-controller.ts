@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
+// @ts-ignore
 import { Resend } from 'resend';
 
 import User from "../models/user-model";
