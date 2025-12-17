@@ -5,7 +5,6 @@ import "../styles/productDetails.css";
 import ProductGallery from "../components/ProductGallery";
 import { FrontendProduct, ProductWithSize, Size } from "../types/product";
 import { productService } from "../services/productService";
-import SuccessMessage from "../components/SuccessMessage";
 import ErrorMessage from "../components/ErrorMessage";
 
 function ProductDetails() {
@@ -15,7 +14,6 @@ function ProductDetails() {
   const [selectedSize, setSelectedSize] = useState<Size | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const { addToCart } = useCart();
@@ -108,9 +106,6 @@ function ProductDetails() {
       sizeId: selectedSize.idSize,
       quantity: 1,
     } as ProductWithSize);
-
-    setSuccessMessage("Producto añadido al carrito");
-    setTimeout(() => setSuccessMessage(""), 1500);
   };
 
   if (loading) return <div className="loading">Cargando producto...</div>;
@@ -131,10 +126,6 @@ function ProductDetails() {
   return (
     <div className="page-with-nav-spacing">
       <div className="product-details-container">
-        <SuccessMessage
-          message={successMessage}
-          onClose={() => setSuccessMessage("")}
-        />
         <ErrorMessage
           message={errorMessage}
           onClose={() => setErrorMessage("")}
