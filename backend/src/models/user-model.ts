@@ -73,9 +73,19 @@ User.init({
     allowNull: false
   },
   password: {
-    type: DataTypes.STRING(255),
-    allowNull: false
-  },
+  // VARBINARY se define como BLOB en Sequelize
+  type: DataTypes.BLOB, 
+  allowNull: false,
+  get() {
+    const rawValue = this.getDataValue('password');
+    // MySQL devuelve los campos binarios como un Buffer de Node.js
+    // Lo convertimos a string para que bcrypt.compareSync pueda leerlo
+    if ((rawValue as any) instanceof Buffer) {
+      return rawValue.toString();
+    }
+    return rawValue; // Por si ya viene como string
+  }
+},
   role: {
     type: DataTypes.STRING(50),
     allowNull: true,
