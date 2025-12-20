@@ -121,10 +121,10 @@ export const createUser = async (
         
           
         await resend.emails.send({
-          from: `Acme <onboarding@resend.dev>`,
-          to: "rowingtienda@gmail.com",
+          from: `Acme <onboarding@resend.dev>`,// to be changed when in production
+          to: "rowingtienda@gmail.com",// to be changed when in production
           subject: "Activa tu cuenta",
-          html: `<p>Haz click <a href="${activationUrl}">aquí</a> para activar tu cuenta.</p>`,
+          html: `<p>Haz click <a href="${activationUrl}">aquí</a> para activar tu cuenta.</p>`, //se puede enbellecer el html
         });
 
         
