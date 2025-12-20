@@ -17,7 +17,7 @@ export const createUser = async (
     const { dni, email, name, surname, password, role } = req.body;
 
     let assignedRole = "client";
-    let accountStatus = "active";// to be changed to 'pending' 
+    let accountStatus = "pending";
     let activationToken: string | null = null;
     let activationTokenExpires: Date | null = null;
 
