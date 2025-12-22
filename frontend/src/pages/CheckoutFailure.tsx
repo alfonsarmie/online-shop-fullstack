@@ -21,7 +21,10 @@ export default function CheckoutFailure() {
         if (!targetId) return;
 
         const backendOrders = await orderService.getUserOrders(user.idUser);
-        const foundOrder = backendOrders.find(o => String(o.idOrder) === String(targetId));
+        const foundOrder = backendOrders.find(o => 
+          o.external_reference === targetId || 
+          String(o.idOrder) === String(targetId)
+        );
         
         if (foundOrder) {
           setOrder(mapOrderToFrontend(foundOrder));
