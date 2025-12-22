@@ -93,7 +93,7 @@ export const getItemImage = (fallback?: string) => {
 
   if (fallback.startsWith("/uploads")) {
     const host =
-      (import.meta as any).env?.VITE_API_HOST || "http://localhost:3000";
+      (import.meta as any).env?.VITE_API_URL || "http://localhost:3000";
     return `${host}${fallback}`;
   }
   return fallback;
