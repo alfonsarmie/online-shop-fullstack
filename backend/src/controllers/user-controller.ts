@@ -4,7 +4,8 @@ import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 // @ts-ignore
 import { Resend } from 'resend';
-
+// @ts-ignore
+import { getActivationEmailHtml } from "../helpers/email-templates";
 import User from "../models/user-model";
 
 const STAFF_ROLES = ["admin", "receptionist"];
@@ -124,7 +125,7 @@ export const createUser = async (
           from: `Acme <onboarding@resend.dev>`,// to be changed when in production
           to: "rowingtienda@gmail.com",// to be changed when in production
           subject: "Activa tu cuenta",
-          html: `<p>Haz click <a href="${activationUrl}">aquí</a> para activar tu cuenta.</p>`, //se puede enbellecer el html
+          html: getActivationEmailHtml(activationUrl), //se puede enbellecer el html
         });
 
         
