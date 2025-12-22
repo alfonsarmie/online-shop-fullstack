@@ -27,6 +27,7 @@ const Payment = () => {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const checkoutData = useMemo(() => {
     const saved = localStorage.getItem('checkoutData');
@@ -119,6 +120,23 @@ const Payment = () => {
     }
   };
 
+  const openConfirmModal = () => {
+    if (!isProcessing) {
+      setIsConfirmOpen(true);
+    }
+  };
+
+  const closeConfirmModal = () => {
+    if (!isProcessing) {
+      setIsConfirmOpen(false);
+    }
+  };
+
+  const confirmPayment = () => {
+    if (isProcessing) return;
+    void handlePayment();
+  };
+
   if (!checkoutData) {
     return null; 
   }
@@ -179,7 +197,7 @@ const Payment = () => {
           )}
 
           <button
-            onClick={handlePayment}
+            onClick={openConfirmModal}
             disabled={isProcessing}
             className={`pay-button ${isProcessing ? 'disabled' : ''}`}
           >
@@ -191,6 +209,62 @@ const Payment = () => {
           </button>
         </div>
       </div>
+
+      {isConfirmOpen && (
+        <div
+          className="modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="payment-confirm-title"
+          onClick={closeConfirmModal}
+        >
+          <div
+            className="modal-content confirm-modal"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="confirm-header">
+              <h2 id="payment-confirm-title">Confirmacion de compra</h2>
+              <button
+                type="button"
+                className="confirm-close"
+                onClick={closeConfirmModal}
+                aria-label="Cerrar modal"
+                disabled={isProcessing}
+              >
+                x
+              </button>
+            </div>
+            <div className="modal-body">
+              <p className="confirm-message">Estas seguro de realizar la compra?</p>
+            </div>
+            <div className="confirm-actions">
+              <button
+                type="button"
+                className="neutral-button"
+                onClick={closeConfirmModal}
+                disabled={isProcessing}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="confirm-button confirm-button-payment"
+                onClick={confirmPayment}
+                disabled={isProcessing}
+              >
+                {isProcessing ? (
+                  <span className="button-loading">
+                    <span className="button-spinner" aria-hidden="true"></span>
+                    Redirigiendo...
+                  </span>
+                ) : (
+                  'Ir a Mercado Pago'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
