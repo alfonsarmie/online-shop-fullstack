@@ -12,6 +12,7 @@ import ErrorMessage from "../components/ErrorMessage";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 interface LoginFormProps {
   setUser: (user: User | null) => void;
@@ -24,6 +25,7 @@ export default function LoginForm({ setUser }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [isLoading, setIsLoading] = useState(false);
   const isFormValid = email.trim() !== "" && password.trim() !== "";
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
@@ -35,6 +37,7 @@ export default function LoginForm({ setUser }: LoginFormProps) {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
       const response = await api.post(
@@ -61,8 +64,10 @@ export default function LoginForm({ setUser }: LoginFormProps) {
         } else {
           navigate("/");
         }
+        setIsLoading(false);
       }, 1000);
     } catch (error: any) {
+      setIsLoading(false);
       console.error("Login failed:", error.response?.data || error.message);
       
       let errorMsg = "Error al iniciar sesión";
@@ -87,6 +92,7 @@ export default function LoginForm({ setUser }: LoginFormProps) {
   };
 
   const handleGoogleLogin = async (credentialResponse: any) => {
+    setIsLoading(true);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/auth/google-login`,
@@ -110,8 +116,10 @@ export default function LoginForm({ setUser }: LoginFormProps) {
         } else {
           navigate("/");
         }
+        setIsLoading(false);
       }, 1000);
     } catch (error: any) {
+      setIsLoading(false);
       console.error("Google login failed:", error.response?.data || error.message);
       
       let errorMsg = "Error al iniciar sesión con Google";
@@ -138,6 +146,14 @@ export default function LoginForm({ setUser }: LoginFormProps) {
       <div className="login-container">
         <SuccessMessage message={message} onClose={() => setMessage("")} />
         <ErrorMessage message={errorMessage} onClose={() => setErrorMessage("")} />
+        {isLoading && (
+        <div className="loading-overlay">
+          <div className="loading-content">
+            <LoadingSpinner />
+            <p>Iniciando sesión...</p>
+          </div>
+        </div>
+      )}
       <FormContainer
         logo={logo}
         title="Introduce tus datos para iniciar sesión"

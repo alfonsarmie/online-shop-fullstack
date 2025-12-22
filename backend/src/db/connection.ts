@@ -8,6 +8,9 @@ export const db = new Sequelize(
     host: process.env.DB_HOST || 'localhost',
     port: Number(process.env.DB_PORT) || 3306,
     dialect: 'mysql',
+    dialectOptions: {
+      charset: 'utf8mb4',
+    },
     logging: false,
     timezone: '+00:00',
   }
@@ -16,6 +19,7 @@ export const db = new Sequelize(
 export const connectDB = async () => {
   try {
     await db.authenticate();
+    await db.sync({ alter: true });
     console.log('Database connection established.');
   } catch (error) {
     console.error('Could not connect to database:', error);

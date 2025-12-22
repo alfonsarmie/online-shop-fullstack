@@ -73,8 +73,8 @@ User.init({
     allowNull: false
   },
   password: {
-    type: DataTypes.STRING(255),
-    allowNull: false
+  type: DataTypes.STRING(255),
+  allowNull: false
   },
   role: {
     type: DataTypes.STRING(50),
