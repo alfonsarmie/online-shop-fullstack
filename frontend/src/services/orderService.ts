@@ -135,15 +135,6 @@ const updateOrderStatus = async (
   }
 };
 
-const cancelOrder = async (id: number) => {
-  try {
-    const response = await api.put(`/orders/regret/${id}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
 const getSportsStats = async () => {
   try {
     const response = await api.get('/orders/sports');
@@ -176,7 +167,6 @@ export const orderService = {
   getOrders,
   getUserOrders,
   updateOrderStatus,
-  cancelOrder,
   getSportsStats,
   getStatusStats,
   mapOrderToFrontend,
