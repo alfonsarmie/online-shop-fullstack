@@ -134,6 +134,7 @@ const Payment = () => {
 
   const confirmPayment = () => {
     if (isProcessing) return;
+    setIsConfirmOpen(false);
     void handlePayment();
   };
 
@@ -223,7 +224,7 @@ const Payment = () => {
             onClick={(event) => event.stopPropagation()}
           >
             <div className="confirm-header">
-              <h2 id="payment-confirm-title">Confirmacion de compra</h2>
+              <h2 id="payment-confirm-title">Confirmación de compra</h2>
               <button
                 type="button"
                 className="confirm-close"
@@ -252,14 +253,7 @@ const Payment = () => {
                 onClick={confirmPayment}
                 disabled={isProcessing}
               >
-                {isProcessing ? (
-                  <span className="button-loading">
-                    <span className="button-spinner" aria-hidden="true"></span>
-                    Redirigiendo...
-                  </span>
-                ) : (
-                  'Ir a Mercado Pago'
-                )}
+                Ir a Mercado Pago
               </button>
             </div>
           </div>
