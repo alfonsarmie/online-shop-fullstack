@@ -12,13 +12,7 @@ const normalizeBaseUrl = (rawUrl?: string) => {
         return 'http://localhost:5173';
     }
 
-    try {
-        // Normalize via WHATWG URL to ensure protocol is present
-        const normalized = new URL(trimmed);
-        return normalized.origin + normalized.pathname.replace(/\/+$/, '');
-    } catch {
-        return 'http://localhost:5173';
-    }
+    return trimmed;
 };
 
 const buildUrl = (path: string, base: string) => {
