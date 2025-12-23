@@ -65,6 +65,12 @@
 }
 
 @media (max-width: 600px) {
+    .textosInicio {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
     .contenedorInicio h1 {
         font-size: 30px;
     }

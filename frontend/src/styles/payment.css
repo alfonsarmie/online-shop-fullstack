@@ -174,7 +174,7 @@
   width: 100%;
 }
 
-.neutral-button {
+.confirm-modal .neutral-button {
   background: #f0f0f0;
   color: #333;
   border: 1px solid #ccc;
@@ -182,23 +182,23 @@
   min-width: 150px;
   border-radius: 50px;
   font-weight: 700;
-  font-size: 1.35rem;
+  font-size: 1.2rem;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
   font-family: "Afacad", sans-serif;
 }
 
-.neutral-button:hover {
+.confirm-modal .neutral-button:hover {
   background: #e0e0e0;
   transform: translateY(-1px);
 }
 
-.neutral-button:disabled {
+.confirm-modal .neutral-button:disabled {
   cursor: not-allowed;
   opacity: 0.7;
 }
 
-.confirm-button {
+.confirm-modal .confirm-button {
   background: #c62828;
   color: #fff;
   border: 1px solid #c62828;
@@ -206,20 +206,20 @@
   min-width: 170px;
   border-radius: 50px;
   font-weight: 700;
-  font-size: 1.35rem;
+  font-size: 1.2rem;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   font-family: 'Afacad', sans-serif;
 }
 
-.confirm-button:hover {
+.confirm-modal .confirm-button:hover {
   background: #ad2121;
   border-color: #ad2121;
   box-shadow: 0 8px 20px rgba(198, 40, 40, 0.25);
   transform: translateY(-1px);
 }
 
-.confirm-button:disabled {
+.confirm-modal .confirm-button:disabled {
   cursor: not-allowed;
   opacity: 0.7;
   box-shadow: none;
