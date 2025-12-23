@@ -1,19 +1,39 @@
 import { MercadoPagoConfig, Preference, Payment } from 'mercadopago';
 
-// Configuramos el cliente
 const client = new MercadoPagoConfig({ accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN || '' });
 
-// --- BORRAMOS normalizeBaseUrl Y buildUrl COMPLEJAS ---
-// Usamos esta función simple solo para pegar la ruta base con el path sin duplicar barras
+const normalizeBaseUrl = (rawUrl?: string) => {
+    if (!rawUrl) {
+        return 'http://localhost:5173';
+    }
+
+    const trimmed = rawUrl.trim();
+    if (!trimmed) {
+        return 'http://localhost:5173';
+    }
+
+    try {
+        // Normalize via WHATWG URL to ensure protocol is present
+        const normalized = new URL(trimmed);
+        return normalized.origin + normalized.pathname.replace(/\/+$/, '');
+    } catch {
+        return 'http://localhost:5173';
+    }
+};
+
 const buildUrl = (path: string, base: string) => {
-    // Quitamos la barra final de la base si la tiene y la inicial del path si la tiene
-    const cleanBase = base.replace(/\/+$/, '');
-    const cleanPath = path.startsWith('/') ? path : `/${path}`;
-    return `${cleanBase}${cleanPath}`;
+    try {
+        return new URL(path, base.endsWith('/') ? base : `${base}/`).toString();
+    } catch {
+        return `${base.replace(/\/+$/, '')}${path.startsWith('/') ? path : `/${path}`}`;
+    }
 };
 
 export const createPreferenceService = async (items: any[], externalReference: string, frontendBaseUrl?: string) => {
     
+    const client = new MercadoPagoConfig({ accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN || '' });
+
+
     const preference = new Preference(client);
 
     const mpItems = items.map(item => ({
@@ -24,25 +44,13 @@ export const createPreferenceService = async (items: any[], externalReference: s
         currency_id: 'ARS'
     }));
 
-    // --- ACÁ ESTÁ EL CAMBIO CLAVE ---
-    // 1. Tomamos las variables DIRECTAS.
-    // 2. Si no existen, usamos un default para local, pero confiamos en lo que venga del .env
-    const frontendUrl = frontendBaseUrl || process.env.FRONTEND_BASE_URL || 'http://localhost:5173';
-    
-    // OJO ACÁ: Si estás en PROD, asegurate de que PUBLIC_BACKEND_URL esté cargada en Railway.
-    const backendUrl = process.env.PUBLIC_BACKEND_URL || 'http://localhost:3000';
+    const frontendUrl = normalizeBaseUrl(frontendBaseUrl || process.env.FRONTEND_BASE_URL);
+    const backendBase = normalizeBaseUrl(process.env.PUBLIC_BACKEND_URL || 'http://localhost:3000');
 
-    // Construimos las URLs simples
     const successUrl = buildUrl('/checkout/success', frontendUrl);
     const failureUrl = buildUrl('/checkout/failure', frontendUrl);
     const pendingUrl = buildUrl('/checkout/pending', frontendUrl);
-    const webhookUrl = buildUrl('/api/payments/webhook', backendUrl);
-
-    // Logs de seguridad para que veas en la consola de Railway qué URL está usando
-    console.log('--- DEBUG PREFERENCE ---');
-    console.log('Frontend URL:', frontendUrl);
-    console.log('Backend URL (Webhook):', webhookUrl); // <--- Mirá este log en Railway si falla
-    console.log('------------------------');
+    const webhookUrl = buildUrl('/api/payments/webhook', backendBase);
 
     const shouldAutoReturn = successUrl.startsWith('https://');
 
@@ -56,6 +64,7 @@ export const createPreferenceService = async (items: any[], externalReference: s
                 pending: pendingUrl
             },
             ...(shouldAutoReturn ? { auto_return: 'approved' as const } : {}),
+            // Esta debe apuntar a tu BACKEND. 
             notification_url: webhookUrl
         }
     });
@@ -70,5 +79,6 @@ export const createPreferenceService = async (items: any[], externalReference: s
 
 export const getPaymentDataService = async (id: string) => {
     const payment = new Payment(client);
+    // Devuelve el objeto completo del pago (no solo el ID)
     return await payment.get({ id });
 };
