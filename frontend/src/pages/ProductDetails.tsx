@@ -6,6 +6,7 @@ import ProductGallery from "../components/ProductGallery";
 import { FrontendProduct, ProductWithSize, Size } from "../types/product";
 import { productService } from "../services/productService";
 import ErrorMessage from "../components/ErrorMessage";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -108,7 +109,11 @@ function ProductDetails() {
     } as ProductWithSize);
   };
 
-  if (loading) return <div className="loading">Cargando producto...</div>;
+  if (loading) return (
+    <div className="loading" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+      <LoadingSpinner />
+    </div>
+  );
 
   if (!product)
     return (
