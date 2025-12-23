@@ -1,6 +1,6 @@
 import Order from '../models/order-model'; 
 import OrderLine from '../models/order-line-model';
-import ProductSize from '../models/size-product-model'; // Importamos el modelo de talles
+import ProductSize from '../models/size-product-model'; 
 import Status from '../models/status-model';
 import db from '../db/connection';
 import { v4 as uuidv4 } from 'uuid';
@@ -63,7 +63,7 @@ export const createOrder = async (items: any[], userId: string, checkoutData: an
         await OrderLine.bulkCreate(lines, { transaction: t });
 
         // 4. Crear status inicial según order.statusMp
-        const statusDesc = (newOrder.getDataValue('statusMp') === 'approved') ? 'confirmed' : 'pending-payment';
+        const statusDesc = (newOrder.getDataValue('statusMp') === 'approved') ? 'confirmed' : 'pending_payment';
         await Status.create({
             idOrder: newOrder.getDataValue('idOrder'),
             statusDate: new Date(),
@@ -125,6 +125,20 @@ export const updateOrderStatus = async (externalReference: string, status: strin
                 });
             }
         }
+
+        // 4. Crear nuevo registro en historial de Status
+        let newStatusDesc = 'pending_payment';
+        if (status === 'approved') {
+            newStatusDesc = 'confirmed';
+        } else if (status === 'rejected' || status === 'cancelled') {
+            newStatusDesc = 'cancelled';
+        }
+
+        await Status.create({
+            idOrder: currentOrder.idOrder,
+            statusDate: new Date(),
+            description: newStatusDesc,
+        }, { transaction: t });
             
         await t.commit();
     } catch (error) {
