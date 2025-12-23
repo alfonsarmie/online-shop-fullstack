@@ -225,15 +225,6 @@ const Payment = () => {
           >
             <div className="confirm-header">
               <h2 id="payment-confirm-title">Confirmación de compra</h2>
-              <button
-                type="button"
-                className="confirm-close"
-                onClick={closeConfirmModal}
-                aria-label="Cerrar modal"
-                disabled={isProcessing}
-              >
-                x
-              </button>
             </div>
             <div className="modal-body">
               <p className="confirm-message">Estas seguro de realizar la compra?</p>
