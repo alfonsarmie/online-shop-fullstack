@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 // @ts-ignore
-import { Resend } from 'resend';
+import { Resend } from "resend";
 // @ts-ignore
 import { getActivationEmailHtml } from "../helpers/email-templates";
 import User from "../models/user-model";
@@ -107,7 +107,7 @@ export const createUser = async (
             error: "Missing email credentials",
           });
         }
-        
+
         const backendUrl =
           process.env.BACKEND_BASE_URL &&
           process.env.BACKEND_BASE_URL.trim().length > 0
@@ -115,23 +115,21 @@ export const createUser = async (
             : "http://localhost:3000";
 
         const activationUrl = `${backendUrl}/api/users/activate/${activationToken}`;
-        
+
         const resend = new Resend(`${process.env.RESEND_API_KEY}`);
 
         console.log("Send email...");
         
-          
+        const logoUrl = `${backendUrl}/uploads/logo.png`; // Asegurate que logo.png esté en backend/uploads/
+
         await resend.emails.send({
-          from: `Acme <onboarding@resend.dev>`,// to be changed when in production
-          to: "rowingtienda@gmail.com",// to be changed when in production
+          from: `Acme <onboarding@resend.dev>`, // to be changed when in production
+          to: "rowingtienda@gmail.com", // to be changed when in production
           subject: "Activa tu cuenta",
-          html: getActivationEmailHtml(activationUrl), //se puede enbellecer el html
+          html: getActivationEmailHtml(activationUrl, logoUrl),
         });
 
-        
         console.log("Email transporter verified successfully");
-
-
       } catch (error: any) {
         console.error("Email sending error:", error);
         return res.status(500).json({
@@ -267,7 +265,6 @@ export const changePassword = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  
   try {
     const authReq = req as Request & { userId?: string };
     const userId = authReq.userId;
@@ -277,11 +274,9 @@ export const changePassword = async (
     };
 
     if (currentPassword === newPassword) {
-      return res
-        .status(400)
-        .json({
-          message: "New password must be different than current password",
-        });
+      return res.status(400).json({
+        message: "New password must be different than current password",
+      });
     }
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -339,10 +334,9 @@ export const resetPassword = async (
         ? process.env.FRONTEND_BASE_URL.trim().replace(/\/$/, "")
         : "http://localhost:5173";
     const resetUrl = `${frontendBaseUrl}/reset-password/${resetToken}`;
-    
+
     console.log("Send email...");
-        
-      
+
     await resend.emails.send({
       from: `Acme <onboarding@resend.dev>`,
       to: "rowingtienda@gmail.com",
@@ -351,7 +345,6 @@ export const resetPassword = async (
     });
 
     console.log("Password reset email sent");
-
 
     return res.status(200).json({ message: "Password reset email sent" });
   } catch (error: any) {
