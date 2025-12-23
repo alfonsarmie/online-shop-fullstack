@@ -13,6 +13,8 @@ function DinamicsImgContainer() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [carouselProgress, setCarouselProgress] = useState(0);
+  const [startX, setStartX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
@@ -73,6 +75,16 @@ function DinamicsImgContainer() {
     setCarouselProgress(0);
   };
 
+  const nextSlide = () => {
+    setActiveSlide((prev) => (prev + 1) % featuredProducts.length);
+    setCarouselProgress(0);
+  };
+
+  const prevSlide = () => {
+    setActiveSlide((prev) => (prev - 1 + featuredProducts.length) % featuredProducts.length);
+    setCarouselProgress(0);
+  };
+
   const getSlideClass = (index: number) => {
     if (!isMobile) return '';
     
@@ -102,6 +114,32 @@ function DinamicsImgContainer() {
     return () => window.removeEventListener('scroll', revealOnScroll);
   }, [featuredProducts]); 
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!isMobile || featuredProducts.length === 0) return;
+    setStartX(e.touches[0].clientX);
+    setIsDragging(true);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!isMobile || !isDragging) return;
+    const endX = e.changedTouches[0].clientX;
+    const diffX = startX - endX;
+
+    if (Math.abs(diffX) > 50) {
+      if (diffX > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+    }
+
+    setIsDragging(false);
+  };
+
+  const handleTouchCancel = () => {
+    setIsDragging(false);
+  };
+
   if (loading) {
     return (
       <div className="img-dinamicas-container">
@@ -130,7 +168,12 @@ function DinamicsImgContainer() {
       </div>
 
       <section className="gallery-section reveal">
-        <div className="gallery-container">
+        <div
+          className="gallery-container"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchCancel}
+        >
           {featuredProducts.map((product, index) => (
             <Link 
               to={`/product/${product.id}`} 
