@@ -68,7 +68,7 @@
     .textosInicio {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 18px;
     }
 
     .contenedorInicio h1 {
@@ -77,6 +77,11 @@
 
     .contenedorInicio h2 {
         font-size: 40px;
+    }
+
+    .contenedorInicio h1,
+    .contenedorInicio h2 {
+        line-height: 1.1;
     }
 
     .contenedorInicio {

@@ -13,7 +13,7 @@ function PreProducts() {
   const features: Feature[] = [
     { icon: faLock, text: 'Sitio seguro' },
     { icon: faBagShopping, text: 'Retiros en el club' },
-    { icon: faCreditCard, text: 'Hasta 3 cuotas sin interés' }
+    { icon: faCreditCard, text: 'Pagá con Mercado Pago' }
   ];
 
   const duplicatedFeatures = [...features, ...features, ...features];
