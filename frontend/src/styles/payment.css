@@ -182,7 +182,7 @@
   min-width: 150px;
   border-radius: 50px;
   font-weight: 700;
-  font-size: 1.35rem;
+  font-size: 1.80rem;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
   font-family: "Afacad", sans-serif;
@@ -206,7 +206,7 @@
   min-width: 170px;
   border-radius: 50px;
   font-weight: 700;
-  font-size: 1.35rem;
+  font-size: 1.80rem;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   font-family: 'Afacad', sans-serif;
