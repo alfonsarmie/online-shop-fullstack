@@ -11,7 +11,7 @@ interface ProductProps {
   img2: string;
   description: string;
   sizes: Size[]; 
-  stock?: number; // opcional, ya no se usa para habilitar
+  stock?: number; 
   onAddToCart: (product: ProductWithSize) => void;
 }
 
