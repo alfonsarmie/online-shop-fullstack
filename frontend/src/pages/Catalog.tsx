@@ -7,6 +7,7 @@ import { FrontendProduct, ProductWithSize } from "../types/product";
 import WhatsAppButton from "../components/WhatsAppButton";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { productService } from "../services/productService";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const normalizeText = (value?: string | null) =>
   value
@@ -140,7 +141,11 @@ const Catalog = () => {
   };
 
   if (loading) {
-    return <div className="loading">Cargando productos...</div>;
+    return (
+      <div className="loading" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   return (
