@@ -35,7 +35,7 @@ const AdminDashboard: React.FC = () => {
   const [loadingTopProducts, setLoadingTopProducts] = useState(true);
   const [errorCriticalStock, setErrorCriticalStock] = useState<string | null>(null);
   const [errorTopProducts, setErrorTopProducts] = useState<string | null>(null);
-  const [criticalStockLimit, setCriticalStockLimit] = useState<number>(10);
+  const [criticalStockLimit, setCriticalStockLimit] = useState<number | string>(10);
   const [monthlyWorth, setMonthlyWorth] = useState<number | null>(null);
   const [loadingMonthlyWorth, setLoadingMonthlyWorth] = useState(true);
   const [errorMonthlyWorth, setErrorMonthlyWorth] = useState<string | null>(null);
@@ -93,7 +93,7 @@ useEffect(() => {
       const [sports, status, critical, top, worth] = await Promise.all([
         orderService.getSportsStats(),
         orderService.getStatusStats(),
-        productService.getCriticalStockProducts(criticalStockLimit),
+        productService.getCriticalStockProducts(criticalStockLimit === '' ? 0 : Number(criticalStockLimit)),
         productService.getTopFiveProducts(),
         orderService.getMonthlyWorth(),
       ]);
@@ -118,11 +118,14 @@ useEffect(() => {
 }, [criticalStockLimit]);
 
   const handleLimitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(event.target.value, 10);
-    if (!isNaN(value) && value > 0) {
-      setCriticalStockLimit(value);
-    } else if (event.target.value === '') {
-       setCriticalStockLimit(10);
+    const { value } = event.target;
+    if (value === '') {
+      setCriticalStockLimit('');
+    } else {
+      const parsedValue = parseInt(value, 10);
+      if (!isNaN(parsedValue) && parsedValue >= 0) {
+        setCriticalStockLimit(parsedValue);
+      }
     }
   };
 
@@ -265,14 +268,14 @@ useEffect(() => {
           <div className="admin-dashboard-panel kpi-panel">
             <div className="admin-dashboard-panel-header">
               <h2>Stock Crítico
-                <span className='admin-dashboard-span-h2'>(Stock &lt; {criticalStockLimit})</span>
+                <span className='admin-dashboard-span-h2'>(Stock &lt; {criticalStockLimit === '' ? 0 : criticalStockLimit})</span>
               </h2>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <label htmlFor="criticalStockLimitInput" className="admin-dashboard-label">Límite:</label>
                 <input
                   id="criticalStockLimitInput"
                   type="number"
-                  min="1"
+                  min="0"
                   value={criticalStockLimit}
                   onChange={handleLimitChange}
                   className="admin-dashboard-input"
@@ -286,7 +289,7 @@ useEffect(() => {
               ) : errorCriticalStock ? (
                 <p style={{ color: '#d9534f' }}>{errorCriticalStock}</p>
               ) : criticalStockProducts.length === 0 ? (
-                <p style={{ color: '#bdbdbd' }}>No hay productos con stock crítico (menor a {criticalStockLimit}).</p>
+                <p style={{ color: '#bdbdbd' }}>No hay productos con stock crítico (menor a {criticalStockLimit === '' ? 0 : criticalStockLimit}).</p>
               ) : (
                 <table className="admin-dashboard-data-table">
                   <thead>
