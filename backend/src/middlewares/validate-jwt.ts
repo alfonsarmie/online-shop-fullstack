@@ -27,7 +27,11 @@ export const requireAuth = (req: Request,res: Response,next: NextFunction): void
   (req as AuthRequest).userId = decoded.userId;
     next();
   
-  } catch (error) {
+  } catch (error: any) {
+    if (error.name === 'TokenExpiredError') {
+      res.status(401).json({ message: "Token expired" });
+      return;
+    }
     res.status(401).json({ message: "Invalid token" });
   }
 
@@ -85,8 +89,14 @@ export const validateJWT = async (req: Request,res: Response,next: NextFunction)
     }
 
     next();
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
+    if (error.name === 'TokenExpiredError') {
+      res.status(401).json({
+        message: "Token expired",
+      });
+      return;
+    }
     res.status(401).json({
       message: "Invalid token",
     });
@@ -130,7 +140,11 @@ export const allowAdminOrReceptionist = async (
  
   (req as AuthRequest).userId = userId;
     next();
-  } catch (error) {
+  } catch (error: any) {
+    if (error.name === 'TokenExpiredError') {
+      res.status(401).json({ message: "Token expired" });
+      return;
+    }
     res.status(401).json({ message: "Invalid token" });
   }
 };

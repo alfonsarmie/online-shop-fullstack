@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import logo from "/src/assets/img/logo.png";
 import FormContainer from "../components/FormContainer";
 import Input from "../components/Input";
@@ -28,8 +28,16 @@ export default function LoginForm({ setUser }: LoginFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const isFormValid = email.trim() !== "" && password.trim() !== "";
   const navigate = useNavigate();
+  const location = useLocation();
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('expired') === 'true') {
+      setErrorMessage("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+    }
+  }, [location]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword); 
