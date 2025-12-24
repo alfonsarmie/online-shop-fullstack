@@ -9,6 +9,7 @@ import ProgressBar from '../components/ProgressBar';
 import { checkoutService, CheckoutFormData } from '../services/checkoutService';
 import ErrorMessage from '../components/ErrorMessage';
 import formatCurrency from '../utils/formatCurrency';
+import { setTime } from 'react-datepicker/dist/date_utils';
 
 function getStoredUser(): User | null {
   const saved = localStorage.getItem('user');
@@ -122,6 +123,9 @@ const Payment = () => {
       }
       
       setErrorMessage(errorMessage);
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 5000);
     } finally {
       setIsProcessing(false);
     }
