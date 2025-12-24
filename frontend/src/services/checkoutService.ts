@@ -77,12 +77,7 @@ const createPaymentPreference = async (
       raw: data,
     };
   } catch (error: any) {
-    // If axios error, include status and response data to help debugging
-    if (error?.response) {
-      const status = error.response.status;
-      const data = error.response.data;
-      throw new Error(`Request failed (${status}): ${JSON.stringify(data)}`);
-    }
+    console.error("Error in createPaymentPreference:", error);
     throw error;
   }
 };

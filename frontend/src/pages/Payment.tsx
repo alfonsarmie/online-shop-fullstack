@@ -109,6 +109,13 @@ const Payment = () => {
         
         if (axiosError.response?.data?.message) {
           errorMessage = axiosError.response.data.message;
+          if (errorMessage === "Token expired") {
+            errorMessage = "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.";
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login?expired=true';
+            return;
+          }
         } else if (axiosError.response?.status) {
           errorMessage = `Error del servidor (${axiosError.response.status}). Revisa los logs del backend.`;
         }
