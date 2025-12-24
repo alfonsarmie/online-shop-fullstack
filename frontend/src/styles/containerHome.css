@@ -10,6 +10,7 @@
     justify-content: center;
     align-items: center;
     margin-top: 80px;
+    position: relative;
 }
 
 .contenedorInicio h1 {
@@ -32,10 +33,10 @@
 }
 .opaco {
     position: absolute;
-    top: 80px;
+    top: 0;
     left: 0;
     width: 100%;
-    height: 90vh;
+    height: 100%;
     background: rgba(30, 115, 53, 0.4); 
 }
 
@@ -88,12 +89,8 @@
         height: 70vh;
     }
 
-    .opaco {
-        height: 70vh;
-    }
-
     .scroll-down-indicator {
         font-size: 1.5rem; 
-        bottom: 240px; 
+        bottom: 5%; 
     }
 }
