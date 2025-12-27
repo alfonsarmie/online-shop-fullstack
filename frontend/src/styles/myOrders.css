@@ -977,6 +977,9 @@
 }
 
 @media (max-width: 768px) {
+  .my-orders-container {
+    margin-top: 80px;
+  }
   .order-actions {
     flex-direction: column;
   }

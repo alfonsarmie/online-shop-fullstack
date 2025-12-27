@@ -217,9 +217,6 @@ const MyOrders: React.FC = () => {
   return (
     <div className="my-orders-container">
       <div className="orders-header">
-        <Link to="/" className="back-button">
-          ← Volver al inicio
-        </Link>
         <h1>Mis Pedidos</h1>
         <p>Revisa el estado de tus compras y pedidos anteriores</p>
       </div>
