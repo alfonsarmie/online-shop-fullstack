@@ -1,9 +1,11 @@
 .my-orders-container {
+  margin-top: 90px;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 90px auto 0 auto;
   padding: 2rem;
   font-family: 'Afacad', sans-serif;
   min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .orders-header {
@@ -221,41 +223,32 @@
 }
 
 .status-badge.status-confirmed {
-  background: #d7b700; /* amarillo más marcado */
+  background: #d7b700;
   border-color: #bfa000;
   color: #ffffff !important;
 }
 
 .status-badge.status-ready {
-  background: #1aa5e6; /* celeste/azul */
+  background: #1aa5e6;
   border-color: #1488bf;
   color: #ffffff !important;
 }
 
 .status-badge.status-withdrawn {
-  background: #1c8a37; /* verde */
+  background: #1c8a37;
   border-color: #16712d;
   color: #ffffff !important;
 }
 
 .status-badge.status-cancelled {
-  background: #d63c2f; /* rojo */
+  background: #d63c2f;
   border-color: #b33027;
   color: #ffffff !important;
 }
 
 .status-badge.status-pending_payment {
-  background: #f48c06; /* naranja */
+  background: #f48c06;
   border-color: #d87603;
-  color: #ffffff !important;
-}
-
-/* Estado: forzar color de texto consistente */
-.status-badge.status-confirmed,
-.status-badge.status-ready,
-.status-badge.status-withdrawn,
-.status-badge.status-cancelled,
-.status-badge.status-pending_payment {
   color: #ffffff !important;
 }
 
@@ -379,12 +372,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: #4a90e2;
+  background-color: #1E7335;
   color: white;
 }
 
 .view-details-btn:hover {
-  background-color: #357abd;
+  background-color: #0c3f19;
 }
 
 .modal-overlay {
@@ -976,28 +969,204 @@
   color: #323232;
 }
 
+/* --- OPTIMIZACIÓN MOBILE UNIFICADA --- */
 @media (max-width: 768px) {
+  
+  /* 1. Recuperación de Bienes Raíces (Espacio) */
   .my-orders-container {
-    margin-top: 80px;
+    padding: 1rem; /* De 2rem a 1rem: ganamos 32px de ancho útil */
+    margin-top: 80px; /* Mantenemos margen original por seguridad del navbar */
   }
+
+  .orders-header h1 {
+    font-size: 1.8rem;
+    text-align: left;
+  }
+
+  .orders-header p {
+    text-align: left;
+    font-size: 0.95rem;
+  }
+
+  /* 2. Filtros: Scroll Horizontal */
+  .status-filters {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 10px;
+    margin-right: -1rem;
+    padding-right: 1rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; 
+  }
+  
+  .status-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .status-pill {
+    flex: 0 0 auto;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  /* 3. Tarjetas de Orden: Layout Vertical */
+  .order-card {
+    padding: 1rem;
+  }
+
+  .order-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .order-header .status-badge {
+    align-self: flex-start;
+    font-size: 0.75rem;
+  }
+
+  .order-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    border-top: 1px dashed #e9ecef;
+    padding-top: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .order-items {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+  
+  .order-item-preview {
+    width: 70px;
+    height: 70px;
+    flex: 0 0 70px;
+  }
+
+  .order-total {
+    width: 100%;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+  
+  .order-total::before {
+    content: "Total a pagar:";
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 400;
+  }
+
+  .order-footer {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
   .order-actions {
     flex-direction: column;
+    width: 100%;
   }
+
+  .view-details-btn {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  /* 4. MODAL: Transformación a "Bottom Sheet" */
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-content {
+    border-radius: 24px 24px 0 0;
+    max-height: 85vh;
+    width: 100%;
+    max-width: 100%;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .modal-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .modal-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+    padding-bottom: 80px;
+  }
+
   .modal-footer {
-    flex-direction: column;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    padding: 1rem;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+    z-index: 20;
+    flex-direction: row;
   }
+  
+  .close-button, .cancel-button {
+    flex: 1;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  /* Detalles internos del modal */
+  .detail-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .order-item-detail {
+    padding: 0.75rem;
+  }
+  
+  .order-item-detail img {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .item-details h4 {
+    font-size: 0.95rem;
+  }
+
+  /* 5. Estilos Legacy (Preservados) */
   .pickup-alert {
     flex-direction: column;
     text-align: center;
   }
+  
   .alert-icon {
     align-self: center;
   }
+  
   .pickup-qr {
     width: 100%;
     flex-direction: column;
     align-items: flex-start;
   }
+  
   .pickup-qr-image,
   .pickup-qr-placeholder {
     width: 100%;
@@ -1005,4 +1174,3 @@
     max-width: 260px;
   }
 }
-
