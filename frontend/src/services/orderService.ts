@@ -110,7 +110,7 @@ const getOrders = async (params?: { page?: number; limit?: number }) => {
 };
 
 
-const getUserOrders = async (userId: number) => {
+const getUserOrders = async (userId: string | number) => {
   try {
     const response = await api.get<{ orders: BackendOrder[] } | BackendOrder[]>(
       `/orders/user/${userId}`
