@@ -33,6 +33,27 @@ function Navbar({ user, setUser }: NavbarProps) {
   const [isMainMenuAnimating, setIsMainMenuAnimating] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const navToggleRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isMobileMenuOpen &&
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node) &&
+        navToggleRef.current &&
+        !navToggleRef.current.contains(event.target as Node)
+      ) {
+        closeMobileMenu();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMobileMenuOpen]);
 
   useEffect(() => {
     if (successMessage) {
@@ -170,7 +191,7 @@ function Navbar({ user, setUser }: NavbarProps) {
       />
 
       <nav>
-        <div className="nav-toggle" id="navToggle" onClick={handleMobileMenuToggle}>
+        <div className="nav-toggle" id="navToggle" onClick={handleMobileMenuToggle} ref={navToggleRef}>
           <FontAwesomeIcon icon={faBars} />
         </div>
 
@@ -180,7 +201,7 @@ function Navbar({ user, setUser }: NavbarProps) {
           </Link>
         </div>
 
-        <div className={`mobile-menu${isMobileMenuOpen ? " open" : ""}`}>
+        <div className={`mobile-menu${isMobileMenuOpen ? " open" : ""}`} ref={mobileMenuRef}>
           <button className="nav-toggle close" onClick={handleMobileMenuToggle} aria-label="Cerrar menú">
             &times;
           </button>
