@@ -372,12 +372,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: #1E7335;
+  background-color: #4a90e2;
   color: white;
 }
 
 .view-details-btn:hover {
-  background-color: #0c3f19;
+  background-color: #357abd;
 }
 
 .modal-overlay {
@@ -1025,6 +1025,7 @@
   .order-header .status-badge {
     align-self: flex-start;
     font-size: 0.75rem;
+    padding: 0.3rem 0.8rem;
   }
 
   .order-content {
