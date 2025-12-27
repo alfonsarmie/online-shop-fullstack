@@ -142,7 +142,13 @@ function ProductDetails() {
         <div className="product-info">
           <h1>{product.name}</h1>
           <p className="product-stock">
-            {selectedSize?.stock && selectedSize.stock > 0 ? "En stock" : "Sin stock"}
+            {selectedSize
+              ? (selectedSize.stock ?? 0) > 0
+                ? "En stock"
+                : "Sin stock"
+              : product.sizes.some((s) => (s.stock ?? 0) > 0)
+              ? "En stock"
+              : "Sin stock"}
           </p>
           <p className="price">${product.price.toLocaleString("es-AR")}</p>
           <p className="description">{product.description}</p>
