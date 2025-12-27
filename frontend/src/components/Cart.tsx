@@ -74,36 +74,14 @@ function Cart() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '8px 0' }}>
                       <button 
                         onClick={() => decreaseQuantity(item.name, item.size)}
-                        style={{
-                          width: '24px', 
-                          height: '24px', 
-                          borderRadius: '4px', 
-                          border: '1px solid #ccc', 
-                          background: '#f0f0f0', 
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontWeight: 'bold'
-                        }}
+                        className="cart-quantity-btn"
                       >
                         -
                       </button>
                       <span style={{ fontSize: '14px', fontWeight: '500' }}>{item.quantity}</span>
                       <button 
                         onClick={() => addToCart(item)}
-                        style={{
-                          width: '24px', 
-                          height: '24px', 
-                          borderRadius: '4px', 
-                          border: '1px solid #ccc', 
-                          background: '#f0f0f0', 
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontWeight: 'bold'
-                        }}
+                        className="cart-quantity-btn"
                       >
                         +
                       </button>
