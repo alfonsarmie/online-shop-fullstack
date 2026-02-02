@@ -136,8 +136,8 @@ const Delivery = ({ user, setUser }: { user: User | null, setUser: (user: User |
                   <div className="benefit-icon">
                     <FaTshirt />
                   </div>
-                  <h4>Probate las Prendas</h4>
-                  <p>Posibilidad de probarte las prendas antes de llevarlas</p>
+                  <h4>Revisá los Productos</h4>
+                  <p>Verificá la calidad de las prendas al retirarlas</p>
                 </div>
                 <div className="benefit-item">
                   <div className="benefit-icon">
