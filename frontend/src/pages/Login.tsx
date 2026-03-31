@@ -1,29 +1,43 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import logo from "../assets/img/logo.png";
+import { useNavigate, useLocation } from "react-router-dom";
+import logo from "/src/assets/img/logo.png";
 import FormContainer from "../components/FormContainer";
 import Input from "../components/Input";
 import "../styles/input.css";
 import "../styles/login.css";
-import axios from "axios";
+import api from "../services/api";
 import { User } from "../types/user";
 import SuccessMessage from "../components/SuccessMessage";
 import ErrorMessage from "../components/ErrorMessage";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
+import { FaEye, FaEyeSlash } from "react-icons/fa"; 
 import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 interface LoginFormProps {
   setUser: (user: User | null) => void;
 }
 
+
+
+
 export default function LoginForm({ setUser }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [isLoading, setIsLoading] = useState(false);
   const isFormValid = email.trim() !== "" && password.trim() !== "";
   const navigate = useNavigate();
+  const location = useLocation();
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('expired') === 'true') {
+      setErrorMessage("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+    }
+  }, [location]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword); 
@@ -31,10 +45,11 @@ export default function LoginForm({ setUser }: LoginFormProps) {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/login",
+      const response = await api.post(
+        "/auth/login",
         { email, password }
       );
 
@@ -57,8 +72,10 @@ export default function LoginForm({ setUser }: LoginFormProps) {
         } else {
           navigate("/");
         }
+        setIsLoading(false);
       }, 1000);
     } catch (error: any) {
+      setIsLoading(false);
       console.error("Login failed:", error.response?.data || error.message);
       
       let errorMsg = "Error al iniciar sesión";
@@ -83,9 +100,10 @@ export default function LoginForm({ setUser }: LoginFormProps) {
   };
 
   const handleGoogleLogin = async (credentialResponse: any) => {
+    setIsLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/auth/google-login",
+        `${import.meta.env.VITE_API_URL}/api/auth/google-login`,
         { id_token: credentialResponse.credential }
       );
 
@@ -106,8 +124,10 @@ export default function LoginForm({ setUser }: LoginFormProps) {
         } else {
           navigate("/");
         }
+        setIsLoading(false);
       }, 1000);
     } catch (error: any) {
+      setIsLoading(false);
       console.error("Google login failed:", error.response?.data || error.message);
       
       let errorMsg = "Error al iniciar sesión con Google";
@@ -134,6 +154,14 @@ export default function LoginForm({ setUser }: LoginFormProps) {
       <div className="login-container">
         <SuccessMessage message={message} onClose={() => setMessage("")} />
         <ErrorMessage message={errorMessage} onClose={() => setErrorMessage("")} />
+        {isLoading && (
+        <div className="loading-overlay">
+          <div className="loading-content">
+            <LoadingSpinner />
+            <p>Iniciando sesión...</p>
+          </div>
+        </div>
+      )}
       <FormContainer
         logo={logo}
         title="Introduce tus datos para iniciar sesión"

@@ -43,6 +43,21 @@
     transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.aboutUs-bg {
+  background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+  padding-top: 50px;
+  padding-bottom: 80px;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(
+    circle at 10% 20%,
+    rgba(246, 252, 248, 0.5) 0%,
+    rgba(220, 240, 225, 0.5) 100%
+  );
+  animation: backgroundPulse 8s ease-in-out infinite;
+}
+
 @keyframes backgroundPulse {
     0% {
         background: radial-gradient(circle at 10% 20%, rgba(246, 252, 248, 0.5) 0%, rgba(220, 240, 225, 0.5) 100%);
@@ -406,6 +421,23 @@
         font-size: 1.05rem;
     }
 }
+
+    @media (max-width: 600px) {
+        .sports-row {
+            flex-direction: column;
+            gap: 12px;
+            text-align: center;
+        }
+
+        .sports-title {
+            font-size: 1.8rem !important;
+        }
+
+        .rotating-text-main {
+            font-size: 1.6rem !important;
+            justify-content: center;
+        }
+    }
 
 @keyframes fadeInUp {
     to {

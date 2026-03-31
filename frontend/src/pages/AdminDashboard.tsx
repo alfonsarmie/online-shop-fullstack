@@ -35,7 +35,7 @@ const AdminDashboard: React.FC = () => {
   const [loadingTopProducts, setLoadingTopProducts] = useState(true);
   const [errorCriticalStock, setErrorCriticalStock] = useState<string | null>(null);
   const [errorTopProducts, setErrorTopProducts] = useState<string | null>(null);
-  const [criticalStockLimit, setCriticalStockLimit] = useState<number>(10);
+  const [criticalStockLimit, setCriticalStockLimit] = useState<number | string>(10);
   const [monthlyWorth, setMonthlyWorth] = useState<number | null>(null);
   const [loadingMonthlyWorth, setLoadingMonthlyWorth] = useState(true);
   const [errorMonthlyWorth, setErrorMonthlyWorth] = useState<string | null>(null);
@@ -45,7 +45,8 @@ const AdminDashboard: React.FC = () => {
   }, []);
 
   const mapStatusToFrontend = (status: string) => {
-    switch (status) {
+    const normalized = status?.toLowerCase().trim().replace(/_/g, '-');
+    switch (normalized) {
       case "confirmed":
         return { label: "Confirmado" };
       case "ready":
@@ -54,6 +55,8 @@ const AdminDashboard: React.FC = () => {
         return { label: "Cancelado" };
       case "withdrawn":
         return { label: "Retirado" };
+      case "pending-payment":
+        return { label: "Pendiente de pago" };
       default:
         return { label: status };
     }
@@ -90,7 +93,7 @@ useEffect(() => {
       const [sports, status, critical, top, worth] = await Promise.all([
         orderService.getSportsStats(),
         orderService.getStatusStats(),
-        productService.getCriticalStockProducts(criticalStockLimit),
+        productService.getCriticalStockProducts(criticalStockLimit === '' ? 0 : Number(criticalStockLimit)),
         productService.getTopFiveProducts(),
         orderService.getMonthlyWorth(),
       ]);
@@ -115,11 +118,14 @@ useEffect(() => {
 }, [criticalStockLimit]);
 
   const handleLimitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(event.target.value, 10);
-    if (!isNaN(value) && value > 0) {
-      setCriticalStockLimit(value);
-    } else if (event.target.value === '') {
-       setCriticalStockLimit(10);
+    const { value } = event.target;
+    if (value === '') {
+      setCriticalStockLimit('');
+    } else {
+      const parsedValue = parseInt(value, 10);
+      if (!isNaN(parsedValue) && parsedValue >= 0) {
+        setCriticalStockLimit(parsedValue);
+      }
     }
   };
 
@@ -158,26 +164,6 @@ useEffect(() => {
         >
           <p style={{ margin: 0 }}>{`Deporte: ${mapped.label}`}</p>
           <p style={{ margin: 0 }}>{`Cantidad de pedidos: ${data.ordersCount}`}</p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  const TopProductsTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div
-          style={{
-            backgroundColor: "#145526ff",
-            padding: "10px",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-          }}
-        >
-          <p style={{ margin: 0 }}>{`Producto: ${data.name}`}</p>
-          <p style={{ margin: 0 }}>{`Cantidad de órdenes: ${data.orderCount}`}</p>
         </div>
       );
     }
@@ -227,11 +213,6 @@ useEffect(() => {
               <h2>Pedidos por deporte</h2>
             </div>
             <div className="admin-dashboard-panel-body kpi-card sports-pie-chart"> 
-                <ResponsiveContainer
-    width="100%"
-    minHeight={100}
-    maxHeight={900}
-  >
               <PieChart width={400} height={300}>
                 <Pie
                   data={sportsStats}
@@ -253,7 +234,6 @@ useEffect(() => {
                 </Pie>
                 <Tooltip content={<SportsTooltip />} />
               </PieChart>
-              </ResponsiveContainer>
             </div>
           </div>
 
@@ -265,7 +245,7 @@ useEffect(() => {
               </h2>
             </div>
             <div className="admin-dashboard-panel-body kpi-card status-bar-chart">
-              <BarChart width={500} height={300} data={statusStats}> 
+              <BarChart width={600} height={300} data={statusStats}> 
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="status"
@@ -288,14 +268,14 @@ useEffect(() => {
           <div className="admin-dashboard-panel kpi-panel">
             <div className="admin-dashboard-panel-header">
               <h2>Stock Crítico
-                <span className='admin-dashboard-span-h2'>(Stock &lt; {criticalStockLimit})</span>
+                <span className='admin-dashboard-span-h2'>(Stock &lt; {criticalStockLimit === '' ? 0 : criticalStockLimit})</span>
               </h2>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <label htmlFor="criticalStockLimitInput" className="admin-dashboard-label">Límite:</label>
                 <input
                   id="criticalStockLimitInput"
                   type="number"
-                  min="1"
+                  min="0"
                   value={criticalStockLimit}
                   onChange={handleLimitChange}
                   className="admin-dashboard-input"
@@ -309,7 +289,7 @@ useEffect(() => {
               ) : errorCriticalStock ? (
                 <p style={{ color: '#d9534f' }}>{errorCriticalStock}</p>
               ) : criticalStockProducts.length === 0 ? (
-                <p style={{ color: '#bdbdbd' }}>No hay productos con stock crítico (menor a {criticalStockLimit}).</p>
+                <p style={{ color: '#bdbdbd' }}>No hay productos con stock crítico (menor a {criticalStockLimit === '' ? 0 : criticalStockLimit}).</p>
               ) : (
                 <table className="admin-dashboard-data-table">
                   <thead>

@@ -15,7 +15,8 @@ type OrderStatus =
   | 'confirmed'
   | 'withdrawn'
   | 'cancelled'
-  | 'ready';
+  | 'ready'
+  | 'pending_payment';
 
 type OrderItem = {
   productId: number;
@@ -47,6 +48,7 @@ const statusOptions: { value: OrderStatus; label: string }[] = [
   { value: 'ready', label: 'Listo' },
   { value: 'withdrawn', label: 'Entregado' },
   { value: 'cancelled', label: 'Cancelado' },
+  { value: 'pending_payment', label: 'Pendiente de pago' },
 ];
 
 const parseDecimal = (value: number | string | undefined): number => {
@@ -56,18 +58,26 @@ const parseDecimal = (value: number | string | undefined): number => {
   return Number.isNaN(parsed) ? 0 : parsed;
 };
 
+const normalizeStatus = (status?: string | null): OrderStatus => {
+  if (!status) return 'confirmed';
+  const cleaned = status.toLowerCase().replace(/[-\s]+/g, '_');
+  const allowed: OrderStatus[] = ['confirmed', 'ready', 'withdrawn', 'cancelled', 'pending_payment'];
+  return allowed.includes(cleaned as OrderStatus)
+    ? (cleaned as OrderStatus)
+    : 'confirmed';
+};
+
 const determineStatus = (order: BackendOrder): OrderStatus => {
-  const historyStatus =
-    order.latestStatus?.description ?? order.statusHistory[0]?.description;
-  if (historyStatus) {
-    return historyStatus;
+  const rawStatus = order.latestStatus?.description ?? order.statusHistory[0]?.description;
+  if (rawStatus) {
+    return normalizeStatus(rawStatus);
   }
 
-  if (order.actualPickupDate) {
+  if (order.PickupDate) {
     return 'withdrawn';
   }
 
-  if (order.statusMp === 'unpaid') return 'cancelled';
+  if (order.statusMp === 'unpaid') return 'pending_payment';
 
   if (order.statusMp === 'paid') return 'confirmed';
 
@@ -122,6 +132,8 @@ const getStatusClass = (status: OrderStatus) => {
       return 'status-withdrawn';
     case 'cancelled':
       return 'status-cancelled';
+    case 'pending_payment':
+      return 'status-pending';
     default:
       return '';
   }
@@ -219,7 +231,8 @@ const AdminOrders: React.FC = () => {
         (order) =>
           order.customerName.toLowerCase().includes(q) ||
           order.customerEmail.toLowerCase().includes(q) ||
-          order.id.toString().includes(q)
+          order.id.toString().includes(q) ||
+          order.orderNumber.toLowerCase().includes(q)
       );
     }
 
@@ -394,7 +407,7 @@ const AdminOrders: React.FC = () => {
           <table className="data-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>N° Pedido</th>
                 <th>Cliente</th>
                 <th>Fecha</th>
                 <th>Productos</th>
@@ -406,7 +419,7 @@ const AdminOrders: React.FC = () => {
             <tbody>
               {filteredOrders.map((order) => (
                 <tr key={order.id}>
-                  <td>#{order.orderNumber}</td>
+                  <td>{order.orderNumber}</td>
                   <td>
                     <div>{order.customerName}</div>
                     <div className="text-muted">{order.customerEmail}</div>

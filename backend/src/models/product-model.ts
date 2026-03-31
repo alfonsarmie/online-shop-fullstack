@@ -5,7 +5,6 @@ interface ProductAttributes {
   idProduct: number;
   name: string;
   description: string;
-  stock: number;
   idCategory: number;
 }
 
@@ -19,7 +18,6 @@ class Product
   public idProduct!: number;
   public name!: string;
   public description!: string;
-  public stock!: number;
   public idCategory!: number;
 }
 
@@ -38,11 +36,6 @@ Product.init(
       type: DataTypes.STRING(500),
       allowNull: false,
       defaultValue: "",
-    },
-    stock: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-      defaultValue: 0,
     },
     idCategory: {
       type: DataTypes.INTEGER.UNSIGNED,

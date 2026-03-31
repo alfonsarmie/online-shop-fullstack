@@ -39,12 +39,13 @@ export const getAllSizes = async (req: Request, res: Response): Promise<Response
 
 export const addSizeToProduct = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { idProduct, idSize } = req.params;
+    const { idProduct, idSize, stock} = req.params;
 
     
     const productSize = await ProductSize.create({
       idProduct: parseInt(idProduct),
-      idSize: parseInt(idSize)
+      idSize: parseInt(idSize),
+      stock: stock?parseInt(stock):0
     });
 
     return res.status(201).json({

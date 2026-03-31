@@ -5,8 +5,8 @@ export interface FrontendProduct {
   img: string;
   img2: string;
   description: string;
-  sizes: Size[]; // Cambiado de string[] a Size[] para mantener el ID
-  stock: number;
+  sizes: Size[]; // Cada Size puede incluir stock
+  stock?: number; // opcional: puede representar stock total agregado
   category?: string;
 }
 
@@ -14,7 +14,6 @@ export interface Product {
   idProduct: number;
   name: string;
   description: string;
-  stock: number;
   idCategory: number;
   prices: Price[];
   images: Image[];
@@ -34,6 +33,7 @@ export interface Size {
   idSize: number;
   name: string;
   sizeDesc: string;
+  stock?: number; // stock por talle
 }
 
 export interface Price {
@@ -51,7 +51,7 @@ export interface Image {
 }
 
 export interface ProductWithSize {
-  id: string;
+  idProduct: string;
   name: string;
   price: number;
   img: string;
@@ -61,7 +61,7 @@ export interface ProductWithSize {
   img2?: string;
   description?: string;
   sizes?: Size[]; // Cambiado de string[] a Size[]
-  stock?: number;
+  stock?: number; // stock del talle seleccionado (si se desea)
   category?: string;
 }
 

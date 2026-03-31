@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import logo from '../assets/img/logo.png';
+import logo from '/src/assets/img/logo.png';
 import FormContainer from '../components/FormContainer';
 import PasswordInput from '../components/PasswordInput';
 import PasswordConfirm from '../components/PasswordConfirm';

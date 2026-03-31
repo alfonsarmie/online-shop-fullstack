@@ -6,6 +6,10 @@ export type MercadoPagoStatus =
 export interface OrderStatusHistory {
   idOrder: number;
   statusDate: string;
+  description: string;
+}
+
+export interface FrontendOrderStatusHistory extends OrderStatusHistory {
   description: FrontendOrderStatus;
 }
 
@@ -27,9 +31,8 @@ export interface BackendOrderLine {
 export interface BackendOrder {
   idOrder: number;
   orderDate: string;
-  expectedPickupDate?: string;
-  actualPickupDate?: string;
-  idUser: number;
+  PickupDate?: string;
+  idUser: string;
   idPaymentMethod: number;
   external_reference?: string;
   payment_id?: string;
@@ -44,8 +47,12 @@ export interface BackendOrder {
   paymentMethod?: {
     name: string;
   };
+  pickup_code?: string | null;
+  pickup_used?: boolean | number | null;
+  pickupCode?: string | null;
+  pickupUsed?: boolean | number | null;
   user?: {
-    idUser: number;
+    idUser: string;
     name: string;
     email: string;
   };
@@ -74,7 +81,8 @@ export type FrontendOrderStatus =
   | 'confirmed'
   | 'ready'
   | 'withdrawn'
-  | 'cancelled';
+  | 'cancelled'
+  | 'pending_payment';
 
 export interface FrontendOrder {
   id: number;
@@ -85,8 +93,10 @@ export interface FrontendOrder {
   total: number;
   items: FrontendOrderItem[];
   pickupDate?: string;
+  pickupCode?: string;
+  pickupUsed?: boolean;
   canCancel: boolean;
   statusMp?: MercadoPagoStatus;
-  history: OrderStatusHistory[];
-  latestStatus?: OrderStatusHistory | null;
+  history: FrontendOrderStatusHistory[];
+  latestStatus?: FrontendOrderStatusHistory | null;
 }

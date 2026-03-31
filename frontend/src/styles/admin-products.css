@@ -21,6 +21,8 @@
   max-width: 90vw;
   text-align: center;
   animation: fadeInModal 0.2s;
+  font-family: 'Afacad', sans-serif;
+  font-weight: bold;
 }
 
 .modal h3 {

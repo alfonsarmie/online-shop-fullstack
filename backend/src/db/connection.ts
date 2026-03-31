@@ -1,20 +1,25 @@
 import { Sequelize } from 'sequelize';
 
 export const db = new Sequelize(
-  process.env.DB_NAME || 'online_shop_fullstack_rowing',
+  process.env.DB_NAME || '',
   process.env.DB_USERNAME || '',
   process.env.DB_PASSWORD || '',
   {
     host: process.env.DB_HOST || 'localhost',
+    port: Number(process.env.DB_PORT) || 3306,
     dialect: 'mysql',
+    dialectOptions: {
+      charset: 'utf8mb4',
+    },
     logging: false,
-    timezone: '+00:00' // Utc for dates
+    timezone: '+00:00',
   }
 );
 
 export const connectDB = async () => {
   try {
     await db.authenticate();
+    await db.sync({ alter: true });
     console.log('Database connection established.');
   } catch (error) {
     console.error('Could not connect to database:', error);

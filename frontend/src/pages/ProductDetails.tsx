@@ -5,8 +5,8 @@ import "../styles/productDetails.css";
 import ProductGallery from "../components/ProductGallery";
 import { FrontendProduct, ProductWithSize, Size } from "../types/product";
 import { productService } from "../services/productService";
-import SuccessMessage from "../components/SuccessMessage";
 import ErrorMessage from "../components/ErrorMessage";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -15,7 +15,6 @@ function ProductDetails() {
   const [selectedSize, setSelectedSize] = useState<Size | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const { addToCart } = useCart();
@@ -62,12 +61,12 @@ function ProductDetails() {
               ? productData.images[1].url
               : "/placeholder-image.jpg",
           description: productData.description || "Descripción no disponible",
-          stock: productData.stock || 0,
           sizes: productData.sizes
             ? productData.sizes.map((size: any) => ({
                 idSize: size.idSize || size.id,
                 name: size.name || size.sizeDesc || "Talle",
                 sizeDesc: size.sizeDesc || size.name || "",
+                stock: (size.stock ?? (size.ProductSize?.stock ?? 0)),
               }))
             : [],
           category: productData.category?.name,
@@ -96,7 +95,7 @@ function ProductDetails() {
     if (!product) return;
 
     addToCart({
-      id: product.id,
+      idProduct: product.id,
       name: product.name,
       price: product.price,
       img: product.img,
@@ -108,12 +107,13 @@ function ProductDetails() {
       sizeId: selectedSize.idSize,
       quantity: 1,
     } as ProductWithSize);
-
-    setSuccessMessage("Producto añadido al carrito");
-    setTimeout(() => setSuccessMessage(""), 1500);
   };
 
-  if (loading) return <div className="loading">Cargando producto...</div>;
+  if (loading) return (
+    <div className="loading" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+      <LoadingSpinner />
+    </div>
+  );
 
   if (!product)
     return (
@@ -131,10 +131,6 @@ function ProductDetails() {
   return (
     <div className="page-with-nav-spacing">
       <div className="product-details-container">
-        <SuccessMessage
-          message={successMessage}
-          onClose={() => setSuccessMessage("")}
-        />
         <ErrorMessage
           message={errorMessage}
           onClose={() => setErrorMessage("")}
@@ -146,8 +142,12 @@ function ProductDetails() {
         <div className="product-info">
           <h1>{product.name}</h1>
           <p className="product-stock">
-            {product.stock > 0
-              ? `En stock`
+            {selectedSize
+              ? (selectedSize.stock ?? 0) > 0
+                ? "En stock"
+                : "Sin stock"
+              : product.sizes.some((s) => (s.stock ?? 0) > 0)
+              ? "En stock"
               : "Sin stock"}
           </p>
           <p className="price">${product.price.toLocaleString("es-AR")}</p>
@@ -177,9 +177,9 @@ function ProductDetails() {
           <button
             className="add-to-cart-btn"
             onClick={handleAddToCart}
-            disabled={!product.stock || !selectedSize}
+            disabled={!selectedSize || !(selectedSize.stock && selectedSize.stock > 0)}
           >
-            {product.stock ? "AÑADIR AL CARRITO" : "SIN STOCK"}
+            {selectedSize && selectedSize.stock && selectedSize.stock > 0 ? "AÑADIR AL CARRITO" : "SIN STOCK"}
           </button>
         </div>
       </div>

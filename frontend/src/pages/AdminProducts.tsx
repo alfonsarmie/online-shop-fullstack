@@ -7,10 +7,11 @@ import SuccessMessage from "../components/SuccessMessage";
 import ErrorMessage from "../components/ErrorMessage";
 import LoadingSpinner from "../components/LoadingSpinner";
 
-type DraftLocal = Omit<FrontendProduct, "id" | "sizes"> & {
+type DraftLocal = Omit<FrontendProduct, "id" | "sizes" | "stock"> & {
   imgFile?: File;
   img2File?: File;
-  sizes: string[];
+  sizes: string[]; // labels of selected sizes
+  sizeStocks: Record<string, number | string>; // stock per selected size label
 };
 
 const emptyDraft: DraftLocal = {
@@ -18,7 +19,7 @@ const emptyDraft: DraftLocal = {
   price: 0,
   description: "",
   sizes: [],
-  stock: 0,
+  sizeStocks: {},
   category: "",
   img: "",
   img2: "",
@@ -125,6 +126,7 @@ const AdminProducts: React.FC = () => {
                       idSize: s.idSize || s.id || s.idSize || 0,
                       name: s.name || s.sizeDesc || s.label || "",
                       sizeDesc: s.sizeDesc || s.name || s.label || "",
+                      stock: s.stock ?? s.ProductSize?.stock ?? 0,
                     }))
                   : [],
             }))
@@ -177,6 +179,14 @@ const AdminProducts: React.FC = () => {
     return checked ? [...sizes, size] : sizes.filter((s) => s !== size);
   };
 
+  const normalizeStockValue = (
+    value: number | string | "" | undefined | null
+  ) => {
+    if (value === "" || value === undefined || value === null) return NaN;
+    const num = typeof value === "number" ? value : Number(value);
+    return num;
+  };
+
   const renderSizes = (sizes: any[] | string[]) => {
     if (!sizes || sizes.length === 0) return "-";
     const out = sizes
@@ -196,7 +206,13 @@ const AdminProducts: React.FC = () => {
     if (!creating.category) errores.push("categoría");
     if (!creating.description.trim()) errores.push("descripción");
     if (creating.sizes.length === 0) errores.push("talles");
-    if (creating.stock <= 0) errores.push("stock");
+    // validar que cada talle seleccionado tenga un número válido (>=0)
+    const hasInvalidStock = (creating.sizes || []).some((label) => {
+      const v = creating.sizeStocks[label];
+      const num = normalizeStockValue(v);
+      return v === "" || Number.isNaN(num) || num < 0;
+    });
+    if (hasInvalidStock) errores.push("stock por talle");
     // Puedes agregar validación de imágenes si son obligatorias
 
     if (errores.length > 0) {
@@ -229,10 +245,15 @@ const AdminProducts: React.FC = () => {
       const productData = {
         name: creating.name.trim(),
         description: creating.description.trim(),
-        stock: creating.stock,
         idCategory: parseInt(creating.category || ""),
         initialPrice: creating.price,
-        sizes: sizeIds,
+        sizes: mappedSizes.map((entry) => {
+          const stock = normalizeStockValue(creating.sizeStocks[entry.label]);
+          return {
+            id: entry.id,
+            stock: Number.isNaN(stock) ? 0 : stock,
+          };
+        }),
       };
       const newProduct = await productService.createProduct(productData);
       if (!newProduct || !newProduct.idProduct) {
@@ -304,6 +325,7 @@ const AdminProducts: React.FC = () => {
           idSize: size.idSize || size.id || 0,
           name: size.name || size.sizeDesc || "",
           sizeDesc: size.sizeDesc || size.name || "",
+          stock: size.stock ?? size.ProductSize?.stock ?? 0,
         }))
         .filter((s: any) => s.name || s.sizeDesc) || [];
 
@@ -325,7 +347,8 @@ const AdminProducts: React.FC = () => {
       img2: product.images?.[1]?.url || product.img2 || "",
       description: product.description || "",
       sizes: sizes,
-      stock: product.stock || 0,
+      // Optional aggregate stock (sum of sizes stock)
+      stock: Array.isArray(sizes) ? sizes.reduce((acc: number, s: any) => acc + (s.stock ?? 0), 0) : 0,
       category: category,
     };
   };
@@ -354,7 +377,12 @@ const AdminProducts: React.FC = () => {
     if (!editing.category) errores.push("categoría");
     if (!editing.description.trim()) errores.push("descripción");
     if ((editing.sizes || []).length === 0) errores.push("talles");
-    if (editing.stock <= 0) errores.push("stock");
+    const hasInvalidStock = (editing.sizes || []).some((label) => {
+      const v = editing.sizeStocks[label];
+      const num = normalizeStockValue(v);
+      return v === "" || Number.isNaN(num) || num < 0;
+    });
+    if (hasInvalidStock) errores.push("stock por talle");
 
     if (errores.length > 0) {
       setErrorMessage(
@@ -408,10 +436,15 @@ const AdminProducts: React.FC = () => {
       const productData = {
         name: editing.name.trim(),
         description: editing.description.trim(),
-        stock: editing.stock,
         idCategory: parseInt(editing.category || ""),
         initialPrice: editing.price,
-        sizes: sizeIds,
+        sizes: mappedSizes.map((entry) => {
+          const stock = normalizeStockValue(editing.sizeStocks[entry.label]);
+          return {
+            id: entry.id,
+            stock: Number.isNaN(stock) ? 0 : stock,
+          };
+        }),
         images: newImages.length > 0 ? newImages : undefined,
       };
 
@@ -463,12 +496,18 @@ const AdminProducts: React.FC = () => {
       typeof s === "string" ? s : s.sizeDesc || s.name || s.label || ""
     );
 
+    const sizeStocks: Record<string, number> = {};
+    (p.sizes || []).forEach((s: any) => {
+      const label = s.sizeDesc || s.name || s.label || "";
+      if (label) sizeStocks[label] = s.stock ?? 0;
+    });
+
     setEditing({
       name: p.name,
       price: p.price,
       description: p.description,
       sizes: sizeLabels,
-      stock: p.stock,
+      sizeStocks,
       category: categoryId, 
       img: p.img || "",
       img2: p.img2 || "",
@@ -575,14 +614,16 @@ const AdminProducts: React.FC = () => {
             <span className="span-admin">Precio</span>
             <input
               className="input-admin"
-              type="number"
-              step="0.01"
-              value={creating.price === 0 ? "" : creating.price}
+              type="text"
+              value={creating.price === 0 ? "" : new Intl.NumberFormat("es-AR", { maximumFractionDigits: 0 }).format(creating.price)}
               onChange={(e) => {
-                const val = e.target.value;
+                const raw = e.target.value || "";
+                // Remove thousand separators (dots/spaces), allow comma as decimal separator
+                const sanitized = raw.replace(/\./g, "").replace(/\s/g, "").replace(/,/g, ".").replace(/[^0-9.\-]/g, "");
+                const num = sanitized === "" ? 0 : Number(sanitized);
                 setCreating({
                   ...creating,
-                  price: val === "" ? 0 : Number(val),
+                  price: isNaN(num) ? 0 : num,
                 });
               }}
             />
@@ -648,21 +689,39 @@ const AdminProducts: React.FC = () => {
             )}
           </div>
 
-          <label>
-            <span className="span-admin">Stock</span>
-            <input
-              className="input-admin"
-              type="number"
-              value={creating.stock === 0 ? "" : creating.stock}
-              onChange={(e) => {
-                const val = e.target.value;
-                setCreating({
-                  ...creating,
-                  stock: val === "" ? 0 : Number(val),
-                });
-              }}
-            />
-          </label>
+          {creating.sizes.length > 0 && (
+            <div className="col-2">
+              <span className="span-admin">Stock por talle</span>
+              <div className="sizes-container">
+                {creating.sizes.map((label) => (
+                  <label key={label} className="stock-ctrl">
+                    <span>{label}:</span>
+                    <input
+                      className="input-admin"
+                      type="number"
+                      min={0}
+                      value={
+                        creating.sizeStocks[label] !== undefined
+                          ? creating.sizeStocks[label]
+                          : "0"
+                      }
+                      onChange={(e) =>
+                        setCreating({
+                          ...creating,
+                          sizeStocks: {
+                            ...creating.sizeStocks,
+                            [label]: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* stock global eliminado, se gestiona por talle */}
 
           <label>
             <span className="span-admin">Imagen principal</span>
@@ -729,7 +788,7 @@ const AdminProducts: React.FC = () => {
               {filteredProducts.map((p) => (
                 <tr key={p.id}>
                   <td>{p.name}</td>
-                  <td>${p.price} ARS</td>
+                  <td>{new Intl.NumberFormat("es-AR", { maximumFractionDigits: 0 }).format(p.price)} ARS</td>
                   <td>{p.category || "-"}</td>
                   <td>{renderSizes(p.sizes)}</td>
                   <td>{p.stock}</td>
@@ -779,14 +838,15 @@ const AdminProducts: React.FC = () => {
             <label>
               <span>Precio</span>
               <input
-                type="number"
-                step="0.01"
-                value={editing.price === 0 ? "" : editing.price}
+                type="text"
+                value={editing.price === 0 ? "" : new Intl.NumberFormat("es-AR", { maximumFractionDigits: 0 }).format(editing.price)}
                 onChange={(e) => {
-                  const val = e.target.value;
+                  const raw = e.target.value || "";
+                  const sanitized = raw.replace(/\./g, "").replace(/\s/g, "").replace(/,/g, ".").replace(/[^0-9.\-]/g, "");
+                  const num = sanitized === "" ? 0 : Number(sanitized);
                   setEditing({
                     ...editing,
-                    price: val === "" ? 0 : Number(val),
+                    price: isNaN(num) ? 0 : num,
                   });
                 }}
               />
@@ -851,20 +911,38 @@ const AdminProducts: React.FC = () => {
               )}
             </div>
 
-            <label>
-              <span>Stock</span>
-              <input
-                type="number"
-                value={editing.stock === 0 ? "" : editing.stock}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setEditing({
-                    ...editing,
-                    stock: val === "" ? 0 : Number(val),
-                  });
-                }}
-              />
-            </label>
+            {editing.sizes.length > 0 && (
+              <div className="col-2">
+                <span className="span-admin">Stock por talle</span>
+                <div className="sizes-container">
+                  {editing.sizes.map((label) => (
+                    <label key={label} className="stock-ctrl">
+                      <span>{label}:</span>
+                      <input
+                        type="number"
+                        min={0}
+                        value={
+                          editing.sizeStocks[label] !== undefined
+                            ? editing.sizeStocks[label]
+                            : "0"
+                        }
+                        onChange={(e) =>
+                          setEditing({
+                            ...editing,
+                            sizeStocks: {
+                              ...editing.sizeStocks,
+                              [label]: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* stock global eliminado, se gestiona por talle */}
 
             <label>
               <span>Nueva imagen principal</span>

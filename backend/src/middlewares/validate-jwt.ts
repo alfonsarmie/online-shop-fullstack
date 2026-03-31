@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 
 // Local request type that includes authenticated user id
 interface AuthRequest extends Request {
-  userId?: number;
+  userId?: string;
 }
 import jwt from "jsonwebtoken";
 import User from "../models/user-model";
@@ -22,12 +22,16 @@ export const requireAuth = (req: Request,res: Response,next: NextFunction): void
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET || "default_secret"
-    ) as { userId: number };
+    ) as { userId: string };
     
   (req as AuthRequest).userId = decoded.userId;
     next();
   
-  } catch (error) {
+  } catch (error: any) {
+    if (error.name === 'TokenExpiredError') {
+      res.status(401).json({ message: "Token expired" });
+      return;
+    }
     res.status(401).json({ message: "Invalid token" });
   }
 
@@ -47,7 +51,7 @@ export const validateJWT = async (req: Request,res: Response,next: NextFunction)
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET || "default_secret"
-    ) as { userId: number };
+    ) as { userId: string };
     const { userId } = decoded;
     const idToDelete = req.params.id;
 
@@ -77,7 +81,7 @@ export const validateJWT = async (req: Request,res: Response,next: NextFunction)
 
     }
 
-    if (userId !== parseInt(idToDelete, 10) && userToValidate.role !== "admin") {
+    if (userId !== idToDelete && userToValidate.role !== "admin") {
       res.status(403).json({
         message: "You do not have permission to perform this action",
       });
@@ -85,8 +89,14 @@ export const validateJWT = async (req: Request,res: Response,next: NextFunction)
     }
 
     next();
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
+    if (error.name === 'TokenExpiredError') {
+      res.status(401).json({
+        message: "Token expired",
+      });
+      return;
+    }
     res.status(401).json({
       message: "Invalid token",
     });
@@ -110,7 +120,7 @@ export const allowAdminOrReceptionist = async (
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET || "default_secret"
-    ) as { userId: number };
+    ) as { userId: string };
     const { userId } = decoded;
     const user = await User.findByPk(userId);
     if (!user) {
@@ -130,7 +140,11 @@ export const allowAdminOrReceptionist = async (
  
   (req as AuthRequest).userId = userId;
     next();
-  } catch (error) {
+  } catch (error: any) {
+    if (error.name === 'TokenExpiredError') {
+      res.status(401).json({ message: "Token expired" });
+      return;
+    }
     res.status(401).json({ message: "Invalid token" });
   }
 };

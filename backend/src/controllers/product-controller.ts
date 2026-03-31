@@ -22,7 +22,6 @@ export const createProduct = async (
     const {
       name,
       description,
-      stock,
       idCategory,
       initialPrice,
       images,
@@ -43,7 +42,6 @@ export const createProduct = async (
       {
         name,
         description,
-        stock,
         idCategory,
       },
       { transaction }
@@ -77,11 +75,15 @@ export const createProduct = async (
 
     
     if (sizes && Array.isArray(sizes)) {
-      for (const sizeId of sizes) {
+      // sizes may be array of size IDs or objects with id and stock
+      for (const s of sizes) {
+        const sizeId = typeof s === 'number' ? s : (s.idSize ?? s.id);
+        const stockVal = typeof s === 'object' && typeof s.stock === 'number' ? s.stock : 0;
         await ProductSize.create(
           {
             idProduct: productCreated.idProduct,
             idSize: sizeId,
+            stock: stockVal,
           },
           { transaction }
         );
@@ -121,9 +123,12 @@ export const createProduct = async (
     });
   } catch (error: any) {
     
-    // @ts-ignore: Property 'finished' does not exist on type 'Transaction' but it exists at runtime
-    if (transaction && !transaction.finished) {
-      await transaction.rollback();
+    if (transaction) {
+      try {
+        await transaction.rollback();
+      } catch (rollbackError) {
+        // ignore rollback errors
+      }
     }
     return res.status(500).json({
       message: "Error creating product",
@@ -139,7 +144,7 @@ export const updateProduct = async (
   const { id } = req.params;
 
   // Extract fields from body
-  const { name, description, stock, idCategory, sizes, initialPrice, images } =
+  const { name, description, idCategory, sizes, initialPrice, images } =
     req.body;
 
   const transaction = await db.transaction();
@@ -171,7 +176,7 @@ export const updateProduct = async (
     // Update basic fields
     if (name !== undefined) productToUpdate.name = name;
     if (description !== undefined) productToUpdate.description = description;
-    if (stock !== undefined) productToUpdate.stock = stock;
+    // stock per product no longer exists; handled via ProductSize
 
     // Save changes to product
     await productToUpdate.save({ transaction });
@@ -190,19 +195,20 @@ export const updateProduct = async (
 
     // Update sizes if provided
     if (sizes !== undefined) {
-      // Delete existing sizes
+      // Replace size set and optionally their stocks
       await ProductSize.destroy({
         where: { idProduct: id },
         transaction,
       });
-
-      // Add new sizes if array is provided and not empty
       if (Array.isArray(sizes) && sizes.length > 0) {
-        for (const sizeId of sizes) {
+        for (const s of sizes) {
+          const sizeId = typeof s === 'number' ? s : (s.idSize ?? s.id);
+          const stockVal = typeof s === 'object' && typeof s.stock === 'number' ? s.stock : 0;
           await ProductSize.create(
             {
               idProduct: parseInt(id),
               idSize: sizeId,
+              stock: stockVal,
             },
             { transaction }
           );
@@ -358,7 +364,7 @@ export const getProduct = async (
         {
           model: Size,
           as: "sizes",
-          through: { attributes: [] }, // Exclude the join table attributes
+          through: { attributes: ["stock"] },
         },
       ],
     });
@@ -423,7 +429,7 @@ export const getAllProducts = async (
         {
           model: Size,
           as: "sizes",
-          through: { attributes: [] },
+          through: { attributes: ["stock"] },
         },
       ],
     };
@@ -451,18 +457,34 @@ export const getCriticalProducts = async (req: Request, res: Response): Promise<
   try {
     const { criticalParam } = req.query;
 
-    let criticalValue: number = 10; 
+    let criticalValue: number = 10;
 
     if (criticalParam && !isNaN(Number(criticalParam))) {
       criticalValue = parseInt(criticalParam as string, 10);
     }
 
-    const products = await Product.findAll({
-      where: {
-        stock: { [Op.lt]: criticalValue }
-      },
-      attributes: ['name', 'stock']
+    // Aggregate stock per product from ProductSize and return products whose total stock is less than criticalValue
+    const productStocks = await ProductSize.findAll({
+      attributes: [
+        'idProduct',
+        [fn('SUM', col('stock')), 'totalStock']
+      ],
+      group: ['idProduct'],
+      having: literal(`SUM(stock) < ${criticalValue}`),
+      include: [
+        {
+          model: Product,
+          as: 'product',
+          attributes: ['idProduct', 'name']
+        }
+      ]
     });
+
+    const products = productStocks.map((ps: any) => ({
+      idProduct: ps.idProduct,
+      name: ps.product?.name || 'Unknown',
+      totalStock: Number(ps.get('totalStock') || 0)
+    }));
 
     return res.status(200).json({
       products,
@@ -507,5 +529,53 @@ export const getTopFive = async (req: Request, res: Response): Promise<Response>
       message: 'Error fetching top products',
       error: error.message
     });
+  }
+};
+
+// Update stock for a specific product-size relation
+export const updateProductSizeStock = async (req: Request, res: Response): Promise<Response> => {
+  const { id, sizeId } = req.params;
+  const { stock } = req.body as { stock: number };
+
+  if (stock === undefined || stock === null || Number.isNaN(Number(stock)) || Number(stock) < 0) {
+    return res.status(400).json({ message: 'Invalid stock value' });
+  }
+
+  const transaction = await db.transaction();
+  try {
+    // Ensure product exists
+    const product = await Product.findByPk(id, { transaction });
+    if (!product) {
+      await transaction.rollback();
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Ensure size exists
+    const size = await Size.findByPk(sizeId, { transaction });
+    if (!size) {
+      await transaction.rollback();
+      return res.status(404).json({ message: 'Size not found' });
+    }
+
+    // Find or create the ProductSize relation
+    let ps = await ProductSize.findOne({
+      where: { idProduct: id, idSize: sizeId },
+      transaction,
+      lock: transaction.LOCK.UPDATE,
+    });
+
+    if (!ps) {
+      ps = await ProductSize.create({ idProduct: Number(id), idSize: Number(sizeId), stock: Number(stock) }, { transaction });
+    } else {
+      ps.stock = Number(stock);
+      await ps.save({ transaction });
+    }
+
+    await transaction.commit();
+    return res.status(200).json({ message: 'Stock actualizado', productSize: ps });
+  } catch (error: any) {
+    try { await transaction.rollback(); } catch {}
+    console.error('Error updating product-size stock:', error);
+    return res.status(500).json({ message: 'Error updating stock', error: error.message });
   }
 };

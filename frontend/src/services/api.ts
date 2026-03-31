@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = `${(import.meta as any).env.VITE_API_URL || 'http://localhost:3000'}/api`;
 
 
 const api = axios.create({
@@ -23,6 +23,20 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      if (error.response.data.message === "Token expired") {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login?expired=true';
+      }
+    }
     return Promise.reject(error);
   }
 );

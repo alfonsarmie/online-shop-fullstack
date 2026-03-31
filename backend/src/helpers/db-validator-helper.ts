@@ -18,7 +18,7 @@ export const existsDni = async (dni: number): Promise<void> => {
   }
 };
 
-export const existsUserById = async (id: number): Promise<void> => {
+export const existsUserById = async (id: string): Promise<void> => {
   const existsUser = await User.findByPk(id);
   if (!existsUser) {
     throw new Error(`User with ID ${id} does not exist`);

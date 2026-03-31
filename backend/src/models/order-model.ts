@@ -4,9 +4,8 @@ import db from "../db/connection";
 interface OrderAttributes {
   idOrder: number;
   orderDate: Date;
-  expectedPickupDate?: Date;
-  actualPickupDate?: Date;
-  idUser: number;
+  PickupDate?: Date;
+  idUser: string;
   idPaymentMethod: number;
   external_reference?: string;
   payment_id?: string;
@@ -21,7 +20,7 @@ interface OrderAttributes {
 }
 
 interface OrderCreationAttributes extends Optional<OrderAttributes, 
-  "idOrder" | "expectedPickupDate" | "actualPickupDate" | "external_reference" | 
+  "idOrder" |  "PickupDate"  | "external_reference" | 
   "payment_id" | "customer_phone" | "customer_notes" | "sport" | "statusMp" | "currencyId"> {}
 
 class Order extends Model<OrderAttributes, OrderCreationAttributes> 
@@ -29,9 +28,8 @@ class Order extends Model<OrderAttributes, OrderCreationAttributes>
   
   public idOrder!: number;
   public orderDate!: Date;
-  public expectedPickupDate?: Date;
-  public actualPickupDate?: Date;
-  public idUser!: number;
+  public PickupDate?: Date;
+  public idUser!: string;
   public idPaymentMethod!: number;
   public external_reference?: string;
   public payment_id?: string;
@@ -56,21 +54,18 @@ Order.init({
     allowNull: false,
     defaultValue: DataTypes.NOW,
   },
-  expectedPickupDate: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  actualPickupDate: {
+
+  PickupDate: {
     type: DataTypes.DATE,
     allowNull: true,
   },
   idUser: {
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.STRING(36),
     allowNull: false,
   },
   idPaymentMethod: {
     type: DataTypes.INTEGER.UNSIGNED,
-    allowNull: false,
+    allowNull: true,
   },
   external_reference: { 
     type: DataTypes.STRING(255),

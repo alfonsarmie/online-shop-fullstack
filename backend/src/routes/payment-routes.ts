@@ -1,31 +1,27 @@
-import express, { Router } from 'express';
+import { Router } from 'express';
 import { check } from 'express-validator';
 import { validateFields } from '../middlewares/validate-fields';
 import { requireAuth } from '../middlewares/validate-jwt';
-import { createCheckoutSession } from '../controllers/payment-controller';
-
-
+import { createPreference, receiveWebhook } from '../controllers/payment-controller';
 
 const router = Router();
 
-
-
-
 router.post(
-    "/create-checkout-session",
+    "/create-checkout-preference",
     [
         requireAuth,
     
-        check('items', 'El carrito no puede estar vacío').isArray({ min: 1 }),
-        
+        // Validaciones del carrito y datos de checkout
+        check('cartItems', 'El carrito no puede estar vacío').isArray({ min: 1 }),
+        check('checkoutData.name', 'El nombre del cliente es obligatorio').not().isEmpty(),
+        check('checkoutData.email', 'El email del cliente es obligatorio').isEmail(),
         
         validateFields
     ],
-    createCheckoutSession
+    createPreference
 );
 
-
-
-
+// Ruta para recibir notificaciones de Mercado Pago (Webhook)
+router.post('/webhook', receiveWebhook);
 
 export default router;

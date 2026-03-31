@@ -5,6 +5,59 @@ import { orderService, mapOrderToFrontend } from "../services/orderService";
 import { FrontendOrder, FrontendOrderStatus } from "../types/order";
 import { User } from "../types/user";
 import "../styles/myOrders.css";
+import formatCurrency from "../utils/formatCurrency";
+import QRCode from "qrcode";
+
+const buildPickupUrl = (code: string) => {
+  const base =
+    (import.meta as any).env?.VITE_APP_BASE_URL || window.location.origin;
+  const normalized = String(base).replace(/\/+$/, "");
+  return `${normalized}/pickup?c=${encodeURIComponent(code)}`;
+};
+
+const PickupQR: React.FC<{ code: string; compact?: boolean }> = ({
+  code,
+  compact = false,
+}) => {
+  const [dataUrl, setDataUrl] = useState("");
+  const pickupUrl = useMemo(() => buildPickupUrl(code), [code]);
+
+  useEffect(() => {
+    let active = true;
+    QRCode.toDataURL(pickupUrl)
+      .then((url) => {
+        if (active) setDataUrl(url);
+      })
+      .catch((err) => {
+        console.error("No pudimos generar el QR de retiro:", err);
+        if (active) setDataUrl("");
+      });
+    return () => {
+      active = false;
+    };
+  }, [pickupUrl]);
+
+  return (
+    <div className={`pickup-qr ${compact ? "compact" : ""}`}>
+      {dataUrl ? (
+        <img src={dataUrl} alt="QR de retiro" className="pickup-qr-image" />
+      ) : (
+        <div className="pickup-qr-placeholder">Generando QR...</div>
+      )}
+      <div className="pickup-qr-body">
+        <a
+          href={pickupUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="pickup-qr-link"
+        >
+          Abrir enlace de retiro
+        </a>
+        <p className="pickup-qr-hint">Mostrá este QR en recepción.</p>
+      </div>
+    </div>
+  );
+};
 
 const MyOrders: React.FC = () => {
   const [orders, setOrders] = useState<FrontendOrder[]>([]);
@@ -71,12 +124,13 @@ const MyOrders: React.FC = () => {
   };
 
   const getStatusCounts = () => {
-    const counts = {
+    const counts: Record<FrontendOrderStatus | "all", number> = {
       all: orders.length,
       confirmed: 0,
       ready: 0,
       withdrawn: 0,
       cancelled: 0,
+      pending_payment: 0,
     };
     orders.forEach((order) => {
       counts[order.status]++;
@@ -96,6 +150,8 @@ const MyOrders: React.FC = () => {
         return "status-badge status-withdrawn";
       case "cancelled":
         return "status-badge status-cancelled";
+      case "pending_payment":
+        return "status-badge status-pending_payment";
       default:
         return "status-badge";
     }
@@ -109,10 +165,13 @@ const MyOrders: React.FC = () => {
         return "Retirado";
       case "cancelled":
         return "Cancelado";
+      case "pending_payment":
+        return "Pendiente de pago";
       default:
         return "Confirmado";
     }
   };
+
 
   if (!user) {
     return (
@@ -158,9 +217,6 @@ const MyOrders: React.FC = () => {
   return (
     <div className="my-orders-container">
       <div className="orders-header">
-        <Link to="/" className="back-button">
-          ← Volver al inicio
-        </Link>
         <h1>Mis Pedidos</h1>
         <p>Revisa el estado de tus compras y pedidos anteriores</p>
       </div>
@@ -185,6 +241,13 @@ const MyOrders: React.FC = () => {
         >
           Confirmado{" "}
           <span className="status-count">{statusCounts.confirmed}</span>
+        </button>
+        <button
+          className={`status-pill ${selectedStatus === "pending_payment" ? "active" : ""}`}
+          onClick={() => setSelectedStatus("pending_payment")}
+        >
+          Pendiente de pago{" "}
+          <span className="status-count">{statusCounts.pending_payment}</span>
         </button>
         <button
           className={`status-pill ${selectedStatus === "withdrawn" ? "active" : ""}`}
@@ -250,28 +313,19 @@ const MyOrders: React.FC = () => {
                   )}
                 </div>
                 <div className="order-total">
-                  Total: ${order.total.toFixed(2)}
+                  Total: ${formatCurrency(order.total, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </div>
               </div>
 
               <div className="order-footer">
-                {order.status === "ready" && (
-                  <div className="ready-info">
-                    <FiPackage size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                    <span>¡Listo para retirar!</span>
-                  </div>
+                {order.status === "ready" && order.pickupCode && !order.pickupUsed && (
+                  <PickupQR code={order.pickupCode} />
                 )}
-                {order.status === "withdrawn" && (
-                  <div className="completed-info">
-                    <FiPackage size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                    <span>Pedido completado</span>
-                  </div>
-                )}
-                {order.status === "cancelled" && (
-                  <div className="cancelled-info">
-                    <FiPackage size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                    <span>Pedido cancelado</span>
-                  </div>
+                {order.pickupUsed && (
+                  <div className="pickup-used-banner">QR validado - pedido entregado</div>
                 )}
                 <div className="order-actions">
                   <button
@@ -311,13 +365,16 @@ const MyOrders: React.FC = () => {
                   </div>
                   <div className="detail-item">
                     <strong>Estado:</strong>
-                    <span className={getStatusBadgeClass(selectedOrder.status)}>
-                      {getStatusLabel(selectedOrder.status)}
-                    </span>
+                    <span>{getStatusLabel(selectedOrder.status)}</span>
                   </div>
                   <div className="detail-item">
                     <strong>Total:</strong>
-                    <span>${selectedOrder.total.toFixed(2)}</span>
+                    <span>
+                      ${formatCurrency(selectedOrder.total, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </span>
                   </div>
                   {selectedOrder.pickupDate && (
                     <div className="detail-item">
@@ -348,7 +405,10 @@ const MyOrders: React.FC = () => {
                         <p>Cantidad: {item.quantity}</p>
                         {item.size && <p>Talla: {item.size}</p>}
                         <p className="item-price">
-                          ${item.price.toFixed(2)} c/u
+                          ${formatCurrency(item.price, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })} c/u
                         </p>
                       </div>
                     </div>
@@ -374,18 +434,25 @@ const MyOrders: React.FC = () => {
                   </div>
                 </div>
               )}
-            </div>
-            <div className="modal-footer">
-              <button
-                className="close-button"
-                onClick={() => setSelectedOrder(null)}
-              >
-                Cerrar
-              </button>
+              {selectedOrder.pickupCode && !selectedOrder.pickupUsed && selectedOrder.status === "ready" && (
+                <div className="order-detail-section">
+                  <h4>QR para retiro</h4>
+                  <PickupQR code={selectedOrder.pickupCode} compact />
+                </div>
+              )}
+              {selectedOrder.pickupUsed && (
+                <div className="order-detail-section">
+                  <h4>QR para retiro</h4>
+                  <div className="pickup-used-banner inline">
+                    Este QR ya fue validado al momento de retirar el pedido.
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 };

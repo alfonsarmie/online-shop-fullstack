@@ -164,7 +164,18 @@ const AdminUsers = () => {
         role: prev.role,
       }));
     } catch (error: any) {
-      const apiMessage = error?.response?.data?.message;
+  
+      const resp = error?.response?.data;
+      const validationMessages = Array.isArray(resp?.errors)
+        ? resp.errors
+            .map((e: any) => e?.msg)
+            .filter(Boolean)
+            .join(" | ")
+        : undefined;
+
+      const apiMessage = resp?.message || validationMessages;
+
+      console.error("Alta staff error:", resp || error);
       setErrorMessage(apiMessage || "No se pudo crear la cuenta. Intenta nuevamente.");
       setSuccessMessage("");
     } finally {

@@ -5,10 +5,34 @@ import type {
   FrontendOrder,
   FrontendOrderItem,
   FrontendOrderStatus,
+  OrderStatusHistory,
+  FrontendOrderStatusHistory,
 } from "../types/order";
 
 const API_URL = "";
 
+const normalizeStatus = (status?: string | null): FrontendOrderStatus => {
+  if (!status) return "confirmed";
+  const cleaned = status.toLowerCase().replace(/[-\s]+/g, "_");
+  const allowed: FrontendOrderStatus[] = [
+    "confirmed",
+    "ready",
+    "withdrawn",
+    "cancelled",
+    "pending_payment",
+  ];
+  return allowed.includes(cleaned as FrontendOrderStatus)
+    ? (cleaned as FrontendOrderStatus)
+    : "confirmed";
+};
+
+const normalizeHistory = (
+  history?: OrderStatusHistory[]
+): FrontendOrderStatusHistory[] =>
+  (history || []).map((entry) => ({
+    ...entry,
+    description: normalizeStatus(entry.description),
+  }));
 
 export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
   const items: FrontendOrderItem[] = (order.orderLines || []).map((line) => ({
@@ -24,15 +48,21 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
     image: line.product_image || undefined,
   }));
 
-  const latestStatus = (order.latestStatus?.description ?? order.statusHistory?.[0]?.description) as FrontendOrderStatus | undefined;
+  const normalizedHistory = normalizeHistory(order.statusHistory);
+  const normalizedLatest = order.latestStatus
+    ? {
+        ...order.latestStatus,
+        description: normalizeStatus(order.latestStatus.description),
+      }
+    : normalizedHistory[0] ?? null;
 
   let status: FrontendOrderStatus;
-  if (latestStatus) {
-    status = latestStatus;
-  } else if (order.actualPickupDate) {
+  if (normalizedLatest) {
+    status = normalizedLatest.description;
+  } else if (order.PickupDate) {
     status = "withdrawn";
   } else if (order.statusMp === "unpaid") {
-    status = "cancelled";
+    status = "pending_payment";
   } else {
     status = "confirmed";
   }
@@ -48,11 +78,11 @@ export const mapOrderToFrontend = (order: BackendOrder): FrontendOrder => {
         ? order.total_amount
         : Number(order.total_amount || 0),
     items,
-    pickupDate: order.expectedPickupDate,
-    canCancel: !order.actualPickupDate && order.statusMp !== "paid",
+    pickupDate: order.PickupDate || undefined,
+    canCancel: !order.PickupDate && order.statusMp !== "paid",
     statusMp: order.statusMp,
-    history: order.statusHistory || [],
-    latestStatus: order.latestStatus ?? order.statusHistory?.[0],
+    history: normalizedHistory,
+    latestStatus: normalizedLatest,
   };
   return mapped;
 };
@@ -63,7 +93,7 @@ export const getItemImage = (fallback?: string) => {
 
   if (fallback.startsWith("/uploads")) {
     const host =
-      (import.meta as any).env?.VITE_API_HOST || "http://localhost:3000";
+      (import.meta as any).env?.VITE_API_URL || "http://localhost:3000";
     return `${host}${fallback}`;
   }
   return fallback;
@@ -80,7 +110,7 @@ const getOrders = async (params?: { page?: number; limit?: number }) => {
 };
 
 
-const getUserOrders = async (userId: number) => {
+const getUserOrders = async (userId: string | number) => {
   try {
     const response = await api.get<{ orders: BackendOrder[] } | BackendOrder[]>(
       `/orders/user/${userId}`
@@ -98,17 +128,7 @@ const updateOrderStatus = async (
   payload: { description: string }
 ) => {
   try {
-
     const response = await api.post(`/status/${id}/create`, payload);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-const deleteOrder = async (id: number) => {
-  try {
-    const response = await api.delete(`/orders/${id}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -147,7 +167,6 @@ export const orderService = {
   getOrders,
   getUserOrders,
   updateOrderStatus,
-  deleteOrder,
   getSportsStats,
   getStatusStats,
   mapOrderToFrontend,

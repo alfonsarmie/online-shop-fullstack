@@ -2,12 +2,14 @@
 import { useCart } from '../components/CartContext';
 import { useNavigate } from 'react-router-dom';
 import '../styles/payment.css';
-import stripeLogo from '../assets/img/stripe-logo.png';
+import mpLogo from '/src/assets/img/mercado-pago-logo.png';
 import type { CartItem } from '../types/cart';
 import type { User } from '../types/user';
 import ProgressBar from '../components/ProgressBar';
 import { checkoutService, CheckoutFormData } from '../services/checkoutService';
 import ErrorMessage from '../components/ErrorMessage';
+import formatCurrency from '../utils/formatCurrency';
+import { setTime } from 'react-datepicker/dist/date_utils';
 
 function getStoredUser(): User | null {
   const saved = localStorage.getItem('user');
@@ -26,6 +28,7 @@ const Payment = () => {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const checkoutData = useMemo(() => {
     const saved = localStorage.getItem('checkoutData');
@@ -74,9 +77,9 @@ const Payment = () => {
 
     try {
       const preference = await checkoutService.createPaymentPreference(
-        checkoutData,
-        cartItems,
-        storedUser
+        checkoutData, // datos del usuario (nombre, mail, deportes, etc)
+        cartItems, // items del carrito
+        storedUser // datos del usuario logueado (idUser, email, name)
       );
 
       console.log('✅ [PAYMENT] Preference created:', preference);
@@ -107,15 +110,43 @@ const Payment = () => {
         
         if (axiosError.response?.data?.message) {
           errorMessage = axiosError.response.data.message;
+          if (errorMessage === "Token expired") {
+            errorMessage = "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.";
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login?expired=true';
+            return;
+          }
         } else if (axiosError.response?.status) {
           errorMessage = `Error del servidor (${axiosError.response.status}). Revisa los logs del backend.`;
         }
       }
       
       setErrorMessage(errorMessage);
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 5000);
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const openConfirmModal = () => {
+    if (!isProcessing) {
+      setIsConfirmOpen(true);
+    }
+  };
+
+  const closeConfirmModal = () => {
+    if (!isProcessing) {
+      setIsConfirmOpen(false);
+    }
+  };
+
+  const confirmPayment = () => {
+    if (isProcessing) return;
+    setIsConfirmOpen(false);
+    void handlePayment();
   };
 
   if (!checkoutData) {
@@ -132,13 +163,13 @@ const Payment = () => {
 
             <div className="order-items">
               {cartItems.map((item: CartItem) => (
-                <div key={`${item.id}-${item.size ?? 'default'}`} className="order-item">
+                <div key={`${item.idProduct}-${item.size ?? 'default'}`} className="order-item">
                   <img src={item.img} alt={item.name} />
                   <div>
                     <h4>{item.name}</h4>
                     {item.size && <p>Talle: {item.size}</p>}
                     <p>
-                      ${item.price.toLocaleString('es-AR')} x {item.quantity}
+                      ${formatCurrency(item.price)} x {item.quantity}
                     </p>
                   </div>
                 </div>
@@ -146,8 +177,10 @@ const Payment = () => {
             </div>
             <div className="order-total">
               <h3>
-                Total: $
-                {total.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+                Total: ${formatCurrency(total, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </h3>
             </div>
           </div>
@@ -164,9 +197,9 @@ const Payment = () => {
               defaultChecked
             />
             <label htmlFor="stripe">
-              <img src={stripeLogo} alt="Stripe" />
+              <img src={mpLogo} alt="Mercado Pago" />
               <span>
-                <strong>Stripe</strong>
+                <strong>Mercado Pago </strong>
               </span>
             </label>
           </div>
@@ -176,7 +209,7 @@ const Payment = () => {
           )}
 
           <button
-            onClick={handlePayment}
+            onClick={openConfirmModal}
             disabled={isProcessing}
             className={`pay-button ${isProcessing ? 'disabled' : ''}`}
           >
@@ -188,6 +221,46 @@ const Payment = () => {
           </button>
         </div>
       </div>
+
+      {isConfirmOpen && (
+        <div
+          className="modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="payment-confirm-title"
+          onClick={closeConfirmModal}
+        >
+          <div
+            className="modal-content confirm-modal"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="confirm-header">
+              <h2 id="payment-confirm-title">Confirmación de compra</h2>
+            </div>
+            <div className="modal-body">
+              <p className="confirm-message">Estas seguro de realizar la compra?</p>
+            </div>
+            <div className="confirm-actions">
+              <button
+                type="button"
+                className="neutral-button"
+                onClick={closeConfirmModal}
+                disabled={isProcessing}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="confirm-button confirm-button-payment"
+                onClick={confirmPayment}
+                disabled={isProcessing}
+              >
+                Ir a Mercado Pago
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

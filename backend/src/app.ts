@@ -2,9 +2,14 @@
 //NOTE: Dont forget to install the dependencies with `npm install`!!!
 //NOTE: Check package.json for scripts to run the server in dev mode
 
+import dns from 'node:dns';
+// Esto fuerza a Node a usar IPv4 primero, solucionando el timeout de Railway/Gmail
+dns.setDefaultResultOrder('ipv4first');
+
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import morgan from 'morgan';
 dotenv.config();
 
 // Import routes
@@ -13,7 +18,6 @@ import authRoutes from './routes/auth-routes';
 import productRoutes from './routes/product-routes';
 import priceRoutes from './routes/price-routes';
 import imageRoutes from './routes/image-routes';
-import webHookRoutes from './routes/webhooks-routes';
 import sizeRoutes from './routes/size-routes';
 import categoryRoutes from './routes/category-routes';
 import uploadRoutes from './routes/upload-routes';
@@ -31,7 +35,7 @@ const app = express();
 
 
 // Allow configuring multiple frontends (local tunnels, production, etc.) via env vars
-const rawAllowedOrigins = process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://localhost:3000';
+const rawAllowedOrigins = process.env.CORS_ORIGINS || 'http://localhost:5173,http://localhost:3000';
 const allowedOrigins = rawAllowedOrigins
   .split(',')
   .map((origin) => origin.trim())
@@ -56,9 +60,10 @@ app.use(cors({
 })); // To enable CORS with explicit origins
 
 // Mount Stripe webhook BEFORE JSON parser to keep raw body for signature verification
-app.use('/api/webhooks', webHookRoutes);
+//app.use('/api/webhooks', webHookRoutes);
 app.use(express.json()); //To parse JSON data 
 app.use(express.urlencoded({ extended: true })); 
+app.use(morgan('dev'));
 
 // Connect to the database
 connectDB().catch(error => console.error('Database connection failed:', error));
@@ -83,7 +88,7 @@ app.use('/uploads', express.static('uploads'));
 
 // Initialize the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`Server listening on http://localhost:${PORT || 3000}`);
 });
 

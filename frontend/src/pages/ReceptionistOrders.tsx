@@ -9,7 +9,8 @@ type OrderStatus =
   | 'confirmed'
   | 'ready'
   | 'withdrawn'
-  | 'cancelled';
+  | 'cancelled'
+  | 'pending_payment';
 
 type OrderItem = {
   productId: number;
@@ -21,6 +22,7 @@ type OrderItem = {
 
 type Order = {
   id: number;
+  orderNumber: string;
   customerName: string;
   customerEmail: string;
   items: OrderItem[];
@@ -33,6 +35,8 @@ type Order = {
   previousStatus?: OrderStatus;
 };
 
+const formatOrderNumber = (id: number) => `ORD-${id.toString().padStart(4, '0')}`;
+
 const nowIso = () => new Date().toISOString();
 
 const parseDecimal = (v: number | string | undefined) => {
@@ -42,15 +46,23 @@ const parseDecimal = (v: number | string | undefined) => {
   return Number.isNaN(n) ? 0 : n;
 };
 
-const determineStatusFromBackend = (o: BackendOrder): OrderStatus => {
-  const historyStatus =
-    o.latestStatus?.description ?? o.statusHistory[0]?.description;
-  if (historyStatus) return historyStatus;
+const normalizeStatus = (status?: string | null): OrderStatus => {
+  if (!status) return 'confirmed';
+  const cleaned = status.toLowerCase().replace(/[-\s]+/g, '_');
+  const allowed: OrderStatus[] = ['confirmed', 'ready', 'withdrawn', 'cancelled', 'pending_payment'];
+  return allowed.includes(cleaned as OrderStatus)
+    ? (cleaned as OrderStatus)
+    : 'confirmed';
+};
 
-  if (o.actualPickupDate) return 'withdrawn';
+const determineStatusFromBackend = (o: BackendOrder): OrderStatus => {
+  const rawHistoryStatus = o.latestStatus?.description ?? o.statusHistory[0]?.description;
+  if (rawHistoryStatus) return normalizeStatus(rawHistoryStatus);
+
+  if (o.PickupDate) return 'withdrawn';
 
   const status = o.statusMp as string | undefined;
-  if (status === 'unpaid') return 'cancelled';
+  if (status === 'unpaid') return 'pending_payment';
   if (status === 'paid' || status === 'no_payment_required') return 'ready';
 
   return 'confirmed';
@@ -68,6 +80,7 @@ const ReceptionistOrders: React.FC = () => {
       const prev = carryFrom.find(p => p.id === o.idOrder)?.previousStatus;
       return {
         id: o.idOrder,
+        orderNumber: formatOrderNumber(o.idOrder),
         customerName: o.customer_name,
         customerEmail: o.customer_email,
         items: (o.orderLines || []).map((ln: BackendOrderLine) => ({
@@ -82,7 +95,7 @@ const ReceptionistOrders: React.FC = () => {
         date: o.orderDate,
         address: o.customer_notes || 'Retiro en Rowing Club',
         paymentMethod: o.paymentMethod?.name || 'Sin datos',
-        withdrawnAt: o.actualPickupDate || undefined,
+        withdrawnAt: o.PickupDate || undefined,
         previousStatus: prev,
       };
     });
@@ -109,6 +122,21 @@ const ReceptionistOrders: React.FC = () => {
     return () => { mounted = false; };
   }, []);
 
+  const pendingPaymentOrders = useMemo(() => {
+    const lower = filter.trim().toLowerCase();
+    return orders
+      .filter(o => o.status === 'pending_payment')
+      .filter(o => {
+        if (!lower) return true;
+        return (
+          o.customerName.toLowerCase().includes(lower) ||
+          o.customerEmail.toLowerCase().includes(lower) ||
+          String(o.id).includes(lower) ||
+          o.orderNumber.toLowerCase().includes(lower)
+        );
+      });
+  }, [orders, filter]);
+
   const pendingOrders = useMemo(() => {
     const lower = filter.trim().toLowerCase();
     const desired = new Set<OrderStatus>(['confirmed', 'ready']);
@@ -119,7 +147,8 @@ const ReceptionistOrders: React.FC = () => {
         return (
           o.customerName.toLowerCase().includes(lower) ||
           o.customerEmail.toLowerCase().includes(lower) ||
-          String(o.id).includes(lower)
+          String(o.id).includes(lower) ||
+          o.orderNumber.toLowerCase().includes(lower)
         );
       });
   }, [orders, filter]);
@@ -135,6 +164,7 @@ const ReceptionistOrders: React.FC = () => {
       case 'ready': return 'status-ready';
       case 'withdrawn': return 'status-withdrawn';
       case 'cancelled': return 'status-cancelled';
+      case 'pending_payment': return 'status-pending';
       default: return '';
     }
   };
@@ -145,56 +175,31 @@ const ReceptionistOrders: React.FC = () => {
       case 'ready': return 'Listo';
       case 'withdrawn': return 'Entregado';
       case 'cancelled': return 'Cancelado';
+      case 'pending_payment': return 'Pendiente de pago';
       default: return status;
     }
   };
 
-  const markAsDelivered = async (id: number) => {
-    const now = nowIso();
-    const optimistic = orders.map(o => (o.id === id ? { ...o, previousStatus: o.status, status: 'withdrawn' as OrderStatus, withdrawnAt: now } : o));
+  const changeStatus = async (id: number, newStatus: OrderStatus) => {
+    const optimistic = orders.map(o => (o.id === id ? { ...o, status: newStatus, withdrawnAt: newStatus === 'withdrawn' ? nowIso() : undefined } : o));
     setOrders(optimistic);
     setSelectedOrder(null);
     try {
       await orderService.updateOrderStatus(id, {
-        description: 'withdrawn'
+        description: newStatus
       });
 
       const data = await orderService.getOrders({ page: 1, limit: 200 });
       const mapped: Order[] = mapBackendOrders(data.orders || [], optimistic);
       setOrders(mapped);
     } catch (err: any) {
-      console.error('Error marking order as delivered:', err);
-      try {
-        const data = await orderService.getOrders({ page: 1, limit: 200 });
-        const mapped: Order[] = mapBackendOrders(data.orders || [], optimistic);
-        setOrders(mapped);
-      } catch (e) {
-        console.error('Error refetching orders after failed mark delivered:', e);
-      }
-    }
-  };
-
-  const revertToPending = async (id: number) => {
-
-  const current = orders.find(o => o.id === id);
-  const targetStatus = (current?.previousStatus ?? current?.status ?? 'confirmed') as OrderStatus;
-  const optimistic = orders.map(o => (o.id === id ? { ...o, status: targetStatus, withdrawnAt: undefined, previousStatus: undefined } : o));
-    setOrders(optimistic);
-    try {
-      await orderService.updateOrderStatus(id, {
-        description: targetStatus,
-      });
-      const data = await orderService.getOrders({ page: 1, limit: 200 });
-      const mapped: Order[] = mapBackendOrders(data.orders || [], optimistic);
-      setOrders(mapped.map(o => (o.id === id ? { ...o, previousStatus: undefined } : o)));
-    } catch (err) {
-      console.error('Error reverting order to pending:', err);
+      console.error(`Error changing status to ${newStatus}:`, err);
       try {
         const data = await orderService.getOrders({ page: 1, limit: 200 });
         const mapped: Order[] = mapBackendOrders(data.orders || [], orders);
         setOrders(mapped);
       } catch (e) {
-        console.error('Error refetching orders after failed revert:', e);
+        console.error('Error refetching orders after failed status change:', e);
       }
     }
   };
@@ -236,13 +241,64 @@ const ReceptionistOrders: React.FC = () => {
 
       <section className="panel">
         <div className="panel-header">
+          <h2>Pendientes de Pago ({pendingPaymentOrders.length})</h2>
+        </div>
+        <div className="panel-body">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>N° Pedido</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Productos</th>
+                <th>Total</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingPaymentOrders.map(order => (
+                <tr key={order.id}>
+                  <td>{order.orderNumber}</td>
+                  <td>
+                    <div>{order.customerName}</div>
+                    <div className="text-muted">{order.customerEmail}</div>
+                  </td>
+                  <td>{formatDate(order.date)}</td>
+                  <td>
+                    {order.items.length} producto{order.items.length !== 1 ? 's' : ''}
+                    <button className="btn-link" onClick={() => setSelectedOrder(order)}>
+                      Ver detalles
+                    </button>
+                  </td>
+                  <td>{currency(order.total)}</td>
+                  <td>
+                    <span className={`status-badge ${getStatusClass(order.status)}`}>
+                      {getStatusLabel(order.status)}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+              {pendingPaymentOrders.length === 0 && (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: 'center', color: '#bdbdbd' }}>
+                    No hay pedidos pendientes de pago
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="panel-header">
           <h2>Pedidos ({pendingOrders.length})</h2>
         </div>
         <div className="panel-body">
           <table className="data-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>N° Pedido</th>
                 <th>Cliente</th>
                 <th>Fecha</th>
                 <th>Productos</th>
@@ -254,7 +310,7 @@ const ReceptionistOrders: React.FC = () => {
             <tbody>
               {pendingOrders.map(order => (
                 <tr key={order.id}>
-                  <td>#{order.id}</td>
+                  <td>{order.orderNumber}</td>
                   <td>
                     <div>{order.customerName}</div>
                     <div className="text-muted">{order.customerEmail}</div>
@@ -273,9 +329,21 @@ const ReceptionistOrders: React.FC = () => {
                     </span>
                   </td>
                   <td>
-                    <button className="btn" onClick={() => markAsDelivered(order.id)}>
-                      Marcar como entregado
-                    </button>
+                    {order.status === 'confirmed' && (
+                      <button className="btn" onClick={() => changeStatus(order.id, 'ready')}>
+                        Marcar como listo
+                      </button>
+                    )}
+                    {order.status === 'ready' && (
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button className="btn" onClick={() => changeStatus(order.id, 'withdrawn')}>
+                          Marcar como entregado
+                        </button>
+                        <button className="btn btn-secondary" onClick={() => changeStatus(order.id, 'confirmed')}>
+                          Revertir a confirmado
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -299,7 +367,7 @@ const ReceptionistOrders: React.FC = () => {
           <table className="data-table delivered-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>N° Pedido</th>
                 <th>Cliente</th>
                 <th>Fecha</th>
                 <th>Productos</th>
@@ -311,7 +379,7 @@ const ReceptionistOrders: React.FC = () => {
             <tbody>
               {deliveredOrders.map(order => (
                 <tr key={order.id} className="delivered-row">
-                  <td>#{order.id}</td>
+                  <td>{order.orderNumber}</td>
                   <td>
                     <div>{order.customerName}</div>
                     <div className="text-muted">{order.customerEmail}</div>
@@ -328,8 +396,8 @@ const ReceptionistOrders: React.FC = () => {
                     <span className={`status-badge ${getStatusClass(order.status)}`}>{getStatusLabel(order.status)}</span>
                   </td>
                   <td>
-                    <button className="btn" onClick={() => revertToPending(order.id)}>
-                      Revertir a pendiente
+                    <button className="btn" onClick={() => changeStatus(order.id, 'ready')}>
+                      Revertir a listo
                     </button>
                   </td>
                 </tr>
@@ -350,7 +418,7 @@ const ReceptionistOrders: React.FC = () => {
         <div className="modal-overlay" onClick={() => setSelectedOrder(null)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>Detalles del pedido #{selectedOrder.id}</h2>
+              <h2>Detalles del pedido {selectedOrder.orderNumber}</h2>
               <button className="btn-close" onClick={() => setSelectedOrder(null)}>×</button>
             </div>
             <div className="modal-body">
@@ -399,10 +467,27 @@ const ReceptionistOrders: React.FC = () => {
                 </tbody>
               </table>
 
-              <div style={{ marginTop: 16, textAlign: 'right' }}>
-                <button className="btn" onClick={() => markAsDelivered(selectedOrder.id)}>
-                  Marcar como entregado
-                </button>
+              <div style={{ marginTop: 16, textAlign: 'right', display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                {selectedOrder.status === 'confirmed' && (
+                  <button className="btn" onClick={() => changeStatus(selectedOrder.id, 'ready')}>
+                    Marcar como listo
+                  </button>
+                )}
+                {selectedOrder.status === 'ready' && (
+                  <>
+                    <button className="btn btn-secondary" onClick={() => changeStatus(selectedOrder.id, 'confirmed')}>
+                      Revertir a confirmado
+                    </button>
+                    <button className="btn" onClick={() => changeStatus(selectedOrder.id, 'withdrawn')}>
+                      Marcar como entregado
+                    </button>
+                  </>
+                )}
+                {selectedOrder.status === 'withdrawn' && (
+                  <button className="btn" onClick={() => changeStatus(selectedOrder.id, 'ready')}>
+                    Revertir a listo
+                  </button>
+                )}
               </div>
             </div>
           </div>

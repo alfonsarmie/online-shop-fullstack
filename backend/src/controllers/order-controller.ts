@@ -1,22 +1,21 @@
-import Stripe from 'stripe';
 import { Request, Response } from 'express';
 import { Transaction, Op, Sequelize } from 'sequelize';
 import { db } from '../db/connection';
 import Order from '../models/order-model';
 import OrderLine from '../models/order-line-model';
 import Product from '../models/product-model';
+import ProductSize from '../models/size-product-model';
 import Size from '../models/size-model';
 import Status from '../models/status-model';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+// Stripe integration removed from project — stripe client intentionally not initialized.
 
 // Plain order shape used when serializing Sequelize instances for responses
 type PlainOrder = {
     idOrder: number;
     orderDate: string | Date;
-    expectedPickupDate?: string | Date | null;
-    actualPickupDate?: string | Date | null;
-    idUser?: number;
+    PickupDate?: string | Date | null;
+    idUser?: string;
     idPaymentMethod?: number;
     external_reference?: string;
     payment_id?: string;
@@ -38,225 +37,8 @@ type PlainOrder = {
 };
 
 
-export const createOrderFromSession = async (req: Request, res: Response) => {
-    const { session_id } = req.body;
-
-    if (!session_id) {
-        return res.status(400).json({ msg: 'session_id es requerido' });
-    }
-
-    try {
-        console.log(`🔍 Verificando sesión de Stripe: ${session_id}`);
-
-        
-        const session = await stripe.checkout.sessions.retrieve(session_id);
-
-        console.log(`✅ Sesión recuperada: ${session.id}, status: ${session.payment_status}`);
-
-        
-        if (session.payment_status !== 'paid') {
-            return res.status(400).json({ 
-                msg: 'El pago no ha sido completado',
-                payment_status: session.payment_status 
-            });
-        }
-
-        
-        const existingOrder = await Order.findOne({
-            where: { external_reference: session.id }
-        });
-
-        if (existingOrder) {
-            console.log(`ℹ️ La orden ya existe: #${existingOrder.idOrder}`);
-            return res.status(200).json({ 
-                msg: 'La orden ya fue creada previamente',
-                order: existingOrder 
-            });
-        }
-
-        
-        const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
-            expand: ['data.price.product'],
-            limit: 100,
-        });
-
-        console.log(`📦 Items en la sesión: ${lineItems.data.length}`);
-
-        
-        const raw = session.metadata?.orderDetails;
-        let orderDetailsParsed: any = {};
-        if (raw) {
-            try {
-                orderDetailsParsed = JSON.parse(raw);
-            } catch (e) {
-                console.warn('orderDetails no es JSON válido:', e);
-            }
-        }
-
-        
-        const customerName = session.customer_details?.name || orderDetailsParsed?.customer_name || 'N/A';
-        const customerEmail = session.customer_details?.email || orderDetailsParsed?.customer_email || 'no-reply@example.com';
-        const customerPhone = session.customer_details?.phone || orderDetailsParsed?.phone || undefined;
-        const customerNotes = orderDetailsParsed?.notes || undefined;
-        
-        
-        const rawSport =
-            orderDetailsParsed?.sport ??
-            session.metadata?.sport ??
-            undefined;
-        const sport =
-            typeof rawSport === 'string'
-                ? rawSport.trim() || undefined
-                : undefined;
-        
-        const paymentId = typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id;
-
-        
-        const mapStripeToStatusMp = (sess: any) => {
-            
-            if (sess.payment_status === 'paid') return 'approved';
-            if (sess.payment_status === 'unpaid') return 'pending';
-            if (sess.payment_status === 'no_payment_required') return 'pending';
-
-            const pi = typeof sess.payment_intent === 'object' ? sess.payment_intent : undefined;
-            const piStatus = pi?.status;
-            if (piStatus === 'succeeded') return 'approved';
-            if (piStatus === 'processing') return 'in_process';
-            if (piStatus === 'requires_payment_method' || piStatus === 'requires_action' || piStatus === 'requires_confirmation') return 'pending';
-            if (piStatus === 'canceled' || piStatus === 'failed') return 'cancelled';
-
-            
-            return 'pending';
-        };
-
-    const detectedStatusMp = mapStripeToStatusMp(session as Stripe.Checkout.Session);
-
-        
-        let totalCents = 0;
-        const parsedItems: Array<{ idProduct: number; idSize?: number; quantity: number; subtotalCents: number }> = [];
-
-        for (const li of lineItems.data) {
-            const qty = li.quantity ?? 1;
-            const price = li.price!;
-            const unitAmount = price.unit_amount ?? 0;
-            const productObj = price.product as Stripe.Product;
-            const idProductMeta = productObj?.metadata?.idProduct;
-            const idSizeMeta = productObj?.metadata?.idSize;
-
-            console.log(`📦 Line Item:`, {
-                productName: productObj?.name,
-                idProduct: idProductMeta,
-                idSize: idSizeMeta,
-                quantity: qty,
-                metadata: productObj?.metadata
-            });
-
-            if (!idProductMeta) {
-                throw new Error('Line item missing product metadata (idProduct)');
-            }
-
-            const subtotalCents = unitAmount * qty;
-            totalCents += subtotalCents;
-
-            parsedItems.push({
-                idProduct: Number(idProductMeta),
-                idSize: idSizeMeta ? Number(idSizeMeta) : undefined,
-                quantity: qty,
-                subtotalCents,
-            });
-        }
-
-        
-        let expectedPickupDate: Date | undefined = undefined;
-        if (orderDetailsParsed.expected_pickup_date) {
-            const dateParts = orderDetailsParsed.expected_pickup_date.split('-');
-            if (dateParts.length === 3) {
-                const [dd, mm, yyyy] = dateParts;
-                expectedPickupDate = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
-            }
-        }
-
-        
-        let createdOrder: Order;
-
-        await db.transaction(async (t: Transaction) => {
-            const currency = (session.currency || 'usd').toUpperCase();
-
-            
-            createdOrder = await Order.create({
-                orderDate: new Date(),
-                expectedPickupDate: expectedPickupDate,
-                idUser: Number(session.metadata?.userId || 0),
-                idPaymentMethod: 1, // 1 = Stripe
-                external_reference: session.id,
-                payment_id: paymentId ?? undefined,
-                total_amount: Number((totalCents / 100).toFixed(2)),
-                customer_name: customerName,
-                customer_email: customerEmail,
-                customer_phone: customerPhone,
-                customer_notes: customerNotes,
-                currencyId: currency,
-                sport: sport,
-                statusMp: detectedStatusMp, 
-            }, { transaction: t });
-
-            console.log(`✅ Orden #${createdOrder.idOrder} creada`);
-
-            
-            await Status.create({
-                idOrder: createdOrder.idOrder,
-                statusDate: new Date(),
-                description: 'confirmed'
-            }, { transaction: t });
-
-            console.log(`📋 Status 'confirmado' creado para orden #${createdOrder.idOrder}`);
-
-            
-            for (const item of parsedItems) {
-                const product = await Product.findByPk(item.idProduct, {
-                    transaction: t,
-                    lock: t.LOCK.UPDATE,
-                });
-
-                if (!product) {
-                    throw new Error(`No existe el producto ${item.idProduct}`);
-                }
-
-                if (product.stock < item.quantity) {
-                    console.warn(`⚠️ Stock insuficiente para producto ${product.idProduct}`);
-                }
-
-                
-                product.stock = Math.max(0, product.stock - item.quantity);
-                await product.save({ transaction: t });
-
-                
-                await OrderLine.create({
-                    idOrder: createdOrder.idOrder,
-                    idProduct: item.idProduct,
-                    idSize: item.idSize ?? 7, 
-                    quantity: item.quantity,
-                    subtotal: Number((item.subtotalCents / 100).toFixed(2)),
-                }, { transaction: t });
-
-                console.log(`📦 Stock actualizado para producto ${product.idProduct}: ${product.stock}`);
-            }
-        });
-
-        console.log(`🎉 Orden #${createdOrder!.idOrder} creada exitosamente`);
-
-        return res.status(201).json({
-            msg: 'Orden creada exitosamente',
-            order: createdOrder!,
-        });
-
-    } catch (error: any) {
-        console.error('❌ Error creating order from session:', error);
-        return res.status(500).json({
-            msg: 'Error al crear la orden',
-            error: error.message,
-        });
-    }
+export const createOrderFromSession = async (_req: Request, res: Response) => {
+    return res.status(501).json({ msg: 'Stripe integration removed — createOrderFromSession is not available.' });
 };
 
 
@@ -269,7 +51,7 @@ export const getUserOrders = async (req: Request, res: Response) => {
 
     try {
         const orders = await Order.findAll({
-            where: { idUser: Number(userId) },
+            where: { idUser: userId },
             include: [
                 {
                     model: OrderLine,
@@ -538,5 +320,89 @@ export const getStatusStats = async (req: Request, res: Response) => {
             msg: 'Error fetching Orders by Status',
             error: error.message,
         });
+    }
+}
+
+export const buttonOfRegret = async (req: Request, res: Response) => {
+    try {
+        const { idOrder } = req.params;
+        if (!idOrder) {
+            return res.status(400).json({ msg: 'idOrder es requerido' });
+        }
+
+        const order = await Order.findByPk(Number(idOrder));
+
+        if (!order) {
+            return res.status(404).json({ msg: 'Orden no encontrada' });
+        }
+
+        const orderDate = order.orderDate ? new Date(order.orderDate as any) : null;
+        if (!orderDate) {
+            return res.status(400).json({ msg: 'OrderDate inválida' });
+        }
+
+        const now = new Date();
+        const msSinceOrder = now.getTime() - orderDate.getTime();
+        const hoursSinceOrder = msSinceOrder / (1000 * 60 * 60);
+
+        if (hoursSinceOrder > 24) {
+            return res.status(400).json({ msg: 'No se puede cancelar: pasaron más de 24 horas desde la orden' });
+        }
+
+        // Obtener último status de la orden
+        const latestStatus = await Status.findOne({
+            where: { idOrder: Number(idOrder) },
+            order: [['statusDate', 'DESC']],
+        });
+
+        if (!latestStatus) {
+            return res.status(400).json({ msg: 'No se encontró estado para la orden' });
+        }
+
+        const desc = (latestStatus.description || '');
+        if (desc !== 'ready' && desc !== 'confirmed') {
+            return res.status(400).json({ msg: "Sólo se pueden cancelar órdenes con estado 'ready' o 'confirmed'" });
+        }
+
+        // Obtener las líneas de la orden
+        const orderLines = await OrderLine.findAll({ where: { idOrder: Number(idOrder) } });
+
+        if (!orderLines || orderLines.length === 0) {
+            return res.status(400).json({ msg: 'La orden no tiene líneas' });
+        }
+
+        let createdStatus: any = null;
+
+        await db.transaction(async (t: Transaction) => {
+            // Crear status 'cancelled' vinculado a la orden
+            createdStatus = await Status.create({
+                idOrder: Number(idOrder),
+                statusDate: new Date(),
+                description: 'cancelled',
+            }, { transaction: t });
+
+            // Para cada order line, sumar la cantidad al stock correspondiente
+            for (const line of orderLines) {
+                const idSize = line.idSize ?? 7; 
+
+                const ps = await ProductSize.findOne({
+                    where: { idProduct: line.idProduct, idSize },
+                    transaction: t,
+                    lock: t.LOCK.UPDATE,
+                });
+
+                if (!ps) {
+                    throw new Error(`No existe product_size para product=${line.idProduct} size=${idSize}`);
+                }
+
+                ps.stock = (ps.stock || 0) + (line.quantity || 0);
+                await ps.save({ transaction: t });
+            }
+        });
+
+        return res.status(201).json({ msg: 'Orden cancelada correctamente', status: createdStatus });
+    } catch (error) {
+        console.error('Error en ButtonOfRegret:', error);
+        return res.status(500).json({ msg: 'Error al procesar cancelación', error: (error as any).message || error });
     }
 }

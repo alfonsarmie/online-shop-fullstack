@@ -1,14 +1,54 @@
-﻿import { useMemo } from 'react';
+﻿import { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCheckoutQuery } from '../utils/useCheckoutQuery';
 import '../styles/checkout-status.css';
+import { orderService, mapOrderToFrontend } from '../services/orderService';
+import { FrontendOrder } from '../types/order';
 
 export default function CheckoutPending() {
   const info = useCheckoutQuery();
+  const [order, setOrder] = useState<FrontendOrder | null>(null);
 
-  const displayOrderNumber = useMemo(() => (
-    info.external_reference ?? info.payment_id ?? info.collection_id ?? ''
-  ), [info.collection_id, info.external_reference, info.payment_id]);
+  useEffect(() => {
+    const fetchOrder = async () => {
+      const savedUser = localStorage.getItem("user");
+      if (!savedUser) return;
+      
+      try {
+        const user = JSON.parse(savedUser);
+        const targetId = info.external_reference ?? info.payment_id ?? info.collection_id;
+        
+        if (!targetId) return;
+
+        const backendOrders = await orderService.getUserOrders(user.idUser);
+        const foundOrder = backendOrders.find(o => 
+          o.external_reference === targetId || 
+          String(o.idOrder) === String(targetId)
+        );
+        
+        if (foundOrder) {
+          setOrder(mapOrderToFrontend(foundOrder));
+        }
+      } catch (err) {
+        console.error("Error fetching order details", err);
+      }
+    };
+    
+    fetchOrder();
+  }, [info.external_reference, info.payment_id, info.collection_id]);
+
+  const displayOrderNumber = useMemo(() => {
+    if (order) return order.orderNumber;
+
+    const rawId = info.external_reference ?? info.payment_id ?? info.collection_id ?? '';
+    if (!rawId) return '';
+
+    const num = parseInt(rawId, 10);
+    if (!isNaN(num)) {
+      return `ORD-${String(num).padStart(4, '0')}`;
+    }
+    return rawId;
+  }, [order, info.collection_id, info.external_reference, info.payment_id]);
 
   return (
     <div className="page-with-nav-spacing">
@@ -29,7 +69,7 @@ export default function CheckoutPending() {
         {displayOrderNumber && (
           <div className="ticket-order">
             <span className="ticket-order-label">Numero de orden</span>
-            <span className="ticket-order-value">{displayOrderNumber}</span>
+            <span className="ticket-order-value">#{displayOrderNumber}</span>
           </div>
         )}
 

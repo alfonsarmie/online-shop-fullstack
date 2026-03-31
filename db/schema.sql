@@ -43,7 +43,7 @@ DROP TABLE IF EXISTS `client_discount`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `client_discount` (
   `idDiscount` int unsigned NOT NULL,
-  `idUser` int unsigned NOT NULL,
+  `idUser` varchar(45) NOT NULL,
   PRIMARY KEY (`idDiscount`,`idUser`),
   KEY `idUser` (`idUser`),
   CONSTRAINT `client_discount_ibfk_1` FOREIGN KEY (`idDiscount`) REFERENCES `discount` (`idDiscount`) ON UPDATE CASCADE,
@@ -92,9 +92,8 @@ DROP TABLE IF EXISTS `order`;
 CREATE TABLE `order` (
   `idOrder` int unsigned NOT NULL AUTO_INCREMENT,
   `orderDate` datetime NOT NULL,
-  `expectedPickupDate` datetime DEFAULT NULL,
-  `actualPickupDate` datetime DEFAULT NULL,
-  `idUser` int unsigned NOT NULL,
+  `PickupDate` datetime DEFAULT NULL,
+  `idUser` varchar(45) NOT NULL,
   `idPaymentMethod` int unsigned NOT NULL,
   `total_amount` decimal(10,2) NOT NULL DEFAULT '0.00',
   `customer_name` varchar(255) NOT NULL,
@@ -106,6 +105,9 @@ CREATE TABLE `order` (
   `currencyId` varchar(10) DEFAULT 'ARS' COMMENT 'Código de moneda: ARS, USD, etc.',
   `external_reference` varchar(255) DEFAULT NULL,
   `payment_id` varchar(255) DEFAULT NULL COMMENT 'Payment intent ID from Stripe',
+  `pickup_code` CHAR(48) NULL,
+  `pickup_used` TINYINT(1) NOT NULL DEFAULT 0,
+  UNIQUE KEY `ux_orders_pickup_code` (`pickup_code`),
   PRIMARY KEY (`idOrder`),
   KEY `idUser` (`idUser`),
   KEY `idPaymentMethod` (`idPaymentMethod`),
@@ -187,7 +189,6 @@ CREATE TABLE `product` (
   `idProduct` int unsigned NOT NULL AUTO_INCREMENT,
   `description` varchar(400) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `stock` int unsigned DEFAULT NULL,
   `idCategory` int unsigned NOT NULL,
   PRIMARY KEY (`idProduct`),
   KEY `idCategory` (`idCategory`),
@@ -205,6 +206,7 @@ DROP TABLE IF EXISTS `product_size`;
 CREATE TABLE `product_size` (
   `idProduct` int unsigned NOT NULL,
   `idSize` int unsigned NOT NULL,
+  `stock` int unsigned DEFAULT NULL,
   PRIMARY KEY (`idProduct`,`idSize`),
   KEY `idSize` (`idSize`),
   CONSTRAINT `product_size_ibfk_1` FOREIGN KEY (`idProduct`) REFERENCES `product` (`idProduct`) ON UPDATE CASCADE,
@@ -258,7 +260,7 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
-  `idUser` int unsigned NOT NULL AUTO_INCREMENT,
+  `idUser` varchar(45) NOT NULL,
   `dni` int unsigned DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,

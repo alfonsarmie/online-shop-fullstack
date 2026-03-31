@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import logo from '../assets/img/logo.png';
+import logo from '/src/assets/img/logo.png';
 import '../styles/account-activated.css';
 import ErrorMessage from '../components/ErrorMessage';
 

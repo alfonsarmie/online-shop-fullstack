@@ -1,6 +1,6 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import logo from '../assets/img/logo.png';
+import logo from '/src/assets/img/logo.png';
 import FormContainer from '../components/FormContainer';
 import Input from '../components/Input';
 import PasswordInput from '../components/PasswordInput';
@@ -10,7 +10,7 @@ import '../styles/signUp.css';
 import SuccessMessage from '../components/SuccessMessage';
 import ErrorMessage from '../components/ErrorMessage';
 import LoadingSpinner from '../components/LoadingSpinner';
-import axios from 'axios';
+import api from '../services/api';
 
 interface FormData {
   name: string;
@@ -125,7 +125,7 @@ export default function SignUp() {
       const emailForNotice = formData.email;
       
       // Make the API call
-      await axios.post("http://localhost:3000/api/users/create", userData);
+      await api.post('/users/create', userData);
 
       // On success, show message and navigate to verify email
       setFormData({

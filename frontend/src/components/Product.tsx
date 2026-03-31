@@ -11,7 +11,7 @@ interface ProductProps {
   img2: string;
   description: string;
   sizes: Size[]; 
-  stock: number;
+  stock?: number; 
   onAddToCart: (product: ProductWithSize) => void;
 }
 
@@ -42,7 +42,7 @@ function ProductComponent({
     setSelectedSize(size);
     
     const productToAdd = {
-      id: id,
+      idProduct: id,
       name,
       price,
       img: mainImage,
@@ -71,7 +71,7 @@ function ProductComponent({
           }}
         />
         <p className="nombre">{name}</p>
-        <p className="precio">${price} ARS</p>
+        <p className="precio">{new Intl.NumberFormat("es-AR", { maximumFractionDigits: 0 }).format(price)} ARS</p>
       </Link>
 
       <button className="btnAddToCart" onClick={handleAddToCartClick}>
